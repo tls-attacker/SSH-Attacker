@@ -76,9 +76,6 @@ public class DelayCompressionExtensionParserTest {
             String expectedCompressionMethodsServerToClient) {
         DelayCompressionExtension extension = new DelayCompressionExtension();
         extension.getParser(null, new ByteArrayInputStream(providedBytes)).parse(extension);
-        // DelayCompressionExtensionParser parser = new DelayCompressionExtensionParser(new
-        // ByteArrayInputStream(providedBytes));
-        // DelayCompressionExtension extension = parser.parse();
 
         assertEquals(expectedNameLength, extension.getNameLength().getValue());
         assertEquals(expectedName, extension.getName().getValue());

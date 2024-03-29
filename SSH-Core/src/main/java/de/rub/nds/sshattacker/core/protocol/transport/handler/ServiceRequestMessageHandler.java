@@ -17,32 +17,8 @@ public class ServiceRequestMessageHandler extends SshMessageHandler<ServiceReque
         super(context);
     }
 
-    /*public ServiceRequestMessageHandler(SshContext context, ServiceRequestMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ServiceRequestMessage message) {
         // TODO: Handle ServiceRequestMessage
     }
-
-    /*@Override
-    public ServiceRequestMessageParser getParser(byte[] array) {
-        return new ServiceRequestMessageParser(array);
-    }
-
-    @Override
-    public ServiceRequestMessageParser getParser(byte[] array, int startPosition) {
-        return new ServiceRequestMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ServiceRequestMessagePreparator getPreparator() {
-        return new ServiceRequestMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ServiceRequestMessageSerializer getSerializer() {
-        return new ServiceRequestMessageSerializer(message);
-    }*/
 }

@@ -17,15 +17,6 @@ public class ChannelRequestBreakMessageParser
         extends ChannelRequestMessageParser<ChannelRequestBreakMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestBreakMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestBreakMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestBreakMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,11 +26,6 @@ public class ChannelRequestBreakMessageParser
         parseProtocolMessageContents(message);
     }
 
-    /* @Override
-        public ChannelRequestBreakMessage createMessage() {
-            return new ChannelRequestBreakMessage();
-        }
-    */
     public void parseBreakLength(ChannelRequestBreakMessage message) {
         message.setBreakLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Break length in milliseconds: {}", message.getBreakLength().getValue());

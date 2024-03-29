@@ -21,10 +21,6 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
         super(context);
     }
 
-    /*public DhKeyExchangeInitMessageHandler(SshContext context, DhKeyExchangeInitMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DhKeyExchangeInitMessage message) {
         sshContext
@@ -35,24 +31,4 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
                 .getExchangeHashInputHolder()
                 .setDhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
-
-    /*@Override
-    public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array) {
-        return new DhKeyExchangeInitMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array, int startPosition) {
-        return new DhKeyExchangeInitMessageParser(array, startPosition);
-    }
-
-    @Override
-    public DhKeyExchangeInitMessagePreparator getPreparator() {
-        return new DhKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public DhKeyExchangeInitMessageSerializer getSerializer() {
-        return new DhKeyExchangeInitMessageSerializer(message);
-    }*/
 }

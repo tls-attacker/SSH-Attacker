@@ -18,15 +18,6 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public RsaKeyExchangeDoneMessageParser(byte[] array) {
-            super(array);
-        }
-        public RsaKeyExchangeDoneMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public RsaKeyExchangeDoneMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
     public void parse(RsaKeyExchangeDoneMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        protected RsaKeyExchangeDoneMessage createMessage() {
-            return new RsaKeyExchangeDoneMessage();
-        }
-    */
 
     @Override
     protected void parseMessageSpecificContents(RsaKeyExchangeDoneMessage message) {

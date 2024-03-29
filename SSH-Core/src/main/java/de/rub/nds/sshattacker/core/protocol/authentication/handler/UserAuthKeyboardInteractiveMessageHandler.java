@@ -18,10 +18,6 @@ public class UserAuthKeyboardInteractiveMessageHandler
         super(context);
     }
 
-    /*public UserAuthKeyboardInteractiveMessageHandler(
-            SshContext context, UserAuthKeyboardInteractiveMessage message) {
-        super(context, message);
-    }*/
     // ToDo Handle UserAuthKeyboardInteractive
     @Override
     public void adjustContext(UserAuthKeyboardInteractiveMessage message) {}

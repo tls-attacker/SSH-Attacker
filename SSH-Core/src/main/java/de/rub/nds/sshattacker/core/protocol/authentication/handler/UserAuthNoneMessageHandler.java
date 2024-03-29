@@ -17,10 +17,6 @@ public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMe
         super(context);
     }
 
-    /*public UserAuthNoneMessageHandler(SshContext context, UserAuthNoneMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthNoneMessage message) {
         // TODO: Handle UserAuthNoneMessage

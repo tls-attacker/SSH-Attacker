@@ -19,22 +19,9 @@ public class DhGexKeyExchangeRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /* public DhGexKeyExchangeRequestMessageParser(byte[] array) {
-        super(array);
-    }
-    public DhGexKeyExchangeRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
     public DhGexKeyExchangeRequestMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public DhGexKeyExchangeRequestMessage createMessage() {
-            return new DhGexKeyExchangeRequestMessage();
-        }
-    */
 
     public void parseMinimalGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));

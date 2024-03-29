@@ -27,14 +27,6 @@ public class DelayCompressionExtensionParser
     public void parse(DelayCompressionExtension delayCompressionExtension) {
         parseExtensionData(delayCompressionExtension);
     }
-    /*
-    public DelayCompressionExtensionParser(byte[] array) {
-        super(array);
-    }
-
-    public DelayCompressionExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
 
     @Override
     protected DelayCompressionExtension createExtension() {

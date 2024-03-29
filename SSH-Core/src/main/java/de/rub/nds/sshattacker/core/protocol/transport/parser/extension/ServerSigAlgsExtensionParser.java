@@ -27,14 +27,6 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
         parseExtensionData(serverSigAlgsExtension);
     }
 
-    /*    public ServerSigAlgsExtensionParser(byte[] array) {
-        super(array);
-    }
-
-    public ServerSigAlgsExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     @Override
     protected ServerSigAlgsExtension createExtension() {
         return new ServerSigAlgsExtension();

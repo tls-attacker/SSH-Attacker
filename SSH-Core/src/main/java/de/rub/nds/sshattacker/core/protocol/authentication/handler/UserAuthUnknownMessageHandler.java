@@ -17,10 +17,6 @@ public class UserAuthUnknownMessageHandler extends SshMessageHandler<UserAuthUnk
         super(context);
     }
 
-    /*public UserAuthUnknownMessageHandler(SshContext context, UserAuthUnknownMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthUnknownMessage message) {
         // TODO: Handle UserAuthUnknownMessage

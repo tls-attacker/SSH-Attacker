@@ -22,26 +22,9 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public DisconnectMessageParser(byte[] array) {
-            super(array);
-        }
-        public DisconnectMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public DisconnectMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public DisconnectMessage createMessage() {
-            return new DisconnectMessage();
-        }
-    */
 
     private void parseReasonCode(DisconnectMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));

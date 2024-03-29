@@ -22,11 +22,6 @@ public class ExitConfirmationMessageSSHV1Handler
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ExitConfirmationMessageSSH1 message) {
         LOGGER.info("Recived a EOF Message");

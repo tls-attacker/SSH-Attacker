@@ -18,10 +18,6 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
         super(context);
     }
 
-    /*public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DhKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
@@ -42,24 +38,4 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
                 .getExchangeHashInputHolder()
                 .setDhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
-
-    /*@Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array) {
-        return new DhKeyExchangeReplyMessageParser(array);
-    }
-
-    @Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
-        return new DhKeyExchangeReplyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator() {
-        return new DhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer() {
-        return new DhKeyExchangeReplyMessageSerializer(message);
-    }*/
 }

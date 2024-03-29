@@ -19,16 +19,6 @@ public class GlobalRequestTcpIpForwardMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public GlobalRequestTcpIpForwardMessageParser(byte[] array) {
-            super(array);
-        }
-        public GlobalRequestTcpIpForwardMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public GlobalRequestTcpIpForwardMessageParser(InputStream stream) {
         super(stream);
     }
@@ -52,13 +42,6 @@ public class GlobalRequestTcpIpForwardMessageParser
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
     }
-
-    /*
-        @Override
-        public GlobalRequestTcpIpForwardMessage createMessage() {
-            return new GlobalRequestTcpIpForwardMessage();
-        }
-    */
 
     @Override
     protected void parseMessageSpecificContents(GlobalRequestTcpIpForwardMessage message) {

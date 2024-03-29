@@ -17,15 +17,6 @@ public class GlobalRequestUnknownMessageParser
         extends GlobalRequestMessageParser<GlobalRequestUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public GlobalRequestUnknownMessageParser(byte[] array) {
-            super(array);
-        }
-        public GlobalRequestUnknownMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public GlobalRequestUnknownMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,11 +26,6 @@ public class GlobalRequestUnknownMessageParser
         parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
-
-    /*@Override
-    public GlobalRequestUnknownMessage createMessage() {
-        return new GlobalRequestUnknownMessage();
-    }*/
 
     public void parseTypeSpecificData(GlobalRequestUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));

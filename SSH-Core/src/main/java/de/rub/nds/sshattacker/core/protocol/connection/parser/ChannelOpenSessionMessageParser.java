@@ -12,14 +12,6 @@ import java.io.InputStream;
 
 public class ChannelOpenSessionMessageParser
         extends ChannelOpenMessageParser<ChannelOpenSessionMessage> {
-    /*
-        public ChannelOpenSessionMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelOpenSessionMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public ChannelOpenSessionMessageParser(InputStream stream) {
         super(stream);
@@ -29,9 +21,4 @@ public class ChannelOpenSessionMessageParser
     public void parse(ChannelOpenSessionMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public ChannelOpenSessionMessage createMessage() {
-        return new ChannelOpenSessionMessage();
-    }*/
 }

@@ -20,15 +20,6 @@ public class ChannelRequestEnvMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestEnvMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestEnvMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestEnvMessageParser(InputStream stream) {
         super(stream);
     }
@@ -37,13 +28,6 @@ public class ChannelRequestEnvMessageParser
     public void parse(ChannelRequestEnvMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestEnvMessage createMessage() {
-            return new ChannelRequestEnvMessage();
-        }
-    */
 
     public void parseVariableName(ChannelRequestEnvMessage message) {
         message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

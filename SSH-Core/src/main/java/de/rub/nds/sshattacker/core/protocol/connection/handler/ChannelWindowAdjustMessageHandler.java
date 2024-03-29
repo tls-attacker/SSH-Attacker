@@ -19,11 +19,6 @@ public class ChannelWindowAdjustMessageHandler
         super(context);
     }
 
-    /*public ChannelWindowAdjustMessageHandler(
-            SshContext context, ChannelWindowAdjustMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelWindowAdjustMessage message) {
         Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
@@ -45,24 +40,4 @@ public class ChannelWindowAdjustMessageHandler
             sshContext.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
     }
-
-    /*@Override
-    public ChannelWindowAdjustMessageParser getParser(byte[] array) {
-        return new ChannelWindowAdjustMessageParser(array);
-    }
-
-    @Override
-    public ChannelWindowAdjustMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelWindowAdjustMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelWindowAdjustMessagePreparator getPreparator() {
-        return new ChannelWindowAdjustMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelWindowAdjustMessageSerializer getSerializer() {
-        return new ChannelWindowAdjustMessageSerializer(message);
-    }*/
 }

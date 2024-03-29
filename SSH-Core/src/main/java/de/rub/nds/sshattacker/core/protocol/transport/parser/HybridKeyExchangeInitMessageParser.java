@@ -26,17 +26,6 @@ public class HybridKeyExchangeInitMessageParser
     private final int encapsulationSize;
     private final int agreementSize;
 
-    /*public HybridKeyExchangeInitMessageParser(
-            byte[] array,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array);
-        this.combiner = combiner;
-        this.encapsulationSize = encapsulationSize;
-        this.agreementSize = agreementSize;
-    }*/
-
     public HybridKeyExchangeInitMessageParser(SshContext context, InputStream stream) {
         super(stream);
         LOGGER.info(
@@ -48,47 +37,32 @@ public class HybridKeyExchangeInitMessageParser
                         "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
                 // Fallthrough to next case statement intended
             case SNTRUP761_X25519:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE;
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE;
                 break;
             case CURVE25519_FRODOKEM1344:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE;
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE;
                 break;
             case SNTRUP4591761_X25519:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE;
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE;
                 break;
             case NISTP521_FIRESABER:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE;
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE;
                 break;
             case NISTP521_KYBER1024:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE;
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE;
                 break;
         }
-        /*        this.combiner = combiner;
-        this.encapsulationSize = encapsulationSize;
-        this.agreementSize = agreementSize;*/
     }
-
-    /*public HybridKeyExchangeInitMessageParser(
-            byte[] array,
-            int startPosition,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array, startPosition);
-        this.combiner = combiner;
-        this.encapsulationSize = encapsulationSize;
-        this.agreementSize = agreementSize;
-    }*/
 
     private void parseHybridKey(HybridKeyExchangeInitMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
@@ -123,11 +97,6 @@ public class HybridKeyExchangeInitMessageParser
         parseHybridKey(message);
     }
 
-    /*  @Override
-        protected HybridKeyExchangeInitMessage createMessage() {
-            return new HybridKeyExchangeInitMessage();
-        }
-    */
     @Override
     public void parse(HybridKeyExchangeInitMessage message) {
         parseProtocolMessageContents(message);

@@ -18,31 +18,6 @@ public class ChannelRequestWindowChangeMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestWindowChangeMessageHandler(
-            SshContext context, ChannelRequestWindowChangeMessage message) {
-        super(context, message);
-    }
-
-    @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array) {
-        return new ChannelRequestWindowChangeMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestWindowChangeMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestWindowChangeMessagePreparator getPreparator() {
-        return new ChannelRequestWindowChangeMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestWindowChangeMessageSerializer getSerializer() {
-        return new ChannelRequestWindowChangeMessageSerializer(message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestWindowChangeMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {

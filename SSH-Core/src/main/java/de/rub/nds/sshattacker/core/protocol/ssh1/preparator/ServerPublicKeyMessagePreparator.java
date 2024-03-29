@@ -194,12 +194,6 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
         }
 
-        /*
-                LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
-                LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
-                LOGGER.debug("Cookie for SessionID: {}", cookie);
-        */
-
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
@@ -207,7 +201,6 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             throw new RuntimeException(e);
         }
         md.update(Bytes.concat(hostModulus, serverModulus, cookie));
-        // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
         byte[] sessionID = md.digest();
         LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
         chooser.getContext().getSshContext().setSessionID(sessionID);

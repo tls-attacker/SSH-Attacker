@@ -19,11 +19,6 @@ public class RsaKeyExchangePubkeyMessageHandler
         super(context);
     }
 
-    /*public RsaKeyExchangePubkeyMessageHandler(
-            SshContext context, RsaKeyExchangePubkeyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(RsaKeyExchangePubkeyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
@@ -37,26 +32,4 @@ public class RsaKeyExchangePubkeyMessageHandler
                 .setTransientKey(message.getTransientPublicKey());
         sshContext.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
-
-    /*@Override
-    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(byte[] array) {
-        return new RsaKeyExchangePubkeyMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(
-            byte[] array, int startPosition) {
-        return new RsaKeyExchangePubkeyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator() {
-        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
-        // TODO: Implement Serializer
-        return new RsaKeyExchangePubkeyMessageSerializer(message);
-    }*/
 }

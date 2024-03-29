@@ -68,13 +68,5 @@ public final class SshServer {
                     "The SSH protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(e.getLocalizedMessage(), e);
         }
-
-        /*        try {
-            if (!state.getSshContext().getTransportHandler().isClosed()) {
-                state.getSshContext().getTransportHandler().closeConnection();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 }

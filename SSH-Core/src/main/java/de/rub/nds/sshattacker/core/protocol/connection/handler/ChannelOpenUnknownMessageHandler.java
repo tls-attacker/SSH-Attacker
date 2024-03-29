@@ -17,32 +17,6 @@ public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelO
         super(context);
     }
 
-    /*public ChannelOpenUnknownMessageHandler(SshContext context, ChannelOpenUnknownMessage message) {
-        super(context, message);
-    }
-    /
-     */
-
     @Override
     public void adjustContext(ChannelOpenUnknownMessage message) {}
-
-    /*@Override
-    public ChannelOpenUnknownMessageParser getParser(byte[] array) {
-        return new ChannelOpenUnknownMessageParser(array);
-    }
-
-    @Override
-    public ChannelOpenUnknownMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelOpenUnknownMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenUnknownMessagePreparator getPreparator() {
-        return new ChannelOpenUnknownMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelOpenUnknownMessageSerializer getSerializer() {
-        return new ChannelOpenUnknownMessageSerializer(message);
-    }*/
 }

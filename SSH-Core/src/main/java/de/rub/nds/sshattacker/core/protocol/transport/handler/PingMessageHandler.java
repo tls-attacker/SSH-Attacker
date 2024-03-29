@@ -21,34 +21,10 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
         super(context);
     }
 
-    /*    public PingMessageHandler(SshContext context, PingMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(PingMessage message) {
         LOGGER.debug(
                 "PingMessage received from remote, data to respond length: {}",
                 message.getDataLength().getValue());
     }
-
-    /*    @Override
-    public PingMessageParser getParser(byte[] array) {
-        return new PingMessageParser(array);
-    }
-
-    @Override
-    public PingMessageParser getParser(byte[] array, int startPosition) {
-        return new PingMessageParser(array, startPosition);
-    }
-
-    @Override
-    public PingMessagePreparator getPreparator() {
-        return new PingMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public PingMessageSerializer getSerializer() {
-        return new PingMessageSerializer(message);
-    }*/
 }

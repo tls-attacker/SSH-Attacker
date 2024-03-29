@@ -19,35 +19,10 @@ public class ChannelRequestAuthAgentMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestAuthAgentMessageHandler(
-            SshContext context, ChannelRequestAuthAgentMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestAuthAgentMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestAuthAgentMessageParser getParser(byte[] array) {
-        return new ChannelRequestAuthAgentMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestAuthAgentMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestAuthAgentMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestAuthAgentMessagePreparator getPreparator() {
-        return new ChannelRequestAuthAgentMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestAuthAgentMessageSerializer getSerializer() {
-        return new ChannelRequestAuthAgentMessageSerializer(message);
-    }*/
 }

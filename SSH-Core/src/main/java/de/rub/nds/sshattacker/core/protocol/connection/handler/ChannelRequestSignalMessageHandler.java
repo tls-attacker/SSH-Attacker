@@ -19,35 +19,10 @@ public class ChannelRequestSignalMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestSignalMessageHandler(
-            SshContext context, ChannelRequestSignalMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestSignalMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array) {
-        return new ChannelRequestSignalMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestSignalMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestSignalMessagePreparator getPreparator() {
-        return new ChannelRequestSignalMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestSignalMessageSerializer getSerializer() {
-        return new ChannelRequestSignalMessageSerializer(message);
-    }*/
 }

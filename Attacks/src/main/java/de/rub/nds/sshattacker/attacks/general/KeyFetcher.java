@@ -120,27 +120,6 @@ public final class KeyFetcher {
 
             workflowExecutor.executeWorkflow();
 
-            /*            try {
-                workflowExecutor.executeWorkflow();
-
-                if (!state.getSshContext().getTransportHandler().isClosed()) {
-                    LOGGER.debug("Running into");
-                    state.getSshContext().getTransportHandler().closeConnection();
-                }
-            } catch (IOException e) {
-                if (attempt < maxAttempts) {
-                    LOGGER.debug(
-                            String.format(
-                                    "Encountered IOException on socket in attempt %d, retrying...",
-                                    attempt));
-                    return fetchRsaTransientKey(config, attempt + 1, maxAttempts, version);
-                } else {
-                    LOGGER.warn("Could not fetch server's RSA host key, encountered IOException");
-                    LOGGER.debug(e);
-                    return null;
-                }
-            }*/
-
             List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
             if (receivedMessages.size() > 0

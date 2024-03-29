@@ -18,31 +18,6 @@ public class GlobalRequestUnknownMessageHandler
         super(context);
     }
 
-    /*public GlobalRequestUnknownMessageHandler(
-            SshContext context, GlobalRequestUnknownMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(GlobalRequestUnknownMessage message) {}
-
-    /*@Override
-    public GlobalRequestUnknownMessageParser getParser(byte[] array) {
-        return new GlobalRequestUnknownMessageParser(array);
-    }
-
-    @Override
-    public GlobalRequestUnknownMessageParser getParser(byte[] array, int startPosition) {
-        return new GlobalRequestUnknownMessageParser(array, startPosition);
-    }
-
-    @Override
-    public GlobalRequestUnknownMessagePreparator getPreparator() {
-        return new GlobalRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public GlobalRequestUnknownMessageSerializer getSerializer() {
-        return new GlobalRequestUnknownMessageSerializer(message);
-    }*/
 }

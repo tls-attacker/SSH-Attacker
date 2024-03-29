@@ -19,13 +19,6 @@ public class ChannelRequestPtyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*    public ChannelRequestPtyMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelRequestPtyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
     public ChannelRequestPtyMessageParser(InputStream stream) {
         super(stream);
     }
@@ -34,13 +27,6 @@ public class ChannelRequestPtyMessageParser
     public void parse(ChannelRequestPtyMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestPtyMessage createMessage() {
-            return new ChannelRequestPtyMessage();
-        }
-    */
 
     public void parseTermEnvVariable(ChannelRequestPtyMessage message) {
         message.setTermEnvVariableLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

@@ -18,26 +18,9 @@ public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UnknownMessageParser(byte[] array) {
-            super(array);
-        }
-
-        public UnknownMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UnknownMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public UnknownMessage createMessage() {
-            return new UnknownMessage();
-        }
-    */
 
     @Override
     protected void parseMessageSpecificContents(UnknownMessage message) {

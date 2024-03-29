@@ -18,35 +18,10 @@ public class ChannelRequestSubsystemMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestSubsystemMessageHandler(
-            SshContext context, ChannelRequestSubsystemMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestSubsystemMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array) {
-        return new ChannelRequestSubsystemMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestSubsystemMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestSubsystemMessagePreparator getPreparator() {
-        return new ChannelRequestSubsystemMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestSubsystemMessageSerializer getSerializer() {
-        return new ChannelRequestSubsystemMessageSerializer(message);
-    }*/
 }

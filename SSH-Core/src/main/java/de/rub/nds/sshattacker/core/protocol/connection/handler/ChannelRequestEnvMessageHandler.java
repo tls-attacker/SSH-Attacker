@@ -18,34 +18,10 @@ public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRe
         super(context);
     }
 
-    /*public ChannelRequestEnvMessageHandler(SshContext context, ChannelRequestEnvMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestEnvMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array) {
-        return new ChannelRequestEnvMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestEnvMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestEnvMessagePreparator getPreparator() {
-        return new ChannelRequestEnvMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestEnvMessageSerializer getSerializer() {
-        return new ChannelRequestEnvMessageSerializer(message);
-    }*/
 }

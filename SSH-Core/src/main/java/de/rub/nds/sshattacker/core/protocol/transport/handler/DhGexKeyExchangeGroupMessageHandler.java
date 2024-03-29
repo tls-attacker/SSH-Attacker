@@ -20,11 +20,6 @@ public class DhGexKeyExchangeGroupMessageHandler
         super(context);
     }
 
-    /*public DhGexKeyExchangeGroupMessageHandler(
-            SshContext context, DhGexKeyExchangeGroupMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DhGexKeyExchangeGroupMessage message) {
         setGroupParametersFromMessage(message);
@@ -42,24 +37,4 @@ public class DhGexKeyExchangeGroupMessageHandler
         inputHolder.setDhGexGroupModulus(msg.getGroupModulus().getValue());
         inputHolder.setDhGexGroupGenerator(msg.getGroupGenerator().getValue());
     }
-
-    /*@Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array) {
-        return new DhGexKeyExchangeGroupMessageParser(array);
-    }
-
-    @Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, int startPosition) {
-        return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator() {
-        return new DhGexKeyExchangeGroupMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer() {
-        return new DhGexKeyExchangeGroupMessageSerializer(message);
-    }*/
 }

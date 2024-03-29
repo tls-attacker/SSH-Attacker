@@ -19,35 +19,10 @@ public class ChannelRequestUnknownMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestUnknownMessageHandler(
-            SshContext context, ChannelRequestUnknownMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestUnknownMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array) {
-        return new ChannelRequestUnknownMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestUnknownMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestUnknownMessagePreparator getPreparator() {
-        return new ChannelRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestUnknownMessageSerializer getSerializer() {
-        return new ChannelRequestUnknownMessageSerializer(message);
-    }*/
 }

@@ -18,15 +18,6 @@ public class ChannelWindowAdjustMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelWindowAdjustMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelWindowAdjustMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelWindowAdjustMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class ChannelWindowAdjustMessageParser
     public void parse(ChannelWindowAdjustMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelWindowAdjustMessage createMessage() {
-            return new ChannelWindowAdjustMessage();
-        }
-    */
 
     private void parseBytesToAdd(ChannelWindowAdjustMessage message) {
         message.setBytesToAdd(parseIntField(DataFormatConstants.UINT32_SIZE));

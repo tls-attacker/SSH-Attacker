@@ -24,11 +24,6 @@ public class HybridKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(HybridKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
@@ -86,36 +81,4 @@ public class HybridKeyExchangeReplyMessageHandler
                 break;
         }
     }
-
-    /*@Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
-    }
-
-    @Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
-            byte[] array, int startPosition) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array,
-                startPosition,
-                kex.getCombiner(),
-                kex.getPkAgreementLength(),
-                kex.getCiphertextLength());
-    }
-
-    @Override
-    public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessagePreparator(
-                context.getChooser(), message, kex.getCombiner());
-    }
-
-    @Override
-    public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageSerializer(message, kex.getCombiner());
-    }*/
 }

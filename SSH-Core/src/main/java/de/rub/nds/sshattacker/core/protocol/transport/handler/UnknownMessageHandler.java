@@ -22,34 +22,10 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
         super(context);
     }
 
-    /*public UnknownMessageHandler(SshContext context, UnknownMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UnknownMessage message) {
         LOGGER.debug(
                 "Received unknown message:\n{}",
                 ArrayConverter.bytesToHexString(message.getPayload()));
     }
-
-    /*@Override
-    public UnknownMessageParser getParser(byte[] array) {
-        return new UnknownMessageParser(array);
-    }
-
-    @Override
-    public UnknownMessageParser getParser(byte[] array, int startPosition) {
-        return new UnknownMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<UnknownMessage> getPreparator() {
-        return new UnknownMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UnknownMessageSerializer getSerializer() {
-        return new UnknownMessageSerializer(message);
-    }*/
 }

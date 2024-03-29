@@ -17,10 +17,6 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         super(context);
     }
 
-    /*public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(VersionExchangeMessage message) {
         if (sshContext.isHandleAsClient()) {
@@ -33,24 +29,4 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
             sshContext.getExchangeHashInputHolder().setClientVersion(message);
         }
     }
-
-    /*@Override
-    public VersionExchangeMessageParser getParser(byte[] array) {
-        return new VersionExchangeMessageParser(array);
-    }
-
-    @Override
-    public VersionExchangeMessageParser getParser(byte[] array, int startPosition) {
-        return new VersionExchangeMessageParser(array, startPosition);
-    }
-
-    @Override
-    public VersionExchangeMessagePreparator getPreparator() {
-        return new VersionExchangeMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public VersionExchangeMessageSerializer getSerializer() {
-        return new VersionExchangeMessageSerializer(message);
-    }*/
 }

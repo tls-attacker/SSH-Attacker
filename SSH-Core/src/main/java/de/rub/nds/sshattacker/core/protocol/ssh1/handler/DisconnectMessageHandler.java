@@ -21,12 +21,6 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
-    @Override
     public void adjustContext(DisconnectMessageSSH1 message) {
         LOGGER.warn(
                 "Recieved a Disconnect Message, Reason: {}",

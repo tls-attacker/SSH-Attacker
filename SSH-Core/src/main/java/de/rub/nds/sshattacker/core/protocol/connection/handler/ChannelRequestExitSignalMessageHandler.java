@@ -19,35 +19,10 @@ public class ChannelRequestExitSignalMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestExitSignalMessageHandler(
-            SshContext context, ChannelRequestExitSignalMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestExitSignalMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestExitSignalMessageParser getParser(byte[] array) {
-        return new ChannelRequestExitSignalMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestExitSignalMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessagePreparator getPreparator() {
-        return new ChannelRequestExitSignalMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageSerializer getSerializer() {
-        return new ChannelRequestExitSignalMessageSerializer(message);
-    }*/
 }

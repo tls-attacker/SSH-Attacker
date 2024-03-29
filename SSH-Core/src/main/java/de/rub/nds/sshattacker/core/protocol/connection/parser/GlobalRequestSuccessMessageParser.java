@@ -14,15 +14,6 @@ import java.io.InputStream;
 public class GlobalRequestSuccessMessageParser
         extends SshMessageParser<GlobalRequestSuccessMessage> {
 
-    /*
-        public GlobalRequestSuccessMessageParser(byte[] array) {
-            super(array);
-        }
-        public GlobalRequestSuccessMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public GlobalRequestSuccessMessageParser(InputStream stream) {
         super(stream);
     }
@@ -31,13 +22,6 @@ public class GlobalRequestSuccessMessageParser
     public void parse(GlobalRequestSuccessMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public GlobalRequestSuccessMessage createMessage() {
-            return new GlobalRequestSuccessMessage();
-        }
-    */
 
     @Override
     protected void parseMessageSpecificContents(GlobalRequestSuccessMessage message) {}

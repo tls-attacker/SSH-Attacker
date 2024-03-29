@@ -22,10 +22,6 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
         super(context);
     }
 
-    /*public DebugMessageHandler(SshContext context, DebugMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DebugMessage message) {
         if (Converter.byteToBoolean(message.getAlwaysDisplay().getValue())) {
@@ -38,24 +34,4 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
                     message.getMessage().getValue());
         }
     }
-
-    /*@Override
-    public DebugMessageParser getParser(byte[] array) {
-        return new DebugMessageParser(array);
-    }
-
-    @Override
-    public DebugMessageParser getParser(byte[] array, int startPosition) {
-        return new DebugMessageParser(array, startPosition);
-    }
-
-    @Override
-    public DebugMessagePreparator getPreparator() {
-        return new DebugMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public DebugMessageSerializer getSerializer() {
-        return new DebugMessageSerializer(message);
-    }*/
 }

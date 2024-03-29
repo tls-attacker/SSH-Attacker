@@ -20,22 +20,9 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public VersionExchangeMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public VersionExchangeMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public VersionExchangeMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*@Override
-    protected VersionExchangeMessage createMessage() {
-        return new VersionExchangeMessage();
-    }*/
 
     private void parseVersion(VersionExchangeMessage message) {
         // parse till CR NL (and remove them)

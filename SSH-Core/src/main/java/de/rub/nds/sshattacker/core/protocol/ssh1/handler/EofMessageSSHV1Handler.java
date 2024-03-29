@@ -21,11 +21,6 @@ public class EofMessageSSHV1Handler extends SshMessageHandler<EofMessageSSH1> {
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(EofMessageSSH1 message) {
         LOGGER.info("Recived a EOF Message");

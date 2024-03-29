@@ -19,16 +19,6 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ServiceAcceptMessageParser(byte[] array) {
-            super(array);
-        }
-        public ServiceAcceptMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public ServiceAcceptMessageParser(InputStream stream) {
         super(stream);
     }
@@ -46,13 +36,6 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
     protected void parseMessageSpecificContents(ServiceAcceptMessage message) {
         parseServiceType(message);
     }
-
-    /*
-        @Override
-        public ServiceAcceptMessage createMessage() {
-            return new ServiceAcceptMessage();
-        }
-    */
 
     @Override
     public void parse(ServiceAcceptMessage message) {

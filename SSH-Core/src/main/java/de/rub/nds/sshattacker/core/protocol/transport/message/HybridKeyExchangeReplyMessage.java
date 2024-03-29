@@ -215,13 +215,6 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         return new HybridKeyExchangeReplyMessageHandler(context);
     }
 
-    /*@Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(SshContext context, InputStream stream) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
-    }*/
-
     @Override
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
             SshContext context, InputStream stream) {

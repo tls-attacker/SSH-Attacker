@@ -21,11 +21,6 @@ public class SuccessMessageHandler extends SshMessageHandler<SuccessMessageSSH1>
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(SuccessMessageSSH1 message) {
         LOGGER.info("Recived a Success Message");

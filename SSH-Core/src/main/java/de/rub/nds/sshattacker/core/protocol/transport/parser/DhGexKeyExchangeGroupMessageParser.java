@@ -20,22 +20,9 @@ public class DhGexKeyExchangeGroupMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*    public DhGexKeyExchangeGroupMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public DhGexKeyExchangeGroupMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public DhGexKeyExchangeGroupMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*    @Override
-    public DhGexKeyExchangeGroupMessage createMessage() {
-        return new DhGexKeyExchangeGroupMessage();
-    }*/
 
     private void parseGroupModulus(DhGexKeyExchangeGroupMessage message) {
         message.setGroupModulusLength(parseIntField(DataFormatConstants.UINT32_SIZE));

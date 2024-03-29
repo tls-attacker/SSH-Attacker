@@ -20,25 +20,9 @@ public class ChannelRequestX11MessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestX11MessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestX11MessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestX11MessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public ChannelRequestX11Message createMessage() {
-            return new ChannelRequestX11Message();
-        }
-    */
 
     public void parseSingleConnection(ChannelRequestX11Message message) {
         message.setSingleConnection(parseByteField(1));

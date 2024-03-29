@@ -29,11 +29,4 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
     public void adjustContextAfterSerialize(MessageT message) {}
 
     public void adjustContextAfterMessageSent(MessageT messageT) {}
-    /*
-        public ProtocolMessageHandler(SshContext context, T message) {
-            this.context = context;
-            this.message = message;
-        }
-
-    */
 }

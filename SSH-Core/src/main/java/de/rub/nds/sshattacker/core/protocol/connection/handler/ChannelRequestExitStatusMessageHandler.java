@@ -19,31 +19,6 @@ public class ChannelRequestExitStatusMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestExitStatusMessageHandler(
-            SshContext context, ChannelRequestExitStatusMessage message) {
-        super(context, message);
-    }
-
-    @Override
-    public ChannelRequestExitStatusMessageParser getParser(byte[] array) {
-        return new ChannelRequestExitStatusMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestExitStatusMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestExitStatusMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestExitStatusMessagePreparator getPreparator() {
-        return new ChannelRequestExitStatusMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestExitStatusMessageSerializer getSerializer() {
-        return new ChannelRequestExitStatusMessageSerializer(message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestExitStatusMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {

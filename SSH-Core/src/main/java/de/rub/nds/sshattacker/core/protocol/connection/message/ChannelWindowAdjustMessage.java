@@ -37,11 +37,6 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
         return new ChannelWindowAdjustMessageParser(stream);
     }
 
-    /*    @Override
-    public ChannelWindowAdjustMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelWindowAdjustMessageParser(array, startPosition);
-    }*/
-
     @Override
     public ChannelWindowAdjustMessagePreparator getPreparator(SshContext context) {
         return new ChannelWindowAdjustMessagePreparator(context.getChooser(), this);

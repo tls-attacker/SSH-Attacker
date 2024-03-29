@@ -17,10 +17,6 @@ public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMe
         super(context);
     }
 
-    /*public UserAuthPkOkMessageHandler(SshContext context, UserAuthPkOkMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthPkOkMessage message) {}
 }

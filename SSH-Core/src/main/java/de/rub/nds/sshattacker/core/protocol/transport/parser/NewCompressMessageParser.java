@@ -22,15 +22,6 @@ public class NewCompressMessageParser extends SshMessageParser<NewCompressMessag
         parseProtocolMessageContents(message);
     }
 
-    /*    public NewCompressMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    protected NewCompressMessage createMessage() {
-        return new NewCompressMessage();
-    }*/
-
     @Override
     protected void parseMessageSpecificContents(NewCompressMessage message) {}
 }

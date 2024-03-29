@@ -21,33 +21,9 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
         super(context);
     }
 
-    /*public DisconnectMessageHandler(SshContext context, DisconnectMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DisconnectMessage message) {
         LOGGER.info("Received DisconnectMessage");
         sshContext.setDisconnectMessageReceived(true);
     }
-
-    /*@Override
-    public DisconnectMessageParser getParser(byte[] array) {
-        return new DisconnectMessageParser(array);
-    }
-
-    @Override
-    public DisconnectMessageParser getParser(byte[] array, int startPosition) {
-        return new DisconnectMessageParser(array, startPosition);
-    }
-
-    @Override
-    public DisconnectMessagePreparator getPreparator() {
-        return new DisconnectMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public DisconnectMessageSerializer getSerializer() {
-        return new DisconnectMessageSerializer(message);
-    }*/
 }

@@ -24,51 +24,9 @@ import org.apache.logging.log4j.Logger;
 
 public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicKeyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
-    private int agreementSize;
-    private int encapsulationSize;
 
     public ServerPublicKeyMessageParser(SshContext context, InputStream stream) {
         super(stream);
-
-        /*        LOGGER.info(
-                "Negotiated Hybrid Key Exchange: "
-                        + context.getChooser().getKeyExchangeAlgorithm());
-        switch (context.getChooser().getKeyExchangeAlgorithm()) {
-            default:
-                LOGGER.warn(
-                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
-                // Fallthrough to next case statement intended
-            case SNTRUP761_X25519:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE;
-                break;
-            case CURVE25519_FRODOKEM1344:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE;
-                break;
-            case SNTRUP4591761_X25519:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE;
-                break;
-            case NISTP521_FIRESABER:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.FIRESABER_CIPHERTEXT_SIZE;
-                break;
-            case NISTP521_KYBER1024:
-                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
-                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
-                this.encapsulationSize = CryptoConstants.KYBER1024_CIPHERTEXT_SIZE;
-                break;
-        }*/
-
-        /*        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;*/
     }
 
     private void parseHostKeyBytes(ServerPublicKeyMessage message) {
@@ -91,12 +49,6 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
                 "Added Public Host Modulus with value {}",
                 ArrayConverter.bytesToHexString(
                         message.getHostKey().getPublicKey().getModulus().toByteArray()));
-        /*        message.setHostKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key byte length" + message.getHostKeyByteLenght().getValue());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyByteLenght().getValue()));
-        LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));*/
     }
 
     private void parseServerKeyBytes(ServerPublicKeyMessage message) {
@@ -119,12 +71,6 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
                 "Added Public Server Modulus with value {}",
                 ArrayConverter.bytesToHexString(
                         message.getServerKey().getPublicKey().getModulus().toByteArray()));
-        /*        message.setServerKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Server key byte length" + message.getServerKeyByteLength().getValue());
-        message.setServerKeyBytes(parseByteArrayField(message.getServerKeyByteLength().getValue()));
-        LOGGER.debug(
-                "Server key bytes: "
-                        + ArrayConverter.bytesToHexString(message.getServerKeyBytes().getValue()));*/
     }
 
     private void parseAntiSpoofingCookie(ServerPublicKeyMessage message) {
@@ -190,41 +136,6 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
         message.setSupportedAuthenticationMethods(supportedAuthenticationMethods);
     }
 
-    private void parseCRC(ServerPublicKeyMessage message) {
-        byte[] CRC = parseByteArrayField(4);
-        LOGGER.debug("CRC: {}", CRC);
-    }
-
-    /*    private void parseHybridKey(ServerPublicKeyMessage message) {
-        int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Total Length: " + length);
-
-        switch (combiner) {
-            case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
-                message.setCiphertextLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
-                break;
-            case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                message.setCiphertextLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
-                break;
-            default:
-                LOGGER.warn("combiner not supported. Can not update message");
-                break;
-        }
-    }*/
-
-    /*    private void parseSignature(ServerPublicKeyMessage message) {
-        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature());
-    }*/
-
     @Override
     protected void parseMessageSpecificContents(ServerPublicKeyMessage message) {
         parseAntiSpoofingCookie(message);
@@ -233,18 +144,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
         parseProtocolFlags(message);
         parseCipherMask(message);
         parseAuthMask(message);
-        // parseCRC(message);
-
-        // parseHybridKey(message);
-        // parseSignature(message);
     }
-
-    /*
-        @Override
-        protected HybridKeyExchangeReplyMessage createMessage() {
-            return new HybridKeyExchangeReplyMessage();
-        }
-    */
 
     @Override
     public void parse(ServerPublicKeyMessage message) {

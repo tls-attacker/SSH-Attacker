@@ -22,15 +22,6 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public DebugMessageParser(byte[] array) {
-            super(array);
-        }
-        public DebugMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public DebugMessageParser(InputStream stream) {
         super(stream);
     }

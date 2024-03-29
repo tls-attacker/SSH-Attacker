@@ -20,15 +20,6 @@ public class ChannelRequestSubsystemMessageParser
         extends ChannelRequestMessageParser<ChannelRequestSubsystemMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestSubsystemMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestSubsystemMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestSubsystemMessageParser(InputStream stream) {
         super(stream);
     }
@@ -37,13 +28,6 @@ public class ChannelRequestSubsystemMessageParser
     public void parse(ChannelRequestSubsystemMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestSubsystemMessage createMessage() {
-            return new ChannelRequestSubsystemMessage();
-        }
-    */
 
     public void parseSubsystemName(ChannelRequestSubsystemMessage message) {
         message.setSubsystemNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

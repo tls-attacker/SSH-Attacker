@@ -12,16 +12,6 @@ import java.io.InputStream;
 
 public class ChannelSuccessMessageParser extends ChannelMessageParser<ChannelSuccessMessage> {
 
-    /*
-        public ChannelSuccessMessageParser(byte[] array) {
-            super(array);
-        }
-
-        public ChannelSuccessMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelSuccessMessageParser(InputStream stream) {
         super(stream);
     }
@@ -30,9 +20,4 @@ public class ChannelSuccessMessageParser extends ChannelMessageParser<ChannelSuc
     public void parse(ChannelSuccessMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public ChannelSuccessMessage createMessage() {
-        return new ChannelSuccessMessage();
-    }*/
 }

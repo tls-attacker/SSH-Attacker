@@ -17,16 +17,6 @@ public class ChannelOpenUnknownMessageParser
         extends ChannelOpenMessageParser<ChannelOpenUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelOpenUnknownMessageParser(byte[] array) {
-            super(array);
-        }
-
-        public ChannelOpenUnknownMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelOpenUnknownMessageParser(InputStream stream) {
         super(stream);
     }
@@ -36,11 +26,6 @@ public class ChannelOpenUnknownMessageParser
         parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
-
-    /*    @Override
-    public ChannelOpenUnknownMessage createMessage() {
-        return new ChannelOpenUnknownMessage();
-    }*/
 
     public void parseTypeSpecificData(ChannelOpenUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));

@@ -19,11 +19,6 @@ public class DhGexKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    /*public DhGexKeyExchangeReplyMessageHandler(
-            SshContext context, DhGexKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DhGexKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
@@ -45,24 +40,4 @@ public class DhGexKeyExchangeReplyMessageHandler
                 .getExchangeHashInputHolder()
                 .setDhGexServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
-
-    /*@Override
-    public DhGexKeyExchangeReplyMessageParser getParser(byte[] array) {
-        return new DhGexKeyExchangeReplyMessageParser(array);
-    }
-
-    @Override
-    public DhGexKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
-        return new DhGexKeyExchangeReplyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public DhGexKeyExchangeReplyMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public DhGexKeyExchangeReplyMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeReplyMessageSerializer(message);
-    }*/
 }

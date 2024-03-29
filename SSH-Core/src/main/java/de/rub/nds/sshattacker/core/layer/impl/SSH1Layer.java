@@ -133,7 +133,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
 
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Got a Timeout", ex);
         }
         return getLayerResult();
     }
@@ -305,10 +305,10 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
             currentInputStream = new LayerLayerInputStream(this);
             currentInputStream.extendStream(dataStream.readAllBytes());
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Got a timeout while waiting for more data");
             throw ex;
         } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more dtls fragments", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more fragments", ex);
             throw ex;
         }
     }

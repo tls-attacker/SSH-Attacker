@@ -19,25 +19,10 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public IgnoreMessageParser(byte[] array) {
-            super(array);
-        }
-        public IgnoreMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public IgnoreMessageParser(InputStream stream) {
         super(stream);
     }
 
-    /*   @Override
-        public IgnoreMessage createMessage() {
-            return new IgnoreMessage();
-        }
-    */
     private void parseData(IgnoreMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());

@@ -18,15 +18,6 @@ public class ChannelRequestXonXoffMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestXonXoffMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestXonXoffMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestXonXoffMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class ChannelRequestXonXoffMessageParser
     public void parse(ChannelRequestXonXoffMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestXonXoffMessage createMessage() {
-            return new ChannelRequestXonXoffMessage();
-        }
-    */
 
     private void parseClientFlowControl(ChannelRequestXonXoffMessage message) {
         message.setClientFlowControl(parseByteField(1));

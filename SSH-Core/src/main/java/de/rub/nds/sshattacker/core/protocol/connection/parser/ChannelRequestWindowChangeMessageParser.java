@@ -18,15 +18,6 @@ public class ChannelRequestWindowChangeMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestWindowChangeMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestWindowChangeMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestWindowChangeMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class ChannelRequestWindowChangeMessageParser
     public void parse(ChannelRequestWindowChangeMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestWindowChangeMessage createMessage() {
-            return new ChannelRequestWindowChangeMessage();
-        }
-    */
 
     public void parseWidthColumns(ChannelRequestWindowChangeMessage message) {
         message.setWidthColumns(parseIntField(DataFormatConstants.UINT32_SIZE));

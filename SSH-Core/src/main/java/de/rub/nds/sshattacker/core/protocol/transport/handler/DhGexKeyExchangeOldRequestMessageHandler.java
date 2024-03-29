@@ -18,11 +18,6 @@ public class DhGexKeyExchangeOldRequestMessageHandler
         super(context);
     }
 
-    /*public DhGexKeyExchangeOldRequestMessageHandler(
-            SshContext context, DhGexKeyExchangeOldRequestMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(DhGexKeyExchangeOldRequestMessage message) {
         updateContextWithPreferredGroupSize(message);
@@ -35,25 +30,4 @@ public class DhGexKeyExchangeOldRequestMessageHandler
                 .getExchangeHashInputHolder()
                 .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
     }
-
-    /*@Override
-    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(byte[] array) {
-        return new DhGexKeyExchangeOldRequestMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(
-            byte[] array, int startPosition) {
-        return new DhGexKeyExchangeOldRequestMessageParser(array, startPosition);
-    }
-
-    @Override
-    public DhGexKeyExchangeOldRequestMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeOldRequestMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public DhGexKeyExchangeOldRequestMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeOldRequestMessageSerializer(message);
-    }*/
 }

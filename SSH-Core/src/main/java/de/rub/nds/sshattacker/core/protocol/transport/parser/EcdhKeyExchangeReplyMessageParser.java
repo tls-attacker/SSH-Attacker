@@ -21,24 +21,10 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public EcdhKeyExchangeReplyMessageParser(byte[] array) {
-            super(array);
-        }
-        public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public EcdhKeyExchangeReplyMessageParser(InputStream stream) {
         super(stream);
     }
 
-    /*   @Override
-        public EcdhKeyExchangeReplyMessage createMessage() {
-            return new EcdhKeyExchangeReplyMessage();
-        }
-    */
     private void parseHostKeyBytes(EcdhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());

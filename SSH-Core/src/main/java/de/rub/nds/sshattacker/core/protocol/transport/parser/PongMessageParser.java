@@ -28,17 +28,6 @@ public class PongMessageParser extends SshMessageParser<PongMessage> {
         parseProtocolMessageContents(message);
     }
 
-    /*    public PongMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
-    /*
-        @Override
-        protected PongMessage createMessage() {
-            return new PongMessage();
-        }
-    */
-
     @Override
     protected void parseMessageSpecificContents(PongMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

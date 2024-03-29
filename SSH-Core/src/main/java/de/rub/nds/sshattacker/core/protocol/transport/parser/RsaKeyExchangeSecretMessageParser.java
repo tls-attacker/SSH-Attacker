@@ -18,16 +18,6 @@ public class RsaKeyExchangeSecretMessageParser
         extends SshMessageParser<RsaKeyExchangeSecretMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    /*
-
-        public RsaKeyExchangeSecretMessageParser(byte[] array) {
-            super(array);
-        }
-
-        public RsaKeyExchangeSecretMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public RsaKeyExchangeSecretMessageParser(InputStream stream) {
         super(stream);
@@ -37,11 +27,6 @@ public class RsaKeyExchangeSecretMessageParser
     public void parse(RsaKeyExchangeSecretMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public RsaKeyExchangeSecretMessage createMessage() {
-        return new RsaKeyExchangeSecretMessage();
-    }*/
 
     private void parseEncryptedSecret(RsaKeyExchangeSecretMessage message) {
         message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));

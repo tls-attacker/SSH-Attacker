@@ -12,7 +12,6 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -264,15 +263,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         receivedPackets = packets;
 
-        LOGGER.info("Containt {} packets!", packets.size());
-        if (!packets.isEmpty()) {
-            for (AbstractPacket packet : packets) {
-                if (packet instanceof BinaryPacket) {
-                    LOGGER.info("Padding of packet is {}", ((BinaryPacket) packet).getPadding());
-                }
-            }
-        }
-
         /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =
                 receiveMessageHelper.receiveMessages(context, expectedMessages);
@@ -294,7 +284,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
         sb.append("\tExpected:");
-        if ((expectedMessages != null)) {
+        if (expectedMessages != null) {
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -303,7 +293,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
+        if (messages != null && !messages.isEmpty()) {
             for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -318,7 +308,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
+        if (expectedMessages != null && !expectedMessages.isEmpty()) {
             sb.append(" (");
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());

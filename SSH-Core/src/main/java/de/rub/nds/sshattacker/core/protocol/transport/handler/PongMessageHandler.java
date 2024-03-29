@@ -21,34 +21,10 @@ public class PongMessageHandler extends SshMessageHandler<PongMessage> {
         super(context);
     }
 
-    /*    public PongMessageHandler(SshContext context, PongMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(PongMessage message) {
         LOGGER.debug(
                 "PongMessage received from remote, responded data length: {}",
                 message.getDataLength().getValue());
     }
-
-    /*    @Override
-    public PongMessageParser getParser(byte[] array) {
-        return new PongMessageParser(array);
-    }
-
-    @Override
-    public PongMessageParser getParser(byte[] array, int startPosition) {
-        return new PongMessageParser(array, startPosition);
-    }
-
-    @Override
-    public PongMessagePreparator getPreparator() {
-        return new PongMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public PongMessageSerializer getSerializer() {
-        return new PongMessageSerializer(message);
-    }*/
 }

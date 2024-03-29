@@ -18,15 +18,6 @@ public class ChannelRequestExecMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestExecMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestExecMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestExecMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class ChannelRequestExecMessageParser
     public void parse(ChannelRequestExecMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestExecMessage createMessage() {
-            return new ChannelRequestExecMessage();
-        }
-    */
 
     public void parseCommand(ChannelRequestExecMessage message) {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

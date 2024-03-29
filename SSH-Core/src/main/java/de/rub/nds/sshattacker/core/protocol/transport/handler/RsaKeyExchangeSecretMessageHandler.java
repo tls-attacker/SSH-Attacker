@@ -21,11 +21,6 @@ public class RsaKeyExchangeSecretMessageHandler
         super(context);
     }
 
-    /*public RsaKeyExchangeSecretMessageHandler(
-            SshContext context, RsaKeyExchangeSecretMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(RsaKeyExchangeSecretMessage message) {
         decryptSharedSecret(message);
@@ -55,25 +50,4 @@ public class RsaKeyExchangeSecretMessageHandler
                     "Unable to set shared secret in exchange hash, key exchange is still ongoing");
         }
     }
-
-    /*@Override
-    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array) {
-        return new RsaKeyExchangeSecretMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(
-            byte[] array, int startPosition) {
-        return new RsaKeyExchangeSecretMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<RsaKeyExchangeSecretMessage> getPreparator() {
-        return new RsaKeyExchangeSecretMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<RsaKeyExchangeSecretMessage> getSerializer() {
-        return new RsaKeyExchangeSecretMessageSerializer(message);
-    }*/
 }

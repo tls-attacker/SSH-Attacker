@@ -25,10 +25,6 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         super(context);
     }
 
-    /*public UserAuthHostbasedMessageHandler(SshContext context, UserAuthHostbasedMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthHostbasedMessage message) {
         checkSignature(message);

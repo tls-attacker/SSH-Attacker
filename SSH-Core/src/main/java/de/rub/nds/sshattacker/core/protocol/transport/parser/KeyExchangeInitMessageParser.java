@@ -22,27 +22,10 @@ import org.apache.logging.log4j.Logger;
 public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    /*
-
-        public KeyExchangeInitMessageParser(byte[] array) {
-            super(array);
-        }
-        public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
 
     public KeyExchangeInitMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public KeyExchangeInitMessage createMessage() {
-            return new KeyExchangeInitMessage();
-        }
-    */
 
     private void parseCookie(KeyExchangeInitMessage message) {
         message.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));

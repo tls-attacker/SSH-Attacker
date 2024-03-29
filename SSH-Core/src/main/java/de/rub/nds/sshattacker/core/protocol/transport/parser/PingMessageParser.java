@@ -28,17 +28,6 @@ public class PingMessageParser extends SshMessageParser<PingMessage> {
         parseProtocolMessageContents(message);
     }
 
-    /*    public PingMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
-    /*
-        @Override
-        protected PingMessage createMessage() {
-            return new PingMessage();
-        }
-    */
-
     @Override
     protected void parseMessageSpecificContents(PingMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

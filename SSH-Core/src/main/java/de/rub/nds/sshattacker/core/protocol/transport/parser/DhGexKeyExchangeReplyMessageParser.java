@@ -19,15 +19,6 @@ public class DhGexKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public DhGexKeyExchangeReplyMessageParser(byte[] array) {
-            super(array);
-        }
-        public DhGexKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public DhGexKeyExchangeReplyMessageParser(InputStream stream) {
         super(stream);
     }
@@ -36,11 +27,6 @@ public class DhGexKeyExchangeReplyMessageParser
     public void parse(DhGexKeyExchangeReplyMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public DhGexKeyExchangeReplyMessage createMessage() {
-        return new DhGexKeyExchangeReplyMessage();
-    }*/
 
     private void parseHostKeyBytes(DhGexKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));

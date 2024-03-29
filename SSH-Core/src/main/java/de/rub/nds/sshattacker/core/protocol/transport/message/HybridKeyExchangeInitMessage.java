@@ -119,16 +119,6 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
         return new HybridKeyExchangeInitMessageHandler(context);
     }
 
-    /*@Override
-    public HybridKeyExchangeInitMessageParser getParser(SshContext context, InputStream stream) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageParser(
-                array,
-                kex.getCombiner(),
-                kex.getPkAgreementLength(),
-                kex.getPkEncapsulationLength());
-    }*/
-
     @Override
     public HybridKeyExchangeInitMessageParser getParser(SshContext context, InputStream stream) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();

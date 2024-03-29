@@ -26,16 +26,6 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
         parseExtensionData(pingExtension);
     }
 
-    /*
-        public PingExtensionParser(byte[] array) {
-            super(array);
-        }
-
-        public PingExtensionParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     @Override
     protected PingExtension createExtension() {
         return new PingExtension();

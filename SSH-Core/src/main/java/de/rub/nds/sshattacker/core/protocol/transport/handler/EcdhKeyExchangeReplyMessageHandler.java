@@ -19,11 +19,6 @@ public class EcdhKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    /*public EcdhKeyExchangeReplyMessageHandler(
-            SshContext context, EcdhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(EcdhKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
@@ -45,24 +40,4 @@ public class EcdhKeyExchangeReplyMessageHandler
                 .getExchangeHashInputHolder()
                 .setEcdhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
-
-    /*@Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array) {
-        return new EcdhKeyExchangeReplyMessageParser(array);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
-        return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeReplyMessageSerializer(message);
-    }*/
 }

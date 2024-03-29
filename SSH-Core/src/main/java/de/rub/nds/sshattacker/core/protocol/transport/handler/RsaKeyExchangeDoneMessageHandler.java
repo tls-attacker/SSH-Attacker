@@ -18,10 +18,6 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         super(context);
     }
 
-    /*public RsaKeyExchangeDoneMessageHandler(SshContext context, RsaKeyExchangeDoneMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(RsaKeyExchangeDoneMessage message) {
         KeyExchangeUtil.computeExchangeHash(sshContext);
@@ -29,24 +25,4 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         KeyExchangeUtil.setSessionId(sshContext);
         KeyExchangeUtil.generateKeySet(sshContext);
     }
-
-    /*@Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array) {
-        return new RsaKeyExchangeDoneMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array, int startPosition) {
-        return new RsaKeyExchangeDoneMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<RsaKeyExchangeDoneMessage> getPreparator() {
-        return new RsaKeyExchangeDoneMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<RsaKeyExchangeDoneMessage> getSerializer() {
-        return new RsaKeyExchangeDoneMessageSerializer(message);
-    }*/
 }

@@ -60,8 +60,6 @@ public class ServerSigAlgsExtensionParserTest {
             String expectedValue) {
         ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
         extension.getParser(null, new ByteArrayInputStream(providedBytes)).parse(extension);
-        /*        ServerSigAlgsExtensionParser parser = new ServerSigAlgsExtensionParser(providedBytes);
-        ServerSigAlgsExtension extension = parser.parse();*/
 
         assertEquals(expectedNameLength, extension.getNameLength().getValue().intValue());
         assertEquals(expectedName, extension.getName().getValue());

@@ -19,31 +19,6 @@ public class ChannelRequestXonXoffMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestXonXoffMessageHandler(
-            SshContext context, ChannelRequestXonXoffMessage message) {
-        super(context, message);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array) {
-        return new ChannelRequestXonXoffMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestXonXoffMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessagePreparator getPreparator() {
-        return new ChannelRequestXonXoffMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessageSerializer getSerializer() {
-        return new ChannelRequestXonXoffMessageSerializer(message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestXonXoffMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {

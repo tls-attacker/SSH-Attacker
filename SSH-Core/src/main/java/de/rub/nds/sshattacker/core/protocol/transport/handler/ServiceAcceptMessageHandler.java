@@ -17,32 +17,8 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
         super(context);
     }
 
-    /*public ServiceAcceptMessageHandler(SshContext context, ServiceAcceptMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ServiceAcceptMessage message) {
         // TODO: Handle ServiceAcceptMessage
     }
-
-    /*@Override
-    public ServiceAcceptMessageParser getParser(byte[] array) {
-        return new ServiceAcceptMessageParser(array);
-    }
-
-    @Override
-    public ServiceAcceptMessageParser getParser(byte[] array, int startPosition) {
-        return new ServiceAcceptMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ServiceAcceptMessagePreparator getPreparator() {
-        return new ServiceAcceptMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ServiceAcceptMessageSerializer getSerializer() {
-        return new ServiceAcceptMessageSerializer(message);
-    }*/
 }

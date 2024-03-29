@@ -22,11 +22,6 @@ public class EcdhKeyExchangeInitMessageHandler
         super(context);
     }
 
-    /*public EcdhKeyExchangeInitMessageHandler(
-            SshContext context, EcdhKeyExchangeInitMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(EcdhKeyExchangeInitMessage message) {
         sshContext
@@ -37,24 +32,4 @@ public class EcdhKeyExchangeInitMessageHandler
                 .getExchangeHashInputHolder()
                 .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
-
-    /*@Override
-    public EcdhKeyExchangeInitMessageParser getParser(byte[] array) {
-        return new EcdhKeyExchangeInitMessageParser(array);
-    }
-
-    @Override
-    public EcdhKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
-        return new EcdhKeyExchangeInitMessageParser(array, startPosition);
-    }
-
-    @Override
-    public EcdhKeyExchangeInitMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public EcdhKeyExchangeInitMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeInitMessageSerializer(message);
-    }*/
 }

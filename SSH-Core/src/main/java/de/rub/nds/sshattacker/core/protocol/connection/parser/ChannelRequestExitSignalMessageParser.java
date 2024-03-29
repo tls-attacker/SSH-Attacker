@@ -21,15 +21,6 @@ public class ChannelRequestExitSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelRequestExitSignalMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestExitSignalMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestExitSignalMessageParser(InputStream stream) {
         super(stream);
     }
@@ -38,13 +29,6 @@ public class ChannelRequestExitSignalMessageParser
     public void parse(ChannelRequestExitSignalMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestExitSignalMessage createMessage() {
-            return new ChannelRequestExitSignalMessage();
-        }
-    */
 
     public void parseSignalName(ChannelRequestExitSignalMessage message) {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

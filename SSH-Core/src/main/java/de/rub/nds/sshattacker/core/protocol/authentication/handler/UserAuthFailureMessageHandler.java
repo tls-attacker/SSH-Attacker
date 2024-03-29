@@ -17,10 +17,6 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
         super(context);
     }
 
-    /*public UserAuthFailureMessageHandler(SshContext context, UserAuthFailureMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthFailureMessage message) {
         // TODO: Handle UserAuthFailureMessage

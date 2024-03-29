@@ -18,31 +18,6 @@ public class GlobalRequestNoMoreSessionsMessageHandler
         super(context);
     }
 
-    /*public GlobalRequestNoMoreSessionsMessageHandler(
-            SshContext context, GlobalRequestNoMoreSessionsMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(GlobalRequestNoMoreSessionsMessage message) {}
-
-    /*@Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array) {
-        return new GlobalRequestNoMoreSessionsMessageParser(array);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array, int startPosition) {
-        return new GlobalRequestNoMoreSessionsMessageParser(array, startPosition);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessagePreparator getPreparator() {
-        return new GlobalRequestNoMoreSessionsMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageSerializer getSerializer() {
-        return new GlobalRequestNoMoreSessionsMessageSerializer(message);
-    }*/
 }

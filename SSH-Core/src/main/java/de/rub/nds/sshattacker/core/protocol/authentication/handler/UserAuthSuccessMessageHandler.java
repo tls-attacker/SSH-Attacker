@@ -20,10 +20,6 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         super(context);
     }
 
-    /*public UserAuthSuccessMessageHandler(SshContext context, UserAuthSuccessMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthSuccessMessage message) {
         // Enable delayed compression if negotiated

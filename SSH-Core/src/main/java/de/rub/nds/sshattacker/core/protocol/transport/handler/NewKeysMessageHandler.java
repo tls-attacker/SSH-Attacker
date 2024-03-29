@@ -25,10 +25,6 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         super(context);
     }
 
-    /*public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(NewKeysMessage message) {
         if (sshContext.getConfig().getEnableEncryptionOnNewKeysMessage()) {
@@ -138,24 +134,4 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
             }
         }
     }
-
-    /*@Override
-    public NewKeysMessageParser getParser(byte[] array) {
-        return new NewKeysMessageParser(array);
-    }
-
-    @Override
-    public NewKeysMessageParser getParser(byte[] array, int startPosition) {
-        return new NewKeysMessageParser(array, startPosition);
-    }
-
-    @Override
-    public NewKeysMessagePreparator getPreparator() {
-        return new NewKeysMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public NewKeysMessageSerializer getSerializer() {
-        return new NewKeysMessageSerializer(message);
-    }*/
 }

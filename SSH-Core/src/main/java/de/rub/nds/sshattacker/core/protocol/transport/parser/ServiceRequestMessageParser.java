@@ -21,17 +21,9 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public ServiceRequestMessageParser(byte[] array) {
-        super(array);
-    }*/
-
     public ServiceRequestMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*public ServiceRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
 
     private void parseServiceName(ServiceRequestMessage message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
@@ -42,11 +34,6 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
         LOGGER.debug(
                 "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
-
-    /*    @Override
-    public ServiceRequestMessage createMessage() {
-        return new ServiceRequestMessage();
-    }*/
 
     @Override
     protected void parseMessageSpecificContents(ServiceRequestMessage message) {

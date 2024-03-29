@@ -18,11 +18,6 @@ public class UserAuthInfoRequestMessageHandler
         super(context);
     }
 
-    /*public UserAuthInfoRequestMessageHandler(
-            SshContext context, UserAuthInfoRequestMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthInfoRequestMessage message) {}
 }

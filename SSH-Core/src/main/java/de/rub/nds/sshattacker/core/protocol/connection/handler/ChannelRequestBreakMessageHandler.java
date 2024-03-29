@@ -18,31 +18,6 @@ public class ChannelRequestBreakMessageHandler
         super(context);
     }
 
-    /*public ChannelRequestBreakMessageHandler(
-            SshContext context, ChannelRequestBreakMessage message) {
-        super(context, message);
-    }*/
-
-    /*@Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array) {
-        return new ChannelRequestBreakMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestBreakMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestBreakMessagePreparator getPreparator() {
-        return new ChannelRequestBreakMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestBreakMessageSerializer getSerializer() {
-        return new ChannelRequestBreakMessageSerializer(message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestBreakMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {

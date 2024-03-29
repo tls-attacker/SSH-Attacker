@@ -174,10 +174,6 @@ public abstract class PacketCipher {
 
     protected static class DecryptionParser extends Parser<Object> {
 
-        /*public DecryptionParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }*/
-
         public DecryptionParser(byte[] array) {
             super(new ByteArrayInputStream(array));
         }

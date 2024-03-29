@@ -18,34 +18,8 @@ public class GlobalRequestSuccessMessageHandler
         super(context);
     }
 
-    /*public GlobalRequestSuccessMessageHandler(
-            SshContext context, GlobalRequestSuccessMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(GlobalRequestSuccessMessage message) {
         // TODO: Handle RequestSucessMessage
     }
-
-    /*@Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(byte[] array) {
-        return new GlobalRequestSuccessMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(
-            byte[] array, int startPosition) {
-        return new GlobalRequestSuccessMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<GlobalRequestSuccessMessage> getPreparator() {
-        return new GlobalRequestSuccessMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<GlobalRequestSuccessMessage> getSerializer() {
-        return new GlobalRequestSuccessMessageSerializer(message);
-    }*/
 }

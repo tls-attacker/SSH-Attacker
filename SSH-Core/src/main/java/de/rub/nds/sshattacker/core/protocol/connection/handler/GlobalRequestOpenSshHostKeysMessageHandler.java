@@ -18,32 +18,6 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
         super(context);
     }
 
-    /*public GlobalRequestOpenSshHostKeysMessageHandler(
-            SshContext context, GlobalRequestOpenSshHostKeysMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(GlobalRequestOpenSshHostKeysMessage message) {}
-
-    /*@Override
-    public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(byte[] array) {
-        return new GlobalRequestOpenSshHostKeysMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(
-            byte[] array, int startPosition) {
-        return new GlobalRequestOpenSshHostKeysMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<GlobalRequestOpenSshHostKeysMessage> getPreparator() {
-        return new GlobalRequestOpenSshHostKeysMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<GlobalRequestOpenSshHostKeysMessage> getSerializer() {
-        return new GlobalRequestOpenSshHostKeysMessageSerializer(message);
-    }*/
 }

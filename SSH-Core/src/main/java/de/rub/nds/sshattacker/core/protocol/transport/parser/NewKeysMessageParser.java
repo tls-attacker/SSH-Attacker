@@ -13,31 +13,12 @@ import java.io.InputStream;
 
 public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
 
-    /*
-        public NewKeysMessageParser(byte[] array) {
-            super(array);
-        }
-        public NewKeysMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public NewKeysMessageParser(InputStream stream) {
         super(stream);
     }
 
-    /*
-        @Override
-        public NewKeysMessage createMessage() {
-            return new NewKeysMessage();
-        }
-    */
-
     @Override
-    protected void parseMessageSpecificContents(NewKeysMessage message) {
-        // does nothing, only used to take the one byte out of the stream
-        // parseByteString(1);
-    }
+    protected void parseMessageSpecificContents(NewKeysMessage message) {}
 
     @Override
     public void parse(NewKeysMessage message) {

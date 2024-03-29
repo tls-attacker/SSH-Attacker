@@ -19,13 +19,6 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array) {
-        super(array);
-    }
-    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public GlobalRequestCancelTcpIpForwardMessageParser(InputStream stream) {
         super(stream);
     }
@@ -49,11 +42,6 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
     }
-
-    /*    @Override
-    public GlobalRequestCancelTcpIpForwardMessage createMessage() {
-        return new GlobalRequestCancelTcpIpForwardMessage();
-    }*/
 
     @Override
     protected void parseMessageSpecificContents(GlobalRequestCancelTcpIpForwardMessage message) {

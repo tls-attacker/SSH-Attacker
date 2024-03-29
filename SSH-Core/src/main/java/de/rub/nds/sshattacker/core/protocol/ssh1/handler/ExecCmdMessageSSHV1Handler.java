@@ -21,11 +21,6 @@ public class ExecCmdMessageSSHV1Handler extends SshMessageHandler<ExecCmdMessage
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ExecCmdMessageSSH1 message) {
         LOGGER.warn("Recieved a Command : {}", message.getCommand().getValue());

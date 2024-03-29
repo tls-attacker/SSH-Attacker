@@ -18,11 +18,6 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
         super(context);
     }
 
-    /*public ChannelRequestExecMessageHandler(SshContext context, ChannelRequestExecMessage message) {
-        super(context, message);
-    }
-     */
-
     @Override
     public void adjustContext(ChannelRequestExecMessage message) {
         // TODO: Handle ChannelRequestExecMessage
@@ -30,24 +25,4 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array) {
-        return new ChannelRequestExecMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array, int startPosition) {
-        return new ChannelRequestExecMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestExecMessagePreparator getPreparator() {
-        return new ChannelRequestExecMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestExecMessageSerializer getSerializer() {
-        return new ChannelRequestExecMessageSerializer(message);
-    }*/
 }

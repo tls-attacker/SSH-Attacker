@@ -71,11 +71,6 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
         return new IgnoreMessageParser(stream);
     }
 
-    /*@Override
-    public IgnoreMessageParser getParser(byte[] array, int startPosition) {
-        return new IgnoreMessageParser(array, startPosition);
-    }*/
-
     @Override
     public IgnoreMessagePreparator getPreparator(SshContext context) {
         return new IgnoreMessagePreparator(context.getChooser(), this);

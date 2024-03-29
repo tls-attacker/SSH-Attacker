@@ -13,15 +13,6 @@ import java.io.InputStream;
 public class ChannelRequestAuthAgentMessageParser
         extends ChannelRequestMessageParser<ChannelRequestAuthAgentMessage> {
 
-    /*
-        public ChannelRequestAuthAgentMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelRequestAuthAgentMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelRequestAuthAgentMessageParser(InputStream stream) {
         super(stream);
     }
@@ -30,9 +21,4 @@ public class ChannelRequestAuthAgentMessageParser
     public void parse(ChannelRequestAuthAgentMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public ChannelRequestAuthAgentMessage createMessage() {
-        return new ChannelRequestAuthAgentMessage();
-    }*/
 }

@@ -18,34 +18,10 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
         super(context);
     }
 
-    /*public ChannelRequestPtyMessageHandler(SshContext context, ChannelRequestPtyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelRequestPtyMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
-
-    /*@Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array) {
-        return new ChannelRequestPtyMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestPtyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestPtyMessagePreparator getPreparator() {
-        return new ChannelRequestPtyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestPtyMessageSerializer getSerializer() {
-        return new ChannelRequestPtyMessageSerializer(message);
-    }*/
 }

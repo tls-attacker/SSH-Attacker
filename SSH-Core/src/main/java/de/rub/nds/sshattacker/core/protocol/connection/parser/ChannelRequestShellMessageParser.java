@@ -13,12 +13,6 @@ import java.io.InputStream;
 public class ChannelRequestShellMessageParser
         extends ChannelRequestMessageParser<ChannelRequestShellMessage> {
 
-    /*    public ChannelRequestShellMessageParser(byte[] array) {
-        super(array);
-    }
-    public ChannelRequestShellMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
     public ChannelRequestShellMessageParser(InputStream stream) {
         super(stream);
     }
@@ -27,9 +21,4 @@ public class ChannelRequestShellMessageParser
     public void parse(ChannelRequestShellMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public ChannelRequestShellMessage createMessage() {
-        return new ChannelRequestShellMessage();
-    }*/
 }

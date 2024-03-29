@@ -42,10 +42,6 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     @XmlTransient protected List<ProtocolMessage<?>> messages;
 
     @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
-    /*
-    @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient protected SendMessageHelper sendMessageHelper;*/
 
     @XmlAttribute(name = "onConnection")
     protected String forwardedConnectionAlias = null;

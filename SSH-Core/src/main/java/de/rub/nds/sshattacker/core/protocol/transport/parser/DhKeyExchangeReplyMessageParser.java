@@ -19,25 +19,9 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public DhKeyExchangeReplyMessageParser(byte[] array) {
-            super(array);
-        }
-        public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public DhKeyExchangeReplyMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public DhKeyExchangeReplyMessage createMessage() {
-            return new DhKeyExchangeReplyMessage();
-        }
-    */
 
     private void parseHostKeyBytes(DhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));

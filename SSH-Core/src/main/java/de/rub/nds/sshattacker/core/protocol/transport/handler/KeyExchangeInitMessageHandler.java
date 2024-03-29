@@ -22,10 +22,6 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         super(context);
     }
 
-    /*public KeyExchangeInitMessageHandler(SshContext context, KeyExchangeInitMessage message) {
-        super(context, message);
-    }*/
-
     public void adjustContextAfterMessageSent(KeyExchangeInitMessage message) {
         if (sshContext.isHandleAsClient()) {
             sshContext.setServerCookie(message.getCookie().getValue());
@@ -366,24 +362,4 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                 sshContext.getMacAlgorithmClientToServer(),
                 sshContext.getMacAlgorithmServerToClient());
     }
-
-    /*@Override
-    public KeyExchangeInitMessageParser getParser(byte[] array) {
-        return new KeyExchangeInitMessageParser(array);
-    }
-
-    @Override
-    public KeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
-        return new KeyExchangeInitMessageParser(array, startPosition);
-    }
-
-    @Override
-    public KeyExchangeInitMessagePreparator getPreparator() {
-        return new KeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public KeyExchangeInitMessageSerializer getSerializer() {
-        return new KeyExchangeInitMessageSerializer(message);
-    }*/
 }

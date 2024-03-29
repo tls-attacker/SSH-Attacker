@@ -17,30 +17,6 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
         super(context);
     }
 
-    /*public IgnoreMessageHandler(SshContext context, IgnoreMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(IgnoreMessage message) {}
-
-    /*@Override
-    public IgnoreMessageParser getParser(byte[] array) {
-        return new IgnoreMessageParser(array);
-    }
-
-    @Override
-    public IgnoreMessageParser getParser(byte[] array, int startPosition) {
-        return new IgnoreMessageParser(array, startPosition);
-    }
-
-    @Override
-    public IgnoreMessagePreparator getPreparator() {
-        return new IgnoreMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public IgnoreMessageSerializer getSerializer() {
-        return new IgnoreMessageSerializer(message);
-    }*/
 }

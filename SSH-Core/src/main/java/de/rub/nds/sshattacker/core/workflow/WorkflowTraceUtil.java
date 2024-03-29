@@ -151,28 +151,6 @@ public final class WorkflowTraceUtil {
                 : action2;
     }
 
-    /*
-        public static List<MessageAction> getMessageActionsWithUnreadBytes(
-                @Nonnull WorkflowTrace trace) {
-            List<MessageAction> messageActionsWithUnreadBytes = new LinkedList<>();
-            for (SshAction action : trace.getSshActions()) {
-                if (action instanceof MessageAction
-                        && action instanceof ReceivingAction
-                        && ((MessageAction) action).getLayerStackProcessingResult() != null
-                        && ((MessageAction) action).getLayerStackProcessingResult().hasUnreadBytes()) {
-                    messageActionsWithUnreadBytes.add((MessageAction) action);
-                }
-            }
-            return messageActionsWithUnreadBytes;
-        }
-    */
-    /*
-
-        public static boolean hasUnreadBytes(@Nonnull WorkflowTrace trace) {
-            return !(getMessageActionsWithUnreadBytes(trace).isEmpty());
-        }
-    */
-
     public static int indexOfIdenticalAction(WorkflowTrace trace, SshAction action) {
         if (trace.getSshActions() != null) {
             for (int i = 0; i < trace.getSshActions().size(); i++) {

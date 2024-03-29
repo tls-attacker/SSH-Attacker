@@ -19,23 +19,9 @@ public class DhGexKeyExchangeInitMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public DhGexKeyExchangeInitMessageParser(byte[] array) {
-            super(array);
-        }
-        public DhGexKeyExchangeInitMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public DhGexKeyExchangeInitMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*    @Override
-    protected DhGexKeyExchangeInitMessage createMessage() {
-        return new DhGexKeyExchangeInitMessage();
-    }*/
 
     public void parseEphemeralPublicKey(DhGexKeyExchangeInitMessage message) {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));

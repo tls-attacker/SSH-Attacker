@@ -13,15 +13,6 @@ import java.io.InputStream;
 public class GlobalRequestNoMoreSessionsMessageParser
         extends GlobalRequestMessageParser<GlobalRequestNoMoreSessionsMessage> {
 
-    /*
-        public GlobalRequestNoMoreSessionsMessageParser(byte[] array) {
-            super(array);
-        }
-        public GlobalRequestNoMoreSessionsMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public GlobalRequestNoMoreSessionsMessageParser(InputStream stream) {
         super(stream);
     }
@@ -30,13 +21,6 @@ public class GlobalRequestNoMoreSessionsMessageParser
     public void parse(GlobalRequestNoMoreSessionsMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public GlobalRequestNoMoreSessionsMessage createMessage() {
-            return new GlobalRequestNoMoreSessionsMessage();
-        }
-    */
 
     @Override
     protected void parseMessageSpecificContents(GlobalRequestNoMoreSessionsMessage message) {

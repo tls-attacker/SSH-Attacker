@@ -20,13 +20,6 @@ public class ChannelRequestSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*  public ChannelRequestSignalMessageParser(byte[] array) {
-        super(array);
-    }
-    public ChannelRequestSignalMessageParser(byte[] array, Integer startPosition) {
-        super(array, startPosition);
-    }*/
-
     public ChannelRequestSignalMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +28,6 @@ public class ChannelRequestSignalMessageParser
     public void parse(ChannelRequestSignalMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelRequestSignalMessage createMessage() {
-            return new ChannelRequestSignalMessage();
-        }
-    */
 
     public void parseSignalName(ChannelRequestSignalMessage message) {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

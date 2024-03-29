@@ -20,10 +20,6 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
         super(context);
     }
 
-    /*public NewCompressMessageHandler(SshContext context, NewCompressMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(NewCompressMessage message) {
         // receiving NewCompressMessage when acting as server -> update compression algorithm
@@ -39,26 +35,6 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
                                     .getAlgorithm());
         }
     }
-
-    /*@Override
-    public NewCompressMessageParser getParser(byte[] array) {
-        return new NewCompressMessageParser(array);
-    }
-
-    @Override
-    public NewCompressMessageParser getParser(byte[] array, int startPosition) {
-        return new NewCompressMessageParser(array, startPosition);
-    }
-
-    @Override
-    public NewCompressMessagePreparator getPreparator() {
-        return new NewCompressMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public NewCompressMessageSerializer getSerializer() {
-        return new NewCompressMessageSerializer(message);
-    }*/
 
     @Override
     public void adjustContextAfterMessageSent() {

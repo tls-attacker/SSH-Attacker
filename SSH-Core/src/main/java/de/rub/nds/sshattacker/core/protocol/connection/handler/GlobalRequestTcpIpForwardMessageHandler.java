@@ -18,32 +18,6 @@ public class GlobalRequestTcpIpForwardMessageHandler
         super(context);
     }
 
-    /*public GlobalRequestTcpIpForwardMessageHandler(
-            SshContext context, GlobalRequestTcpIpForwardMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(GlobalRequestTcpIpForwardMessage message) {}
-
-    /*@Override
-    public SshMessageParser<GlobalRequestTcpIpForwardMessage> getParser(byte[] array) {
-        return new GlobalRequestTcpIpForwardMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<GlobalRequestTcpIpForwardMessage> getParser(
-            byte[] array, int startPosition) {
-        return new GlobalRequestTcpIpForwardMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<GlobalRequestTcpIpForwardMessage> getPreparator() {
-        return new GlobalRequestTcpIpForwardMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<GlobalRequestTcpIpForwardMessage> getSerializer() {
-        return new GlobalRequestTcpIpForwardMessageSerializer(message);
-    }*/
 }

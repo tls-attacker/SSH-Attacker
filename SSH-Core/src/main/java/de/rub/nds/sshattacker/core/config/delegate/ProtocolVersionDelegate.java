@@ -48,15 +48,5 @@ public class ProtocolVersionDelegate extends Delegate {
             LOGGER.error("[bro] does not initalize with sshv1 or sshv2");
             throw new RuntimeException();
         }
-
-        /*        if (config.getDefaultClientConnection() == null) {
-                    config.setDefaultClientConnection(new OutboundConnection());
-                }
-                if (config.getDefaultServerConnection() == null) {
-                    config.setDefaultServerConnection(new InboundConnection());
-                }
-                config.getDefaultClientConnection().setTransportHandlerType(th);
-                config.getDefaultServerConnection().setTransportHandlerType(th);
-        */
     }
 }

@@ -21,14 +21,8 @@ public class StdoutDataMessageSSHV1Handler extends SshMessageHandler<StdoutDataM
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(StdoutDataMessageSSH1 message) {
         LOGGER.warn("Recieved Stdout Data: {}", message.getData().getValue());
-        // sshContext.setDisconnectMessageReceived(true);
     }
 }

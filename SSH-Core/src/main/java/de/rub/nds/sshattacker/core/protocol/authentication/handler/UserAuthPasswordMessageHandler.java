@@ -17,10 +17,6 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
         super(context);
     }
 
-    /*public UserAuthPasswordMessageHandler(SshContext context, UserAuthPasswordMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthPasswordMessage message) {
         // TODO: Handle UserAuthPasswordMessage

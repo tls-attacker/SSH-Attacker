@@ -21,14 +21,8 @@ public class StderrDataMessageSSHV1Handler extends SshMessageHandler<StderrDataM
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(StderrDataMessageSSH1 message) {
         LOGGER.warn("Recieved Stderr Data: {}", message.getData().getValue());
-        // sshContext.setDisconnectMessageReceived(true);
     }
 }

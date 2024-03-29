@@ -26,15 +26,6 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
         parseExtensionData(unknownExtension);
     }
 
-    /*
-    public UnknownExtensionParser(byte[] array) {
-        super(array);
-    }
-
-    public UnknownExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     @Override
     protected UnknownExtension createExtension() {
         return new UnknownExtension();

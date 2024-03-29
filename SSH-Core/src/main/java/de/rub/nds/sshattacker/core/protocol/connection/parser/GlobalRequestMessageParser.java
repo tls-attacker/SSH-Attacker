@@ -23,15 +23,6 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public GlobalRequestMessageParser(byte[] array) {
-            super(array);
-        }
-        public GlobalRequestMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public GlobalRequestMessageParser(InputStream stream) {
         super(stream);
     }

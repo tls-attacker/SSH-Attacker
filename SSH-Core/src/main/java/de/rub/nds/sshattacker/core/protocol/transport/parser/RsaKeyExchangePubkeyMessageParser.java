@@ -19,15 +19,6 @@ public class RsaKeyExchangePubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public RsaKeyExchangePubkeyMessageParser(byte[] array) {
-            super(array);
-        }
-        public RsaKeyExchangePubkeyMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public RsaKeyExchangePubkeyMessageParser(InputStream stream) {
         super(stream);
     }
@@ -36,13 +27,6 @@ public class RsaKeyExchangePubkeyMessageParser
     public void parse(RsaKeyExchangePubkeyMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        protected RsaKeyExchangePubkeyMessage createMessage() {
-            return new RsaKeyExchangePubkeyMessage();
-        }
-    */
 
     private void parseHostKeyBytes(RsaKeyExchangePubkeyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));

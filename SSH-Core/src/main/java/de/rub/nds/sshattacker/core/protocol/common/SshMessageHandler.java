@@ -14,10 +14,4 @@ public abstract class SshMessageHandler<T extends SshMessage<T>> extends Protoco
     protected SshMessageHandler(SshContext context) {
         super(context);
     }
-
-    /*public SshMessageHandler(SshContext context, T message) {
-        super(context, message);
-    }
-     */
-
 }

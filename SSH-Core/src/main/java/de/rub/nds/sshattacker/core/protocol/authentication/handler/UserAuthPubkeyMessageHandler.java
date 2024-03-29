@@ -17,10 +17,6 @@ public class UserAuthPubkeyMessageHandler extends SshMessageHandler<UserAuthPubk
         super(context);
     }
 
-    /*public UserAuthPubkeyMessageHandler(SshContext context, UserAuthPubkeyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(UserAuthPubkeyMessage message) {}
 }
