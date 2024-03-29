@@ -15,21 +15,10 @@ import org.apache.logging.log4j.Logger;
 public abstract class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    /*public SshMessageParser(byte[] array) {
-    protected SshMessageParser(byte[] array) {
-        super(array);
-    }
-
-    protected SshMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public SshMessageParser(InputStream stream) {
         super(stream);
     }
 
-    /*@Override*/
     protected final void parseProtocolMessageContents(T message) {
         parseMessageID(message);
         parseMessageSpecificContents(message);

@@ -694,12 +694,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
         inputStream =
                 new HintedInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
-        /*        try {
-            inputStream = getLowerLayer().getDataStream();
-        } catch (IOException e) {
-            LOGGER.warn("The lower layer did not produce a data stream: ", e);
-            return;
-        }*/
+
         ChannelOpenUnknownMessageParser parser = new ChannelOpenUnknownMessageParser(inputStream);
         parser.parse(channelOpenUnknownMessage);
         String channelTypeString = channelOpenUnknownMessage.getChannelType().getValue();
@@ -729,6 +724,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
         temp_stream =
                 new HintedInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
+
         readContainerFromStream(message, context, temp_stream);
     }
 
