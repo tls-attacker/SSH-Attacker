@@ -20,9 +20,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessionKeyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
-    private int agreementSize;
-    private int encapsulationSize;
 
     public ClientSessionKeyMessageParser(SshContext context, InputStream stream) {
         super(stream);

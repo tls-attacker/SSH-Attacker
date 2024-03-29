@@ -13,11 +13,8 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthMessageSSH1;
 import java.io.InputStream;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RsaAuthMessageSSHV1Parser extends SshMessageParser<RsaAuthMessageSSH1> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public RsaAuthMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

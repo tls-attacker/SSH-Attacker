@@ -11,12 +11,9 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.X11RequestForwardMessageSSH1;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class X11RequestForwardMessageSSHV1Parser
         extends SshMessageParser<X11RequestForwardMessageSSH1> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public X11RequestForwardMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

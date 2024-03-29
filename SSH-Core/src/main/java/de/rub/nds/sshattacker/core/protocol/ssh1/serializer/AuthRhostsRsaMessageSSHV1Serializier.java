@@ -11,13 +11,9 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AuthRhostsRsaMessageSSH1;
 import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class AuthRhostsRsaMessageSSHV1Serializier
         extends SshMessageSerializer<AuthRhostsRsaMessageSSH1> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public AuthRhostsRsaMessageSSHV1Serializier(AuthRhostsRsaMessageSSH1 message) {
         super(message);

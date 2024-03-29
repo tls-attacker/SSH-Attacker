@@ -10,12 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.WindowSizeMessageSSH1;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WindowSizeMessageSSHv1Serializier extends SshMessageSerializer<WindowSizeMessageSSH1> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public WindowSizeMessageSSHv1Serializier(WindowSizeMessageSSH1 message) {
         super(message);

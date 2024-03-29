@@ -12,8 +12,6 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.context.TcpContext;
 import de.rub.nds.sshattacker.core.layer.impl.*;
 import de.rub.nds.sshattacker.core.state.Context;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send SSHv2 messages with
@@ -21,7 +19,6 @@ import org.apache.logging.log4j.Logger;
  * TcpLayer. Each layer is assigned a different context.
  */
 public final class LayerStackFactory {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
 

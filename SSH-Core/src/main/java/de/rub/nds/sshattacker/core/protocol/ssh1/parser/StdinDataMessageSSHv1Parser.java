@@ -11,11 +11,8 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.StdinDataMessageSSH1;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class StdinDataMessageSSHv1Parser extends SshMessageParser<StdinDataMessageSSH1> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public StdinDataMessageSSHv1Parser(SshContext context, InputStream stream) {
         super(stream);

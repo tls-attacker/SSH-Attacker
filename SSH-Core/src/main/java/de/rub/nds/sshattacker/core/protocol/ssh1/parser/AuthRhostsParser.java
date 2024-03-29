@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AuthRhostsSSH1;
@@ -22,18 +21,11 @@ public class AuthRhostsParser extends SshMessageParser<AuthRhostsSSH1> {
         super(stream);
     }
 
-    private void parseCRC(AuthRhostsSSH1 message) {
-        byte[] CRC = parseByteArrayField(4);
-        LOGGER.debug("CRC: {}", ArrayConverter.bytesToHexString(CRC));
-    }
-
     private void parseClientSideUsername(AuthRhostsSSH1 message) {
         int lenght = parseIntField(4);
         String clientSideUsername = parseByteString(lenght);
         message.setClientside_username(clientSideUsername);
     }
-
-    private void parseProtocolFlags(AuthRhostsSSH1 message) {}
 
     @Override
     protected void parseMessageSpecificContents(AuthRhostsSSH1 message) {

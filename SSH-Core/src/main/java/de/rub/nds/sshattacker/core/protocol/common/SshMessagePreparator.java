@@ -12,13 +12,9 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class SshMessagePreparator<T extends SshMessage<T>>
         extends ProtocolMessagePreparator<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final ModifiableByte messageId;
 

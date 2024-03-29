@@ -9,15 +9,11 @@ package de.rub.nds.sshattacker.core.layer.data;
 
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T> The Object that should be prepared
  */
 public abstract class Preparator<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Chooser chooser;
     private final T object;

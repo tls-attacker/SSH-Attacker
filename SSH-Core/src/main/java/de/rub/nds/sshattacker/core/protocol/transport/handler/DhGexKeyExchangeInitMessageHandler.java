@@ -10,13 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeInitMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeInitMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeInitMessageHandler(SshContext context) {
         super(context);

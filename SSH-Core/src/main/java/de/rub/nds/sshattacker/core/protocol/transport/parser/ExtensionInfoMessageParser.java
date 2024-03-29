@@ -48,8 +48,6 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
             Extension extension =
                     Extension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
-            AbstractExtension abstractExtension;
-            AbstractExtensionParser<?> extensionParser;
             switch (extension) {
                 case SERVER_SIG_ALGS:
                     ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();

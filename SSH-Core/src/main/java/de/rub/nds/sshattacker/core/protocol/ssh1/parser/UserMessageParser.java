@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.UserMessageSSH1;
@@ -22,11 +21,6 @@ public class UserMessageParser extends SshMessageParser<UserMessageSSH1> {
         super(stream);
     }
 
-    private void parseCRC(UserMessageSSH1 message) {
-        byte[] CRC = parseByteArrayField(4);
-        LOGGER.debug("CRC: {}", ArrayConverter.bytesToHexString(CRC));
-    }
-
     private void parseUserName(UserMessageSSH1 message) {
         LOGGER.debug("parse INT-Filed");
         int lenght = parseIntField(4);
@@ -35,8 +29,6 @@ public class UserMessageParser extends SshMessageParser<UserMessageSSH1> {
         message.setUsername(username);
         LOGGER.debug("Username is {}", username);
     }
-
-    private void parseProtocolFlags(UserMessageSSH1 message) {}
 
     @Override
     protected void parseMessageSpecificContents(UserMessageSSH1 message) {

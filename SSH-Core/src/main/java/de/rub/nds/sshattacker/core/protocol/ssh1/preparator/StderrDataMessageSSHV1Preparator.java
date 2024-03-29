@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.StderrDataMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 public class StderrDataMessageSSHV1Preparator extends SshMessagePreparator<StderrDataMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
 
     public StderrDataMessageSSHV1Preparator(Chooser chooser, StderrDataMessageSSH1 message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_SMSG_STDERR_DATA);

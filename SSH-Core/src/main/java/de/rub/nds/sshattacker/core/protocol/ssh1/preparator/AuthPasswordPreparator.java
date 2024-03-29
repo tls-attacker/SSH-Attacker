@@ -11,12 +11,8 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AuthPasswordSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class AuthPasswordPreparator extends SshMessagePreparator<AuthPasswordSSH1> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public AuthPasswordPreparator(Chooser chooser, AuthPasswordSSH1 message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_CMSG_AUTH_PASSWORD);

@@ -7,10 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.IgnoreMessageSSH1;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -21,11 +19,6 @@ public class IgnoreMessageSSHV1Parser extends SshMessageParser<IgnoreMessageSSH1
 
     public IgnoreMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);
-    }
-
-    private void parseCRC(DisconnectMessageSSH1 message) {
-        byte[] CRC = parseByteArrayField(4);
-        LOGGER.debug("CRC: {}", ArrayConverter.bytesToHexString(CRC));
     }
 
     private void parseIgnoreMessage(IgnoreMessageSSH1 message) {

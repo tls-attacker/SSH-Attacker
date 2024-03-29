@@ -16,12 +16,8 @@ import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class WorkflowTraceUtil {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<AbstractPacket> getAllReceivedPackets(WorkflowTrace trace) {
         return getAllReceivedPackets(trace, AbstractPacket.class);

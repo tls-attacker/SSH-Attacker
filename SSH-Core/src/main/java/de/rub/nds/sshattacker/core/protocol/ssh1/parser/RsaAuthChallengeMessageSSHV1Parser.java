@@ -13,12 +13,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthChallengeMessageSSH1;
 import java.io.InputStream;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RsaAuthChallengeMessageSSHV1Parser
         extends SshMessageParser<RsaAuthChallengeMessageSSH1> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public RsaAuthChallengeMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

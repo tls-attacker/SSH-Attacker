@@ -22,12 +22,8 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.List;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class Chooser {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Context context;
 
