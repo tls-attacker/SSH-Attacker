@@ -17,32 +17,8 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
         super(context);
     }
 
-    /*public ChannelFailureMessageHandler(SshContext context, ChannelFailureMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelFailureMessage message) {
         // TODO: Handle ChannelFailureMessage
     }
-
-    /*@Override
-    public ChannelFailureMessageParser getParser(byte[] array) {
-        return new ChannelFailureMessageParser(array);
-    }
-
-    @Override
-    public ChannelFailureMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelFailureMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelFailureMessagePreparator getPreparator() {
-        return new ChannelFailureMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }*/
 }

@@ -17,32 +17,8 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
         super(context);
     }
 
-    /*public ChannelEofMessageHandler(SshContext context, ChannelEofMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelEofMessage message) {
         // TODO: Handle ChannelEofMessage
     }
-
-    /*@Override
-    public ChannelEofMessageParser getParser(byte[] array) {
-        return new ChannelEofMessageParser(array);
-    }
-
-    @Override
-    public ChannelEofMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelEofMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelEofMessagePreparator getPreparator() {
-        return new ChannelEofMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }*/
 }

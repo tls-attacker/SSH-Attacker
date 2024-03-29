@@ -21,10 +21,6 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         super(context);
     }
 
-    /*public ChannelOpenFailureMessageHandler(SshContext context, ChannelOpenFailureMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelOpenFailureMessage message) {
         if (!sshContext.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
@@ -35,24 +31,4 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         }
         sshContext.getChannels().remove(message.getRecipientChannelId().getValue());
     }
-
-    /*@Override
-    public ChannelOpenFailureMessageParser getParser(byte[] array) {
-        return new ChannelOpenFailureMessageParser(array);
-    }
-
-    @Override
-    public ChannelOpenFailureMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelOpenFailureMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenFailureMessagePreparator getPreparator() {
-        return new ChannelOpenFailureMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelOpenFailureMessageSerializer getSerializer() {
-        return new ChannelOpenFailureMessageSerializer(message);
-    }*/
 }

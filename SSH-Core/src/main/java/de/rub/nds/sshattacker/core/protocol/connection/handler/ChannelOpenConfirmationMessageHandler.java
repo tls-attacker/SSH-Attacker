@@ -23,11 +23,6 @@ public class ChannelOpenConfirmationMessageHandler
         super(context);
     }
 
-    /*public ChannelOpenConfirmationMessageHandler(
-            SshContext context, ChannelOpenConfirmationMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelOpenConfirmationMessage message) {
         Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
@@ -46,24 +41,4 @@ public class ChannelOpenConfirmationMessageHandler
         channel.setRemoteWindowSize(message.getWindowSize());
         channel.setOpen(true);
     }
-
-    /*@Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
-        return new ChannelOpenConfirmationMessageParser(array);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelOpenConfirmationMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessagePreparator getPreparator() {
-        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageSerializer getSerializer() {
-        return new ChannelOpenConfirmationMessageSerializer(message);
-    }*/
 }

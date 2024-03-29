@@ -30,7 +30,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     @Parameter(
             names = "-encrypted_secret",
-            required = false,
             description =
                     "Encrypted secret from the CMSG_SSH_SESSION_KEY "
                             + " message. You can retrieve this message from the Wireshark traffic. Find the"
@@ -39,7 +38,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     @Parameter(
             names = {"-cookie", "-c"},
-            required = false,
             description = "Cookie for SessionID Calculation")
     private String cookie;
 
@@ -47,18 +45,16 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             names = {"-benchmark", "-b"},
             description =
                     "If this value is set the Attack is Benchmarked, all Encrypted-Secrets are randomly generated")
-    private boolean benchmark = false;
+    private boolean benchmark;
 
     @Parameter(
-            names = {"-classic"},
-            required = false,
+            names = "-classic",
             description =
                     "If this value is set the Attack is run in 'classic' mode, so no algorithm_improvements are used")
     private boolean classic = false;
 
     @Parameter(
             names = {"-keyLenght", "-k"},
-            required = false,
             description =
                     "Sets the oracle type for the attack, if real, the connection will be queried, otherwise it will be handeled as mock oracle. In case of the mock oracle, short means 1024 and 768 bit keys, long means 2048 and 1024 bit keys")
     private KeyLenght keyLenght = KeyLenght.REAL;
@@ -89,15 +85,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             description = "Choose if inner padding should be maniulated")
     private boolean outer = false;
 
-    @Parameter(
-            names = {"-timing"},
-            required = false,
-            description = "Run as Timing-Attack")
-    private boolean timing = false;
+    @Parameter(names = "-timing", required = false, description = "Run as Timing-Attack")
+    private boolean timing;
     /** How many rescans should be done */
     @Parameter(
-            names = {"-intervall"},
-            required = false,
+            names = "-intervall",
             description = "define, how often the timing-attack should be tested")
     private int intervall = 1000;
     /** How many rescans should be done */
@@ -144,7 +136,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     }
 
     public void setNumberOfIterations(int mapListDepth) {
-        this.numberOfIterations = mapListDepth;
+        numberOfIterations = mapListDepth;
     }
 
     public boolean isBenchmark() {

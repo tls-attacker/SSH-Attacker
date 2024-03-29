@@ -17,17 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
-
-    /*
-        public ChannelExtendedDataMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public ChannelExtendedDataMessageParser(InputStream stream) {
         super(stream);
     }
@@ -38,13 +27,6 @@ public class ChannelExtendedDataMessageParser
     }
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    /*
-        @Override
-        public ChannelExtendedDataMessage createMessage() {
-            return new ChannelExtendedDataMessage();
-        }
-    */
 
     private void parseDataTypeCode(ChannelExtendedDataMessage message) {
         message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));

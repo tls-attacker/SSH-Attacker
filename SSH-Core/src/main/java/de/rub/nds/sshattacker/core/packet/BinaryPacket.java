@@ -24,8 +24,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BinaryPacket extends AbstractPacket<BinaryPacket>
-        implements DataContainer<BinaryPacket, SshContext> {
+public class BinaryPacket extends AbstractPacket<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -84,21 +84,14 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
         return new ChannelExtendedDataMessageHandler(context);
     }
 
-    /*
-        @Override
-        public ChannelExtendedDataMessageParser getParser(byte[] array) {
-            return new ChannelExtendedDataMessageParser(array);
-        }
-    */
-
     @Override
     public ChannelExtendedDataMessageParser getParser(SshContext context, InputStream stream) {
         return new ChannelExtendedDataMessageParser(stream);
     }
 
     @Override
-    public ChannelExtendedDataMessagePreparator getPreparator(SshContext context) {
-        return new ChannelExtendedDataMessagePreparator(context.getChooser(), this);
+    public ChannelExtendedDataMessagePreparator getPreparator(SshContext sshContext) {
+        return new ChannelExtendedDataMessagePreparator(sshContext.getChooser(), this);
     }
 
     @Override

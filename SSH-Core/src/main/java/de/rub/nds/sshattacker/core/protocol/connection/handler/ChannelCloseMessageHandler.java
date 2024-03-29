@@ -22,10 +22,6 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         super(context);
     }
 
-    /*public ChannelCloseMessageHandler(SshContext context, ChannelCloseMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelCloseMessage message) {
         Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
@@ -48,24 +44,4 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                     message.getRecipientChannelId().getValue());
         }
     }
-
-    /*@Override
-    public ChannelCloseMessageParser getParser(byte[] array) {
-        return new ChannelCloseMessageParser(array);
-    }
-
-    @Override
-    public ChannelCloseMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelCloseMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelCloseMessagePreparator getPreparator() {
-        return new ChannelCloseMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelMessageSerializer<ChannelCloseMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }*/
 }

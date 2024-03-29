@@ -17,33 +17,8 @@ public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMess
         super(context);
     }
 
-    /*public ChannelDataMessageHandler(SshContext context, ChannelDataMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelDataMessage message) {
         // TODO: Handle ChannelDataMessage
     }
-
-    /*@Override
-
-    public ChannelDataMessageParser getParser(byte[] array) {
-        return new ChannelDataMessageParser(array);
-    }
-
-    @Override
-    public ChannelDataMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelDataMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelDataMessagePreparator getPreparator() {
-        return new ChannelDataMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelDataMessageSerializer getSerializer() {
-        return new ChannelDataMessageSerializer(message);
-    } */
 }

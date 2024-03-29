@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +20,6 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
 
     public ExtensionInfoMessageParser(InputStream stream) {
         super(stream);
-        ;
     }
 
     @Override

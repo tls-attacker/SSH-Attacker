@@ -18,33 +18,8 @@ public class ChannelExtendedDataMessageHandler
         super(context);
     }
 
-    /*public ChannelExtendedDataMessageHandler(
-            SshContext context, ChannelExtendedDataMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelExtendedDataMessage message) {
         // TODO: Handle ChannelExtendedDataMessage
     }
-
-    /*@Override
-    public ChannelExtendedDataMessageParser getParser(byte[] array) {
-        return new ChannelExtendedDataMessageParser(array);
-    }
-
-    @Override
-    public ChannelExtendedDataMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelExtendedDataMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelExtendedDataMessagePreparator getPreparator() {
-        return new ChannelExtendedDataMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelExtendedDataMessageSerializer getSerializer() {
-        return new ChannelExtendedDataMessageSerializer(message);
-    }*/
 }

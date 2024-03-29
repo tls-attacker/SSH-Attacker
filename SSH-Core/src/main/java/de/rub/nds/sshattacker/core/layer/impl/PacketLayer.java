@@ -38,7 +38,6 @@ import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -103,13 +102,11 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
     public LayerProcessingResult<AbstractPacket> sendData(byte[] additionalData)
             throws IOException {
 
-        MessageIdConstant type = MessageIdConstant.UNKNOWN;
-
         AbstractPacket packet;
         if (context.getPacketLayerType() == PacketLayerType.BLOB) {
             packet = new BlobPacket();
         } else {
-            if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
+            if (getHigherLayer().getLayerType().getName().equals("SSHV1")) {
                 LOGGER.debug("[bro] Created a Binary SSHv1 Packet");
                 packet = new BinaryPacketSSHv1();
             } else {
@@ -152,7 +149,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
             AbstractPacket packet;
             if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
                 // If we have a SSHv1 connection, parse as sshv1-packet
-                if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
+                if (getHigherLayer().getLayerType().getName().equals("SSHV1")) {
                     parser =
                             new BinaryPacketParserSSHv1(
                                     dataStream,
@@ -168,7 +165,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
                                     context.getReadSequenceNumber());
                     packet = new BinaryPacket();
                 }
-
+            // BLOB packets do not make a difference between sshv1 and sshv2
             } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
                 parser = new BlobPacketParser(dataStream);
                 packet = new BlobPacket();
@@ -258,10 +255,10 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
     protected void decryptPacket(AbstractPacket<?> packet) {
         packet.prepareComputations();
-        getDecryptor().decrypt(packet);
+        decryptor.decrypt(packet);
     }
 
     protected void decompressPacket(AbstractPacket packet) {
-        getDecompressor().decompress(packet);
+        decompressor.decompress(packet);
     }
 }

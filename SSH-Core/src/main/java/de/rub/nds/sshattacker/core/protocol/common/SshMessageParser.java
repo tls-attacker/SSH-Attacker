@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     public SshMessageParser(InputStream stream) {
         super(stream);
     }

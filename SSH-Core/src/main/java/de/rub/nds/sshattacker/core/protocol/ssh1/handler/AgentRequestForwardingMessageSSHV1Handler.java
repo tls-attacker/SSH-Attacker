@@ -22,11 +22,6 @@ public class AgentRequestForwardingMessageSSHV1Handler
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(AgentRequestForwardingMessageSSH1 message) {
         LOGGER.info("Recived a EOF Message");

@@ -22,13 +22,7 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /* public ChannelOpenMessageParser(byte[] array) {
-        super(array);
-    }
-    public ChannelOpenMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-    public ChannelOpenMessageParser(InputStream stream) {
+    protected ChannelOpenMessageParser(InputStream stream) {
         super(stream);
     }
 

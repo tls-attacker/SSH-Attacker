@@ -7,15 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
@@ -31,7 +27,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     // protected final T message = createMessage();
 
-    public ProtocolMessageParser(InputStream stream) {
+    protected ProtocolMessageParser(InputStream stream) {
         super(stream);
     }
 
@@ -48,7 +44,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     parser.parse(message);
                     return message;
                 } else {
-                    final AsciiMessage message = new AsciiMessage();
+                    AsciiMessage message = new AsciiMessage();
                     AsciiMessageParser parser =
                             new AsciiMessageParser(new ByteArrayInputStream(raw));
                     parser.parse(message);
@@ -74,5 +70,4 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
         return null;
     }
-
 }

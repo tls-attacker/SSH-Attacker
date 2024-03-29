@@ -18,21 +18,9 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public AsciiMessageParser(final byte[] array) {
-        super(array);
-    }
-
-    public AsciiMessageParser(final byte[] array, final int startPosition) {
-        super(array, startPosition);
-    }*/
     public AsciiMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*    @Override
-    protected AsciiMessage createMessage() {
-        return new AsciiMessage();
-    }*/
 
     public void parse(AsciiMessage message) {
         LOGGER.debug("Parsing ApplicationMessage");
@@ -41,7 +29,7 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
 
     private void parseText(AsciiMessage message) {
         // parse till CR NL (and remove them)
-        String result = this.parseStringTill(CharConstants.NEWLINE);
+        String result = parseStringTill(CharConstants.NEWLINE);
         if (result.endsWith("\r\n")) {
             message.setEndOfMessageSequence("\r\n");
             result = result.substring(0, result.length() - 2);

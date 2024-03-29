@@ -12,15 +12,6 @@ import java.io.InputStream;
 
 public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMessage> {
 
-    /*
-        public ChannelEofMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelEofMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelEofMessageParser(InputStream stream) {
         super(stream);
     }
@@ -29,9 +20,4 @@ public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMess
     public void parse(ChannelEofMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*    @Override
-    public ChannelEofMessage createMessage() {
-        return new ChannelEofMessage();
-    }*/
 }

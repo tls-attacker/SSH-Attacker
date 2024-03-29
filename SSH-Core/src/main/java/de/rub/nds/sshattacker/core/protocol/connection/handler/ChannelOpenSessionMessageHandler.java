@@ -16,30 +16,6 @@ public class ChannelOpenSessionMessageHandler extends SshMessageHandler<ChannelO
         super(context);
     }
 
-    /*public ChannelOpenSessionMessageHandler(SshContext context, ChannelOpenSessionMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ChannelOpenSessionMessage message) {}
-
-    /*@Override
-    public ChannelOpenSessionMessageParser getParser(byte[] array) {
-        return new ChannelOpenSessionMessageParser(array);
-    }
-
-    @Override
-    public ChannelOpenSessionMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelOpenSessionMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenSessionMessagePreperator getPreparator() {
-        return new ChannelOpenSessionMessagePreperator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelOpenSessionMessageSerializer getSerializer() {
-        return new ChannelOpenSessionMessageSerializer(message);
-    }*/
 }

@@ -21,13 +21,6 @@ public class ChannelOpenFailureMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public ChannelOpenFailureMessageParser(byte[] array) {
-        super(array);
-    }
-    public ChannelOpenFailureMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public ChannelOpenFailureMessageParser(InputStream stream) {
         super(stream);
     }
@@ -36,13 +29,6 @@ public class ChannelOpenFailureMessageParser
     public void parse(ChannelOpenFailureMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelOpenFailureMessage createMessage() {
-            return new ChannelOpenFailureMessage();
-        }
-    */
 
     private void parseReasonCode(ChannelOpenFailureMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));

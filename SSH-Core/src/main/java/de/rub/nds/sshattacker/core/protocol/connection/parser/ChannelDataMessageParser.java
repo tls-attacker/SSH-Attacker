@@ -18,15 +18,6 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public ChannelDataMessageParser(byte[] array) {
-            super(array);
-        }
-        public ChannelDataMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public ChannelDataMessageParser(InputStream stream) {
         super(stream);
     }
@@ -35,13 +26,6 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     public void parse(ChannelDataMessage message) {
         parseProtocolMessageContents(message);
     }
-
-    /*
-        @Override
-        public ChannelDataMessage createMessage() {
-            return new ChannelDataMessage();
-        }
-    */
 
     private void parseData(ChannelDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

@@ -35,8 +35,8 @@ public class Pkcs1Attack {
 
     protected BigInteger bigB;
 
-    protected double averageTimeforRequestInnerOracle = 0;
-    protected double averageTimeforRequestOuterOracle = 0;
+    protected double averageTimeforRequestInnerOracle;
+    protected double averageTimeforRequestOuterOracle;
 
     // Array list of longs
     protected ArrayList<Long> innerTimings = new ArrayList<>();

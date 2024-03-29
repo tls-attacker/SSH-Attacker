@@ -18,14 +18,6 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public ChannelOpenConfirmationMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     @Override
     public void parse(ChannelOpenConfirmationMessage message) {
         parseProtocolMessageContents(message);
@@ -35,11 +27,6 @@ public class ChannelOpenConfirmationMessageParser
         super(stream);
     }
 
-    /*  @Override
-        public ChannelOpenConfirmationMessage createMessage() {
-            return new ChannelOpenConfirmationMessage();
-        }
-    */
     private void parseSenderChannel(ChannelOpenConfirmationMessage message) {
         message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
