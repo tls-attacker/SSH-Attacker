@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,13 +17,24 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingExtensionParser(byte[] array) {
-        super(array);
+    public PingExtensionParser(InputStream stream) {
+        super(stream);
     }
 
-    public PingExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(PingExtension pingExtension) {
+        parseExtensionData(pingExtension);
     }
+
+    /*
+        public PingExtensionParser(byte[] array) {
+            super(array);
+        }
+
+        public PingExtensionParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
     @Override
     protected PingExtension createExtension() {
@@ -30,17 +42,17 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
     }
 
     @Override
-    protected void parseExtensionValue() {
-        parseVersionLength();
-        parseVersion();
+    protected void parseExtensionValue(PingExtension extension) {
+        parseVersionLength(extension);
+        parseVersion(extension);
     }
 
-    private void parseVersionLength() {
+    private void parseVersionLength(PingExtension extension) {
         extension.setVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
     }
 
-    private void parseVersion() {
+    private void parseVersion(PingExtension extension) {
         extension.setVersion(parseByteString(extension.getVersionLength().getValue()));
         LOGGER.debug("Version: {}", extension.getVersion().getValue());
     }

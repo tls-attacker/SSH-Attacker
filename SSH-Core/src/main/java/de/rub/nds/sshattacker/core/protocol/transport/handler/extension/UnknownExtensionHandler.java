@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.UnknownExtensionSerializer;
 
 public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExtension> {
 
@@ -25,27 +22,12 @@ public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExt
     }
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(AbstractExtension<?> extension) {
+        adjustContext((UnknownExtension) extension);
+    }
+
+    @Override
+    public void adjustContext(UnknownExtension extension) {
         // TODO: Handle UnknownExtension
-    }
-
-    @Override
-    public UnknownExtensionParser getParser(byte[] array) {
-        return new UnknownExtensionParser(array);
-    }
-
-    @Override
-    public UnknownExtensionParser getParser(byte[] array, int startPosition) {
-        return new UnknownExtensionParser(array, startPosition);
-    }
-
-    @Override
-    public Preparator<UnknownExtension> getPreparator() {
-        throw new NotImplementedException("UnknownExtensionHandler::getPreparator");
-    }
-
-    @Override
-    public UnknownExtensionSerializer getSerializer() {
-        return new UnknownExtensionSerializer(extension);
     }
 }

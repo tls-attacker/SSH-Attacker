@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,13 +18,22 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerSigAlgsExtensionParser(byte[] array) {
+    public ServerSigAlgsExtensionParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(ServerSigAlgsExtension serverSigAlgsExtension) {
+        parseExtensionData(serverSigAlgsExtension);
+    }
+
+    /*    public ServerSigAlgsExtensionParser(byte[] array) {
         super(array);
     }
 
     public ServerSigAlgsExtensionParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
 
     @Override
     protected ServerSigAlgsExtension createExtension() {
@@ -31,12 +41,12 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
     }
 
     @Override
-    protected void parseExtensionValue() {
-        parseAcceptedPublicKeyAlgorithmsLength();
-        parseAcceptedPublicKeyAlgorithms();
+    protected void parseExtensionValue(ServerSigAlgsExtension extension) {
+        parseAcceptedPublicKeyAlgorithmsLength(extension);
+        parseAcceptedPublicKeyAlgorithms(extension);
     }
 
-    private void parseAcceptedPublicKeyAlgorithmsLength() {
+    private void parseAcceptedPublicKeyAlgorithmsLength(ServerSigAlgsExtension extension) {
         extension.setAcceptedPublicKeyAlgorithmsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -44,7 +54,7 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
                 extension.getAcceptedPublicKeyAlgorithmsLength().getValue());
     }
 
-    private void parseAcceptedPublicKeyAlgorithms() {
+    private void parseAcceptedPublicKeyAlgorithms(ServerSigAlgsExtension extension) {
         extension.setAcceptedPublicKeyAlgorithms(
                 parseByteString(
                         extension.getAcceptedPublicKeyAlgorithmsLength().getValue(),

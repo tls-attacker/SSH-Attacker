@@ -12,6 +12,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PingExtensionHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.PingExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.PingExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.PingExtensionSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class PingExtension extends AbstractExtension<PingExtension> {
@@ -61,5 +65,20 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     @Override
     public PingExtensionHandler getHandler(SshContext context) {
         return new PingExtensionHandler(context, this);
+    }
+
+    @Override
+    public PingExtensionParser getParser(SshContext context, InputStream stream) {
+        return new PingExtensionParser(stream);
+    }
+
+    @Override
+    public PingExtensionPreparator getPreparator(SshContext sshContext) {
+        return new PingExtensionPreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public PingExtensionSerializer getSerializer(SshContext context) {
+        return new PingExtensionSerializer(this);
     }
 }

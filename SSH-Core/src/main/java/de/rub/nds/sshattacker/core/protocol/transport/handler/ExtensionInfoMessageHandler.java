@@ -17,10 +17,6 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
         super(context);
     }
 
-    /*public ExtensionInfoMessageHandler(SshContext context, ExtensionInfoMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ExtensionInfoMessage message) {
         if (sshContext.isHandleAsClient()) {
@@ -29,26 +25,9 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
             sshContext.setClientSupportedExtensions(message.getExtensions());
         }
         message.getExtensions()
-                .forEach(extension -> extension.getHandler(sshContext).adjustContext());
+                .forEach(
+                        extension -> {
+                            extension.getHandler(sshContext).adjustContext(extension);
+                        });
     }
-
-    /*    @Override
-    public ExtensionInfoMessageParser getParser(byte[] array) {
-        return new ExtensionInfoMessageParser(array);
-    }
-
-    @Override
-    public ExtensionInfoMessageParser getParser(byte[] array, int startPosition) {
-        return new ExtensionInfoMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ExtensionInfoMessagePreparator getPreparator() {
-        return new ExtensionInfoMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ExtensionInfoMessageSerializer getSerializer() {
-        return new ExtensionInfoMessageSerializer(message);
-    }*/
 }

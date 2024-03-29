@@ -33,8 +33,7 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
                 .forEach(
                         extension ->
                                 extension
-                                        .getHandler(chooser.getContext().getSshContext())
-                                        .getPreparator()
+                                        .getPreparator(chooser.getContext().getSshContext())
                                         .prepare());
     }
 }

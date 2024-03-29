@@ -9,10 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.ServerSigAlgsExtensionPreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,27 +29,12 @@ public class ServerSigAlgsExtensionHandler
     }
 
     @Override
-    public ServerSigAlgsExtensionParser getParser(byte[] array) {
-        return new ServerSigAlgsExtensionParser(array);
+    public void adjustContext(AbstractExtension<?> extension) {
+        adjustContext((ServerSigAlgsExtension) extension);
     }
 
     @Override
-    public ServerSigAlgsExtensionParser getParser(byte[] array, int startPosition) {
-        return new ServerSigAlgsExtensionParser(array, startPosition);
-    }
-
-    @Override
-    public ServerSigAlgsExtensionPreparator getPreparator() {
-        return new ServerSigAlgsExtensionPreparator(context.getChooser(), extension);
-    }
-
-    @Override
-    public ServerSigAlgsExtensionSerializer getSerializer() {
-        return new ServerSigAlgsExtensionSerializer(extension);
-    }
-
-    @Override
-    public void adjustContext() {
+    public void adjustContext(ServerSigAlgsExtension extension) {
         // receiving "server-sig-algs" extension as a client -> context has to be updated
         if (context.isHandleAsClient()) {
             context.setServerSigAlgsExtensionReceivedFromServer(true);

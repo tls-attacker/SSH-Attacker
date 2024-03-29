@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -57,8 +58,10 @@ public class ServerSigAlgsExtensionParserTest {
             String expectedName,
             int expectedValueLength,
             String expectedValue) {
-        ServerSigAlgsExtensionParser parser = new ServerSigAlgsExtensionParser(providedBytes);
-        ServerSigAlgsExtension extension = parser.parse();
+        ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
+        extension.getParser(null, new ByteArrayInputStream(providedBytes)).parse(extension);
+        /*        ServerSigAlgsExtensionParser parser = new ServerSigAlgsExtensionParser(providedBytes);
+        ServerSigAlgsExtension extension = parser.parse();*/
 
         assertEquals(expectedNameLength, extension.getNameLength().getValue().intValue());
         assertEquals(expectedName, extension.getName().getValue());

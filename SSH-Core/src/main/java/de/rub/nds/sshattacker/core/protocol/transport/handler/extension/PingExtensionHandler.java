@@ -8,10 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.PingExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.PingExtensionPreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.PingExtensionSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,28 +26,13 @@ public class PingExtensionHandler extends AbstractExtensionHandler<PingExtension
     }
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(AbstractExtension<?> extension) {
+        adjustContext((PingExtension) extension);
+    }
+
+    @Override
+    public void adjustContext(PingExtension extension) {
         LOGGER.info(
                 "Remote peer signaled support for ping@openssh.com extension via SSH_MSG_EXT_INFO");
-    }
-
-    @Override
-    public PingExtensionParser getParser(byte[] array) {
-        return new PingExtensionParser(array);
-    }
-
-    @Override
-    public PingExtensionParser getParser(byte[] array, int startPosition) {
-        return new PingExtensionParser(array, startPosition);
-    }
-
-    @Override
-    public PingExtensionPreparator getPreparator() {
-        return new PingExtensionPreparator(context.getChooser(), extension);
-    }
-
-    @Override
-    public PingExtensionSerializer getSerializer() {
-        return new PingExtensionSerializer(extension);
     }
 }

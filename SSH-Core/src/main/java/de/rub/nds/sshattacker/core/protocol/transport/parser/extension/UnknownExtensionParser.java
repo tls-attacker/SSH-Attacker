@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,13 +17,23 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public UnknownExtensionParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(UnknownExtension unknownExtension) {
+        parseExtensionData(unknownExtension);
+    }
+
+    /*
     public UnknownExtensionParser(byte[] array) {
         super(array);
     }
 
     public UnknownExtensionParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
 
     @Override
     protected UnknownExtension createExtension() {
@@ -30,7 +41,7 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
     }
 
     @Override
-    protected void parseExtensionValue() {
+    protected void parseExtensionValue(UnknownExtension unknownExtension) {
         extension.setValueLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
         LOGGER.debug("Extension value: {}", extension.getValue().getValue());

@@ -293,10 +293,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
             preparator.afterPrepare();
         } catch (PreparationException ex) {
             LOGGER.error(
-                    "Could not prepare message "
-                            + dataContainer
-                            + ". Therefore, we skip it: ",
-                    ex);
+                    "Could not prepare message " + dataContainer + ". Therefore, we skip it: ", ex);
             return false;
         }
         return true;
