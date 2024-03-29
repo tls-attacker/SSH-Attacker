@@ -19,10 +19,9 @@ import de.rub.nds.sshattacker.attacks.pkcs1.*;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
-import de.rub.nds.sshattacker.attacks.pkcs1.util.PkcsConverter;
-import de.rub.nds.sshattacker.attacks.response.EqualityError;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.ManipulationType;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.PkcsManipulator;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
@@ -48,6 +47,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,26 +67,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Config sshConfig;
-    private EqualityError resultError;
-
-    private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     private final List<CustomRsaPublicKey> publicKeys = new ArrayList<>();
     private CustomRsaPublicKey serverPublicKey, hostPublicKey;
-
-    // -- Testing key for MOCK-Tests --
-
-    private KeyLenght keyLenght;
-    private OracleType oracleType;
-
     private CustomRsaPrivateKey serverPrivateKey, hostPrivateKey;
-
-    public enum ManipulationType {
-        WRONG_HEADER,
-        WRONG_ZERO_BYTE,
-        NO_ZERO_BYTE,
-        ORIGINAL
-    }
 
     // Host 2048
     CustomRsaPrivateKey hostPrivatKey2048 =
@@ -223,9 +207,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                     new BigInteger(
                             "CC8E8480EB2E26580EA260146575CB10D215F71A46BBB62C98D854154579E372E193102FF359799C4D247A661F32C082EE5C1919B43889214C8310E6291E2B0B16818464BAE5A0374CACA0EB4814756B71C3E1F459AB4B8DE555D338CA30557F",
                             16));
-    // -- Testing key for MOCK-Tests --
-    private final int counterInnerBleichenbacher;
-    private final int counterOuterBleichenbacher;
 
     /**
      * @param bleichenbacherConfig Manger attack config
@@ -247,8 +228,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ParallelExecutor executor) {
         super(bleichenbacherCommandConfig, baseConfig);
         sshConfig = getSshConfig();
-        this.counterInnerBleichenbacher = 0;
-        this.counterOuterBleichenbacher = 0;
     }
 
     /**
@@ -331,27 +310,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return lastMessage.toString();
     }
 
-    private String sendSinglePacket(byte[] msg, byte[] plain) {
-
-        Config sshConfig = getSshConfig();
-        sshConfig.setWorkflowExecutorShouldClose(false);
-        sshConfig.setDoNotEncryptMessages(false);
-        WorkflowTrace trace =
-                BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg, plain);
-
-        GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
-        trace.addSshAction(receiveOracleResultAction);
-
-        State state = new State(sshConfig, trace);
-        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
-        workflowExecutor.executeWorkflow();
-
-        ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
-        LOGGER.warn("Received: {}", lastMessage.toString());
-        System.exit(0);
-        return lastMessage.toString();
-    }
-
     private BigInteger[] RSAKeyPairGenerator(int bitlength) {
         BigInteger p;
         BigInteger q;
@@ -373,105 +331,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         d = e.modInverse(phi);
 
         return new BigInteger[] {e, d, N};
-    }
-
-    /**
-     * Performs wrong padding of the session key.
-     *
-     * @param sessionID the session ID
-     * @param plainSessionKey the plain session key
-     * @return the padded and encrypted result
-     * @throws CryptoException if an error occurs during the process
-     */
-    private byte[] wrongPaddingSessionKey(
-            byte[] sessionID,
-            byte[] plainSessionKey,
-            boolean inner,
-            boolean outer,
-            ManipulationType type)
-            throws CryptoException {
-
-        // XOR Session Key with Session ID
-        byte[] sessionKey = plainSessionKey.clone();
-        int i = 0;
-        for (byte sesseionByte : sessionID) {
-            sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
-        }
-
-        // Choose correct encryptions for inner and outer
-        AbstractCipher innerCipher, outerCipher;
-
-        int innerBitlengh, outerBitlenght;
-
-        if (hostPublicKey.getModulus().bitLength() < serverPublicKey.getModulus().bitLength()) {
-            LOGGER.debug("Host is inner");
-            innerCipher = CipherFactory.getRsaTextbookCipher(hostPublicKey);
-            outerCipher = CipherFactory.getRsaTextbookCipher(serverPublicKey);
-            innerBitlengh = hostPublicKey.getModulus().bitLength();
-            outerBitlenght = serverPublicKey.getModulus().bitLength();
-        } else {
-            LOGGER.debug("Host is outer");
-            innerCipher = CipherFactory.getRsaTextbookCipher(serverPublicKey);
-            outerCipher = CipherFactory.getRsaTextbookCipher(hostPublicKey);
-            innerBitlengh = serverPublicKey.getModulus().bitLength();
-            outerBitlenght = hostPublicKey.getModulus().bitLength();
-        }
-
-        // Do padding and encrpytion according to modulus bit lenghtes
-        byte[] padded = new byte[0];
-        if (inner) {
-            // Do chosen manipulation to inner padding
-            switch (type) {
-                case WRONG_HEADER:
-                    padded =
-                            PkcsConverter.doPkcs1EncodingWithWrongHeader(
-                                    sessionKey, outerBitlenght / 8);
-                    break;
-                case NO_ZERO_BYTE:
-                    padded =
-                            PkcsConverter.doPkcs1EncodingWithOutZeroByte(
-                                    sessionKey, outerBitlenght / 8);
-                    break;
-                case WRONG_ZERO_BYTE:
-                    padded =
-                            PkcsConverter.doPkcs1EncodingWithWrongZeroByte(
-                                    sessionKey, outerBitlenght / 8, 20);
-                    break;
-            }
-        } else {
-            padded = PkcsConverter.doPkcs1Encoding(sessionKey, innerBitlengh / 8);
-        }
-        LOGGER.info("Padded: {}", ArrayConverter.bytesToRawHexString(padded));
-        byte[] encrypted = innerCipher.encrypt(padded);
-
-        byte[] nextPadded = new byte[0];
-        if (outer) {
-            // Do chosen manipulation to outer padding
-            switch (type) {
-                case WRONG_HEADER:
-                    nextPadded =
-                            PkcsConverter.doPkcs1EncodingWithWrongHeader(
-                                    encrypted, outerBitlenght / 8);
-                    break;
-                case NO_ZERO_BYTE:
-                    nextPadded =
-                            PkcsConverter.doPkcs1EncodingWithOutZeroByte(
-                                    encrypted, outerBitlenght / 8);
-                    break;
-                case WRONG_ZERO_BYTE:
-                    nextPadded =
-                            PkcsConverter.doPkcs1EncodingWithWrongZeroByte(
-                                    encrypted, outerBitlenght / 8, 20);
-                    break;
-            }
-        } else {
-            nextPadded = PkcsConverter.doPkcs1Encoding(encrypted, outerBitlenght / 8);
-        }
-        LOGGER.info("Next Padded: {}", ArrayConverter.bytesToRawHexString(nextPadded));
-        byte[] nextEncrypted = outerCipher.encrypt(nextPadded);
-
-        // Return padded and encrypted result
-        return nextEncrypted;
     }
 
     /**
@@ -533,11 +392,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         random.nextBytes(sessionKey);
 
         byte[] encryptedSecret =
-                wrongPaddingSessionKey(
+                PkcsManipulator.wrongPaddingSessionKey(
                         sessionID,
                         sessionKey,
                         config.isInner(),
                         config.isOuter(),
+                        hostPublicKey,
+                        serverPublicKey,
                         ManipulationType.WRONG_ZERO_BYTE);
 
         ClientSessionKeyMessage clientSessionKeyMessage = new ClientSessionKeyMessage();
@@ -635,8 +496,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         boolean randomKeys = false;
 
-        this.oracleType = config.getOracleType();
-        this.keyLenght = config.getKeyLenght();
+        OracleType oracleType = config.getOracleType();
+        KeyLenght keyLenght = config.getKeyLenght();
 
         if (config.isTiming()) {
             doTimingMeasurement(config.getIntervall());
@@ -785,43 +646,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         String attackType = "bardou";
         if (config.isClassic()) attackType = "classic";
-
-        if (config.isBenchmark()) {
-            try {
-
-                JSONObject jo = new JSONObject();
-                jo.put("plaintext", "");
-                jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
-                jo.put("time", 0);
-                jo.put("inner_tries", 0);
-                jo.put("outer_tries", 0);
-                jo.put("trimmed_outer", 0);
-                jo.put("trimmed_inner", 0);
-                jo.put("outer_trimmers", 0);
-                jo.put("inner_trimmers", 0);
-                jo.put("serverkey_lenght", serverPublicKey.getModulus().bitLength());
-                jo.put("hostkey_lenght", hostPublicKey.getModulus().bitLength());
-                jo.put("oracle_type", oracleType.toString());
-                jo.put("attack_type", attackType);
-                jo.put("average_ms_inner_oracle", 0);
-                jo.put("average_ms_outer_oracle", 0);
-
-                String jsonStr = jo.toJSONString();
-
-                File output_File = new File(filename);
-                FileOutputStream outputStream = new FileOutputStream(output_File);
-                byte[] strToBytes = jsonStr.getBytes();
-                outputStream.write(strToBytes);
-
-                outputStream.close();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         Bleichenbacher attacker =
                 new Bleichenbacher(encryptedSecret, oracle, hostPublicKey, serverPublicKey);
+        if (config.isBenchmark()) {
+            saveBenchmarkData(
+                    filename,
+                    attacker,
+                    "".getBytes(StandardCharsets.UTF_8),
+                    encryptedSecret,
+                    0,
+                    oracleType,
+                    attackType);
+        }
 
         long start = System.currentTimeMillis();
         LOGGER.info("Encrypted Secret: {}", ArrayConverter.bytesToHexString(encryptedSecret));
@@ -856,39 +692,57 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
 
         if (config.isBenchmark()) {
-            try {
-                JSONObject jo = new JSONObject();
-                jo.put("plaintext", ArrayConverter.bytesToRawHexString(solutionByteArray));
-                jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
-                jo.put("time", timeElapsed);
-                jo.put("inner_tries", attacker.getCounterInnerBleichenbacher());
-                jo.put("outer_tries", attacker.getCounterOuterBleichenbacher());
-                jo.put("trimmed_outer", attacker.isOuterTrimmed());
-                jo.put("trimmed_inner", attacker.isInnerTrimmed());
-                jo.put("outer_trimmers", attacker.getOuterTrimmers());
-                jo.put("inner_trimmers", attacker.getInnerTrimmers());
-                jo.put("serverkey_lenght", serverPublicKey.getModulus().bitLength());
-                jo.put("hostkey_lenght", hostPublicKey.getModulus().bitLength());
-                jo.put("oracle_type", oracleType.toString());
-                jo.put("attack_type", attackType);
-                jo.put(
-                        "average_ms_inner_oracle",
-                        attacker.getAverageTimeforRequestInnerOracle() / 1000000);
-                jo.put(
-                        "average_ms_outer_oracle",
-                        attacker.getAverageTimeforRequestOuterOracle() / 1000000);
+            saveBenchmarkData(
+                    filename,
+                    attacker,
+                    solutionByteArray,
+                    encryptedSecret,
+                    timeElapsed,
+                    oracleType,
+                    attackType);
+        }
+    }
 
-                String jsonStr = jo.toJSONString();
+    private void saveBenchmarkData(
+            String filename,
+            Bleichenbacher attacker,
+            byte[] solutionByteArray,
+            byte[] encryptedSecret,
+            long timeElapsed,
+            OracleType oracleType,
+            String attackType) {
+        try {
+            JSONObject jo = new JSONObject();
+            jo.put("plaintext", ArrayConverter.bytesToRawHexString(solutionByteArray));
+            jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
+            jo.put("time", timeElapsed);
+            jo.put("inner_tries", attacker.getCounterInnerBleichenbacher());
+            jo.put("outer_tries", attacker.getCounterOuterBleichenbacher());
+            jo.put("trimmed_outer", attacker.isOuterTrimmed());
+            jo.put("trimmed_inner", attacker.isInnerTrimmed());
+            jo.put("outer_trimmers", attacker.getOuterTrimmers());
+            jo.put("inner_trimmers", attacker.getInnerTrimmers());
+            jo.put("serverkey_lenght", serverPublicKey.getModulus().bitLength());
+            jo.put("hostkey_lenght", hostPublicKey.getModulus().bitLength());
+            jo.put("oracle_type", oracleType.toString());
+            jo.put("attack_type", attackType);
+            jo.put(
+                    "average_ms_inner_oracle",
+                    attacker.getAverageTimeforRequestInnerOracle() / 1000000);
+            jo.put(
+                    "average_ms_outer_oracle",
+                    attacker.getAverageTimeforRequestOuterOracle() / 1000000);
 
-                File output_File = new File(filename);
-                FileOutputStream outputStream = new FileOutputStream(output_File);
-                byte[] strToBytes = jsonStr.getBytes();
-                outputStream.write(strToBytes);
+            String jsonStr = jo.toJSONString();
 
-                outputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            File output_File = new File(filename);
+            FileOutputStream outputStream = new FileOutputStream(output_File);
+            byte[] strToBytes = jsonStr.getBytes();
+            outputStream.write(strToBytes);
+
+            outputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

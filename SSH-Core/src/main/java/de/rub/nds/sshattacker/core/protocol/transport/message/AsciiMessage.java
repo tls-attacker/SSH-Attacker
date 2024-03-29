@@ -33,7 +33,7 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     public ModifiableString getText() {
-        return this.text;
+        return text;
     }
 
     public void setText(final ModifiableString text) {
@@ -81,7 +81,7 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 
     @Override
