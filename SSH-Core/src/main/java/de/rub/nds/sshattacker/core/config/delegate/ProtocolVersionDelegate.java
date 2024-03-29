@@ -18,9 +18,12 @@ public class ProtocolVersionDelegate extends Delegate {
     @Parameter(names = "-version", description = "Highest supported protocol version ")
     private ProtocolVersion protocolVersion = null;
 
-    public ProtocolVersionDelegate() {}
+    public ProtocolVersionDelegate() {
+        super();
+    }
 
     public ProtocolVersionDelegate(ProtocolVersion protocolVersion) {
+        super();
         this.protocolVersion = protocolVersion;
     }
 
@@ -39,7 +42,6 @@ public class ProtocolVersionDelegate extends Delegate {
         }
 
         config.setProtocolVersion(protocolVersion);
-        TransportHandlerType th = TransportHandlerType.TCP;
         if (config.getProtocolVersion().isSSHv2()) {
             config.setDefaultLayerConfiguration(LayerConfiguration.SSHV2);
         } else if (config.getProtocolVersion().isSSHv1()) {
