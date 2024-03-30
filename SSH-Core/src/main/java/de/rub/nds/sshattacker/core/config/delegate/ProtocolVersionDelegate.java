@@ -11,7 +11,6 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
 import de.rub.nds.sshattacker.core.layer.constant.LayerConfiguration;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 public class ProtocolVersionDelegate extends Delegate {
 

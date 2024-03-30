@@ -12,6 +12,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.sshattacker.attacks.pkcs1.KeyLenght;
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleType;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.ManipulationType;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
@@ -92,6 +93,10 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             names = "-intervall",
             description = "define, how often the timing-attack should be tested")
     private int intervall = 1000;
+
+    @Parameter(names = "-manipulationType", description = "Highest supported protocol version ")
+    private ManipulationType manipulationType = null;
+
     /** How many rescans should be done */
     private int numberOfIterations = 3;
 
@@ -185,5 +190,9 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public int getIntervall() {
         return intervall;
+    }
+
+    public ManipulationType getManipulationType() {
+        return manipulationType;
     }
 }

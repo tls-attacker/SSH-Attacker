@@ -19,7 +19,6 @@ import de.rub.nds.sshattacker.attacks.pkcs1.*;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
-import de.rub.nds.sshattacker.attacks.pkcs1.util.ManipulationType;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.PkcsManipulator;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
@@ -399,7 +398,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                         config.isOuter(),
                         hostPublicKey,
                         serverPublicKey,
-                        ManipulationType.WRONG_ZERO_BYTE);
+                        config.getManipulationType());
 
         ClientSessionKeyMessage clientSessionKeyMessage = new ClientSessionKeyMessage();
         ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
@@ -627,9 +626,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // Create correct Oracle
         Pkcs1Oracle oracle;
         if (oracleType == OracleType.REAL) {
-            oracle =
-                    new BleichenbacherOracle(
-                            hostPublicKey, serverPublicKey, getSshConfig());
+            oracle = new BleichenbacherOracle(hostPublicKey, serverPublicKey, getSshConfig());
         } else {
             try {
                 oracle =
