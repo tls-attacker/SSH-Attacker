@@ -15,7 +15,14 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.AuthPasswordSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.UserMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.FailureMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -383,16 +390,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
                 if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                        || (this.hasReceiveOption(
+                        || this.hasReceiveOption(
                                         ReceiveOption
                                                 .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)
-                                && (actualMessage instanceof GlobalRequestMessage)
+                                && actualMessage instanceof GlobalRequestMessage
                                 && ((GlobalRequestMessage) actualMessage).getWantReply().getValue()
-                                        == 0)
-                        || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
-                                && (actualMessage instanceof IgnoreMessage))
-                        || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
-                                && (actualMessage instanceof DebugMessage))) {
+                                        == 0
+                        || !this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                                && actualMessage instanceof IgnoreMessage
+                        || !this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
+                                && actualMessage instanceof DebugMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }

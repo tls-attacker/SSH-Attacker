@@ -11,8 +11,8 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
@@ -22,7 +22,7 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 /** Utility class for generating attack workflows for Manger style attacks */
-public class BleichenbacherWorkflowGenerator {
+public final class BleichenbacherWorkflowGenerator {
 
     /**
      * @param sshConfig SSH config to be used to generate the workflow
@@ -88,5 +88,7 @@ public class BleichenbacherWorkflowGenerator {
         return trace;
     }
 
-    private BleichenbacherWorkflowGenerator() {}
+    private BleichenbacherWorkflowGenerator() {
+        super();
+    }
 }

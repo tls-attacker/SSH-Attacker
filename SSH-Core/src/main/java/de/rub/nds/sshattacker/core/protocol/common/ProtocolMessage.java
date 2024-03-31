@@ -56,22 +56,24 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     }
 
     public void setMessageIdConstant(MessageIdConstant MessageIdConstant) {
-        this.messageIdConstant = MessageIdConstant.getId();
+        messageIdConstant = MessageIdConstant.getId();
     }
 
     public void setMessageIdConstant(MessageIdConstantSSH1 MessageIdConstant) {
-        this.messageIdConstant = MessageIdConstant.getId();
+        messageIdConstant = MessageIdConstant.getId();
     }
 
     public void setMessageIdConstant(byte MessageIdConstant) {
-        this.messageIdConstant = MessageIdConstant;
+        messageIdConstant = MessageIdConstant;
     }
 
     /** content type */
     // @XmlTransient protected MessageIdConstant messageIdConstant;
     @XmlTransient protected byte messageIdConstant;
 
-    public ProtocolMessage() {}
+    protected ProtocolMessage() {
+        super();
+    }
 
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {

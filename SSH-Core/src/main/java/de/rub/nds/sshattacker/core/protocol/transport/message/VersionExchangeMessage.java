@@ -17,12 +17,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMess
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private ModifiableString version;
     private ModifiableString comment;
@@ -72,8 +68,8 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     @Override
-    public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context);
+    public VersionExchangeMessageHandler getHandler(SshContext sshContext) {
+        return new VersionExchangeMessageHandler(sshContext);
     }
 
     @Override
@@ -87,12 +83,12 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     @Override
-    public VersionExchangeMessagePreparator getPreparator(SshContext context) {
-        return new VersionExchangeMessagePreparator(context.getChooser(), this);
+    public VersionExchangeMessagePreparator getPreparator(SshContext sshContext) {
+        return new VersionExchangeMessagePreparator(sshContext.getChooser(), this);
     }
 
     @Override
-    public VersionExchangeMessageSerializer getSerializer(SshContext context) {
+    public VersionExchangeMessageSerializer getSerializer(SshContext sshContext) {
         return new VersionExchangeMessageSerializer(this);
     }
 

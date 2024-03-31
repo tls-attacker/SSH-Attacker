@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public enum ProtocolFlag {
 
-    // Ciphermethods from ssh1.2.28
+    // Protocol-Flags from RFC
     SSH_PROTOFLAG_SCREEN_NUMBER(1),
     SSH_PROTOFLAG_HOST_IN_FWD_OPEN(2);
 
@@ -23,7 +23,7 @@ public enum ProtocolFlag {
 
     static {
         Map<Integer, ProtocolFlag> mutableMap = new TreeMap<>();
-        for (ProtocolFlag constant : ProtocolFlag.values()) {
+        for (ProtocolFlag constant : values()) {
             mutableMap.put(constant.id, constant);
         }
         map = Collections.unmodifiableMap(mutableMap);

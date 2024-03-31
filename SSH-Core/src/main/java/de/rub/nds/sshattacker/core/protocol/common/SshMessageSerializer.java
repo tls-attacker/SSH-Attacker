@@ -7,22 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public abstract class SshMessageSerializer<T extends SshMessage<T>>
         extends ProtocolMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public SshMessageSerializer(T message) {
+    protected SshMessageSerializer(T message) {
         super(message);
     }
 
-    // @Override
+    @Override
     protected final void serializeProtocolMessageContents() {
-        LOGGER.debug("[bro] while serializing ssh message");
-        LOGGER.debug("[bro] id: {}", message.getMessageId().getValue());
         appendByte(message.getMessageId().getValue());
         serializeMessageSpecificContents();
     }

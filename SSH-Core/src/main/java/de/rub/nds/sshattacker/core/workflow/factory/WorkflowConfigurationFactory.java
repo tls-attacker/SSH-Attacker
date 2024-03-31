@@ -16,9 +16,9 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.*;
@@ -222,7 +222,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addSSH1KexProtocolInitActions(WorkflowTrace workflow) {
-        if (this.mode == RunningModeType.MITM) {
+        if (mode == RunningModeType.MITM) {
             AliasedConnection inboundConnection = config.getDefaultServerConnection();
             AliasedConnection outboundConnection = config.getDefaultClientConnection();
             workflow.addSshActions(
@@ -263,14 +263,6 @@ public class WorkflowConfigurationFactory {
                             new VersionExchangeMessageSSHV1()),
                     new ChangePacketLayerAction(
                             connection.getAlias(), PacketLayerType.BINARY_PACKET));
-            /*                    SshActionFactory.createMessageAction(
-                    connection, ConnectionEndType.CLIENT, new ServerPublicKeyMessage()),
-            SshActionFactory.createMessageAction(
-                    connection, ConnectionEndType.SERVER, new ServerPublicKeyMessage()),
-            SshActionFactory.createMessageAction(
-                    connection, ConnectionEndType.CLIENT, new ClientSessionKeyMessage()),
-            SshActionFactory.createMessageAction(
-                    connection, ConnectionEndType.SERVER, new ClientSessionKeyMessage()));*/
         }
     }
 

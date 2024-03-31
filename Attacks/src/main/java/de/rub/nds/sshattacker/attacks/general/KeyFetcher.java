@@ -15,8 +15,8 @@ import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
@@ -37,6 +37,10 @@ import org.apache.logging.log4j.Logger;
 public final class KeyFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private KeyFetcher() {
+        super();
+    }
 
     /** Fetches the transient public key from an RSA key-exchange */
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
@@ -89,7 +93,7 @@ public final class KeyFetcher {
 
             List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
-            if (receivedMessages.isEmpty()
+            if (!receivedMessages.isEmpty()
                     && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
                 return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
                         .getTransientPublicKey()
@@ -122,7 +126,7 @@ public final class KeyFetcher {
 
             List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
-            if (receivedMessages.size() > 0
+            if (!receivedMessages.isEmpty()
                     && receivedMessages.get(0) instanceof ServerPublicKeyMessage) {
                 return ((ServerPublicKeyMessage) receivedMessages.get(0))
                         .getServerKey()
@@ -180,7 +184,7 @@ public final class KeyFetcher {
         LOGGER.info(receivedMessages.size());
         LOGGER.info(receivedMessages.get(0).toString());
 
-        if (receivedMessages.size() > 0
+        if (!receivedMessages.isEmpty()
                 && receivedMessages.get(0) instanceof ServerPublicKeyMessage) {
 
             List<CustomRsaPublicKey> rsaPublicKeys = new ArrayList<>();

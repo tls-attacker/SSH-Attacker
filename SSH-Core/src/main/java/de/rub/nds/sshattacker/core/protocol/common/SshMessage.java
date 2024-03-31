@@ -39,7 +39,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     }
 
     @Override
-    public abstract SshMessageHandler<T> getHandler(SshContext context);
+    public abstract SshMessageHandler<T> getHandler(SshContext sshContext);
 
     @Override
     public String toCompactString() {

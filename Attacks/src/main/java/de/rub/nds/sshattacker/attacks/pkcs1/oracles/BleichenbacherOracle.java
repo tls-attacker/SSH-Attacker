@@ -12,9 +12,9 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.FailureMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
@@ -48,6 +48,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
      */
     public BleichenbacherOracle(
             CustomRsaPublicKey hostPublicKey, CustomRsaPublicKey serverPublicKey, Config config) {
+        super();
         this.hostPublicKey = hostPublicKey;
         this.serverPublicKey = serverPublicKey;
         this.blockSize =
@@ -65,6 +66,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             CustomRsaPublicKey hostPublicKey,
             CustomRsaPublicKey serverPublicKey,
             int maxAttempts) {
+        super();
         this.hostPublicKey = hostPublicKey;
         this.serverPublicKey = serverPublicKey;
         this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
@@ -79,7 +81,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
      * @return Conformty (True or False)
      */
     @Override
-    public boolean checkPKCSConformity(final byte[] msg) {
+    public boolean checkPKCSConformity(byte[] msg) {
         return checkPKCSConformity(msg, 0)[0];
     }
 
@@ -90,7 +92,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
      * @return Conformty (True or False)
      */
     @Override
-    public boolean[] checkDoublePKCSConformity(final byte[] msg) {
+    public boolean[] checkDoublePKCSConformity(byte[] msg) {
 
         return checkPKCSConformity(msg, 0);
     }
@@ -102,7 +104,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
      * @param currentAttempt Attempt to check for conformity, use for limiting attempts
      * @return
      */
-    private boolean[] checkPKCSConformity(final byte[] msg, int currentAttempt) {
+    private boolean[] checkPKCSConformity(byte[] msg, int currentAttempt) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         Config sshConfig = config;
@@ -135,7 +137,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             timeElapsedforAverageCalculation = 0;
         }
 
-        boolean conform[] = {false, false};
+        boolean[] conform = {false, false};
         try {
             long start = System.nanoTime();
             workflowExecutor.executeWorkflow();
@@ -171,7 +173,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
         } catch (WorkflowExecutionException e) {
             // If workflow execution failed, retry. This might be because a packet got lost
-            LOGGER.debug("Exception during workflow execution:" + e.getLocalizedMessage(), e);
+            LOGGER.debug("Exception during workflow execution:{}", e.getLocalizedMessage(), e);
             if (currentAttempt < maxAttempts) {
                 return checkPKCSConformity(msg, currentAttempt + 1);
             }

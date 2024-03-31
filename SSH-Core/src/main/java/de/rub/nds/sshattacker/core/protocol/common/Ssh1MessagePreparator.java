@@ -23,7 +23,7 @@ public abstract class Ssh1MessagePreparator<T extends Ssh1Message<T>>
         this.messageId = ModifiableVariableFactory.safelySetValue(null, messageId.getId());
     }
 
-    public Ssh1MessagePreparator(Chooser chooser, T message, MessageIdConstantSSH1 messageId) {
+    protected Ssh1MessagePreparator(Chooser chooser, T message, MessageIdConstantSSH1 messageId) {
         super(chooser, message);
         this.messageId = ModifiableVariableFactory.safelySetValue(null, messageId.getId());
     }

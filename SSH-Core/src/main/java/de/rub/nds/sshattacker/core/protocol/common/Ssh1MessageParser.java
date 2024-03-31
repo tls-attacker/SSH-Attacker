@@ -9,14 +9,10 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class Ssh1MessageParser<T extends Ssh1Message<T>> extends ProtocolMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public Ssh1MessageParser(InputStream stream) {
+    protected Ssh1MessageParser(InputStream stream) {
         super(stream);
     }
 
@@ -27,7 +23,6 @@ public abstract class Ssh1MessageParser<T extends Ssh1Message<T>> extends Protoc
 
     private void parseMessageID(T message) {
         message.setMessageId(parseByteField(SshMessageConstants.MESSAGE_ID_LENGTH));
-        LOGGER.debug("Parsing MessageID {}", message.getMessageId().getValue());
     }
 
     protected abstract void parseMessageSpecificContents(T message);

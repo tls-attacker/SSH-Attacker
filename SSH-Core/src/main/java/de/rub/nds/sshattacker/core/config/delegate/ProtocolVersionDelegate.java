@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.layer.constant.LayerConfiguration;
 
 public class ProtocolVersionDelegate extends Delegate {
@@ -46,8 +47,7 @@ public class ProtocolVersionDelegate extends Delegate {
         } else if (config.getProtocolVersion().isSSHv1()) {
             config.setDefaultLayerConfiguration(LayerConfiguration.SSHV1);
         } else {
-            LOGGER.error("[bro] does not initalize with sshv1 or sshv2");
-            throw new RuntimeException();
+            throw new ConfigurationException("Not a valid protocollversion");
         }
     }
 }

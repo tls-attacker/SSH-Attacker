@@ -865,8 +865,8 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     @Override
-    public KeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new KeyExchangeInitMessageHandler(context);
+    public KeyExchangeInitMessageHandler getHandler(SshContext sshContext) {
+        return new KeyExchangeInitMessageHandler(sshContext);
     }
 
     @Override
@@ -875,12 +875,12 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     @Override
-    public KeyExchangeInitMessagePreparator getPreparator(SshContext context) {
-        return new KeyExchangeInitMessagePreparator(context.getChooser(), this);
+    public KeyExchangeInitMessagePreparator getPreparator(SshContext sshContext) {
+        return new KeyExchangeInitMessagePreparator(sshContext.getChooser(), this);
     }
 
     @Override
-    public KeyExchangeInitMessageSerializer getSerializer(SshContext context) {
+    public KeyExchangeInitMessageSerializer getSerializer(SshContext sshContext) {
         return new KeyExchangeInitMessageSerializer(this);
     }
 

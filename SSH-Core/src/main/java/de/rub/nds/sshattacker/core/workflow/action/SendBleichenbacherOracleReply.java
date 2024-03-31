@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.FailureMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import java.util.ArrayList;
@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
 public class SendBleichenbacherOracleReply extends SendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private final byte[] encodedSecret;
 
     /** Creates the action using the default connection alias */
     public SendBleichenbacherOracleReply() {
@@ -46,7 +44,6 @@ public class SendBleichenbacherOracleReply extends SendAction {
      */
     public SendBleichenbacherOracleReply(byte[] encodedSecret) {
         super();
-        this.encodedSecret = encodedSecret;
     }
 
     /**
@@ -57,7 +54,6 @@ public class SendBleichenbacherOracleReply extends SendAction {
      */
     public SendBleichenbacherOracleReply(byte[] encodedSecret, String connectionAlias) {
         super(connectionAlias);
-        this.encodedSecret = encodedSecret;
     }
 
     @Override
