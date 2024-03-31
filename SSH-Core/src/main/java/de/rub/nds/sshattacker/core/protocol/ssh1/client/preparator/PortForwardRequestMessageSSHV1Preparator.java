@@ -30,6 +30,16 @@ public class PortForwardRequestMessageSSHV1Preparator
         if (getObject().getServerPort() == null) {
             getObject().setServerPort(0);
         }
-        LOGGER.debug(getObject().getServerPort().getValue());
+        if (getObject().getPortToConnect() == null) {
+            getObject().setPortToConnect(0);
+        }
+        if (getObject().getHostToConnect() == null) {
+            getObject().setHostToConnect("localhost");
+        }
+        LOGGER.debug(
+                "Forwarding {} to {}:{}",
+                getObject().getServerPort().getValue(),
+                getObject().getHostToConnect().getValue(),
+                getObject().getPortToConnect().getValue());
     }
 }

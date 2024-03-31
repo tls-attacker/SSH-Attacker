@@ -65,10 +65,6 @@ public class PortOpenMessageSSH1 extends Ssh1Message<PortOpenMessageSSH1> {
         this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
     }
 
-    public void getHostName(String hostName) {
-        this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
-    }
-
     public ModifiableInteger getLocalChannel() {
         return localChannel;
     }

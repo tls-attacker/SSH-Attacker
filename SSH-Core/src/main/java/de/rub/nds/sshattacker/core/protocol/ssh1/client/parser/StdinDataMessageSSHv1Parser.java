@@ -20,8 +20,8 @@ public class StdinDataMessageSSHv1Parser extends Ssh1MessageParser<StdinDataMess
 
     private void parseIgnoreReason(StdinDataMessageSSH1 message) {
         int lenght = parseIntField(4);
-        String debugReason = parseByteString(lenght);
-        message.setData(debugReason);
+        String data = parseByteString(lenght);
+        message.setData(data);
     }
 
     @Override

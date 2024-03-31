@@ -23,9 +23,9 @@ public class ExecCmdMessageSSHV1Serializier extends Ssh1MessageSerializer<ExecCm
     }
 
     private void serializeReason() {
-        LOGGER.debug("Description length: {}", message.getCommand().getValue());
+        LOGGER.debug("Command length: {}", message.getCommand().getValue());
         appendInt(message.getCommand().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getCommand().getValue());
+        LOGGER.debug("Command: {}", message.getCommand().getValue());
         appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);
     }
 

@@ -25,7 +25,6 @@ public class PortForwardRequestMessageSSH1 extends Ssh1Message<PortForwardReques
 
     private ModifiableInteger serverPort;
     private ModifiableString hostToConnect;
-
     private ModifiableInteger portToConnect;
 
     public ModifiableString getHostToConnect() {

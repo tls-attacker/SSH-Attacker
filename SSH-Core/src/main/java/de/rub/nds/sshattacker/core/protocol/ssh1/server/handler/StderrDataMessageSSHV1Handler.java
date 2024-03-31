@@ -23,6 +23,6 @@ public class StderrDataMessageSSHV1Handler extends Ssh1MessageHandler<StderrData
 
     @Override
     public void adjustContext(StderrDataMessageSSH1 message) {
-        LOGGER.warn("Recieved Stderr Data: {}", message.getData().getValue());
+        LOGGER.warn("Recieved Stderr Data: {}", message.getErrorData().getValue());
     }
 }

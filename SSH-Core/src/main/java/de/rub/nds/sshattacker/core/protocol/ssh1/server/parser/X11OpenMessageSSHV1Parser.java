@@ -19,10 +19,10 @@ public class X11OpenMessageSSHV1Parser extends Ssh1MessageParser<X11OpenMessageS
     }
 
     private void parseData(X11OpenMessageSSH1 message) {
-        int remoteChannel = parseIntField(4);
+        int localChannel = parseIntField(4);
         int dataLenght = parseIntField(4);
         String data = parseByteString(dataLenght);
-        message.setLocalChannel(remoteChannel);
+        message.setLocalChannel(localChannel);
         message.setOriginatorString(data);
     }
 

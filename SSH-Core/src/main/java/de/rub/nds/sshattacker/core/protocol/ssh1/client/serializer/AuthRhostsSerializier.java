@@ -23,11 +23,11 @@ public class AuthRhostsSerializier extends Ssh1MessageSerializer<AuthRhostsSSH1>
     }
 
     private void serializeReason() {
-        LOGGER.debug("Description length: {}", message.getClientside_username().getValue());
+        LOGGER.debug("Username length: {}", message.getClientside_username().getValue());
         appendInt(
                 message.getClientside_username().getValue().length(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getClientside_username().getValue());
+        LOGGER.debug("Username: {}", message.getClientside_username().getValue());
         appendString(message.getClientside_username().getValue(), StandardCharsets.UTF_8);
     }
 

@@ -23,10 +23,10 @@ public class UserMessageSerializier extends Ssh1MessageSerializer<UserMessageSSH
     }
 
     private void serializeUsername() {
-        LOGGER.debug("Description length: {}", message.getUsername().getValue().length());
+        LOGGER.debug("Username length: {}", message.getUsername().getValue().length());
         appendInt(
                 message.getUsername().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getUsername().getValue());
+        LOGGER.debug("Username: {}", message.getUsername().getValue());
         appendString(message.getUsername().getValue(), StandardCharsets.UTF_8);
     }
 

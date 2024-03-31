@@ -19,7 +19,6 @@ public class WindowSizeMessageSSHv1Serializier
     }
 
     private void serializeData() {
-
         appendInt(message.getHightRows().getValue(), DataFormatConstants.UINT32_SIZE);
         appendInt(message.getWidthColumns().getValue(), DataFormatConstants.UINT32_SIZE);
         appendInt(message.getWidthPixel().getValue(), DataFormatConstants.UINT32_SIZE);

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.server.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.RsaAuthChallengeMessageSSH1;
+import java.math.BigInteger;
 
 public class RsaAuthChallengeMessageSSHV1Serializier
         extends Ssh1MessageSerializer<RsaAuthChallengeMessageSSH1> {
@@ -17,6 +18,12 @@ public class RsaAuthChallengeMessageSSHV1Serializier
         super(message);
     }
 
+    private void serializeEncryptedChallenge() {
+        appendMultiPrecision(new BigInteger(1, message.getEncryptedChallenge().getValue()));
+    }
+
     @Override
-    public void serializeMessageSpecificContents() {}
+    public void serializeMessageSpecificContents() {
+        serializeEncryptedChallenge();
+    }
 }

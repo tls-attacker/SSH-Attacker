@@ -23,9 +23,9 @@ public class StdinDataMessageSSHV1Serializier extends Ssh1MessageSerializer<Stdi
     }
 
     private void serializeReason() {
-        LOGGER.debug("Description length: {}", message.getData().getValue());
+        LOGGER.debug("Data length: {}", message.getData().getValue());
         appendInt(message.getData().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getData().getValue());
+        LOGGER.debug("Data: {}", message.getData().getValue());
         appendString(message.getData().getValue(), StandardCharsets.UTF_8);
     }
 

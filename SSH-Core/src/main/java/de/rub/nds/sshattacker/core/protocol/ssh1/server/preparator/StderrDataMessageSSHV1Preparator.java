@@ -25,9 +25,9 @@ public class StderrDataMessageSSHV1Preparator extends Ssh1MessagePreparator<Stde
     @Override
     public void prepareMessageSpecificContents() {
         LOGGER.debug("Preparring now...");
-        if (getObject().getData() == null) {
-            getObject().setData("DummyValue");
+        if (getObject().getErrorData() == null) {
+            getObject().setErrorData("DummyValue");
         }
-        LOGGER.debug(getObject().getData().getValue());
+        LOGGER.debug(getObject().getErrorData().getValue());
     }
 }

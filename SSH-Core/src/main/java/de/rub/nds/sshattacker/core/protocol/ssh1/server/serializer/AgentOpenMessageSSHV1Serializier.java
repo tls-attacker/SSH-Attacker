@@ -21,13 +21,13 @@ public class AgentOpenMessageSSHV1Serializier extends Ssh1MessageSerializer<Agen
         super(message);
     }
 
-    private void serializeExitStatus() {
+    private void serializeLocalChannel() {
         LOGGER.debug("Agent opening on local channel {}", message.getLocalChannel().getValue());
         appendInt(message.getLocalChannel().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializeExitStatus();
+        serializeLocalChannel();
     }
 }

@@ -38,7 +38,6 @@ public class ClientSessionKeyMessageSerializer
     }
 
     private void serializeSessionKey() {
-        // appendMultiPrecisionAsByteArray(message.getEncryptedSessioKey().getValue());
         appendMultiPrecision(new BigInteger(1, message.getEncryptedSessioKey().getValue()));
         LOGGER.debug(
                 "Session Key: {}",

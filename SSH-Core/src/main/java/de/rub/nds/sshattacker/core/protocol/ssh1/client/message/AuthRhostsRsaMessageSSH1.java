@@ -104,6 +104,6 @@ public class AuthRhostsRsaMessageSSH1 extends Ssh1Message<AuthRhostsRsaMessageSS
 
     @Override
     public String toShortString() {
-        return "SSH_AUTH_RHOSTS_RSA";
+        return "SSH_CMSG_AUTH_RHOSTS_RSA";
     }
 }

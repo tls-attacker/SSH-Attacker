@@ -28,6 +28,6 @@ public class StdinDataMessageSSHV1Preparator extends Ssh1MessagePreparator<Stdin
         if (getObject().getData() == null) {
             getObject().setData("DummyValue");
         }
-        LOGGER.debug(getObject().getData().getValue());
+        LOGGER.debug("Data to send {}", getObject().getData().getValue());
     }
 }

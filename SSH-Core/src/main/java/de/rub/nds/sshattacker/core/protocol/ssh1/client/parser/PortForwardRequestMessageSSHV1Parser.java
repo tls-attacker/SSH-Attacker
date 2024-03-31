@@ -20,12 +20,12 @@ public class PortForwardRequestMessageSSHV1Parser
     }
 
     private void parseData(PortForwardRequestMessageSSH1 message) {
-        int remoteChannel = parseIntField(4);
-        int dataLenght = parseIntField(4);
-        String data = parseByteString(dataLenght);
+        int serverPort = parseIntField(4);
+        int hostlenght = parseIntField(4);
+        String hostToConnect = parseByteString(hostlenght);
         int portToConnect = parseIntField(4);
-        message.setServerPort(remoteChannel);
-        message.setHostToConnect(data);
+        message.setServerPort(serverPort);
+        message.setHostToConnect(hostToConnect);
         message.setPortToConnect(portToConnect);
     }
 

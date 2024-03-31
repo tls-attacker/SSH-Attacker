@@ -20,8 +20,8 @@ public class ExecCmdMessageSSHv1Parser extends Ssh1MessageParser<ExecCmdMessageS
 
     private void parseIgnoreReason(ExecCmdMessageSSH1 message) {
         int lenght = parseIntField(4);
-        String debugReason = parseByteString(lenght);
-        message.setCommand(debugReason);
+        String command = parseByteString(lenght);
+        message.setCommand(command);
     }
 
     @Override

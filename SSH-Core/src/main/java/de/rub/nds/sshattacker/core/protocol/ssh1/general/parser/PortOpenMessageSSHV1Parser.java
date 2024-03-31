@@ -22,9 +22,10 @@ public class PortOpenMessageSSHV1Parser extends Ssh1MessageParser<PortOpenMessag
         int localChannel = parseIntField(4);
         int hostnameLenght = parseIntField(4);
         String hostname = parseByteString(hostnameLenght);
+        int portToConnect = parseIntField(4);
         int originatorStringLenght = parseIntField(4);
         String originatorString = parseByteString(originatorStringLenght);
-        int portToConnect = parseIntField(4);
+
         message.setLocalChannel(localChannel);
         message.setHostName(hostname);
         message.setPort(portToConnect);

@@ -17,15 +17,15 @@ public class StdoutDataMessageSSHv1Parser extends Ssh1MessageParser<StdoutDataMe
         super(stream);
     }
 
-    private void parseIgnoreReason(StdoutDataMessageSSH1 message) {
+    private void parseStdoutData(StdoutDataMessageSSH1 message) {
         int lenght = parseIntField(4);
-        String debugReason = parseByteString(lenght);
-        message.setData(debugReason);
+        String stdoutData = parseByteString(lenght);
+        message.setData(stdoutData);
     }
 
     @Override
     protected void parseMessageSpecificContents(StdoutDataMessageSSH1 message) {
-        parseIgnoreReason(message);
+        parseStdoutData(message);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class AuthRsaResponseMessageSSHV1Serializier
     }
 
     private void serializeExitStatus() {
-        LOGGER.debug("Exit Status: {}", message.getMd5Response().getValue());
+        LOGGER.debug("MD5 Response: {}", message.getMd5Response().getValue());
         appendInt(message.getMd5Response().getValue(), 2);
     }
 

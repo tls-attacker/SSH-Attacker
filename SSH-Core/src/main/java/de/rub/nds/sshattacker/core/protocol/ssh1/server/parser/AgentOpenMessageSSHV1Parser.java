@@ -19,8 +19,8 @@ public class AgentOpenMessageSSHV1Parser extends Ssh1MessageParser<AgentOpenMess
     }
 
     private void parseLocalChannel(AgentOpenMessageSSH1 message) {
-        int exitStatus = parseIntField(4);
-        message.setLocalChannel(exitStatus);
+        int localChannel = parseIntField(4);
+        message.setLocalChannel(localChannel);
     }
 
     @Override

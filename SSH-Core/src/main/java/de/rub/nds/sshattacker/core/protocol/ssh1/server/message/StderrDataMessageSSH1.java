@@ -22,18 +22,18 @@ import java.io.InputStream;
 
 public class StderrDataMessageSSH1 extends Ssh1Message<StderrDataMessageSSH1> {
 
-    private ModifiableString data;
+    private ModifiableString errorData;
 
-    public ModifiableString getData() {
-        return data;
+    public ModifiableString getErrorData() {
+        return errorData;
     }
 
-    public void setData(ModifiableString disconnectReason) {
-        data = disconnectReason;
+    public void setErrorData(ModifiableString disconnectReason) {
+        errorData = disconnectReason;
     }
 
-    public void setData(String disconnectReason) {
-        data = ModifiableVariableFactory.safelySetValue(data, disconnectReason);
+    public void setErrorData(String disconnectReason) {
+        errorData = ModifiableVariableFactory.safelySetValue(errorData, disconnectReason);
     }
 
     @Override

@@ -30,6 +30,6 @@ public class RequestCompressionMessageSSHV1Preparator
         if (getObject().getCompressionState() == null) {
             getObject().setCompressionState(0);
         }
-        LOGGER.debug(getObject().getCompressionState().getValue());
+        LOGGER.debug("Compression state = {}", getObject().getCompressionState().getValue());
     }
 }

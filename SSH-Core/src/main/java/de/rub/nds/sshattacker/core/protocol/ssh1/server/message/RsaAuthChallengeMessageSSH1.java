@@ -76,6 +76,6 @@ public class RsaAuthChallengeMessageSSH1 extends Ssh1Message<RsaAuthChallengeMes
 
     @Override
     public String toShortString() {
-        return "SSH_CMSG_AUTH_RSA_CHALLENGE";
+        return "SSH_SMSG_AUTH_RSA_CHALLENGE";
     }
 }

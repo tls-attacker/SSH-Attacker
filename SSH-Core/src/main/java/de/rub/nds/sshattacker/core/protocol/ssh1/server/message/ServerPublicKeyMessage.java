@@ -317,6 +317,6 @@ public class ServerPublicKeyMessage extends Ssh1Message<ServerPublicKeyMessage> 
 
     @Override
     public String toShortString() {
-        return "SSH_SMGS_PUBLIC_KEY";
+        return "SSH_SMSG_PUBLIC_KEY";
     }
 }

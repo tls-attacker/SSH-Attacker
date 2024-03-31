@@ -32,10 +32,7 @@ public class RsaAuthChallengeMessageSSHV1Parser
     }
 
     private void parseEncryptedChallengeModulus(RsaAuthChallengeMessageSSH1 message) {
-
-        int encryptedChallengeBitLength = parseIntField(4);
-        message.setEncryptedChallengeBitLenght(encryptedChallengeBitLength);
-        BigInteger modulus = parseMultiprecision();
-        message.setIdentityPublicModulus(ArrayConverter.bigIntegerToByteArray(modulus));
+        BigInteger encryptedChallenge = parseMultiprecision();
+        message.setIdentityPublicModulus(ArrayConverter.bigIntegerToByteArray(encryptedChallenge));
     }
 }

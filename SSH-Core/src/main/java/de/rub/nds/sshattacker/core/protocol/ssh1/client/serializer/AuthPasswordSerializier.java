@@ -23,10 +23,10 @@ public class AuthPasswordSerializier extends Ssh1MessageSerializer<AuthPasswordS
     }
 
     private void serializeReason() {
-        LOGGER.debug("Description length: {}", message.getPassword().getValue());
+        LOGGER.debug("Password length: {}", message.getPassword().getValue());
         appendInt(
                 message.getPassword().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getPassword().getValue());
+        LOGGER.debug("Password: {}", message.getPassword().getValue());
         appendString(message.getPassword().getValue(), StandardCharsets.UTF_8);
     }
 

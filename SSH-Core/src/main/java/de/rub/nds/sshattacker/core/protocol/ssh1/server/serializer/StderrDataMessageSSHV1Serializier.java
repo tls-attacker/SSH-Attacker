@@ -24,10 +24,11 @@ public class StderrDataMessageSSHV1Serializier
     }
 
     private void serializeReason() {
-        LOGGER.debug("Description length: {}", message.getData().getValue());
-        appendInt(message.getData().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getData().getValue());
-        appendString(message.getData().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("ErrorData length: {}", message.getErrorData().getValue());
+        appendInt(
+                message.getErrorData().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("ErrorData: {}", message.getErrorData().getValue());
+        appendString(message.getErrorData().getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
