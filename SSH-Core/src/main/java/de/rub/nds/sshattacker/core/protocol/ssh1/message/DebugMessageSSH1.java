@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.DebugMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.DebugMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.DebugMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.DebugMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class DebugMessageSSH1 extends SshMessage<DebugMessageSSH1> {
+public class DebugMessageSSH1 extends Ssh1Message<DebugMessageSSH1> {
 
     private ModifiableString debugMessage;
 
@@ -42,17 +42,17 @@ public class DebugMessageSSH1 extends SshMessage<DebugMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<DebugMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<DebugMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new DebugMessageSSHv1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<DebugMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<DebugMessageSSH1> getPreparator(SshContext context) {
         return new DebugMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<DebugMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<DebugMessageSSH1> getSerializer(SshContext context) {
         return new DebugMessageSSHV1Serializier(this);
     }
 

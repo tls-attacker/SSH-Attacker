@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ClientSessionKeyMessagePreparator
-        extends SshMessagePreparator<ClientSessionKeyMessage> {
+        extends Ssh1MessagePreparator<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

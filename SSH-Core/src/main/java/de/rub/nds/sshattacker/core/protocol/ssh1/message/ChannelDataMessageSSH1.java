@@ -11,17 +11,17 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelDataMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelDataMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelDataMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelDataMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class ChannelDataMessageSSH1 extends SshMessage<ChannelDataMessageSSH1> {
+public class ChannelDataMessageSSH1 extends Ssh1Message<ChannelDataMessageSSH1> {
 
     private ModifiableInteger remoteChannel;
     private ModifiableString data;
@@ -57,18 +57,18 @@ public class ChannelDataMessageSSH1 extends SshMessage<ChannelDataMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<ChannelDataMessageSSH1> getParser(
+    public Ssh1MessageParser<ChannelDataMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ChannelDataMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ChannelDataMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ChannelDataMessageSSH1> getPreparator(SshContext context) {
         return new ChannelDataMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ChannelDataMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ChannelDataMessageSSH1> getSerializer(SshContext context) {
         return new ChannelDataMessageSSHV1Serializier(this);
     }
 

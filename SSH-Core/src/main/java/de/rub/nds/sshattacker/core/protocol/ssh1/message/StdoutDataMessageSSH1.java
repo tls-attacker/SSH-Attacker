@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.StdoutDataMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.StdoutDataMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.StdoutDataMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.StdoutDataMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class StdoutDataMessageSSH1 extends SshMessage<StdoutDataMessageSSH1> {
+public class StdoutDataMessageSSH1 extends Ssh1Message<StdoutDataMessageSSH1> {
 
     private ModifiableString data;
 
@@ -42,18 +42,18 @@ public class StdoutDataMessageSSH1 extends SshMessage<StdoutDataMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<StdoutDataMessageSSH1> getParser(
+    public Ssh1MessageParser<StdoutDataMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new StdoutDataMessageSSHv1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<StdoutDataMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<StdoutDataMessageSSH1> getPreparator(SshContext context) {
         return new StdoutDataMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<StdoutDataMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<StdoutDataMessageSSH1> getSerializer(SshContext context) {
         return new StdoutDataMessageSSHV1Serializier(this);
     }
 

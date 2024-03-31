@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthMessageSSH1;
 
-public class RsaAuthMessageSSHV1Serializier extends SshMessageSerializer<RsaAuthMessageSSH1> {
+public class RsaAuthMessageSSHV1Serializier extends Ssh1MessageSerializer<RsaAuthMessageSSH1> {
 
     public RsaAuthMessageSSHV1Serializier(RsaAuthMessageSSH1 message) {
         super(message);

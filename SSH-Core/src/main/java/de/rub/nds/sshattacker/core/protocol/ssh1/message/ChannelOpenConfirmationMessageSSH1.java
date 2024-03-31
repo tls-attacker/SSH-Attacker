@@ -10,10 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelOpenConfirmationMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelOpenConfirmationMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelOpenConfirmationMessageSSHV1Preparator;
@@ -21,7 +21,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelOpenConfirmat
 import java.io.InputStream;
 
 public class ChannelOpenConfirmationMessageSSH1
-        extends SshMessage<ChannelOpenConfirmationMessageSSH1> {
+        extends Ssh1Message<ChannelOpenConfirmationMessageSSH1> {
 
     private ModifiableInteger localChannel;
     private ModifiableInteger remoteChannel;
@@ -58,19 +58,19 @@ public class ChannelOpenConfirmationMessageSSH1
     }
 
     @Override
-    public SshMessageParser<ChannelOpenConfirmationMessageSSH1> getParser(
+    public Ssh1MessageParser<ChannelOpenConfirmationMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ChannelOpenConfirmationMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ChannelOpenConfirmationMessageSSH1> getPreparator(
+    public Ssh1MessagePreparator<ChannelOpenConfirmationMessageSSH1> getPreparator(
             SshContext context) {
         return new ChannelOpenConfirmationMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ChannelOpenConfirmationMessageSSH1> getSerializer(
+    public Ssh1MessageSerializer<ChannelOpenConfirmationMessageSSH1> getSerializer(
             SshContext context) {
         return new ChannelOpenConfirmationMessageSSHV1Serializier(this);
     }

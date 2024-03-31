@@ -8,17 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.FailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.FailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.FailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.FailureMessageSerializier;
 import java.io.InputStream;
 
-public class FailureMessageSSH1 extends SshMessage<FailureMessageSSH1> {
+public class FailureMessageSSH1 extends Ssh1Message<FailureMessageSSH1> {
 
     @Override
     public FailureMessageHandler getHandler(SshContext context) {
@@ -26,17 +26,17 @@ public class FailureMessageSSH1 extends SshMessage<FailureMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<FailureMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<FailureMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new FailureMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<FailureMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<FailureMessageSSH1> getPreparator(SshContext context) {
         return new FailureMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<FailureMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<FailureMessageSSH1> getSerializer(SshContext context) {
         return new FailureMessageSerializier(this);
     }
 

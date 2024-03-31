@@ -50,18 +50,14 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        MessageIdConstant runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
 
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
                 collectedMessageStream = new ByteArrayOutputStream();
-
-                runningProtocolMessageType = message.getMessageIdConstant();
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
-                // flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
-                getLowerLayer().sendData(collectedMessageStream.toByteArray());
+                flushCollectedMessages(collectedMessageStream);
 
                 ProtocolMessageHandler<?> handler = message.getHandler(context);
                 if (handler instanceof MessageSentHandler) {
@@ -86,6 +82,13 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
         message.setCompleteResultingMessage(serializedMessage);
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
+    }
+
+    private void flushCollectedMessages(ByteArrayOutputStream byteStream) throws IOException {
+        if (byteStream.size() > 0) {
+            getLowerLayer().sendData(byteStream.toByteArray());
+            byteStream.reset();
+        }
     }
 
     @Override

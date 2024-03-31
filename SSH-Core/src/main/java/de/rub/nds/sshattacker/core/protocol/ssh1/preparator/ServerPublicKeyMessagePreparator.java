@@ -11,7 +11,7 @@ import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.security.MessageDigest;
@@ -21,7 +21,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<ServerPublicKeyMessage> {
+public class ServerPublicKeyMessagePreparator
+        extends Ssh1MessagePreparator<ServerPublicKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private HybridKeyExchangeCombiner combiner;

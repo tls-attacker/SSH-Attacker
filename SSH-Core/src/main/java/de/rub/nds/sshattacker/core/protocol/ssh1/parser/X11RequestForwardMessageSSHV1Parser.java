@@ -8,12 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.X11RequestForwardMessageSSH1;
 import java.io.InputStream;
 
 public class X11RequestForwardMessageSSHV1Parser
-        extends SshMessageParser<X11RequestForwardMessageSSH1> {
+        extends Ssh1MessageParser<X11RequestForwardMessageSSH1> {
 
     public X11RequestForwardMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AgentOpenMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AgentOpenMessageSSHV1Preparator extends SshMessagePreparator<AgentOpenMessageSSH1> {
+public class AgentOpenMessageSSHV1Preparator extends Ssh1MessagePreparator<AgentOpenMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

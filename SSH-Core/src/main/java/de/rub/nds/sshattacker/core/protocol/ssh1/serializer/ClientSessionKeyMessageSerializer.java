@@ -9,14 +9,14 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.checksum.CRC;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ClientSessionKeyMessageSerializer
-        extends SshMessageSerializer<ClientSessionKeyMessage> {
+        extends Ssh1MessageSerializer<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

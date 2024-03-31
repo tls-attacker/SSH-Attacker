@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AuthPasswordHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AuthPasswordParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AuthPasswordPreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AuthPasswordSerializier;
 import java.io.InputStream;
 
-public class AuthPasswordSSH1 extends SshMessage<AuthPasswordSSH1> {
+public class AuthPasswordSSH1 extends Ssh1Message<AuthPasswordSSH1> {
 
     private ModifiableString password;
 
@@ -42,17 +42,17 @@ public class AuthPasswordSSH1 extends SshMessage<AuthPasswordSSH1> {
     }
 
     @Override
-    public SshMessageParser<AuthPasswordSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<AuthPasswordSSH1> getParser(SshContext context, InputStream stream) {
         return new AuthPasswordParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AuthPasswordSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<AuthPasswordSSH1> getPreparator(SshContext context) {
         return new AuthPasswordPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AuthPasswordSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<AuthPasswordSSH1> getSerializer(SshContext context) {
         return new AuthPasswordSerializier(this);
     }
 

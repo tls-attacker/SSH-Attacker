@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DisconnectMessageSerializier extends SshMessageSerializer<DisconnectMessageSSH1> {
+public class DisconnectMessageSerializier extends Ssh1MessageSerializer<DisconnectMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

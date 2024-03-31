@@ -9,13 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthChallengeMessageSSH1;
 import java.io.InputStream;
 import java.math.BigInteger;
 
 public class RsaAuthChallengeMessageSSHV1Parser
-        extends SshMessageParser<RsaAuthChallengeMessageSSH1> {
+        extends Ssh1MessageParser<RsaAuthChallengeMessageSSH1> {
 
     public RsaAuthChallengeMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

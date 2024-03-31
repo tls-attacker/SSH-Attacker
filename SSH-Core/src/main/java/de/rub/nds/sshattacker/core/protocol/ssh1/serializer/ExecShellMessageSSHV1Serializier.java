@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExecShellMessageSSH1;
 
-public class ExecShellMessageSSHV1Serializier extends SshMessageSerializer<ExecShellMessageSSH1> {
+public class ExecShellMessageSSHV1Serializier extends Ssh1MessageSerializer<ExecShellMessageSSH1> {
 
     public ExecShellMessageSSHV1Serializier(ExecShellMessageSSH1 message) {
         super(message);

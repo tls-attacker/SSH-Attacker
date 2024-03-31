@@ -8,12 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<ServerPublicKeyMessage> {
+public class ServerPublicKeyMessageSerializer
+        extends Ssh1MessageSerializer<ServerPublicKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

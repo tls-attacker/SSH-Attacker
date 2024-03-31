@@ -8,11 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.UserMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class UserMessagePreparator extends SshMessagePreparator<UserMessageSSH1> {
+public class UserMessagePreparator extends Ssh1MessagePreparator<UserMessageSSH1> {
 
     public UserMessagePreparator(Chooser chooser, UserMessageSSH1 message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_CMSG_USER);

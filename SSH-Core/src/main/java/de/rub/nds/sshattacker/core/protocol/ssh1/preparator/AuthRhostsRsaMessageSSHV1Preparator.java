@@ -8,14 +8,14 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AuthRhostsRsaMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class AuthRhostsRsaMessageSSHV1Preparator
-        extends SshMessagePreparator<AuthRhostsRsaMessageSSH1> {
+        extends Ssh1MessagePreparator<AuthRhostsRsaMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

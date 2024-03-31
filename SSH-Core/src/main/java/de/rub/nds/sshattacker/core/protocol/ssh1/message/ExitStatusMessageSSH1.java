@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExitStatusMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExitStatusMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitStatusMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitStatusMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class ExitStatusMessageSSH1 extends SshMessage<ExitStatusMessageSSH1> {
+public class ExitStatusMessageSSH1 extends Ssh1Message<ExitStatusMessageSSH1> {
 
     private ModifiableInteger exitStatus;
 
@@ -42,18 +42,18 @@ public class ExitStatusMessageSSH1 extends SshMessage<ExitStatusMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<ExitStatusMessageSSH1> getParser(
+    public Ssh1MessageParser<ExitStatusMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ExitStatusMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ExitStatusMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ExitStatusMessageSSH1> getPreparator(SshContext context) {
         return new ExitStatusMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ExitStatusMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ExitStatusMessageSSH1> getSerializer(SshContext context) {
         return new ExitStatusMessageSSHV1Serializier(this);
     }
 

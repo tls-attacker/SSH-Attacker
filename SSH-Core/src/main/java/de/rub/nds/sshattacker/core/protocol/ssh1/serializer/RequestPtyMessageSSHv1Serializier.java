@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RequestPtyMessageSSH1;
 import java.nio.charset.StandardCharsets;
 
-public class RequestPtyMessageSSHv1Serializier extends SshMessageSerializer<RequestPtyMessageSSH1> {
+public class RequestPtyMessageSSHv1Serializier
+        extends Ssh1MessageSerializer<RequestPtyMessageSSH1> {
 
     public RequestPtyMessageSSHv1Serializier(RequestPtyMessageSSH1 message) {
         super(message);

@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.RequestCompressionMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.RequestCompressionMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.RequestCompressionMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.RequestCompressionMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class RequestCompressionMessageSSH1 extends SshMessage<RequestCompressionMessageSSH1> {
+public class RequestCompressionMessageSSH1 extends Ssh1Message<RequestCompressionMessageSSH1> {
 
     private ModifiableInteger compressionState;
 
@@ -43,18 +43,18 @@ public class RequestCompressionMessageSSH1 extends SshMessage<RequestCompression
     }
 
     @Override
-    public SshMessageParser<RequestCompressionMessageSSH1> getParser(
+    public Ssh1MessageParser<RequestCompressionMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new RequestCompressionMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<RequestCompressionMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<RequestCompressionMessageSSH1> getPreparator(SshContext context) {
         return new RequestCompressionMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<RequestCompressionMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<RequestCompressionMessageSSH1> getSerializer(SshContext context) {
         return new RequestCompressionMessageSSHV1Serializier(this);
     }
 

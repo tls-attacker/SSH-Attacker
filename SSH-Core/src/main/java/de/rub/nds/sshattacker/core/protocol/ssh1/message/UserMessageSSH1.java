@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.UserMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.UserMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.UserMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.UserMessageSerializier;
 import java.io.InputStream;
 
-public class UserMessageSSH1 extends SshMessage<UserMessageSSH1> {
+public class UserMessageSSH1 extends Ssh1Message<UserMessageSSH1> {
 
     private ModifiableString username;
 
@@ -42,17 +42,17 @@ public class UserMessageSSH1 extends SshMessage<UserMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<UserMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<UserMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new UserMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<UserMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<UserMessageSSH1> getPreparator(SshContext context) {
         return new UserMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<UserMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<UserMessageSSH1> getSerializer(SshContext context) {
         return new UserMessageSerializier(this);
     }
 

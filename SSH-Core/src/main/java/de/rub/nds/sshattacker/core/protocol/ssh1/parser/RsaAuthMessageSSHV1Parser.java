@@ -9,12 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthMessageSSH1;
 import java.io.InputStream;
 import java.math.BigInteger;
 
-public class RsaAuthMessageSSHV1Parser extends SshMessageParser<RsaAuthMessageSSH1> {
+public class RsaAuthMessageSSHV1Parser extends Ssh1MessageParser<RsaAuthMessageSSH1> {
 
     public RsaAuthMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

@@ -8,17 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExecShellMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExecShellMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExecShellMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExecShellMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class ExecShellMessageSSH1 extends SshMessage<ExecShellMessageSSH1> {
+public class ExecShellMessageSSH1 extends Ssh1Message<ExecShellMessageSSH1> {
 
     @Override
     public ExecShellMessageSSHV1Handler getHandler(SshContext context) {
@@ -26,18 +26,18 @@ public class ExecShellMessageSSH1 extends SshMessage<ExecShellMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<ExecShellMessageSSH1> getParser(
+    public Ssh1MessageParser<ExecShellMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ExecShellMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ExecShellMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ExecShellMessageSSH1> getPreparator(SshContext context) {
         return new ExecShellMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ExecShellMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ExecShellMessageSSH1> getSerializer(SshContext context) {
         return new ExecShellMessageSSHV1Serializier(this);
     }
 

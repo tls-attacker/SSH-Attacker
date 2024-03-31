@@ -14,10 +14,10 @@ import de.rub.nds.sshattacker.core.constants.CipherMethod;
 import de.rub.nds.sshattacker.core.constants.ProtocolFlag;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ClientSessionKeyMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ClientSessionKeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ClientSessionKeyMessagePreparator;
@@ -25,7 +25,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ClientSessionKeyMess
 import java.io.InputStream;
 import java.util.List;
 
-public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage> {
+public class ClientSessionKeyMessage extends Ssh1Message<ClientSessionKeyMessage> {
 
     private CipherMethod chosenCipherMethod;
     private ModifiableByteArray antiSpoofingCookie;
@@ -125,20 +125,20 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
     }
 
     @Override
-    public SshMessageParser<ClientSessionKeyMessage> getParser(
+    public Ssh1MessageParser<ClientSessionKeyMessage> getParser(
             SshContext context, InputStream stream) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new ClientSessionKeyMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ClientSessionKeyMessage> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ClientSessionKeyMessage> getPreparator(SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new ClientSessionKeyMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ClientSessionKeyMessage> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ClientSessionKeyMessage> getSerializer(SshContext context) {
         return new ClientSessionKeyMessageSerializer(this);
     }
 

@@ -11,17 +11,17 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.RequestPtyMessageSSHv1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.RequestPtyMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.RequestPtyMessageSSHv1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.RequestPtyMessageSSHv1Serializier;
 import java.io.InputStream;
 
-public class RequestPtyMessageSSH1 extends SshMessage<RequestPtyMessageSSH1> {
+public class RequestPtyMessageSSH1 extends Ssh1Message<RequestPtyMessageSSH1> {
 
     ModifiableString termEnvironment;
     ModifiableInteger hightRows;
@@ -110,18 +110,18 @@ public class RequestPtyMessageSSH1 extends SshMessage<RequestPtyMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<RequestPtyMessageSSH1> getParser(
+    public Ssh1MessageParser<RequestPtyMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new RequestPtyMessageSSHv1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<RequestPtyMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<RequestPtyMessageSSH1> getPreparator(SshContext context) {
         return new RequestPtyMessageSSHv1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<RequestPtyMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<RequestPtyMessageSSH1> getSerializer(SshContext context) {
         return new RequestPtyMessageSSHv1Serializier(this);
     }
 

@@ -8,17 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.SuccessMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.SuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.SuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.SuccessMessageSerializier;
 import java.io.InputStream;
 
-public class SuccessMessageSSH1 extends SshMessage<SuccessMessageSSH1> {
+public class SuccessMessageSSH1 extends Ssh1Message<SuccessMessageSSH1> {
 
     @Override
     public SuccessMessageHandler getHandler(SshContext context) {
@@ -26,17 +26,17 @@ public class SuccessMessageSSH1 extends SshMessage<SuccessMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<SuccessMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<SuccessMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new SuccessMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<SuccessMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<SuccessMessageSSH1> getPreparator(SshContext context) {
         return new SuccessMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<SuccessMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<SuccessMessageSSH1> getSerializer(SshContext context) {
         return new SuccessMessageSerializier(this);
     }
 

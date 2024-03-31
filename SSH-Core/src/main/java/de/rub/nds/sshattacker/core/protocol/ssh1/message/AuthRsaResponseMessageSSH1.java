@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AuthRsaResponseMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AuthRsaResponseMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AuthRsaResponseMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AuthRsaResponseMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class AuthRsaResponseMessageSSH1 extends SshMessage<AuthRsaResponseMessageSSH1> {
+public class AuthRsaResponseMessageSSH1 extends Ssh1Message<AuthRsaResponseMessageSSH1> {
 
     private ModifiableInteger md5Response;
 
@@ -42,18 +42,18 @@ public class AuthRsaResponseMessageSSH1 extends SshMessage<AuthRsaResponseMessag
     }
 
     @Override
-    public SshMessageParser<AuthRsaResponseMessageSSH1> getParser(
+    public Ssh1MessageParser<AuthRsaResponseMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new AuthRsaResponseMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AuthRsaResponseMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<AuthRsaResponseMessageSSH1> getPreparator(SshContext context) {
         return new AuthRsaResponseMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AuthRsaResponseMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<AuthRsaResponseMessageSSH1> getSerializer(SshContext context) {
         return new AuthRsaResponseMessageSSHV1Serializier(this);
     }
 

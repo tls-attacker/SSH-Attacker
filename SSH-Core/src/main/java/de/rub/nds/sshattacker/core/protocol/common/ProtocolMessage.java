@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -50,16 +51,25 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
-    public MessageIdConstant getMessageIdConstant() {
+    public byte getMessageIdConstant() {
         return messageIdConstant;
     }
 
     public void setMessageIdConstant(MessageIdConstant MessageIdConstant) {
+        this.messageIdConstant = MessageIdConstant.getId();
+    }
+
+    public void setMessageIdConstant(MessageIdConstantSSH1 MessageIdConstant) {
+        this.messageIdConstant = MessageIdConstant.getId();
+    }
+
+    public void setMessageIdConstant(byte MessageIdConstant) {
         this.messageIdConstant = MessageIdConstant;
     }
 
     /** content type */
-    @XmlTransient protected MessageIdConstant messageIdConstant;
+    // @XmlTransient protected MessageIdConstant messageIdConstant;
+    @XmlTransient protected byte messageIdConstant;
 
     public ProtocolMessage() {}
 

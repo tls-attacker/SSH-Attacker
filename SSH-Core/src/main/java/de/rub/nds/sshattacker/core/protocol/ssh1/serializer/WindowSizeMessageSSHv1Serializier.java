@@ -8,10 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.WindowSizeMessageSSH1;
 
-public class WindowSizeMessageSSHv1Serializier extends SshMessageSerializer<WindowSizeMessageSSH1> {
+public class WindowSizeMessageSSHv1Serializier
+        extends Ssh1MessageSerializer<WindowSizeMessageSSH1> {
 
     public WindowSizeMessageSSHv1Serializier(WindowSizeMessageSSH1 message) {
         super(message);

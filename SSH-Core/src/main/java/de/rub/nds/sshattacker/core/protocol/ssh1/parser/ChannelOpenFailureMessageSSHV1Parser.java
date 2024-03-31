@@ -8,14 +8,14 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelOpenFailureMessageSSH1;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenFailureMessageSSHV1Parser
-        extends SshMessageParser<ChannelOpenFailureMessageSSH1> {
+        extends Ssh1MessageParser<ChannelOpenFailureMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenFailureMessageSSHV1Parser(SshContext context, InputStream stream) {

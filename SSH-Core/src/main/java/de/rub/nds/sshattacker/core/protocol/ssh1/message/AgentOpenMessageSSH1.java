@@ -10,17 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AgentOpenMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AgentOpenMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AgentOpenMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AgentOpenMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class AgentOpenMessageSSH1 extends SshMessage<AgentOpenMessageSSH1> {
+public class AgentOpenMessageSSH1 extends Ssh1Message<AgentOpenMessageSSH1> {
 
     private ModifiableInteger localChannel;
 
@@ -43,18 +40,18 @@ public class AgentOpenMessageSSH1 extends SshMessage<AgentOpenMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<AgentOpenMessageSSH1> getParser(
+    public Ssh1MessageParser<AgentOpenMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new AgentOpenMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AgentOpenMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<AgentOpenMessageSSH1> getPreparator(SshContext context) {
         return new AgentOpenMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AgentOpenMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<AgentOpenMessageSSH1> getSerializer(SshContext context) {
         return new AgentOpenMessageSSHV1Serializier(this);
     }
 

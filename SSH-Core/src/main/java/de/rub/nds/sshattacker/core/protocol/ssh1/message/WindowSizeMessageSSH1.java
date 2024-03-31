@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.WindowSizeMessageSSHv1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.WindowSizeMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.WindowSizeMessageSSHv1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.WindowSizeMessageSSHv1Serializier;
 import java.io.InputStream;
 
-public class WindowSizeMessageSSH1 extends SshMessage<WindowSizeMessageSSH1> {
+public class WindowSizeMessageSSH1 extends Ssh1Message<WindowSizeMessageSSH1> {
 
     ModifiableInteger hightRows;
     ModifiableInteger widthColumns;
@@ -82,18 +82,18 @@ public class WindowSizeMessageSSH1 extends SshMessage<WindowSizeMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<WindowSizeMessageSSH1> getParser(
+    public Ssh1MessageParser<WindowSizeMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new WindowSizeMessageSSHv1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<WindowSizeMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<WindowSizeMessageSSH1> getPreparator(SshContext context) {
         return new WindowSizeMessageSSHv1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<WindowSizeMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<WindowSizeMessageSSH1> getSerializer(SshContext context) {
         return new WindowSizeMessageSSHv1Serializier(this);
     }
 

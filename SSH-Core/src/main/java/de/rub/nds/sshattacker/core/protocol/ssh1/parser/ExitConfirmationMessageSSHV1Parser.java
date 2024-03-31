@@ -8,12 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitConfirmationMessageSSH1;
 import java.io.InputStream;
 
 public class ExitConfirmationMessageSSHV1Parser
-        extends SshMessageParser<ExitConfirmationMessageSSH1> {
+        extends Ssh1MessageParser<ExitConfirmationMessageSSH1> {
 
     public ExitConfirmationMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

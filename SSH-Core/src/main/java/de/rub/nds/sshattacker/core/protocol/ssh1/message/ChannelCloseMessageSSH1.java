@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelCloseMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelCloseMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelCloseMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelCloseMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class ChannelCloseMessageSSH1 extends SshMessage<ChannelCloseMessageSSH1> {
+public class ChannelCloseMessageSSH1 extends Ssh1Message<ChannelCloseMessageSSH1> {
 
     private ModifiableInteger remoteChannel;
 
@@ -43,18 +43,18 @@ public class ChannelCloseMessageSSH1 extends SshMessage<ChannelCloseMessageSSH1>
     }
 
     @Override
-    public SshMessageParser<ChannelCloseMessageSSH1> getParser(
+    public Ssh1MessageParser<ChannelCloseMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ChannelCloseMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ChannelCloseMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ChannelCloseMessageSSH1> getPreparator(SshContext context) {
         return new ChannelCloseMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ChannelCloseMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ChannelCloseMessageSSH1> getSerializer(SshContext context) {
         return new ChannelCloseMessageSSHV1Serializier(this);
     }
 

@@ -8,14 +8,14 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.PortForwardRequestMessageSSH1;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PortForwardRequestMessageSSHV1Serializier
-        extends SshMessageSerializer<PortForwardRequestMessageSSH1> {
+        extends Ssh1MessageSerializer<PortForwardRequestMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

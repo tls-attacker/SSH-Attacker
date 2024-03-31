@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessionKeyMessage> {
+public class ClientSessionKeyMessageParser extends Ssh1MessageParser<ClientSessionKeyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ClientSessionKeyMessageParser(SshContext context, InputStream stream) {

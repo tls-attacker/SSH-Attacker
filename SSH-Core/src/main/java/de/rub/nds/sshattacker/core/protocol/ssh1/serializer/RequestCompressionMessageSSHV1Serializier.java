@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RequestCompressionMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RequestCompressionMessageSSHV1Serializier
-        extends SshMessageSerializer<RequestCompressionMessageSSH1> {
+        extends Ssh1MessageSerializer<RequestCompressionMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

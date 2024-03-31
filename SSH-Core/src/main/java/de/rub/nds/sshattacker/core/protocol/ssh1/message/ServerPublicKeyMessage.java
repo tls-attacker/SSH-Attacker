@@ -18,10 +18,10 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ServerPublicKeyMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ServerPublicKeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ServerPublicKeyMessagePreparator;
@@ -29,7 +29,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ServerPublicKeyMessa
 import java.io.InputStream;
 import java.util.List;
 
-public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
+public class ServerPublicKeyMessage extends Ssh1Message<ServerPublicKeyMessage> {
 
     // ServerKey
     private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
@@ -304,20 +304,20 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
     }
 
     @Override
-    public SshMessageParser<ServerPublicKeyMessage> getParser(
+    public Ssh1MessageParser<ServerPublicKeyMessage> getParser(
             SshContext context, InputStream stream) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new ServerPublicKeyMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ServerPublicKeyMessage> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ServerPublicKeyMessage> getPreparator(SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new ServerPublicKeyMessagePreparator(context.getChooser(), this, kex.getCombiner());
     }
 
     @Override
-    public SshMessageSerializer<ServerPublicKeyMessage> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ServerPublicKeyMessage> getSerializer(SshContext context) {
         return new ServerPublicKeyMessageSerializer(this);
     }
 

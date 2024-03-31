@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelOpenFailureMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelOpenFailureMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelOpenFailureMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelOpenFailureMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class ChannelOpenFailureMessageSSH1 extends SshMessage<ChannelOpenFailureMessageSSH1> {
+public class ChannelOpenFailureMessageSSH1 extends Ssh1Message<ChannelOpenFailureMessageSSH1> {
 
     private ModifiableInteger remoteChannel;
 
@@ -43,18 +43,18 @@ public class ChannelOpenFailureMessageSSH1 extends SshMessage<ChannelOpenFailure
     }
 
     @Override
-    public SshMessageParser<ChannelOpenFailureMessageSSH1> getParser(
+    public Ssh1MessageParser<ChannelOpenFailureMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new ChannelOpenFailureMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<ChannelOpenFailureMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<ChannelOpenFailureMessageSSH1> getPreparator(SshContext context) {
         return new ChannelOpenFailureMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ChannelOpenFailureMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<ChannelOpenFailureMessageSSH1> getSerializer(SshContext context) {
         return new ChannelOpenFailureMessageSSHV1Serializier(this);
     }
 

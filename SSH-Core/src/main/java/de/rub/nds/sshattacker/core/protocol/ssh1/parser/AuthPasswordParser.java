@@ -8,11 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AuthPasswordSSH1;
 import java.io.InputStream;
 
-public class AuthPasswordParser extends SshMessageParser<AuthPasswordSSH1> {
+public class AuthPasswordParser extends Ssh1MessageParser<AuthPasswordSSH1> {
 
     public AuthPasswordParser(SshContext context, InputStream stream) {
         super(stream);

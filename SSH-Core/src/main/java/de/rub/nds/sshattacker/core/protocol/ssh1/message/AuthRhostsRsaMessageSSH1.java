@@ -12,17 +12,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AuthRhostsRsaMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AuthRhostsRsaMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AuthRhostsRsaMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AuthRhostsRsaMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class AuthRhostsRsaMessageSSH1 extends SshMessage<AuthRhostsRsaMessageSSH1> {
+public class AuthRhostsRsaMessageSSH1 extends Ssh1Message<AuthRhostsRsaMessageSSH1> {
 
     private ModifiableInteger clientHostKeyBits;
     private ModifiableString username;
@@ -87,18 +87,18 @@ public class AuthRhostsRsaMessageSSH1 extends SshMessage<AuthRhostsRsaMessageSSH
     }
 
     @Override
-    public SshMessageParser<AuthRhostsRsaMessageSSH1> getParser(
+    public Ssh1MessageParser<AuthRhostsRsaMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new AuthRhostsRsaMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AuthRhostsRsaMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<AuthRhostsRsaMessageSSH1> getPreparator(SshContext context) {
         return new AuthRhostsRsaMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AuthRhostsRsaMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<AuthRhostsRsaMessageSSH1> getSerializer(SshContext context) {
         return new AuthRhostsRsaMessageSSHV1Serializier(this);
     }
 

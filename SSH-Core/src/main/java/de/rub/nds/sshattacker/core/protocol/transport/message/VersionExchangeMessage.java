@@ -93,7 +93,6 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     @Override
     public VersionExchangeMessageSerializer getSerializer(SshContext context) {
-        LOGGER.debug("[bro] getting serializer");
         return new VersionExchangeMessageSerializer(this);
     }
 

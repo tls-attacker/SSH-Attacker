@@ -11,17 +11,17 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.X11RequestForwardMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.X11RequestForwardMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.X11RequestForwardMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.X11RequestForwardMessageSSHV1Serializier;
 import java.io.InputStream;
 
-public class X11RequestForwardMessageSSH1 extends SshMessage<X11RequestForwardMessageSSH1> {
+public class X11RequestForwardMessageSSH1 extends Ssh1Message<X11RequestForwardMessageSSH1> {
 
     private ModifiableInteger screenNumber;
     private ModifiableString x11AuthenticationProtocol;
@@ -74,18 +74,18 @@ public class X11RequestForwardMessageSSH1 extends SshMessage<X11RequestForwardMe
     }
 
     @Override
-    public SshMessageParser<X11RequestForwardMessageSSH1> getParser(
+    public Ssh1MessageParser<X11RequestForwardMessageSSH1> getParser(
             SshContext context, InputStream stream) {
         return new X11RequestForwardMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<X11RequestForwardMessageSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<X11RequestForwardMessageSSH1> getPreparator(SshContext context) {
         return new X11RequestForwardMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<X11RequestForwardMessageSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<X11RequestForwardMessageSSH1> getSerializer(SshContext context) {
         return new X11RequestForwardMessageSSHV1Serializier(this);
     }
 

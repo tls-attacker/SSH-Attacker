@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AgentRequestForwardingMessageSSH1;
 
 public class AgentRequestForwardingMessageSSHV1Serializier
-        extends SshMessageSerializer<AgentRequestForwardingMessageSSH1> {
+        extends Ssh1MessageSerializer<AgentRequestForwardingMessageSSH1> {
 
     public AgentRequestForwardingMessageSSHV1Serializier(
             AgentRequestForwardingMessageSSH1 message) {

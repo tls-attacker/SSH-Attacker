@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitConfirmationMessageSSH1;
 
 public class ExitConfirmationMessageSSHV1Serializier
-        extends SshMessageSerializer<ExitConfirmationMessageSSH1> {
+        extends Ssh1MessageSerializer<ExitConfirmationMessageSSH1> {
 
     public ExitConfirmationMessageSSHV1Serializier(ExitConfirmationMessageSSH1 message) {
         super(message);

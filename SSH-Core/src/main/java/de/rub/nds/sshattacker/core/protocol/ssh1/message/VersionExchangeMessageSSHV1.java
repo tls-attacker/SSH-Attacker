@@ -27,11 +27,10 @@ public class VersionExchangeMessageSSHV1 extends ProtocolMessage<VersionExchange
     private ModifiableString version;
     private ModifiableString comment;
     private ModifiableString endOfMessageSequence;
-    MessageIdConstantSSH1 messageIdConstant;
 
     public VersionExchangeMessageSSHV1() {
         super();
-        this.messageIdConstant = MessageIdConstantSSH1.VERSION_EXCHANGE_MESSAGE_SSH1;
+        setMessageIdConstant(MessageIdConstantSSH1.VERSION_EXCHANGE_MESSAGE_SSH1);
     }
 
     public ModifiableString getVersion() {
@@ -94,7 +93,6 @@ public class VersionExchangeMessageSSHV1 extends ProtocolMessage<VersionExchange
 
     @Override
     public VersionExchangeMessageSSHV1Serializer getSerializer(SshContext context) {
-        LOGGER.debug("[bro] getting serializer");
         return new VersionExchangeMessageSSHV1Serializer(this);
     }
 

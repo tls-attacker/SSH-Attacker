@@ -17,7 +17,7 @@ import jakarta.xml.bind.annotation.XmlType;
 
 @XmlType(namespace = "ssh-attacker")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessage<T> {
+public abstract class Ssh1Message<T extends Ssh1Message<T>> extends ProtocolMessage<T> {
     protected ModifiableByte messageId;
 
     public ModifiableByte getMessageId() {
@@ -39,7 +39,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     }
 
     @Override
-    public abstract SshMessageHandler<T> getHandler(SshContext context);
+    public abstract Ssh1MessageHandler<T> getHandler(SshContext context);
 
     @Override
     public String toCompactString() {

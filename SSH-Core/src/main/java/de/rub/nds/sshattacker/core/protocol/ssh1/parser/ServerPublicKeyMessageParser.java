@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicKeyMessage> {
+public class ServerPublicKeyMessageParser extends Ssh1MessageParser<ServerPublicKeyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerPublicKeyMessageParser(SshContext context, InputStream stream) {

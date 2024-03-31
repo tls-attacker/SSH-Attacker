@@ -8,11 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelDataMessageSSH1;
 import java.io.InputStream;
 
-public class ChannelDataMessageSSHV1Parser extends SshMessageParser<ChannelDataMessageSSH1> {
+public class ChannelDataMessageSSHV1Parser extends Ssh1MessageParser<ChannelDataMessageSSH1> {
 
     public ChannelDataMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

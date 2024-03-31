@@ -24,7 +24,7 @@ import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -36,7 +36,7 @@ import javax.crypto.IllegalBlockSizeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSessionKeyMessage>
+public class ClientSessionKeyMessageHandler extends Ssh1MessageHandler<ClientSessionKeyMessage>
         implements MessageSentHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();

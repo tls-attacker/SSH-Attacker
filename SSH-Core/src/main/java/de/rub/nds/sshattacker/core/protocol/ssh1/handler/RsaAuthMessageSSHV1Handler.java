@@ -8,12 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RsaAuthMessageSSHV1Handler extends SshMessageHandler<RsaAuthMessageSSH1> {
+public class RsaAuthMessageSSHV1Handler extends Ssh1MessageHandler<RsaAuthMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

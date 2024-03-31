@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1Message;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AuthRhostsHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AuthRhostsParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AuthRhostsPreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AuthRhostsSerializier;
 import java.io.InputStream;
 
-public class AuthRhostsSSH1 extends SshMessage<AuthRhostsSSH1> {
+public class AuthRhostsSSH1 extends Ssh1Message<AuthRhostsSSH1> {
 
     private ModifiableString clientside_username;
 
@@ -43,17 +43,17 @@ public class AuthRhostsSSH1 extends SshMessage<AuthRhostsSSH1> {
     }
 
     @Override
-    public SshMessageParser<AuthRhostsSSH1> getParser(SshContext context, InputStream stream) {
+    public Ssh1MessageParser<AuthRhostsSSH1> getParser(SshContext context, InputStream stream) {
         return new AuthRhostsParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AuthRhostsSSH1> getPreparator(SshContext context) {
+    public Ssh1MessagePreparator<AuthRhostsSSH1> getPreparator(SshContext context) {
         return new AuthRhostsPreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AuthRhostsSSH1> getSerializer(SshContext context) {
+    public Ssh1MessageSerializer<AuthRhostsSSH1> getSerializer(SshContext context) {
         return new AuthRhostsSerializier(this);
     }
 

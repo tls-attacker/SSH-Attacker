@@ -8,11 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelCloseMessageSSH1;
 import java.io.InputStream;
 
-public class ChannelCloseMessageSSHV1Parser extends SshMessageParser<ChannelCloseMessageSSH1> {
+public class ChannelCloseMessageSSHV1Parser extends Ssh1MessageParser<ChannelCloseMessageSSH1> {
 
     public ChannelCloseMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);

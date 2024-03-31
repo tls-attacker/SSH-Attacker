@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
 
-public class FailureMessageSerializier extends SshMessageSerializer<FailureMessageSSH1> {
+public class FailureMessageSerializier extends Ssh1MessageSerializer<FailureMessageSSH1> {
 
     public FailureMessageSerializier(FailureMessageSSH1 message) {
         super(message);

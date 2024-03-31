@@ -53,7 +53,7 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public KeyExchangeInitMessage() {
         super();
-        this.messageIdConstant = MessageIdConstant.SSH_MSG_KEXINIT;
+        setMessageIdConstant(MessageIdConstant.SSH_MSG_KEXINIT);
     }
 
     public ModifiableByteArray getCookie() {
