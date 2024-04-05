@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -16,7 +17,6 @@ import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparatorSSHv1;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializerSSHv1;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;

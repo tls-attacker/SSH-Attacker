@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.layer;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.layer.context.LayerContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
