@@ -9,13 +9,13 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
-import com.google.common.primitives.Bytes;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
@@ -131,9 +131,8 @@ public final class OaepConverter {
         // Step g: Separate dataBlock
         byte[] paddedMessage = Arrays.copyOfRange(dataBlock, hashLen, dataBlock.length);
 
-        byte[] separator = new byte[1];
-        separator[0] = (byte) 1;
-        int indexOfSeparator = Bytes.indexOf(paddedMessage, separator);
+        byte separator = (byte) 0x01;
+        int indexOfSeparator = ArrayUtils.indexOf(paddedMessage, separator);
         if (indexOfSeparator == -1) {
             throw new IndexOutOfBoundsException("Could not find separator in padded message");
         }

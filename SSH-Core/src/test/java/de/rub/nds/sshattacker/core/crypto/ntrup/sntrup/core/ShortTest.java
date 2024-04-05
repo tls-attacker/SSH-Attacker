@@ -7,10 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ShortTest {
     public final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;

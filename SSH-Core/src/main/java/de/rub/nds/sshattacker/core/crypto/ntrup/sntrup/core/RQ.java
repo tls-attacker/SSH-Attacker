@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.*;
-
 import cc.redberry.rings.IntegersZp64;
 import cc.redberry.rings.poly.PolynomialMethods;
 import cc.redberry.rings.poly.univar.UnivariateDivision;
@@ -56,17 +54,14 @@ public class RQ {
     }
 
     private void setRQ(long[] coefficient) {
-        assertTrue(
-                "Coefficients have to be between (-(q+1)/2 and (q+1)/2",
-                Arrays.stream(coefficient)
-                        .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
-                        .findFirst()
-                        .isEmpty());
-
+        assert Arrays.stream(coefficient)
+                .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
+                .findFirst()
+                .isEmpty();
         rQ =
                 UnivariateDivision.remainder(
                         UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
-        assertTrue(rQ.isOverFiniteField());
+        assert rQ.isOverFiniteField();
     }
 
     public SntrupParameterSet getSet() {
@@ -162,12 +157,11 @@ public class RQ {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertFalse(
-                IntStream.range(0, set.getP())
-                        .filter(i -> r.get(i) > m.get(i))
-                        .findFirst()
-                        .isPresent());
+        assert r.stream().filter(i -> i < 0).findFirst().isEmpty();
+        assert IntStream.range(0, set.getP())
+                .filter(i -> r.get(i) > m.get(i))
+                .findFirst()
+                .isEmpty();
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
 
@@ -210,12 +204,11 @@ public class RQ {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertFalse(
-                IntStream.range(0, set.getP())
-                        .filter(i -> r.get(i) > m.get(i))
-                        .findFirst()
-                        .isPresent());
+        assert r.stream().filter(i -> i < 0).findFirst().isEmpty();
+        assert IntStream.range(0, set.getP())
+                .filter(i -> r.get(i) > m.get(i))
+                .findFirst()
+                .isEmpty();
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new RQ(set, coef.stream().mapToLong(l -> l - (set.getQ() - 1) / 2).toArray());
