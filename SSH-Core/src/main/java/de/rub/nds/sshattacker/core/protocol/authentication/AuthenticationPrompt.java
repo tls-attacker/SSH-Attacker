@@ -16,7 +16,6 @@ import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings({"SlowListContainsAll", "StandardVariableNames"})
 @XmlRootElement
@@ -117,7 +116,7 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
     }
 
     @Override
-    public <T> T[] toArray(@NonNull T[] a) {
+    public <T> T[] toArray(T[] a) {
         return promptEntries.toArray(a);
     }
 
@@ -132,27 +131,27 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
     }
 
     @Override
-    public boolean containsAll(@NonNull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return promptEntries.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NonNull Collection<? extends PromptEntry> c) {
+    public boolean addAll(Collection<? extends PromptEntry> c) {
         return promptEntries.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NonNull Collection<? extends PromptEntry> c) {
+    public boolean addAll(int index, Collection<? extends PromptEntry> c) {
         return promptEntries.addAll(c);
     }
 
     @Override
-    public boolean removeAll(@NonNull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return promptEntries.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NonNull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return promptEntries.retainAll(c);
     }
 

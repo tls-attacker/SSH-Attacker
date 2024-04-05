@@ -14,7 +14,6 @@ import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings({"SlowListContainsAll", "StandardVariableNames"})
 @XmlRootElement
@@ -138,27 +137,27 @@ public class AuthenticationResponse
     }
 
     @Override
-    public boolean containsAll(@NonNull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return responseEntries.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NonNull Collection<? extends ResponseEntry> c) {
+    public boolean addAll(Collection<? extends ResponseEntry> c) {
         return responseEntries.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NonNull Collection<? extends ResponseEntry> c) {
+    public boolean addAll(int index, Collection<? extends ResponseEntry> c) {
         return responseEntries.addAll(c);
     }
 
     @Override
-    public boolean removeAll(@NonNull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return responseEntries.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NonNull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return responseEntries.retainAll(c);
     }
 

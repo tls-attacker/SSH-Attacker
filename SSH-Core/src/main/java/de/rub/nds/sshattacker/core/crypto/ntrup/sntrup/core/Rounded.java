@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.*;
-
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
@@ -35,7 +33,7 @@ public class Rounded {
 
     public Rounded(SntrupParameterSet set, long[] coefficients) {
         super();
-        assertTrue(is_rounded(set, coefficients));
+        assert is_rounded(set, coefficients);
         this.set = set;
         mod = generateMod(set);
         rounded =
@@ -53,14 +51,10 @@ public class Rounded {
 
     public static Rounded round(RQ rq) {
         long[] rounded = round(rq.stream());
-        assertFalse(
-                Arrays.stream(rounded)
-                        .filter(
-                                c ->
-                                        c > (rq.getSet().getQ() + 1) / 2
-                                                || c < -(rq.getSet().getQ() + 1) / 2)
-                        .findFirst()
-                        .isPresent());
+        assert Arrays.stream(rounded)
+                .filter(c -> c > (rq.getSet().getQ() + 1) / 2 || c < -(rq.getSet().getQ() + 1) / 2)
+                .findFirst()
+                .isEmpty();
         return new Rounded(rq.getSet(), UnivariatePolynomialZ64.create(rounded));
     }
 
@@ -92,12 +86,11 @@ public class Rounded {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertFalse(
-                IntStream.range(0, set.getP())
-                        .filter(i -> r.get(i) > m.get(i))
-                        .findFirst()
-                        .isPresent());
+        assert r.stream().filter(i -> i < 0).findFirst().isEmpty();
+        assert IntStream.range(0, set.getP())
+                .filter(i -> r.get(i) > m.get(i))
+                .findFirst()
+                .isEmpty();
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
         byte[] res = new byte[encdodedCoefficients.size()];
@@ -133,12 +126,11 @@ public class Rounded {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertFalse(
-                IntStream.range(0, set.getP())
-                        .filter(i -> r.get(i) > m.get(i))
-                        .findFirst()
-                        .isPresent());
+        assert r.stream().filter(i -> i < 0).findFirst().isEmpty();
+        assert IntStream.range(0, set.getP())
+                .filter(i -> r.get(i) > m.get(i))
+                .findFirst()
+                .isEmpty();
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new Rounded(
