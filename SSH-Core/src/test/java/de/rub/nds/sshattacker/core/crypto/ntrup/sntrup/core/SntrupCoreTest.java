@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("StandardVariableNames")
 public class SntrupCoreTest {
@@ -22,6 +22,6 @@ public class SntrupCoreTest {
         Short r = Short.createRandomShort(set);
         Rounded c = SntrupCore.encrypt(r, values.getH());
         Short rNew = core.decrypt(c, values.getF(), values.getgInv());
-        assertEquals("r != r'", r, rNew);
+        assertEquals(r, rNew, "r != r'");
     }
 }
