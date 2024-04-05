@@ -12,6 +12,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Objects;
 
 /** A serializable RSA public key used in RSA encryption and signatures. */
 @XmlRootElement
@@ -59,5 +60,19 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "RSA";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomRsaPublicKey that = (CustomRsaPublicKey) o;
+        return Objects.equals(modulus, that.modulus)
+                && Objects.equals(publicExponent, that.publicExponent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(modulus, publicExponent);
     }
 }

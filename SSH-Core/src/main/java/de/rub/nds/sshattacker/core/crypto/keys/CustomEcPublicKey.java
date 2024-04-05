@@ -21,6 +21,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
 import java.security.spec.InvalidParameterSpecException;
+import java.util.Objects;
 
 /**
  * A serializable elliptic curve public key used in various EC-based algorithms like ECDH and ECDSA.
@@ -97,5 +98,18 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     public static CustomEcPublicKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomEcPublicKey that = (CustomEcPublicKey) o;
+        return Objects.equals(publicKey, that.publicKey) && group == that.group;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(publicKey, group);
     }
 }

@@ -12,6 +12,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.Objects;
 
 /** A serializable RSA private key used in RSA encryption and signatures. */
 @XmlRootElement
@@ -59,5 +60,19 @@ public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateK
     @Override
     public String getAlgorithm() {
         return "RSA";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomRsaPrivateKey that = (CustomRsaPrivateKey) o;
+        return Objects.equals(modulus, that.modulus)
+                && Objects.equals(privateExponent, that.privateExponent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(modulus, privateExponent);
     }
 }

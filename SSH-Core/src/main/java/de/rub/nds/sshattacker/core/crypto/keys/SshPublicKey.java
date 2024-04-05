@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -132,10 +133,29 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         return Optional.ofNullable(privateKey);
     }
 
+    public void setPrivateKey(PRIVATE privateKey) {
+        this.privateKey = privateKey;
+    }
+
     public String toString() {
         return String.format(
                 "SshPublicKey[%s,%s]",
                 publicKeyFormat.toString(), getPrivateKey().map(key -> "private").orElse("public"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SshPublicKey<?, ?> that = (SshPublicKey<?, ?>) o;
+        return publicKeyFormat == that.publicKeyFormat
+                && Objects.equals(publicKey, that.publicKey)
+                && Objects.equals(privateKey, that.privateKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(publicKeyFormat, publicKey, privateKey);
     }
 
     public enum FingerprintType {

@@ -22,6 +22,9 @@ public class ClientCommandConfig extends SshDelegateConfig {
     @ParametersDelegate private final WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate private final WorkflowTypeDelegate workflowTypeDelegate;
 
+    @ParametersDelegate private final UserKeysPathDelegate userKeysPathDelegate;
+    @ParametersDelegate private final HostKeysPathDelegate hostKeysPathDelegate;
+
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -30,12 +33,16 @@ public class ClientCommandConfig extends SshDelegateConfig {
         workflowInputDelegate = new WorkflowInputDelegate();
         workflowOutputDelegate = new WorkflowOutputDelegate();
         workflowTypeDelegate = new WorkflowTypeDelegate();
+        userKeysPathDelegate = new UserKeysPathDelegate();
+        hostKeysPathDelegate = new HostKeysPathDelegate();
         addDelegate(clientDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
+        addDelegate(userKeysPathDelegate);
+        addDelegate(hostKeysPathDelegate);
     }
 
     @Override

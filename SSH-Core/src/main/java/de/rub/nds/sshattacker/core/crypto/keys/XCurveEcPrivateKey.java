@@ -20,6 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Arrays;
+import java.util.Objects;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -113,5 +115,20 @@ public class XCurveEcPrivateKey extends CustomPrivateKey {
     @Override
     public byte[] getEncoded() {
         return scalar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XCurveEcPrivateKey that = (XCurveEcPrivateKey) o;
+        return group == that.group && Arrays.equals(scalar, that.scalar);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(group);
+        result = 31 * result + Arrays.hashCode(scalar);
+        return result;
     }
 }
