@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.server.handler;
 
-import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
 import de.rub.nds.sshattacker.core.constants.CipherMethod;
@@ -150,7 +149,7 @@ public class ServerPublicKeyMessageHandler extends Ssh1MessageHandler<ServerPubl
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        md.update(ArrayConverter.concatenate(hostModulus, serverModulus, cookie));
         byte[] sessionID = md.digest();
         LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
         sshContext.setSessionID(sessionID);

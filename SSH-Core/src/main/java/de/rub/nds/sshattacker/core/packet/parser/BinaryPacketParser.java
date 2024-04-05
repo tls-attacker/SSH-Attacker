@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.packet.parser;
 
-import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -189,7 +188,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(
-                Bytes.concat(
+                ArrayConverter.concatenate(
                         firstBlockEncrypted,
                         parseByteArrayField(
                                 binaryPacket.getLength().getValue()

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
-import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -764,7 +763,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        md.update(ArrayConverter.concatenate(hostModulus, serverModulus, cookie));
         // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
         byte[] sessionID = md.digest();
         LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
