@@ -24,6 +24,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PacketCipher activeDecryptCipher;
+
     /**
      * The sequence number of the packet to parse. Required to successfully decrypt the packet
      * length in case of chacha20-poly1305.

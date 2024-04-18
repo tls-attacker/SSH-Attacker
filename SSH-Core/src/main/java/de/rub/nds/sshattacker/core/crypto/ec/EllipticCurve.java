@@ -15,6 +15,7 @@ public abstract class EllipticCurve {
     private Point basePoint;
     private BigInteger basePointOrder;
     private BigInteger cofactor;
+
     /** The modulus of the field over which the curve is defined. */
     private final BigInteger modulus;
 

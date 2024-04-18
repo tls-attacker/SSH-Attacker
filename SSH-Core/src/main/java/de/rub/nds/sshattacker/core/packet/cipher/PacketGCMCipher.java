@@ -31,8 +31,10 @@ public class PacketGCMCipher extends PacketCipher {
 
     /** Cipher for encryption / decryption and integrity protection of packets. */
     private final AbstractCipher cipher;
+
     /** Fixed part of the IV. */
     private final byte[] ivFixed;
+
     /** Dynamic part of the IV implemented as a counter variable. */
     private long ivCtr;
 
