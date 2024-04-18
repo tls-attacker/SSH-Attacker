@@ -53,6 +53,7 @@ public final class ExchangeHashInputHolder {
     // region RSA exchange hash fields
     private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
     private byte[] rsaEncryptedSecret;
+
     // endregion
 
     // region Getters / setters general exchange hash fields
@@ -103,6 +104,7 @@ public final class ExchangeHashInputHolder {
     public void setSharedSecret(byte[] sharedSecret) {
         this.sharedSecret = sharedSecret;
     }
+
     // endregion
 
     // region Getters / setters named DH exchange hash fields
@@ -121,6 +123,7 @@ public final class ExchangeHashInputHolder {
     public void setDhServerPublicKey(BigInteger dhServerPublicKey) {
         this.dhServerPublicKey = dhServerPublicKey;
     }
+
     // endregion
 
     // region Getters / setters DH GEX exchange hash fields
@@ -179,6 +182,7 @@ public final class ExchangeHashInputHolder {
     public void setDhGexServerPublicKey(BigInteger dhGexServerPublicKey) {
         this.dhGexServerPublicKey = dhGexServerPublicKey;
     }
+
     // endregion
 
     // region Getters / setters ECDH exchange hash fields
@@ -197,6 +201,7 @@ public final class ExchangeHashInputHolder {
     public void setEcdhServerPublicKey(byte[] ecdhServerPublicKey) {
         this.ecdhServerPublicKey = ecdhServerPublicKey;
     }
+
     // endregion
 
     // region Getters / setters hybrid exchange hash fields
@@ -215,6 +220,7 @@ public final class ExchangeHashInputHolder {
     public void setHybridServerPublicKey(byte[] hybridServerPublicKey) {
         this.hybridServerPublicKey = hybridServerPublicKey;
     }
+
     // end region
 
     // region Getters / setters RSA exchange hash fields

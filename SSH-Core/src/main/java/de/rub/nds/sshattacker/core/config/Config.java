@@ -55,24 +55,32 @@ public class Config implements Serializable {
 
     /** Default Connection to use when running as Client */
     private OutboundConnection defaultClientConnection;
+
     /** Default Connection to use when running as Server */
     private InboundConnection defaultServerConnection;
+
     /** The default running mode, when running the SSH-Attacker */
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
+
     /** Client comment sent alongside protocol and software version */
     private String clientComment;
+
     /** End-of-message sequence of the clients' VersionExchangeMessage */
     private String clientEndOfMessageSequence;
+
     /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String serverVersion;
+
     /** Server comment sent alongside protocol and software version */
     private String serverComment;
+
     /** End-of-message sequence of the servers' VersionExchangeMessage */
     private String serverEndOfMessageSequence;
+
     // endregion
 
     // region Pre-KeyExchange
@@ -199,6 +207,7 @@ public class Config implements Serializable {
 
     /** Value of the servers' reserved field which may be used for extensions in the future */
     private int serverReserved;
+
     // endregion
 
     // region KeyExchange
@@ -207,39 +216,47 @@ public class Config implements Serializable {
      * message
      */
     private Integer dhGexMinimalGroupSize;
+
     /** Fallback of preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer dhGexPreferredGroupSize;
+
     /**
      * Fallback of maximal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
      * message
      */
     private Integer dhGexMaximalGroupSize;
+
     /**
      * Default DH key exchange algorithm, which is used if a new DH or DH Gex key exchange is
      * instantiated with without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
+
     /**
      * Default ECDH key exchange algorithm, which is used if a new ECDH or X curve ECDH key exchange
      * is instantiated without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
+
     /**
      * Default RSA key exchange algorithm, which is used if a new RSA key exchange is instantiated
      * without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+
     /**
      * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is
      * instantiated without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm;
+
     /**
      * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
+
     /**
      * If set to false, the packet cipher will only be changed in case of algorithm or key material
      * change during the SSH_MSG_NEWKEYS handler. This can be useful if one tries sending NEWKEYS
@@ -248,6 +265,7 @@ public class Config implements Serializable {
      * #enableEncryptionOnNewKeysMessage} is set to false.
      */
     private Boolean forcePacketCipherChange = false;
+
     /**
      * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
      * when picking the algorithms
@@ -265,6 +283,7 @@ public class Config implements Serializable {
      */
     private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
             fallbackRsaTransientPublicKey;
+
     // endregion
 
     // region SSH Extensions
@@ -288,6 +307,7 @@ public class Config implements Serializable {
 
     /** Flag for enabling and disabling the delay-compression extension */
     private boolean respectDelayCompressionExtension = true;
+
     // endregion
 
     // region Authentication
@@ -296,89 +316,110 @@ public class Config implements Serializable {
      * SSH_MSG_USERAUTH_REQUEST message.
      */
     private AuthenticationMethod authenticationMethod;
+
     /** The service name defines the service to start after authentication */
     private String serviceName;
+
     /** The username used for authentication method password */
     private String username;
+
     /** The password used for authentication method password */
     private String password;
+
     /** The List of responses used for UserAuthInfoResponseMessage */
     @XmlElement(name = "preConfiguredAuthResponse")
     @XmlElementWrapper
     private List<AuthenticationResponse> preConfiguredAuthResponses;
+
     /** The List of user keys for public key authentication */
     @XmlElement(name = "userKey")
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> userKeys;
+
     // endregion
 
     // region Channel
     /** Fallback for command of ChannelRequestExecMessage */
     private String channelCommand;
+
     /** Default channel values including local channel id and window size */
     private ChannelDefaults channelDefaults;
+
     /**
      * Fallback for the wantReply field of messages extending the SSH_MSG_GLOBAL_REQUEST or
      * SSH_MSG_CHANNEL_REQUEST messages
      */
     private byte replyWanted;
+
     /**
      * Fallback for variableName of ChannelRequestEnvMessage, to change server-allowed environment
      * variables
      */
     private String defaultVariableName;
+
     /**
      * Fallback for variableValue of ChannelRequestEnvMessage, to change server-allowed environment
      * variables
      */
     private String defaultVariableValue;
+
     /**
      * Default value for the ChannelRequestXonXoffMessage, which is used by the server to inform the
      * client, when it can or cannot perform client flow control.
      */
     private byte clientFlowControl;
+
     /**
      * Default terminal width in pixels, if a pseudo terminal is requested or changed
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalWidthPixels;
+
     /**
      * Default terminal width in columns, if a pseudo terminal is requested or changed
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalWidthColumns;
+
     /**
      * Default terminal height in rows, if a pseudo terminal is requested or changed
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalHeightRows;
+
     /**
      * Default terminal height in pixels, if a pseudo terminal is requested or used
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalHeightPixels;
+
     /**
      * Default value of TERM environment variable, to specify the terminal handling of a requested
      * pseudo terminal(pty-req)
      */
     private String defaultTermEnvVariable;
+
     /** Default name of a predefined subsystem, which should be executed on the remote */
     private String defaultSubsystemName;
+
     /**
      * The default break length, which is requested when a break operation is performed, by sending
      * ChannelRequestBreakMessage
      */
     private int defaultBreakLength;
+
     // endregion
 
     // region Workflow settings
     /** The path to load workflow trace from. The workflow trace must be stored in an XML-File. */
     private String workflowInput;
+
     /**
      * The type of workflow trace, that should be executed by the Ssh client or server. The workflow
      * configuration factory uses the type to create the belonging workflow trace.
      */
     private WorkflowTraceType workflowTraceType;
+
     /**
      * List of filter types, that should be applied on the workflow(or copy) before saving the
      * trace.
@@ -386,45 +427,58 @@ public class Config implements Serializable {
     @XmlElement(name = "outputFilter")
     @XmlElementWrapper
     private List<FilterType> outputFilters;
+
     /** The path to save the workflow trace as output */
     private String workflowOutput;
+
     /** Defines the type of WorkflowExecutor to use when executing the workflow. */
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
+
     /**
      * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
      * trace copy.
      */
     private Boolean applyFiltersInPlace;
+
     /** Perform some additional steps after filtering, for example restoring user defined values. */
     private Boolean filtersKeepUserSettings = true;
+
     /** Defines, if the workflow trace should be executed or not */
     private Boolean workflowExecutorShouldOpen = true;
+
     /** Defines, whether the SSH-Attacker should stop after a disconnect or not */
     private Boolean stopActionsAfterDisconnect = true;
+
     /** Defines, whether the SSH-Attacker should stop after a IO exception or not */
     private Boolean stopActionsAfterIOException = true;
+
     /**
      * Defines, if the used connections of the SSH-Attacker should be closed, after executing the
      * workflow
      */
     private Boolean workflowExecutorShouldClose = true;
+
     /** Defines if the workflow trace should be reset before saving, by resetting all SshActions. */
     private Boolean resetWorkflowtracesBeforeSaving = false;
+
     /**
      * Setting this to true results in the client transport handlers trying to acquire a new port on
      * each connection attempt. Default behavior true so that reused ports are not an issue.
      */
     private Boolean resetClientSourcePort = true;
+
     /**
      * Setting this to true results in multiple attempts to initialize a connection to the server
      * when a ClientTcpTransportHandler is used.
      */
     private Boolean retryFailedClientTcpSocketInitialization = false;
+
     /**
      * Setting this to true will stop all further action executions in a workflow trace if an action
      * was not executed as planned.
      */
     private Boolean stopTraceAfterUnexpected = false;
+
     // endregion
 
     // region ReceiveAction
@@ -1013,6 +1067,7 @@ public class Config implements Serializable {
         applyFiltersInPlace = false;
         // endregion
     }
+
     // endregion
 
     // region createConfig
@@ -1053,6 +1108,7 @@ public class Config implements Serializable {
         }
         return config;
     }
+
     // endregion
 
     public OutboundConnection getDefaultClientConnection() {
@@ -1412,6 +1468,7 @@ public class Config implements Serializable {
     public boolean getRespectDelayCompressionExtension() {
         return respectDelayCompressionExtension;
     }
+
     // endregion
 
     // region Setters SSH Extensions
@@ -1450,6 +1507,7 @@ public class Config implements Serializable {
     public void setRespectDelayCompressionExtension(boolean respectDelayCompressionExtension) {
         this.respectDelayCompressionExtension = respectDelayCompressionExtension;
     }
+
     // endregion
 
     // region Getters for KeyExchange
@@ -1551,6 +1609,7 @@ public class Config implements Serializable {
     public void setHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
         this.hostKeys = Objects.requireNonNull(hostKeys);
     }
+
     // endregion
 
     // region Getters for authentication
@@ -1577,6 +1636,7 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
+
     // endregion
     // region Setters for authentication
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1603,6 +1663,7 @@ public class Config implements Serializable {
     public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
     }
+
     // endregion
 
     // region Getters for Channel
@@ -1774,6 +1835,7 @@ public class Config implements Serializable {
     public Boolean getStopTraceAfterUnexpected() {
         return stopTraceAfterUnexpected;
     }
+
     // endregion
     // region Setters for Workflow settings
 
@@ -1837,6 +1899,7 @@ public class Config implements Serializable {
     public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
         this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
     }
+
     // endregion
 
     // region Getters for ReceiveAction
@@ -1865,6 +1928,7 @@ public class Config implements Serializable {
     public void setStopReceivingAfterDisconnect(boolean stopReceivingAfterDisconnect) {
         this.stopReceivingAfterDisconnect = stopReceivingAfterDisconnect;
     }
+
     // endregion
 
     public String getConfigOutput() {

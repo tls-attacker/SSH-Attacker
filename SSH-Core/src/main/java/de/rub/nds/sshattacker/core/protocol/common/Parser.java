@@ -28,8 +28,10 @@ public abstract class Parser<T> {
 
     /** Current position in the byte array */
     private int pointer;
+
     /** Array that should be parsed */
     private final byte[] array;
+
     /** Start position of the parser */
     private final int startPoint;
 

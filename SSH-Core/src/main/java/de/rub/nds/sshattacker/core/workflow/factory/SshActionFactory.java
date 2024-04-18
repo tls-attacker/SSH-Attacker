@@ -42,6 +42,7 @@ public final class SshActionFactory {
         action.setConnectionAlias(connection.getAlias());
         return action;
     }
+
     /**
      * Creates a ForwardAction for the provided protocolMessages. The order of inbound and
      * outboundConnection stays the same in the whole workflow. In this case the ConnectionEndType
