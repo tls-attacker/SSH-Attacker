@@ -55,6 +55,7 @@ public abstract class Chooser {
     public abstract String getServerComment();
 
     public abstract String getServerEndOfMessageSequence();
+
     // endregion
 
     // region Key Exchange Initialization
@@ -115,6 +116,7 @@ public abstract class Chooser {
     public abstract int getClientReserved();
 
     public abstract int getServerReserved();
+
     // endregion
 
     // region SSH Extensions
@@ -133,6 +135,7 @@ public abstract class Chooser {
     public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
 
     public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
+
     // endregion
 
     // region Negotiated Parameters
@@ -231,6 +234,7 @@ public abstract class Chooser {
     public abstract CompressionMethod getCompressionMethodClientToServer();
 
     public abstract CompressionMethod getCompressionMethodServerToClient();
+
     // endregion
 
     // region Key Exchange
@@ -254,6 +258,7 @@ public abstract class Chooser {
     public abstract Integer getPreferredDhGroupSize();
 
     public abstract Integer getMaximalDhGroupSize();
+
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();

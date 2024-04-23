@@ -133,6 +133,7 @@ public class DefaultChooser extends Chooser {
                 .getServerEndOfMessageSequence()
                 .orElse(config.getServerEndOfMessageSequence());
     }
+
     // endregion
 
     // region Key Exchange Initialization
@@ -533,6 +534,7 @@ public class DefaultChooser extends Chooser {
     public int getServerReserved() {
         return context.getSshContext().getServerReserved().orElse(config.getServerReserved());
     }
+
     // endregion
 
     // region SSH Extensions
@@ -658,6 +660,7 @@ public class DefaultChooser extends Chooser {
                 .getServerSupportedDelayCompressionMethods()
                 .orElse(config.getServerSupportedDelayCompressionMethods());
     }
+
     // endregion
 
     // region Negotiated Parameters
@@ -949,6 +952,7 @@ public class DefaultChooser extends Chooser {
                             return negotiatedMethod;
                         });
     }
+
     // endregion
 
     // region Key Exchange
@@ -1167,6 +1171,7 @@ public class DefaultChooser extends Chooser {
                 .getMaximalDhGroupSize()
                 .orElse(config.getDhGexMaximalGroupSize());
     }
+
     // endregion
 
     /**

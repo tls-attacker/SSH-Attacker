@@ -33,6 +33,7 @@ public class PacketMacedCipher extends PacketCipher {
 
     /** Cipher for encryption / decryption of packets. */
     private final AbstractCipher cipher;
+
     /** MAC for integrity protection of packets. */
     private final AbstractMac mac;
 

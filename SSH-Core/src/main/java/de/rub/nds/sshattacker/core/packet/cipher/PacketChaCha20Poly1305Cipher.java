@@ -40,6 +40,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
      */
     /** ChaCha20 instance keyed with K_1 for packet length encryption / decryption. */
     private final AbstractCipher headerCipher;
+
     /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption / decryption. */
     private final AbstractCipher mainCipher;
 

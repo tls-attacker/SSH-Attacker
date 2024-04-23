@@ -72,6 +72,7 @@ public abstract class Serializer<T> {
     protected final void appendString(String s) {
         appendString(s, StandardCharsets.UTF_8);
     }
+
     /**
      * Adds a byte[] representation of a BigInteger to the final byte[] minus the sign byte. If the
      * BigInteger is greater than the specified length only the lower length bytes are serialized.

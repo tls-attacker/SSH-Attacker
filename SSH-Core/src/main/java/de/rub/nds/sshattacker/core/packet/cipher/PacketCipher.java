@@ -28,12 +28,16 @@ public abstract class PacketCipher {
 
     /** The SSH context this packet cipher is used in. */
     protected final SshContext context;
+
     /** The key set used by the cipher. */
     protected final AbstractKeySet keySet;
+
     /** The encryption algorithm to use. */
     protected final EncryptionAlgorithm encryptionAlgorithm;
+
     /** The MAC algorithm to use. This may be null if using an AEAD encryption algorithm. */
     protected final MacAlgorithm macAlgorithm;
+
     /** The cipher mode (whether packages should be encrypted or decrypted by this cipher). */
     protected final CipherMode mode;
 

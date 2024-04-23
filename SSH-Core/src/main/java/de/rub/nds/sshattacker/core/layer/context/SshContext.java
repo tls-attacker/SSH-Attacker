@@ -68,11 +68,13 @@ public class SshContext extends LayerContext {
 
     /** Connection used to communicate with the remote peer */
     private TransportHandler transportHandler;
+
     /** If set to true, an exception was received from the transport handler */
     private boolean receivedTransportHandlerException;
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
+
     /**
      * If set to true, receive actions will read the incoming byte stream on a per-line basis (each
      * line is terminated by LF).
@@ -84,6 +86,7 @@ public class SshContext extends LayerContext {
      * initialized to 0 and wraps around at 2^32.
      */
     private Integer writeSequenceNumber;
+
     /**
      * Sequence number used to verify the MAC of received packages. The sequence number is unsigned,
      * initialized to 0 and wraps around at 2^32.
@@ -100,19 +103,25 @@ public class SshContext extends LayerContext {
     // region Version Exchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
+
     /** Client comment sent alongside protocol and software version */
     private String clientComment;
+
     /** End-of-message sequence of the clients' VersionExchangeMessage */
     private String clientEndOfMessageSequence;
+
     /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String serverVersion;
+
     /** Server comment sent alongside protocol and software version */
     private String serverComment;
+
     /** End-of-message sequence of the servers' VersionExchangeMessage */
     private String serverEndOfMessageSequence;
 
     /** Result of BB-Oracle; 0 = both false, 1 = first correct, second false, 2 = both correct */
     private int bbResult = 0;
+
     // endregion
 
     // region Key Exchange Initialization
@@ -123,127 +132,179 @@ public class SshContext extends LayerContext {
 
     /** Client cookie containing 16 random bytes */
     private byte[] clientCookie;
+
     /** Server cookie containing 16 random bytes */
     private byte[] serverCookie;
+
     /** List of key exchange algorithms supported by the remote peer */
     private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+
     /** List of key exchange algorithms supported by the server */
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+
     /** List of host key algorithms supported by the client */
     private List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
+
     /** List of host key algorithms supported by the server */
     private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
+
     /** List of encryption algorithms (client to server) supported by the client */
     private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
+
     /** List of encryption algorithms (server to client) supported by the client */
     private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
+
     /** List of encryption algorithms (client to server) supported by the server */
     private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
+
     /** List of encryption algorithms (server to client) supported by the server */
     private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
+
     /** List of MAC algorithms (client to server) supported by the client */
     private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+
     /** List of MAC algorithms (server to client) supported by the client */
     private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+
     /** List of MAC algorithms (client to server) supported by the server */
     private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+
     /** List of MAC algorithms (server to client) supported by the server */
     private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+
     /** List of compression algorithms (client to server) supported by the client */
     private List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
+
     /** List of compression algorithms (server to client) supported by the client */
     private List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
+
     /** List of compression algorithms (client to server) supported by the server */
     private List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
+
     /** List of compression algorithms (server to client) supported by the server */
     private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
+
     /** List of languages (client to server) supported by the client */
     private List<String> clientSupportedLanguagesClientToServer;
+
     /** List of languages (server to client) supported by the client */
     private List<String> clientSupportedLanguagesServerToClient;
+
     /** List of languages (client to server) supported by the server */
     private List<String> serverSupportedLanguagesClientToServer;
+
     /** List of languages (server to client) supported by the server */
     private List<String> serverSupportedLanguagesServerToClient;
+
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
      */
     private Boolean clientFirstKeyExchangePacketFollows;
+
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
      */
     private Boolean serverFirstKeyExchangePacketFollows;
+
     /** Value of the clients' reserved field which may be used for extensions in the future */
     private Integer clientReserved;
+
     /** Value of the servers' reserved field which may be used for extensions in the future */
     private Integer serverReserved;
+
     // endregion
 
     // region Negotiated Parameters
     /** Negotiated key exchange algorithm */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
+
     /** Negotiated host key algorithm */
     private PublicKeyAlgorithm hostKeyAlgorithm;
+
     /** Negotiated encryption algorithm (client to server) */
     private EncryptionAlgorithm encryptionAlgorithmClientToServer;
+
     /** Negotiated encryption algorithm (server to client) */
     private EncryptionAlgorithm encryptionAlgorithmServerToClient;
+
     /** Negotiated MAC algorithm (client to server) */
     private MacAlgorithm macAlgorithmClientToServer;
+
     /** Negotiated MAC algorithm (server to client) */
     private MacAlgorithm macAlgorithmServerToClient;
+
     /** Negotiated compression algorithm (client to server) */
     private CompressionMethod compressionMethodClientToServer;
+
     /** Negotiated compression algorithm (server to client) */
     private CompressionMethod compressionMethodServerToClient;
+
     /** Flag indicating whether strict key exchange mode is enabled */
     private Boolean strictKeyExchangeEnabled;
+
     // endregion
 
     // region Key Exchange
     /** Key exchange instance for static DH key exchange method(s) */
     private DhKeyExchange dhKeyExchangeInstance;
+
     /** Key exchange instance for DH key exchange method(s) with group exchange */
     private DhKeyExchange dhGexKeyExchangeInstance;
+
     /** Key exchange instance for ECDH key exchange method(s) (incl. X curve ECDH) */
     private AbstractEcdhKeyExchange ecdhKeyExchangeInstance;
+
     /** Key exchange instance for RSA key exchange method(s) */
     private RsaKeyExchange rsaKeyExchangeInstance;
+
     /** Key exchange instance for Hybrid key exchange method(s) */
     private HybridKeyExchange hybridKeyExchangeInstance;
+
     /**
      * If set to true, the most recent group request received was of type
      * DhGexKeyExchangeOldRequestMessage
      */
     private boolean oldGroupRequestReceived = false;
+
     /** Minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer minimalDhGroupSize;
+
     /** Preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer preferredDhGroupSize;
+
     /** Maximal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer maximalDhGroupSize;
+
     /** Host key */
     private SshPublicKey<?, ?> hostKey;
+
     /** Server key for SSHv1 */
     private SshPublicKey<?, ?> serverKey;
+
     /** Signature generated by the server over the exchange hash to authenticate the key exchange */
     private byte[] serverExchangeHashSignature;
+
     /** Flag indicating whether the server exchange hash signature is valid */
     private Boolean serverExchangeHashSignatureValid;
+
     // endregion
 
     // region Exchange Hash and Cryptographic Keys
     /** Holder instance for the exchange hash input values */
     private ExchangeHashInputHolder exchangeHashInputHolder;
+
     /** Exchange hash of the most recent key exchange */
     private byte[] exchangeHash;
+
     /**
      * Unique identifier for this session. This is equal to the first computed exchange hash and
      * never changes
      */
     private byte[] sessionID;
+
     /** The shared secret established by the negotiated key exchange method */
     private byte[] sharedSecret;
+
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private AbstractKeySet keySet;
 
@@ -256,6 +317,7 @@ public class SshContext extends LayerContext {
     private List<ProtocolFlag> chosenProtocolFlags;
     private CipherMethod chosenCipherMethod;
     private AuthenticationMethodSSHv1 chosenAuthenticationMethod;
+
     // endregion
 
     // region SSH Extensions
@@ -300,6 +362,7 @@ public class SshContext extends LayerContext {
      * extension failed
      */
     private boolean delayCompressionExtensionNegotiationFailed;
+
     // endregion
 
     // region Connection Protocol
@@ -311,6 +374,7 @@ public class SshContext extends LayerContext {
 
     /** If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived = false;
+
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
@@ -500,6 +564,7 @@ public class SshContext extends LayerContext {
     public void setServerEndOfMessageSequence(String serverEndOfMessageSequence) {
         this.serverEndOfMessageSequence = serverEndOfMessageSequence;
     }
+
     // endregion
 
     // region Getters for Key Exchange Initialization Fields
@@ -789,6 +854,7 @@ public class SshContext extends LayerContext {
     public Optional<Boolean> getStrictKeyExchangeEnabled() {
         return Optional.ofNullable(strictKeyExchangeEnabled);
     }
+
     // endregion
     // region Setters for Negotiated Parameters
     public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
@@ -830,6 +896,7 @@ public class SshContext extends LayerContext {
     public void setStrictKeyExchangeEnabled(boolean strictKeyExchangeEnabled) {
         this.strictKeyExchangeEnabled = strictKeyExchangeEnabled;
     }
+
     // endregion
 
     // region Getters for Key Exchange Fields
@@ -889,6 +956,7 @@ public class SshContext extends LayerContext {
     public Optional<Boolean> isServerExchangeHashSignatureValid() {
         return Optional.ofNullable(serverExchangeHashSignatureValid);
     }
+
     // endregion
     // region Setters for Key Exchange Fields
     public void setDhKeyExchangeInstance(DhKeyExchange dhKeyExchangeInstance) {
@@ -938,6 +1006,7 @@ public class SshContext extends LayerContext {
     public void setServerExchangeHashSignatureValid(Boolean isValid) {
         serverExchangeHashSignatureValid = isValid;
     }
+
     // endregion
 
     // region Getters for Exchange Hash and Cryptographic Keys
@@ -960,6 +1029,7 @@ public class SshContext extends LayerContext {
     public Optional<AbstractKeySet> getKeySet() {
         return Optional.ofNullable(keySet);
     }
+
     // endregion
     // region Setters for Exchange Hash and Cryptographic Keys
     public void setExchangeHash(byte[] exchangeHash) {
@@ -977,6 +1047,7 @@ public class SshContext extends LayerContext {
     public void setKeySet(AbstractKeySet transportKeySet) {
         keySet = transportKeySet;
     }
+
     // endregion
 
     // region Getters for SSH Extensions
@@ -1032,6 +1103,7 @@ public class SshContext extends LayerContext {
     public boolean delayCompressionExtensionSent() {
         return delayCompressionExtensionSent;
     }
+
     // endregion
 
     // region Setters for SSH Extensions
@@ -1087,6 +1159,7 @@ public class SshContext extends LayerContext {
     public void setDelayCompressionExtensionSent(boolean sent) {
         delayCompressionExtensionSent = sent;
     }
+
     // endregion
 
     // region for Connection Protocol Fields
@@ -1101,6 +1174,7 @@ public class SshContext extends LayerContext {
     public void setChannelManager(ChannelManager channelManager) {
         this.channelManager = channelManager;
     }
+
     // endregion
 
     public boolean isDisconnectMessageReceived() {

@@ -88,6 +88,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     @Parameter(names = "-timing", required = false, description = "Run as Timing-Attack")
     private boolean timing = false;
+
     /** How many rescans should be done */
     @Parameter(
             names = "-intervall",

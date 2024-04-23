@@ -69,6 +69,7 @@ public final class BleichenbacherWorkflowGenerator {
 
         return trace;
     }
+
     /**
      * Generates a dynamic workflow that encrypts the given encoded secret during execution
      *
