@@ -20,6 +20,6 @@ public class ServiceAcceptMessagePreparator extends SshMessagePreparator<Service
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setServiceName("", true);
+        getObject().setServiceName(chooser.getConfig().getServiceName(), true);
     }
 }

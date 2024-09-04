@@ -257,14 +257,14 @@ public class Config implements Serializable {
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
      */
-    private Boolean enableEncryptionOnNewKeysMessage = true;
+    private ConnectionDirection enableEncryptionOnNewKeysMessage = ConnectionDirection.BOTH;
 
     /**
      * If set to false, the packet cipher will only be changed in case of algorithm or key material
      * change during the SSH_MSG_NEWKEYS handler. This can be useful if one tries sending NEWKEYS
      * without a proper key exchange beforehand and would like to be able to decrypt the servers'
      * response encrypted under the old cipher state. Will take no effect if {@link
-     * #enableEncryptionOnNewKeysMessage} is set to false.
+     * #enableEncryptionOnNewKeysMessage} is set to NONE.
      */
     private Boolean forcePacketCipherChange = false;
 
@@ -553,8 +553,9 @@ public class Config implements Serializable {
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.SNTRUP761X25519_SHA512,
                                     KeyExchangeAlgorithm.SNTRUP761X25519_SHA512_OPENSSH_COM,
-                                    KeyExchangeAlgorithm.SNTRUP4591761X25519_SHA512_TINYSSH_ORG,
+                                    KeyExchangeAlgorithm.MLKEM768X25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -1542,7 +1543,7 @@ public class Config implements Serializable {
         return defaultRsaKeyExchangeAlgorithm;
     }
 
-    public Boolean getEnableEncryptionOnNewKeysMessage() {
+    public ConnectionDirection getEnableEncryptionOnNewKeysMessage() {
         return enableEncryptionOnNewKeysMessage;
     }
 
@@ -1597,7 +1598,8 @@ public class Config implements Serializable {
         this.defaultRsaKeyExchangeAlgorithm = defaultRsaKeyExchangeAlgorithm;
     }
 
-    public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
+    public void setEnableEncryptionOnNewKeysMessageType(
+            ConnectionDirection enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
 
