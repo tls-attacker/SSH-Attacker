@@ -252,7 +252,7 @@ public enum PublicKeyAlgorithm {
     // Vendor extensions
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM(
-            "ssh-rsa-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM),
+            "ssh-rsa-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM, SignatureEncoding.RSA_SHA2_512, "SHA512WithRSA"),
     RSA_SHA2_256_CERT_V01_OPENSSH_COM(
             "rsa-sha2-256-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM),
     RSA_SHA2_512_CERT_V01_OPENSSH_COM(

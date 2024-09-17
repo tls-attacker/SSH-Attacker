@@ -579,7 +579,7 @@ public class Config implements Serializable {
                                     // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
                                     // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
                                     // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,

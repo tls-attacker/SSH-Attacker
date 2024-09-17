@@ -78,6 +78,8 @@ public final class SignatureFactory {
             return new UnpackedDsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getName().startsWith("ecdsa-sha2-")) {
             return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
+        } else if (algorithm.getName().startsWith("ssh-rsa-cert-")) {
+            return new JavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
             // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
             if (publicKey instanceof XCurveEcPublicKey) {
