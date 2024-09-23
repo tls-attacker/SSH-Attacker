@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
@@ -80,10 +81,15 @@ public final class SignatureFactory {
             return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getName().startsWith("ssh-rsa-cert-")) {
             return new JavaSignature(algorithm, publicKey);
+        } else if (algorithm.getName().startsWith("ssh-dss-cert-")) {
+            return new JavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
             // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
             if (publicKey instanceof XCurveEcPublicKey) {
                 publicKey = ((XCurveEcPublicKey) publicKey).toEdDsaKey();
+            }
+            if (publicKey instanceof CustomCertXCurvePublicKey) {
+                publicKey = ((CustomCertXCurvePublicKey) publicKey).toEdDsaKey();
             }
             return new JavaSignature(algorithm, publicKey);
         }

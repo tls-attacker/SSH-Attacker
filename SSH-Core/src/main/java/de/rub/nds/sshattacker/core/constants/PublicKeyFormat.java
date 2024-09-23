@@ -94,6 +94,8 @@ public enum PublicKeyFormat {
     // Vendor extensions
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM("ssh-rsa-cert-v01@openssh.com"),
+    RSA_SHA2_256_CERT_V01_OPENSSH_COM("rsa-sha2-256-cert-v01@openssh.com"),
+    RSA_SHA2_512_CERT_V01_OPENSSH_COM("rsa-sha2-512-cert-v01@openssh.com"),
     SSH_DSS_CERT_V01_OPENSSH_COM("ssh-dss-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),

@@ -11,15 +11,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import de.rub.nds.sshattacker.core.crypto.keys.parser.DsaPublicKeyParser;
-import de.rub.nds.sshattacker.core.crypto.keys.parser.EcdsaPublicKeyParser;
-import de.rub.nds.sshattacker.core.crypto.keys.parser.RsaPublicKeyParser;
-import de.rub.nds.sshattacker.core.crypto.keys.parser.SshRsaCertPublicKeyParser;
-import de.rub.nds.sshattacker.core.crypto.keys.parser.XCurvePublicKeyParser;
+import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.DsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
-import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaCertPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertRsaPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertDsaPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertEcdsaPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertXCurvePublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurvePublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.nio.charset.StandardCharsets;
@@ -95,7 +94,17 @@ public final class PublicKeyHelper {
             case ECDSA_SHA2_BRAINPOOL_P512R1:
                 return new EcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
             case SSH_RSA_CERT_V01_OPENSSH_COM:
-                return new SshRsaCertPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case RSA_SHA2_512_CERT_V01_OPENSSH_COM:
+            case RSA_SHA2_256_CERT_V01_OPENSSH_COM:
+                return new CertRsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case SSH_DSS_CERT_V01_OPENSSH_COM:
+                return new CertDsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM:
+            case ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM:
+            case ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM:
+                return new CertEcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case SSH_ED25519_CERT_V01_OPENSSH_COM:
+                return new CertXCurvePublicKeyParser(encodedPublicKeyBytes, 0).parse();
             case SSH_ED25519:
             case SSH_ED448:
                 return new XCurvePublicKeyParser(encodedPublicKeyBytes, 0).parse();
@@ -187,7 +196,15 @@ public final class PublicKeyHelper {
                 case ECDSA_SHA2_BRAINPOOL_P512R1:
                     return new EcdsaPublicKeySerializer((CustomEcPublicKey) publicKey).serialize();
                 case SSH_RSA_CERT_V01_OPENSSH_COM:
-                    return new RsaCertPublicKeySerializer((CustomCertRsaPublicKey) publicKey).serialize();
+                    return new CertRsaPublicKeySerializer((CustomCertRsaPublicKey) publicKey).serialize();
+                case SSH_DSS_CERT_V01_OPENSSH_COM:
+                    return new CertDsaPublicKeySerializer((CustomCertDsaPublicKey) publicKey).serialize();
+                case ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM:
+                case ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM:
+                case ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM:
+                    return new CertEcdsaPublicKeySerializer((CustomCertEcdsaPublicKey) publicKey).serialize();
+                case SSH_ED25519_CERT_V01_OPENSSH_COM:
+                    return new CertXCurvePublicKeySerializer((CustomCertXCurvePublicKey) publicKey).serialize();
                 case SSH_ED25519:
                 case SSH_ED448:
                     return new XCurvePublicKeySerializer((XCurveEcPublicKey) publicKey).serialize();

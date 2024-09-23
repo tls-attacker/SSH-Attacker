@@ -11,21 +11,24 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPublicKey;
 import java.util.Map;
 
-/** A serializable RSA public key used in RSA certificates (SSH-RSA-CERT). */
+/** A serializable DSA public key used in DSA certificates (SSH-DSA-CERT). */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
+public class CustomCertDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
 
-    private BigInteger modulus;
-    private BigInteger publicExponent;
+    private BigInteger p;
+    private BigInteger q;
+    private BigInteger g;
+    private BigInteger y;
 
-    // New field for serial number in RSA certificates
+    // New field for serial number in DSA certificates
     private long serial;
 
-    // New field for the signature in RSA certificates
+    // New field for the signature in DSA certificates
     private byte[] signature;
     private byte[] signatureKey;
 
@@ -38,41 +41,60 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> extensions;  // Map to hold extensions as key-value pairs
     private Map<String, String> criticalOptions;  // Map to hold critical options as key-value pairs
+    private Map<String, String> extensions;       // Map to hold extensions as key-value pairs
 
-    public CustomCertRsaPublicKey() {
+    public CustomCertDsaPublicKey() {
         super();
     }
 
-    public CustomCertRsaPublicKey(RSAPublicKey publicKey) {
+    public CustomCertDsaPublicKey(DSAPublicKey publicKey) {
         super();
-        modulus = publicKey.getModulus();
-        publicExponent = publicKey.getPublicExponent();
+        p = publicKey.getParams().getP();
+        q = publicKey.getParams().getQ();
+        g = publicKey.getParams().getG();
+        y = publicKey.getY();
     }
 
-    public CustomCertRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
+    public CustomCertDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y) {
         super();
-        this.modulus = modulus;
-        this.publicExponent = publicExponent;
+        this.p = p;
+        this.q = q;
+        this.g = g;
+        this.y = y;
     }
 
     @Override
-    public BigInteger getModulus() {
-        return modulus;
+    public BigInteger getY() {
+        return y;
     }
 
-    public void setModulus(BigInteger modulus) {
-        this.modulus = modulus;
+    public void setY(BigInteger y) {
+        this.y = y;
     }
 
-    @Override
-    public BigInteger getPublicExponent() {
-        return publicExponent;
+    public BigInteger getP() {
+        return p;
     }
 
-    public void setPublicExponent(BigInteger publicExponent) {
-        this.publicExponent = publicExponent;
+    public void setP(BigInteger p) {
+        this.p = p;
+    }
+
+    public BigInteger getQ() {
+        return q;
+    }
+
+    public void setQ(BigInteger q) {
+        this.q = q;
+    }
+
+    public BigInteger getG() {
+        return g;
+    }
+
+    public void setG(BigInteger g) {
+        this.g = g;
     }
 
     public long getSerial() {
@@ -147,22 +169,7 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
         this.signatureKey = signatureKey;
     }
 
-    public String getReserved() {
-        return reserved;
-    }
-
-    public void setReserved(String reserved) {
-        this.reserved = reserved;
-    }
-
-    public Map<String, String> getExtensions() {
-        return extensions;
-    }
-
-    public void setExtensions(Map<String, String> extensions) {
-        this.extensions = extensions;
-    }
-
+    // Getter and setter for critical options
     public Map<String, String> getCriticalOptions() {
         return criticalOptions;
     }
@@ -171,8 +178,47 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
         this.criticalOptions = criticalOptions;
     }
 
+    // Getter and setter for extensions
+    public Map<String, String> getExtensions() {
+        return extensions;
+    }
+
+    public String getReserved() {
+        return reserved;
+    }
+
+    public void setReserved(String reserved) {
+        this.reserved = reserved;
+    }
+
+    public void setExtensions(Map<String, String> extensions) {
+        this.extensions = extensions;
+    }
+
+    // Return the DSA algorithm name
     @Override
     public String getAlgorithm() {
-        return "RSA";
+        return "DSA";
+    }
+
+    // Implement the getParams method from DSAPublicKey
+    @Override
+    public DSAParams getParams() {
+        return new DSAParams() {
+            @Override
+            public BigInteger getP() {
+                return p;
+            }
+
+            @Override
+            public BigInteger getQ() {
+                return q;
+            }
+
+            @Override
+            public BigInteger getG() {
+                return g;
+            }
+        };
     }
 }

@@ -1,0 +1,170 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.crypto.keys.serializer;
+
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomCertDsaPublicKey;
+import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
+/** Serializer class to encode a DSA certificate public key (ssh-dss-cert-v01@openssh.com) format. */
+public class CertDsaPublicKeySerializer extends Serializer<CustomCertDsaPublicKey> {
+
+    private final CustomCertDsaPublicKey publicKey;
+
+    public CertDsaPublicKeySerializer(CustomCertDsaPublicKey publicKey) {
+        super();
+        this.publicKey = publicKey;
+    }
+
+    @Override
+    protected void serializeBytes() {
+        /*
+         * The ssh-dss-cert-v01@openssh.com format as specified in the SSH protocol:
+         *   string    "ssh-dss-cert-v01@openssh.com"
+         *   string    nonce
+         *   mpint     p
+         *   mpint     q
+         *   mpint     g
+         *   mpint     y
+         *   uint64    serial
+         *   uint32    type
+         *   string    key id
+         *   string    valid principals
+         *   uint64    valid after
+         *   uint64    valid before
+         *   string    critical options
+         *   string    extensions
+         *   string    reserved
+         *   string    signature key
+         *   string    signature
+         */
+
+        // Format identifier (ssh-dss-cert-v01@openssh.com)
+        appendInt(PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendString(PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
+
+        // Nonce
+        byte[] nonce = publicKey.getNonce();
+        appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendBytes(nonce);
+
+        // p (DSA prime)
+        byte[] encodedP = publicKey.getP().toByteArray();
+        appendInt(encodedP.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        appendBytes(encodedP);
+
+        // q (DSA subprime)
+        byte[] encodedQ = publicKey.getQ().toByteArray();
+        appendInt(encodedQ.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        appendBytes(encodedQ);
+
+        // g (DSA generator)
+        byte[] encodedG = publicKey.getG().toByteArray();
+        appendInt(encodedG.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        appendBytes(encodedG);
+
+        // y (DSA public key)
+        byte[] encodedY = publicKey.getY().toByteArray();
+        appendInt(encodedY.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        appendBytes(encodedY);
+
+        // Serial (uint64) -- using BigInteger instead of long
+        appendBigInteger(BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+
+        // Certificate type (uint32)
+        appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
+
+        // Key ID (string)
+        String keyId = publicKey.getKeyId();
+        appendInt(keyId.getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendString(keyId, StandardCharsets.US_ASCII);
+
+        // Valid Principals (string list)
+        String[] validPrincipals = publicKey.getValidPrincipals();
+        if (validPrincipals != null) {
+            StringBuilder principalsBuilder = new StringBuilder();
+            for (String principal : validPrincipals) {
+                principalsBuilder.append(principal).append('\0');  // Null-terminated list
+            }
+            String principalsString = principalsBuilder.toString();
+            appendInt(principalsString.length(), DataFormatConstants.STRING_SIZE_LENGTH);
+            appendString(principalsString, StandardCharsets.US_ASCII);
+        } else {
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty principals list
+        }
+
+        // Valid After (uint64) -- using BigInteger instead of long
+        appendBigInteger(BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+
+        // Valid Before (uint64) -- using BigInteger instead of long
+        appendBigInteger(BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+
+        // Critical Options
+        Map<String, String> criticalOptions = publicKey.getCriticalOptions();
+        appendStringMap(criticalOptions);
+
+        // Extensions
+        Map<String, String> extensions = publicKey.getExtensions();
+        appendStringMap(extensions);
+
+        // Reserved
+        String reserved = publicKey.getReserved();
+        if (reserved != null) {
+            byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
+            appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendBytes(reservedBytes);
+        } else {
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+        }
+
+        // Signature Key (The public key used to sign this certificate)
+        byte[] signatureKey = publicKey.getSignatureKey();
+        if (signatureKey == null) {
+            throw new IllegalStateException("Signature Key is not set in the publicKey");
+        }
+        appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendBytes(signatureKey);
+
+        // Signature (The actual signature on the certificate)
+        byte[] signature = publicKey.getSignature();
+        if (signature == null) {
+            throw new IllegalStateException("Signature is not set in the publicKey");
+        }
+        appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendBytes(signature);
+    }
+
+    private void appendStringMap(Map<String, String> stringMap) {
+        if (stringMap != null && !stringMap.isEmpty()) {
+            StringBuilder optionsBuilder = new StringBuilder();
+            for (Map.Entry<String, String> entry : stringMap.entrySet()) {
+                optionsBuilder.append(serializeString(entry.getKey()));
+                optionsBuilder.append(serializeString(entry.getValue()));
+            }
+            byte[] optionsBytes = optionsBuilder.toString().getBytes(StandardCharsets.US_ASCII);
+            appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendBytes(optionsBytes);
+        } else {
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Leeres Feld, wenn die Map leer ist
+        }
+    }
+    private static String serializeString(String value) {
+        byte[] valueBytes = value.getBytes(StandardCharsets.US_ASCII);
+        return buildStringWithLength(valueBytes);
+    }
+    private static String buildStringWithLength(byte[] valueBytes) {
+        return new String(ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH).putInt(valueBytes.length).array())
+                + new String(valueBytes, StandardCharsets.US_ASCII);
+    }
+}

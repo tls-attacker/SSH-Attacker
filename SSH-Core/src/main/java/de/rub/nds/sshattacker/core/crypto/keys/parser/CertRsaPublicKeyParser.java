@@ -6,30 +6,28 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Arrays;
-
-
-
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SshRsaCertPublicKeyParser extends Parser<SshPublicKey<CustomCertRsaPublicKey, CustomRsaPrivateKey>> {
-    private final byte[] localArray;
+public class CertRsaPublicKeyParser extends Parser<SshPublicKey<CustomCertRsaPublicKey, CustomRsaPrivateKey>> {
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
                     .withLocale(Locale.getDefault())
                     .withZone(ZoneId.systemDefault());
 
-    public SshRsaCertPublicKeyParser(byte[] array, int startPosition) {
+    public CertRsaPublicKeyParser(byte[] array, int startPosition) {
         super(array, startPosition);
-        this.localArray = array;  // Speichere das Array in einer lokalen Variable
     }
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -112,17 +110,43 @@ public class SshRsaCertPublicKeyParser extends Parser<SshPublicKey<CustomCertRsa
         LOGGER.debug("Parsed validTo: {} (Date: {})", validTo, validToDate);
         publicKey.setValidBefore(validTo);  // Setze Valid Before
 
-        // Critical Options (string critical options)
+        // Critical Options (parsing critical options as a map of key-value pairs)
         int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed criticalOptionsLength: {}", criticalOptionsLength);
 
-        // Extensions (string extensions)
+        Map<String, String> criticalOptionsMap = new HashMap<>();
+        if (criticalOptionsLength > 0) {
+            int bytesParsed = 0;
+            while (bytesParsed < criticalOptionsLength) {
+                int optionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String optionName = parseByteString(optionNameLength, StandardCharsets.US_ASCII);
+                int optionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
+                criticalOptionsMap.put(optionName, optionValue);
+                LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
+                bytesParsed += optionNameLength + optionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+            }
+        }
+        publicKey.setCriticalOptions(criticalOptionsMap); // Setze Critical Options
+
+        // Extensions (parsing extensions as a map of key-value pairs)
         int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed extensionsLength: {}", extensionsLength);
+
+        Map<String, String> extensionsMap = new HashMap<>();
         if (extensionsLength > 0) {
-            byte[] extensions = parseByteArrayField(extensionsLength);
-            LOGGER.debug("Parsed extensions: {}", extensions);
+            int bytesParsed = 0;
+            while (bytesParsed < extensionsLength) {
+                int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String extensionName = parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
+                int extensionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String extensionValue = parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
+                extensionsMap.put(extensionName, extensionValue);
+                LOGGER.debug("Parsed extension: {}   {}", extensionName, extensionValue);
+                bytesParsed += extensionNameLength + extensionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+            }
         }
+        publicKey.setExtensions(extensionsMap); // Setze Extensions
 
         // Reserved (string reserved)
         int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -140,7 +164,7 @@ public class SshRsaCertPublicKeyParser extends Parser<SshPublicKey<CustomCertRsa
         int signatureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed signatureLength: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
-        LOGGER.debug("Parsed signature: {}", signature);
+        LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
         publicKey.setSignature(signature);  // Setze Signatur
 
         LOGGER.debug("Successfully parsed the RSA Certificate Public Key.");
@@ -148,5 +172,3 @@ public class SshRsaCertPublicKeyParser extends Parser<SshPublicKey<CustomCertRsa
         return new SshPublicKey<>(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM, publicKey);
     }
 }
-
-

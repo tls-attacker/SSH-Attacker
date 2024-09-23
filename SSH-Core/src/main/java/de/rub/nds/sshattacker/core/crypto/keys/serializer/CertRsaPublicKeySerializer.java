@@ -13,13 +13,17 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomCertRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.nio.ByteBuffer;
 
-/** Serializer class to encode an RSA certificate public key (ssh-rsa-cert-v01@openssh.com) format. */
-public class RsaCertPublicKeySerializer extends Serializer<CustomCertRsaPublicKey> {
+/**
+ * Serializer class to encode an RSA certificate public key (ssh-rsa-cert-v01@openssh.com) format.
+ */
+public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKey> {
 
     private final CustomCertRsaPublicKey publicKey;
 
-    public RsaCertPublicKeySerializer(CustomCertRsaPublicKey publicKey) {
+    public CertRsaPublicKeySerializer(CustomCertRsaPublicKey publicKey) {
         super();
         this.publicKey = publicKey;
     }
@@ -46,7 +50,8 @@ public class RsaCertPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
          */
 
         // Format identifier (ssh-rsa-cert-v01@openssh.com)
-        appendInt(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendInt(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
         appendString(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
 
         // Nonce
@@ -80,13 +85,13 @@ public class RsaCertPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         if (validPrincipals != null) {
             StringBuilder principalsBuilder = new StringBuilder();
             for (String principal : validPrincipals) {
-                principalsBuilder.append(principal).append('\0');  // Null-terminated list
+                principalsBuilder.append(principal).append('\0'); // Null-terminated list
             }
             String principalsString = principalsBuilder.toString();
             appendInt(principalsString.length(), DataFormatConstants.STRING_SIZE_LENGTH);
             appendString(principalsString, StandardCharsets.US_ASCII);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty principals list
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty principals list
         }
 
         // Valid After (uint64) -- using BigInteger instead of long
@@ -95,14 +100,24 @@ public class RsaCertPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         // Valid Before (uint64) -- using BigInteger instead of long
         appendBigInteger(BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
-        // Critical Options (Assuming no critical options, just an empty string for now)
-        appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty critical options
+        // Critical Options
+        Map<String, String> criticalOptions = publicKey.getCriticalOptions();
+        appendStringMap(criticalOptions);
 
-        // Extensions (Assuming no extensions, just an empty string for now)
-        appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty extensions
+        // Extensions
+        Map<String, String> extensions = publicKey.getExtensions();
+        appendStringMap(extensions);
 
         // Reserved (Assuming reserved field is empty)
-        appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty reserved field
+        String reserved = publicKey.getReserved();
+        if (reserved != null) {
+            byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
+            appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendBytes(reservedBytes);
+        } else {
+            // Assuming no reserved data, add an empty string field
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+        }
 
         // Signature Key (The public key used to sign this certificate)
         byte[] signatureKey = publicKey.getSignatureKey();
@@ -120,5 +135,34 @@ public class RsaCertPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(signature);
 
+    }
+
+    private void appendStringMap(Map<String, String> stringMap) {
+        if (stringMap != null && !stringMap.isEmpty()) {
+            StringBuilder optionsBuilder = new StringBuilder();
+            for (Map.Entry<String, String> entry : stringMap.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                optionsBuilder.append(serializeString(key));
+                optionsBuilder.append(serializeString(value));
+            }
+            byte[] optionsBytes = optionsBuilder.toString().getBytes(StandardCharsets.US_ASCII);
+            appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendBytes(optionsBytes);
+        } else {
+            // Empty options
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+        }
+    }
+
+    private static String serializeString(String value) {
+        byte[] valueBytes = value.getBytes(StandardCharsets.US_ASCII);
+        return buildStringWithLength(valueBytes);
+    }
+
+    private static String buildStringWithLength(byte[] valueBytes) {
+        return new String(ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH).putInt(valueBytes.length).array())
+                + new String(valueBytes, StandardCharsets.US_ASCII);
     }
 }
