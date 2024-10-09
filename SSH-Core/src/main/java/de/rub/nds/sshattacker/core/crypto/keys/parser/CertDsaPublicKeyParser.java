@@ -110,12 +110,17 @@ public class CertDsaPublicKeyParser extends Parser<SshPublicKey<CustomCertDsaPub
         int principalIndex = 0;
         while (bytesProcessed < totalPrincipalLength) {
             int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-            String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
-            LOGGER.debug("Parsed principal: {}", principal);
-            validPrincipals[principalIndex++] = principal;
+            if (principalLength > 0) {
+                String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
+                validPrincipals[principalIndex++] = principal;
+            }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
-        publicKey.setValidPrincipals(validPrincipals);
+
+        // Nur die tatsächlich gesetzten Principals weitergeben
+        String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
+        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+        publicKey.setValidPrincipals(parsedPrincipals);
 
         // Validity period (uint64 valid after)
         long validFrom = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();

@@ -40,38 +40,42 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
 
     private void parseExtensions() {
         for (int extensionIndex = 0, extensionStartPointer = getPointer();
-                extensionIndex < message.getExtensionCount().getValue();
-                extensionIndex++, extensionStartPointer = getPointer()) {
-            // Parse extension name to determine the parser to use
+             extensionIndex < message.getExtensionCount().getValue();
+             extensionIndex++, extensionStartPointer = getPointer()) {
+
+            // Extrahiere den Namen der Erweiterung
             int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-            Extension extension =
-                    Extension.fromName(
-                            parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
+            Extension extension = Extension.fromName(
+                    parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
+
             AbstractExtensionParser<?> extensionParser;
+
             switch (extension) {
                 case SERVER_SIG_ALGS:
-                    extensionParser =
-                            new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
+                    extensionParser = new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
                     break;
                 case DELAY_COMPRESSION:
-                    extensionParser =
-                            new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
+                    extensionParser = new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
                     break;
                 case PING_OPENSSH_COM:
                     extensionParser = new PingExtensionParser(getArray(), extensionStartPointer);
                     break;
+                case PUBLICKEY_ALGORITHMS_ROUMENPETROV:
+                    extensionParser = new PublicKeyAlgorithmsRoumenPetrovExtensionParser(getArray(), extensionStartPointer);
+                    break;
                 default:
-                    LOGGER.debug(
-                            "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
-                            extension,
-                            extensionIndex);
+                    LOGGER.debug("Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension", extension, extensionIndex);
                     extensionParser = new UnknownExtensionParser(getArray(), extensionStartPointer);
                     break;
             }
+
+            // Erweiterung hinzufügen
             message.addExtension(extensionParser.parse());
             setPointer(extensionParser.getPointer());
         }
     }
+
+
 
     @Override
     protected void parseMessageSpecificContents() {

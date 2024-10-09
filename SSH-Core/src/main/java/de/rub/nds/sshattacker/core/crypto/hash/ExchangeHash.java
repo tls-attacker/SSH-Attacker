@@ -205,11 +205,11 @@ public final class ExchangeHash {
                                 inputHolder.getServerVersion().get().getIdentification()),
                         Converter.bytesToLengthPrefixedBinaryString(
                                 new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getClientKeyExchangeInit().get())
+                                        inputHolder.getClientKeyExchangeInit().get())
                                         .serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
                                 new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getServerKeyExchangeInit().get())
+                                        inputHolder.getServerKeyExchangeInit().get())
                                         .serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
                                 PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));

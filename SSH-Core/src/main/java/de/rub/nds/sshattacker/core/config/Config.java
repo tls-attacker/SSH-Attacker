@@ -590,7 +590,21 @@ public class Config implements Serializable {
                                     // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
                                     PublicKeyAlgorithm.RSA_SHA2_512,
                                     PublicKeyAlgorithm.RSA_SHA2_256,
-                                    PublicKeyAlgorithm.SSH_RSA
+                                    PublicKeyAlgorithm.SSH_RSA,
+                                    PublicKeyAlgorithm.X509V3_SSH_RSA,
+                                    PublicKeyAlgorithm.X509V3_RSA2048_SHA256,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP160K1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP160R1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP160R2,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP192K1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP192R1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP224K1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP224R1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_SECP256K1,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP256,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP384,
+                                    PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP521,
+
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);

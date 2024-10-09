@@ -1,10 +1,3 @@
-/*
- * SSH-Attacker - A Modular Penetration Testing Framework for SSH
- *
- * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
@@ -24,43 +17,44 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
 /**
- * A serializable ED25519/ED448 certificate public key used in certificates (SSH-ED25519-CERT).
+ * A serializable ED25519/ED448 X.509 public key used in certificates (X509-SSH-Ed25519).
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertXCurvePublicKey extends CustomPublicKey {
+public class CustomX509XCurvePublicKey extends CustomPublicKey {
 
-    private NamedEcGroup group;
-    private byte[] publicKey;
+    private NamedEcGroup group; // Named group (Ed25519 or Ed448)
+    private byte[] publicKey;   // Public key bytes
 
-    // New fields for certificate-specific information
-    private long serial;
-    private String certType;
-    private String keyId;
-    private String reserved;
-    private String[] validPrincipals;
-    private byte[] nonce;
-    private long validAfter;
-    private long validBefore;
-    private byte[] signature;
-    private byte[] signatureKey;
-    private Map<String, String> criticalOptions;
-    private Map<String, String> extensions;
+    // X.509-specific fields
+    private String issuer;      // Issuer Distinguished Name
+    private String subject;     // Subject Distinguished Name
+    private String publicKeyAlgorithm;
+    private int version;
+    private long serial;        // Certificate serial number
+    private String signatureAlgorithm;  // Signature algorithm
+    private byte[] signature;   // Certificate signature
+    private byte[] subjectKeyIdentifier; // Subject Key Identifier
 
-    public CustomCertXCurvePublicKey() {
+    // Validity period
+    private long validAfter;    // Not Before (valid after)
+    private long validBefore;   // Not After (valid before)
+
+    // Extensions (if any)
+    private Map<String, String> extensions;  // Extensions (optional)
+
+    public CustomX509XCurvePublicKey() {
         super();
     }
 
-    public CustomCertXCurvePublicKey(byte[] publicKey, NamedEcGroup group) {
+    public CustomX509XCurvePublicKey(byte[] publicKey, NamedEcGroup group, byte[] signature) {
         super();
+        if (signature == null || signature.length == 0) {
+            throw new IllegalArgumentException("Signature cannot be null or empty");
+        }
         this.publicKey = publicKey;
         this.group = group;
-    }
-
-    // Implementing the getAlgorithm() method as required by the Key interface
-    @Override
-    public String getAlgorithm() {
-        return "ED25519";
+        this.signature = signature;
     }
 
     // Getter and setter for public key
@@ -90,52 +84,63 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         this.serial = serial;
     }
 
-    // Getter and setter for certificate type
-    public String getCertType() {
-        return certType;
+    // Getter and setter for the signature and algorithm
+    public String getSignatureAlgorithm() {
+        return signatureAlgorithm;
     }
 
-    public void setCertType(String certType) {
-        this.certType = certType;
+    public void setSignatureAlgorithm(String signatureAlgorithm) {
+        this.signatureAlgorithm = signatureAlgorithm;
     }
 
-    // Getter and setter for key ID
-    public String getKeyId() {
-        return keyId;
+    public byte[] getSignature() {
+        if (signature == null) {
+            throw new IllegalStateException("Signature is not set in the publicKey");
+        }
+        return signature;
     }
 
-    public void setKeyId(String keyId) {
-        this.keyId = keyId;
+    public int getVersion() {
+        return version;
     }
 
-    // Getter and setter for reserved
-    public String getReserved() {
-        return reserved;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
-    public void setReserved(String reserved) {
-        this.reserved = reserved;
+    public void setSignature(byte[] signature) {
+        if (signature == null || signature.length == 0) {
+            throw new IllegalArgumentException("Signature cannot be null or empty");
+        }
+        this.signature = signature;
     }
 
-    // Getter and setter for valid principals
-    public String[] getValidPrincipals() {
-        return validPrincipals;
+    public String getPublicKeyAlgorithm() {
+        return publicKeyAlgorithm;
     }
 
-    public void setValidPrincipals(String[] validPrincipals) {
-        this.validPrincipals = validPrincipals;
+    public void setPublicKeyAlgorithm(String publicKeyAlgorithm) {
+        this.publicKeyAlgorithm = publicKeyAlgorithm;
     }
 
-    // Getter and setter for nonce
-    public byte[] getNonce() {
-        return nonce;
+    // Getters and setters for issuer and subject
+    public String getIssuer() {
+        return issuer;
     }
 
-    public void setNonce(byte[] nonce) {
-        this.nonce = nonce;
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
     }
 
-    // Getter and setter for validAfter
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    // Getters and setters for the validity period
     public long getValidAfter() {
         return validAfter;
     }
@@ -144,7 +149,6 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         this.validAfter = validAfter;
     }
 
-    // Getter and setter for validBefore
     public long getValidBefore() {
         return validBefore;
     }
@@ -153,34 +157,7 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         this.validBefore = validBefore;
     }
 
-    // Getter and setter for signature
-    public byte[] getSignature() {
-        return signature;
-    }
-
-    public void setSignature(byte[] signature) {
-        this.signature = signature;
-    }
-
-    // Getter and setter for signature key
-    public byte[] getSignatureKey() {
-        return signatureKey;
-    }
-
-    public void setSignatureKey(byte[] signatureKey) {
-        this.signatureKey = signatureKey;
-    }
-
-    // Getter and setter for critical options
-    public Map<String, String> getCriticalOptions() {
-        return criticalOptions;
-    }
-
-    public void setCriticalOptions(Map<String, String> criticalOptions) {
-        this.criticalOptions = criticalOptions;
-    }
-
-    // Getter and setter for extensions
+    // Getters and setters for extensions (optional)
     public Map<String, String> getExtensions() {
         return extensions;
     }
@@ -189,6 +166,16 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         this.extensions = extensions;
     }
 
+    // Getter and setter for Subject Key Identifier
+    public byte[] getSubjectKeyIdentifier() {
+        return subjectKeyIdentifier;
+    }
+
+    public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
+        this.subjectKeyIdentifier = subjectKeyIdentifier;
+    }
+
+    // Method to convert the public key to a PublicKey object (EdDSA key)
     public PublicKey toEdDsaKey() {
         try {
             KeyFactory keyFactory;
@@ -213,4 +200,8 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         }
     }
 
+    @Override
+    public String getAlgorithm() {
+        return "EdDSA";
+    }
 }

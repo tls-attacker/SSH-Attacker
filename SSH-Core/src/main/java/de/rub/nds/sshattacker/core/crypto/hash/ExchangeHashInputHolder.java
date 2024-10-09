@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMes
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.Map;
 
 /** A holder class to store all required values for exchange hash computation. */
 public final class ExchangeHashInputHolder {

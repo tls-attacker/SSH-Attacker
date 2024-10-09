@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -15,9 +15,13 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchan
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeInitMessageHandler
         extends SshMessageHandler<HybridKeyExchangeInitMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HybridKeyExchangeInitMessageHandler(SshContext context) {
         super(context);
@@ -41,21 +45,19 @@ public class HybridKeyExchangeInitMessageHandler
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getEncapsulationPublicKey().getValue(),
-                                message.getAgreementPublicKey().getValue());
+                combined = KeyExchangeUtil.concatenateHybridKeys(
+                        message.getEncapsulationPublicKey().getValue(),
+                        message.getAgreementPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getAgreementPublicKey().getValue(),
-                                message.getEncapsulationPublicKey().getValue());
+                combined = KeyExchangeUtil.concatenateHybridKeys(
+                        message.getAgreementPublicKey().getValue(),
+                        message.getEncapsulationPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             default:
-                LOGGER.warn("combiner is not supported. Can not set Hybrid Key.");
+                LOGGER.warn("Combiner is not supported. Cannot set Hybrid Key.");
                 break;
         }
     }

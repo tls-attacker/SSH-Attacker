@@ -39,7 +39,7 @@ public class EcdhKeyExchangeReplyMessageParser
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
                 "Host key bytes: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseEphemeralPublicKey() {

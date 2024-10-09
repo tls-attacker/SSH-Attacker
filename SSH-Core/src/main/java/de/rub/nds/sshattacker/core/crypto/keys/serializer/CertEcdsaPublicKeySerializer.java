@@ -93,16 +93,23 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
 
         // Valid Principals (string list)
         String[] validPrincipals = publicKey.getValidPrincipals();
-        if (validPrincipals != null) {
-            StringBuilder principalsBuilder = new StringBuilder();
+        if (validPrincipals != null && validPrincipals.length > 0) {
+            // Append each principal as separate SSH strings, according to SSH format expectations
+            ByteBuffer principalsBuffer = ByteBuffer.allocate(1024); // Initial buffer size; grows dynamically if needed
             for (String principal : validPrincipals) {
-                principalsBuilder.append(principal).append('\0');  // Null-terminated list
+                byte[] principalBytes = principal.getBytes(StandardCharsets.US_ASCII);
+                // Serialize each principal with length prefix
+                principalsBuffer.putInt(principalBytes.length);
+                principalsBuffer.put(principalBytes);
             }
-            String principalsString = principalsBuilder.toString();
-            appendInt(principalsString.length(), DataFormatConstants.STRING_SIZE_LENGTH);
-            appendString(principalsString, StandardCharsets.US_ASCII);
+            byte[] principalsSerialized = new byte[principalsBuffer.position()];
+            principalsBuffer.flip();
+            principalsBuffer.get(principalsSerialized);
+
+            appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendBytes(principalsSerialized);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);  // Empty principals list
+            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty principals list
         }
 
         // Valid After (uint64)

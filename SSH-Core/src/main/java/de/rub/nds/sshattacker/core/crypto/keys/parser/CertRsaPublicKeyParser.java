@@ -91,12 +91,17 @@ public class CertRsaPublicKeyParser extends Parser<SshPublicKey<CustomCertRsaPub
         int principalIndex = 0;
         while (bytesProcessed < totalPrincipalLength) {
             int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-            String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
-            LOGGER.debug("Parsed principal: {}", principal);
-            validPrincipals[principalIndex++] = principal;
+            if (principalLength > 0) {
+                String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
+                validPrincipals[principalIndex++] = principal;
+            }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
-        publicKey.setValidPrincipals(validPrincipals);  // Setze Valid Principals
+
+        // Nur die tatsächlich gesetzten Principals weitergeben
+        String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
+        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+        publicKey.setValidPrincipals(parsedPrincipals);
 
         // Validity period (uint64 valid after)
         long validFrom = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
@@ -150,8 +155,10 @@ public class CertRsaPublicKeyParser extends Parser<SshPublicKey<CustomCertRsaPub
 
         // Reserved (string reserved)
         int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        byte[] reserved = parseByteArrayField(reservedLength);
+        byte[] reservedBytes = parseByteArrayField(reservedLength); // Lies die Bytes des reservierten Feldes
+        String reserved = new String(reservedBytes, StandardCharsets.US_ASCII); // Konvertiere Bytes zu String
         LOGGER.debug("Parsed reserved: {}", reserved);
+        publicKey.setReserved(reserved);
 
         // Signature Key (string signature key)
         int signatureKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
