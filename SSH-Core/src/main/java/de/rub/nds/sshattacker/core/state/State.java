@@ -287,14 +287,14 @@ public class State {
         assertWorkflowTraceNotNull("storeTrace");
 
         Random random = new Random();
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+        workflowOutputName = config.getWorkflowOutput();
+        if (workflowOutputName != null && !workflowOutputName.isEmpty()) {
             try {
-                workflowOutputName = config.getWorkflowOutput();
 
                 File file = new File(workflowOutputName);
                 if (file.isDirectory()) {
-                    workflowOutputName = config.getWorkflowOutput() + "trace-" + random.nextInt();
-                    file = new File(workflowOutputName);
+                    workflowOutputName = "trace-" + random.nextInt() + ".xml";
+                    file = new File(file, workflowOutputName);
                 }
                 WorkflowTrace filteredTrace;
                 if (config.isApplyFiltersInPlace()) {

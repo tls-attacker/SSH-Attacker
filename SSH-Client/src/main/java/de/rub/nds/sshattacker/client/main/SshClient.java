@@ -57,6 +57,7 @@ public final class SshClient {
 
         try {
             workflowExecutor.executeWorkflow();
+            state.storeTrace();
         } catch (WorkflowExecutionException ex) {
             LOGGER.warn(
                     "The SSH protocol flow was not executed completely, follow the debug messages for more information.");
