@@ -40,6 +40,7 @@ public final class SshServer {
             try {
                 Config sshConfig = config.createConfig();
                 startSshServer(sshConfig);
+                sshConfig.storeConfig();
             } catch (Exception e) {
                 LOGGER.error(
                         "Encountered an uncaught exception, aborting. See debug for more info.", e);

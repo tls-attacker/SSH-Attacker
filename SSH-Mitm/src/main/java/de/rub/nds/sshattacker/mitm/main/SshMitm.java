@@ -123,6 +123,7 @@ public class SshMitm implements Runnable {
                 }
             }
             state.storeTrace();
+            config.storeConfig();
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
                     "The SSH protocol flow was not executed completely. {} - See debug messages for more details.",

@@ -1111,6 +1111,29 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region storeConfig
+    /** Serialize and write config to file. */
+    public void storeConfig() {
+        Random random = new Random();
+        String configOutputName = configOutput;
+        if (configOutputName != null && !configOutputName.isEmpty()) {
+            try {
+
+                File file = new File(configOutputName);
+                if (file.isDirectory()) {
+                    configOutputName = "config-" + random.nextInt() + ".xml";
+                    file = new File(file, configOutputName);
+                }
+                ConfigIO.write(this, file);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Could not serialize Config.");
+                LOGGER.debug(ex);
+            }
+        }
+    }
+
+    // endregion
+
     public OutboundConnection getDefaultClientConnection() {
         return defaultClientConnection;
     }
