@@ -1,14 +1,18 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import jakarta.xml.bind.DatatypeConverter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
@@ -16,6 +20,8 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCurvePublicKey, ?>> {
 
@@ -39,7 +45,8 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
 
             if (group != null) {
                 byte[] signature = cert.getSignature();
-                CustomX509XCurvePublicKey customX509XCurvePublicKey = new CustomX509XCurvePublicKey(encodedPublicKey, group, signature);
+                CustomX509XCurvePublicKey customX509XCurvePublicKey =
+                        new CustomX509XCurvePublicKey(encodedPublicKey, group, signature);
 
                 // Setze die geparsten Werte in das CustomX509XCurvePublicKey-Objekt
                 customX509XCurvePublicKey.setVersion(cert.getVersion());
@@ -64,13 +71,15 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 // Ausgabe der X.509-Erweiterungen (Extensions)
                 byte[] authorityKeyIdentifier = cert.getExtensionValue("2.5.29.35");
                 if (authorityKeyIdentifier != null) {
-                    String authorityKeyIdentifierHex = DatatypeConverter.printHexBinary(authorityKeyIdentifier);
+                    String authorityKeyIdentifierHex =
+                            DatatypeConverter.printHexBinary(authorityKeyIdentifier);
                     LOGGER.debug("Parsed Authority Key Identifier: {}", authorityKeyIdentifierHex);
                 }
 
                 byte[] subjectKeyIdentifier = cert.getExtensionValue("2.5.29.14");
                 if (subjectKeyIdentifier != null) {
-                    String subjectKeyIdentifierHex = DatatypeConverter.printHexBinary(subjectKeyIdentifier);
+                    String subjectKeyIdentifierHex =
+                            DatatypeConverter.printHexBinary(subjectKeyIdentifier);
                     LOGGER.debug("Parsed Subject Key Identifier: {}", subjectKeyIdentifierHex);
                 }
 
@@ -85,24 +94,30 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 // Setze Extensions, falls vorhanden
                 Map<String, String> extensionsMap = new HashMap<>();
                 if (authorityKeyIdentifier != null) {
-                    extensionsMap.put("AuthorityKeyIdentifier", Arrays.toString(authorityKeyIdentifier));
+                    extensionsMap.put(
+                            "AuthorityKeyIdentifier", Arrays.toString(authorityKeyIdentifier));
                 }
                 if (subjectKeyIdentifier != null) {
-                    extensionsMap.put("SubjectKeyIdentifier", Arrays.toString(subjectKeyIdentifier));
+                    extensionsMap.put(
+                            "SubjectKeyIdentifier", Arrays.toString(subjectKeyIdentifier));
                 }
                 customX509XCurvePublicKey.setExtensions(extensionsMap);
 
                 // Ausgabe der CA-Informationen, falls vorhanden
                 if (cert.getBasicConstraints() != -1) {
-                    LOGGER.debug("Parsed Certificate is a CA Certificate. Basic Constraints: {}", cert.getBasicConstraints());
+                    LOGGER.debug(
+                            "Parsed Certificate is a CA Certificate. Basic Constraints: {}",
+                            cert.getBasicConstraints());
                 } else {
                     LOGGER.debug("Parsed Certificate is not a CA Certificate.");
                 }
 
                 LOGGER.debug("Successfully parsed the X.509 EdDSA Certificate Public Key.");
-                return new SshPublicKey<>(PublicKeyFormat.X509V3_SSH_ED25519, customX509XCurvePublicKey);
+                return new SshPublicKey<>(
+                        PublicKeyFormat.X509V3_SSH_ED25519, customX509XCurvePublicKey);
             } else {
-                throw new IllegalArgumentException("Ungültiges X.509 Zertifikat - Unterstützter Schlüsseltyp fehlt.");
+                throw new IllegalArgumentException(
+                        "Ungültiges X.509 Zertifikat - Unterstützter Schlüsseltyp fehlt.");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("Ungültiges X.509 Zertifikat!", e);
@@ -113,7 +128,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
         int startIndex = 8; // SSH-Header überspringen
         while (startIndex < encodedPublicKeyBytes.length) {
-            if (encodedPublicKeyBytes[startIndex] == 0x30) {  // ASN.1 SEQUENCE Tag
+            if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
                 return startIndex;
             }
             startIndex++;
@@ -122,8 +137,13 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     }
 
     // Extrahiert das vollständige Zertifikat
-    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex) throws Exception {
-        ByteArrayInputStream certInputStream = new ByteArrayInputStream(encodedCertificateBytes, startIndex, encodedCertificateBytes.length - startIndex);
+    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex)
+            throws Exception {
+        ByteArrayInputStream certInputStream =
+                new ByteArrayInputStream(
+                        encodedCertificateBytes,
+                        startIndex,
+                        encodedCertificateBytes.length - startIndex);
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         return (X509Certificate) certFactory.generateCertificate(certInputStream);
     }

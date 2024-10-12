@@ -16,9 +16,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomCertEcdsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -28,13 +25,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CertEcdsaPublicKeyParser extends Parser<SshPublicKey<CustomCertEcdsaPublicKey, CustomEcPrivateKey>> {
+public class CertEcdsaPublicKeyParser
+        extends Parser<SshPublicKey<CustomCertEcdsaPublicKey, CustomEcPrivateKey>> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.MEDIUM)
-            .withLocale(Locale.getDefault())
-            .withZone(ZoneId.systemDefault());
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(Locale.getDefault())
+                    .withZone(ZoneId.systemDefault());
 
     public CertEcdsaPublicKeyParser(byte[] array, int startPosition) {
         super(array, startPosition);
@@ -69,7 +69,8 @@ public class CertEcdsaPublicKeyParser extends Parser<SshPublicKey<CustomCertEcds
 
         // Public Key
         int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, parseByteArrayField(publicKeyLength));
+        Point publicKeyPoint =
+                PointFormatter.formatFromByteArray(group, parseByteArrayField(publicKeyLength));
         publicKey.setPublicKey(publicKeyPoint);
         LOGGER.debug("Parsed publicKey: {}", publicKeyPoint);
 
@@ -166,7 +167,10 @@ public class CertEcdsaPublicKeyParser extends Parser<SshPublicKey<CustomCertEcds
                 int optionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
                 String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
                 options.put(optionName, optionValue);
-                bytesParsed += optionNameLength + optionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+                bytesParsed +=
+                        optionNameLength
+                                + optionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
         return options;

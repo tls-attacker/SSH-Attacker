@@ -1,22 +1,26 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-/**
- * Serializer class to encode an ED25519 X.509 public key (X509-SSH-ED25519) format.
- */
+/** Serializer class to encode an ED25519 X.509 public key (X509-SSH-ED25519) format. */
 public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePublicKey> {
 
     private final CustomX509XCurvePublicKey publicKey;
@@ -38,7 +42,10 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(new ASN1Integer(BigInteger.valueOf(publicKey.getSerial())));
 
             // Signature Algorithm (ED25519 as OID in ASN.1 format with NULL parameter)
-            AlgorithmIdentifier signatureAlgorithm = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.3.101.112"), DERNull.INSTANCE); // OID for Ed25519
+            AlgorithmIdentifier signatureAlgorithm =
+                    new AlgorithmIdentifier(
+                            new ASN1ObjectIdentifier("1.3.101.112"),
+                            DERNull.INSTANCE); // OID for Ed25519
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
@@ -46,7 +53,8 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
-            ASN1Sequence validitySequence = getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+            ASN1Sequence validitySequence =
+                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
@@ -54,7 +62,10 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for ED25519 with NULL parameter)
-            AlgorithmIdentifier publicKeyAlgorithm = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.3.101.112"), DERNull.INSTANCE); // OID for Ed25519
+            AlgorithmIdentifier publicKeyAlgorithm =
+                    new AlgorithmIdentifier(
+                            new ASN1ObjectIdentifier("1.3.101.112"),
+                            DERNull.INSTANCE); // OID for Ed25519
             topLevelVector.add(publicKeyAlgorithm);
 
             // Public Key (as ASN.1 OCTET STRING)
@@ -83,14 +94,13 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
         }
     }
 
-    /**
-     * Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle.
-     */
+    /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
     private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
         if (dn != null && !dn.isEmpty()) {
             try {
                 X500Name x500Name = new X500Name(dn);
-                return (ASN1Sequence) x500Name.toASN1Primitive();  // Correct typecasting to ASN1Sequence
+                return (ASN1Sequence)
+                        x500Name.toASN1Primitive(); // Correct typecasting to ASN1Sequence
             } catch (Exception e) {
                 throw new RuntimeException("Error encoding Distinguished Name", e);
             }
@@ -99,9 +109,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
         }
     }
 
-    /**
-     * Utility method to serialize validity period as ASN.1 GeneralizedTime.
-     */
+    /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
     private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
@@ -118,16 +126,15 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
         }
     }
 
-    /**
-     * Utility method to serialize extensions as ASN.1 Extensions.
-     */
+    /** Utility method to serialize extensions as ASN.1 Extensions. */
     private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
                 for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
                     ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(entry.getKey());
-                    DEROctetString value = new DEROctetString(entry.getValue().getBytes(StandardCharsets.UTF_8));
+                    DEROctetString value =
+                            new DEROctetString(entry.getValue().getBytes(StandardCharsets.UTF_8));
                     Extension extension = new Extension(oid, false, value);
                     extensionsVector.add(extension);
                 }

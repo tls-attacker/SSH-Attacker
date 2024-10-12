@@ -1,10 +1,16 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -29,27 +35,28 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
     private NamedEcGroup group;
 
     // X.509-specific fields
-    private String issuer;      // Issuer Distinguished Name
-    private String subject;     // Subject Distinguished Name
+    private String issuer; // Issuer Distinguished Name
+    private String subject; // Subject Distinguished Name
     private String publicKeyAlgorithm;
     private int version;
-    private long serial;        // Certificate serial number
-    private String signatureAlgorithm;  // Signature algorithm
-    private byte[] signature;   // Certificate signature
+    private long serial; // Certificate serial number
+    private String signatureAlgorithm; // Signature algorithm
+    private byte[] signature; // Certificate signature
     private byte[] subjectKeyIdentifier; // Subject Key Identifier
 
     // Validity period
-    private long validAfter;    // Not Before (valid after)
-    private long validBefore;   // Not After (valid before)
+    private long validAfter; // Not Before (valid after)
+    private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions;  // Extensions (optional)
+    private Map<String, String> extensions; // Extensions (optional)
 
     public CustomX509EcdsaPublicKey() {
         super();
     }
 
-    public CustomX509EcdsaPublicKey(ECPublicKey publicKey, byte[] signature, String curveName, NamedEcGroup group) {
+    public CustomX509EcdsaPublicKey(
+            ECPublicKey publicKey, byte[] signature, String curveName, NamedEcGroup group) {
         super();
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
@@ -58,10 +65,11 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
         this.y = publicKey.getW().getAffineY();
         this.curveName = curveName;
         this.signature = signature;
-        this.group = group;  // Set the group
+        this.group = group; // Set the group
     }
 
-    public CustomX509EcdsaPublicKey(BigInteger x, BigInteger y, byte[] signature, String curveName, NamedEcGroup group) {
+    public CustomX509EcdsaPublicKey(
+            BigInteger x, BigInteger y, byte[] signature, String curveName, NamedEcGroup group) {
         super();
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
@@ -70,7 +78,7 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
         this.y = y;
         this.signature = signature;
         this.curveName = curveName;
-        this.group = group;  // Set the group
+        this.group = group; // Set the group
     }
 
     // Getter for the public key point (W)
@@ -229,10 +237,13 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
     public ECParameterSpec getParams() {
         try {
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(new ECGenParameterSpec(group.getJavaName()));  // Use the group to retrieve the curve name
+            parameters.init(
+                    new ECGenParameterSpec(
+                            group.getJavaName())); // Use the group to retrieve the curve name
             return parameters.getParameterSpec(ECParameterSpec.class);
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new UnsupportedOperationException("Fehler beim Generieren von ECParameterSpec", ex);
+            throw new UnsupportedOperationException(
+                    "Fehler beim Generieren von ECParameterSpec", ex);
         }
     }
 }

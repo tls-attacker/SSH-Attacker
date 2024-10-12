@@ -15,7 +15,6 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,8 +54,15 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
          */
 
         // 1. Format identifier (ssh-ed25519-cert-v01@openssh.com)
-        appendInt(PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
+        appendInt(
+                PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM
+                        .toString()
+                        .getBytes(StandardCharsets.US_ASCII)
+                        .length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
+        appendString(
+                PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.toString(),
+                StandardCharsets.US_ASCII);
 
         // 2. Nonce
         byte[] nonce = publicKey.getNonce();
@@ -77,7 +83,8 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         }
 
         // 4. Serial (uint64) - Convert long to BigInteger
-        appendBigInteger(BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // 5. Certificate type (uint32)
         appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
@@ -85,7 +92,9 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         // 6. Key ID (string)
         String keyId = publicKey.getKeyId();
         if (keyId != null) {
-            appendInt(keyId.getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+            appendInt(
+                    keyId.getBytes(StandardCharsets.US_ASCII).length,
+                    DataFormatConstants.STRING_SIZE_LENGTH);
             appendString(keyId, StandardCharsets.US_ASCII);
         } else {
             appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing Key ID
@@ -99,8 +108,8 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
             for (String principal : validPrincipals) {
                 if (principal != null) {
                     byte[] principalBytes = principal.getBytes(StandardCharsets.US_ASCII);
-                    principalsBuffer.putInt(principalBytes.length);  // Append length of principal
-                    principalsBuffer.put(principalBytes);            // Append principal itself
+                    principalsBuffer.putInt(principalBytes.length); // Append length of principal
+                    principalsBuffer.put(principalBytes); // Append principal itself
                 }
             }
             // Extract the serialized principals and append them to the final output
@@ -115,10 +124,12 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         }
 
         // 8. Valid After (uint64) - Convert long to BigInteger
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
 
         // 9. Valid Before (uint64) - Convert long to BigInteger
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
         // 10. Critical Options
         Map<String, String> criticalOptions = publicKey.getCriticalOptions();
@@ -178,7 +189,10 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
     }
 
     private static String buildStringWithLength(byte[] valueBytes) {
-        return new String(ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH).putInt(valueBytes.length).array())
+        return new String(
+                        ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH)
+                                .putInt(valueBytes.length)
+                                .array())
                 + new String(valueBytes, StandardCharsets.US_ASCII);
     }
 }

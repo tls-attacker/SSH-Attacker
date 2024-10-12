@@ -11,11 +11,8 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -25,6 +22,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCurvePublicKey, ?>> {
 
@@ -51,7 +50,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
 
         // Check format for Ed25519 certificate
         if (format.equals(PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.getName())) {
-            publicKey.setGroup(NamedEcGroup.CURVE25519);  // Setze die Ed25519-Gruppe
+            publicKey.setGroup(NamedEcGroup.CURVE25519); // Setze die Ed25519-Gruppe
             LOGGER.debug("Set group to CURVE25519");
         } else {
             throw new IllegalArgumentException("Unsupported key format: " + format);
@@ -62,19 +61,19 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
         LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
-        publicKey.setNonce(nonce);  // Setze Nonce
+        publicKey.setNonce(nonce); // Setze Nonce
 
         // 3. Public Key (pk)
         int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed publicKeyLength: {}", publicKeyLength);
         byte[] publicKeyBytes = parseByteArrayField(publicKeyLength);
         LOGGER.debug("Parsed publicKey: {}", Arrays.toString(publicKeyBytes));
-        publicKey.setPublicKey(publicKeyBytes);  // Setze Public Key
+        publicKey.setPublicKey(publicKeyBytes); // Setze Public Key
 
         // 4. Serial (uint64)
         long serial = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
         LOGGER.debug("Parsed serial: {}", serial);
-        publicKey.setSerial(serial);  // Setze Serial
+        publicKey.setSerial(serial); // Setze Serial
 
         // 5. Certificate Type (uint32)
         int certType = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -86,7 +85,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed keyIdLength: {}", keyIdLength);
         String keyId = parseByteString(keyIdLength, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed keyId: {}", keyId);
-        publicKey.setKeyId(keyId);  // Setze Key ID
+        publicKey.setKeyId(keyId); // Setze Key ID
 
         // 7. Principals (string valid principals)
         int totalPrincipalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -113,13 +112,13 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         long validFrom = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
         String validFromDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validFrom));
         LOGGER.debug("Parsed validFrom: {} (Date: {})", validFrom, validFromDate);
-        publicKey.setValidAfter(validFrom);  // Setze Valid After
+        publicKey.setValidAfter(validFrom); // Setze Valid After
 
         // 9. Validity period (uint64 valid before)
         long validTo = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
         String validToDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validTo));
         LOGGER.debug("Parsed validTo: {} (Date: {})", validTo, validToDate);
-        publicKey.setValidBefore(validTo);  // Setze Valid Before
+        publicKey.setValidBefore(validTo); // Setze Valid Before
 
         // 10. Critical Options (parsing critical options as a map of key-value pairs)
         int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -135,10 +134,13 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
                 String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
                 criticalOptionsMap.put(optionName, optionValue);
                 LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
-                bytesParsed += optionNameLength + optionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+                bytesParsed +=
+                        optionNameLength
+                                + optionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
-        publicKey.setCriticalOptions(criticalOptionsMap);  // Setze Critical Options
+        publicKey.setCriticalOptions(criticalOptionsMap); // Setze Critical Options
 
         // 11. Extensions (parsing extensions as a map of key-value pairs)
         int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -149,27 +151,36 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
             int bytesParsed = 0;
             while (bytesParsed < extensionsLength) {
                 int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-                String extensionName = parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
+                String extensionName =
+                        parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
                 int extensionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-                String extensionValue = parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
+                String extensionValue =
+                        parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
                 extensionsMap.put(extensionName, extensionValue);
                 LOGGER.debug("Parsed extension: {}   {}", extensionName, extensionValue);
-                bytesParsed += extensionNameLength + extensionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+                bytesParsed +=
+                        extensionNameLength
+                                + extensionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
-        publicKey.setExtensions(extensionsMap);  // Setze Extensions
+        publicKey.setExtensions(extensionsMap); // Setze Extensions
 
         // 12. Reserved (string reserved)
         int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed reservedLength: {}", reservedLength);
         if (reservedLength > 0) {
-            byte[] reservedBytes = parseByteArrayField(reservedLength);  // Lies die Bytes des reservierten Feldes
-            String reserved = new String(reservedBytes, StandardCharsets.US_ASCII);  // Konvertiere Bytes zu String
+            byte[] reservedBytes =
+                    parseByteArrayField(reservedLength); // Lies die Bytes des reservierten Feldes
+            String reserved =
+                    new String(
+                            reservedBytes,
+                            StandardCharsets.US_ASCII); // Konvertiere Bytes zu String
             LOGGER.debug("Parsed reserved: {}", reserved);
             publicKey.setReserved(reserved);
         } else {
             LOGGER.debug("Reserved field is empty.");
-            publicKey.setReserved("");  // Setze leeren String, wenn keine Daten vorhanden sind
+            publicKey.setReserved(""); // Setze leeren String, wenn keine Daten vorhanden sind
         }
 
         // 13. Signature Key (string signature key)
@@ -189,7 +200,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         if (signatureLength > 0) {
             byte[] signature = parseByteArrayField(signatureLength);
             LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
-            publicKey.setSignature(signature);  // Setze Signatur
+            publicKey.setSignature(signature); // Setze Signatur
         } else {
             LOGGER.debug("Signature field is empty.");
         }

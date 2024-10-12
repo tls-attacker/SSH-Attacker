@@ -16,12 +16,14 @@ import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.Map;
 
-
-/** Serializer class to encode an ECDSA certificate public key (ecdsa-sha2-nistp256-cert-v01@openssh.com) format. */
+/**
+ * Serializer class to encode an ECDSA certificate public key
+ * (ecdsa-sha2-nistp256-cert-v01@openssh.com) format.
+ */
 public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPublicKey> {
 
     private final CustomCertEcdsaPublicKey publicKey;
@@ -62,8 +64,15 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
          */
 
         // Format identifier (ecdsa-sha2-nistp256-cert-v01@openssh.com)
-        appendInt(PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
+        appendInt(
+                PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
+                        .toString()
+                        .getBytes(StandardCharsets.US_ASCII)
+                        .length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
+        appendString(
+                PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
+                StandardCharsets.US_ASCII);
 
         // Nonce
         byte[] nonce = publicKey.getNonce();
@@ -72,30 +81,38 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
 
         // Curve name
         String curveName = publicKey.getCurveName();
-        appendInt(curveName.getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendInt(
+                curveName.getBytes(StandardCharsets.US_ASCII).length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
         appendString(curveName, StandardCharsets.US_ASCII);
 
         // Public Key (Q)
-        byte[] encodedQ = PointFormatter.formatToByteArray(publicKey.getGroup(), publicKey.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
+        byte[] encodedQ =
+                PointFormatter.formatToByteArray(
+                        publicKey.getGroup(), publicKey.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
         appendInt(encodedQ.length, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(encodedQ);
 
         // Serial (uint64)
-        appendBigInteger(BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // Certificate type (uint32)
         appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
 
         // Key ID (string)
         String keyId = publicKey.getKeyId();
-        appendInt(keyId.getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendInt(
+                keyId.getBytes(StandardCharsets.US_ASCII).length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
         appendString(keyId, StandardCharsets.US_ASCII);
 
         // Valid Principals (string list)
         String[] validPrincipals = publicKey.getValidPrincipals();
         if (validPrincipals != null && validPrincipals.length > 0) {
             // Append each principal as separate SSH strings, according to SSH format expectations
-            ByteBuffer principalsBuffer = ByteBuffer.allocate(1024); // Initial buffer size; grows dynamically if needed
+            ByteBuffer principalsBuffer =
+                    ByteBuffer.allocate(1024); // Initial buffer size; grows dynamically if needed
             for (String principal : validPrincipals) {
                 byte[] principalBytes = principal.getBytes(StandardCharsets.US_ASCII);
                 // Serialize each principal with length prefix
@@ -113,10 +130,12 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
         }
 
         // Valid After (uint64)
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
 
         // Valid Before (uint64)
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
         // Critical Options
         Map<String, String> criticalOptions = publicKey.getCriticalOptions();
@@ -164,15 +183,22 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
             appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
             appendBytes(optionsBytes);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Leeres Feld, wenn die Map leer ist
+            appendInt(
+                    0,
+                    DataFormatConstants.STRING_SIZE_LENGTH); // Leeres Feld, wenn die Map leer ist
         }
     }
+
     private static String serializeString(String value) {
         byte[] valueBytes = value.getBytes(StandardCharsets.US_ASCII);
         return buildStringWithLength(valueBytes);
     }
+
     private static String buildStringWithLength(byte[] valueBytes) {
-        return new String(ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH).putInt(valueBytes.length).array())
+        return new String(
+                        ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH)
+                                .putInt(valueBytes.length)
+                                .array())
                 + new String(valueBytes, StandardCharsets.US_ASCII);
     }
 }

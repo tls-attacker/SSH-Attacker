@@ -5,28 +5,28 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertDsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Locale;
 import java.util.Arrays;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CertDsaPublicKeyParser extends Parser<SshPublicKey<CustomCertDsaPublicKey, CustomDsaPrivateKey>> {
+public class CertDsaPublicKeyParser
+        extends Parser<SshPublicKey<CustomCertDsaPublicKey, CustomDsaPrivateKey>> {
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
@@ -50,7 +50,9 @@ public class CertDsaPublicKeyParser extends Parser<SshPublicKey<CustomCertDsaPub
         LOGGER.debug("Parsed format: {}", format);
 
         if (!format.equals(PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM.getName())) {
-            LOGGER.warn("Unexpected public key format '{}'. Parsing may not yield expected results.", format);
+            LOGGER.warn(
+                    "Unexpected public key format '{}'. Parsing may not yield expected results.",
+                    format);
         }
 
         // Nonce (string nonce)
@@ -148,7 +150,10 @@ public class CertDsaPublicKeyParser extends Parser<SshPublicKey<CustomCertDsaPub
                 String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
                 criticalOptionsMap.put(optionName, optionValue);
                 LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
-                bytesParsed += optionNameLength + optionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+                bytesParsed +=
+                        optionNameLength
+                                + optionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
         publicKey.setCriticalOptions(criticalOptionsMap); // Setze Critical Options
@@ -162,12 +167,17 @@ public class CertDsaPublicKeyParser extends Parser<SshPublicKey<CustomCertDsaPub
             int bytesParsed = 0;
             while (bytesParsed < extensionsLength) {
                 int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-                String extensionName = parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
+                String extensionName =
+                        parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
                 int extensionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-                String extensionValue = parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
+                String extensionValue =
+                        parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
                 extensionsMap.put(extensionName, extensionValue);
                 LOGGER.debug("Parsed extension: {}   {}", extensionName, extensionValue);
-                bytesParsed += extensionNameLength + extensionValueLength + (2 * DataFormatConstants.UINT32_SIZE);
+                bytesParsed +=
+                        extensionNameLength
+                                + extensionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
         publicKey.setExtensions(extensionsMap); // Setze Extensions

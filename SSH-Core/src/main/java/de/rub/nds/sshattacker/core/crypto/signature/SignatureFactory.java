@@ -9,11 +9,11 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;

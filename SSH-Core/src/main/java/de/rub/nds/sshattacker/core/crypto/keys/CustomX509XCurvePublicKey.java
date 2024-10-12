@@ -1,47 +1,51 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Map;
 import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
-import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Map;
-
-/**
- * A serializable ED25519/ED448 X.509 public key used in certificates (X509-SSH-Ed25519).
- */
+/** A serializable ED25519/ED448 X.509 public key used in certificates (X509-SSH-Ed25519). */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomX509XCurvePublicKey extends CustomPublicKey {
 
     private NamedEcGroup group; // Named group (Ed25519 or Ed448)
-    private byte[] publicKey;   // Public key bytes
+    private byte[] publicKey; // Public key bytes
 
     // X.509-specific fields
-    private String issuer;      // Issuer Distinguished Name
-    private String subject;     // Subject Distinguished Name
+    private String issuer; // Issuer Distinguished Name
+    private String subject; // Subject Distinguished Name
     private String publicKeyAlgorithm;
     private int version;
-    private long serial;        // Certificate serial number
-    private String signatureAlgorithm;  // Signature algorithm
-    private byte[] signature;   // Certificate signature
+    private long serial; // Certificate serial number
+    private String signatureAlgorithm; // Signature algorithm
+    private byte[] signature; // Certificate signature
     private byte[] subjectKeyIdentifier; // Subject Key Identifier
 
     // Validity period
-    private long validAfter;    // Not Before (valid after)
-    private long validBefore;   // Not After (valid before)
+    private long validAfter; // Not Before (valid after)
+    private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions;  // Extensions (optional)
+    private Map<String, String> extensions; // Extensions (optional)
 
     public CustomX509XCurvePublicKey() {
         super();
@@ -182,14 +186,15 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
             SubjectPublicKeyInfo publicKeyInfo;
             if (group == NamedEcGroup.CURVE25519) {
                 keyFactory = KeyFactory.getInstance("Ed25519");
-                publicKeyInfo = new SubjectPublicKeyInfo(
-                        new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
-                        publicKey);
+                publicKeyInfo =
+                        new SubjectPublicKeyInfo(
+                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
+                                publicKey);
             } else if (group == NamedEcGroup.CURVE448) {
                 keyFactory = KeyFactory.getInstance("Ed448");
-                publicKeyInfo = new SubjectPublicKeyInfo(
-                        new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed448),
-                        publicKey);
+                publicKeyInfo =
+                        new SubjectPublicKeyInfo(
+                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed448), publicKey);
             } else {
                 throw new UnsupportedOperationException("Unsupported group: " + group);
             }

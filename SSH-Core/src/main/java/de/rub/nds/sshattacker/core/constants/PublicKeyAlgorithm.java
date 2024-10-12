@@ -189,8 +189,16 @@ public enum PublicKeyAlgorithm {
             "SHA512withECDSA"),
     // [ RFC 6187 ]
     X509V3_SSH_DSS("x509v3-ssh-dss", PublicKeyFormat.X509V3_SSH_DSS),
-    X509V3_SSH_RSA("x509v3-ssh-rsa", PublicKeyFormat.X509V3_SSH_RSA, SignatureEncoding.SSH_RSA, "SHA1WithRSA"),
-    X509V3_RSA2048_SHA256("x509v3-rsa2048-sha256", PublicKeyFormat.X509V3_RSA2048_SHA256, SignatureEncoding.RSA2048_SHA256, "SHA256WithRSA"),
+    X509V3_SSH_RSA(
+            "x509v3-ssh-rsa",
+            PublicKeyFormat.X509V3_SSH_RSA,
+            SignatureEncoding.SSH_RSA,
+            "SHA1WithRSA"),
+    X509V3_RSA2048_SHA256(
+            "x509v3-rsa2048-sha256",
+            PublicKeyFormat.X509V3_RSA2048_SHA256,
+            SignatureEncoding.RSA2048_SHA256,
+            "SHA256WithRSA"),
     X509V3_ECDSA_SHA2_SECP160K1(
             "x509v3-ecdsa-sha2-1.3.132.0.9",
             PublicKeyFormat.X509V3_ECDSA_SHA2_SECP160K1,
@@ -331,7 +339,11 @@ public enum PublicKeyAlgorithm {
             PublicKeyFormat.X509V3_ECDSA_SHA2_BRAINPOOL_P512R1,
             SignatureEncoding.ECDSA_SHA2_BRAINPOOL_P512R1,
             "SHA512withECDSA"),
-    X509V3_SSH_ED25519("x509v3-ssh-ed25519", PublicKeyFormat.X509V3_SSH_ED25519, SignatureEncoding.SSH_ED25519, "Ed25519"),
+    X509V3_SSH_ED25519(
+            "x509v3-ssh-ed25519",
+            PublicKeyFormat.X509V3_SSH_ED25519,
+            SignatureEncoding.SSH_ED25519,
+            "Ed25519"),
     // [ RFC 8709 ]
     SSH_ED25519(
             "ssh-ed25519", PublicKeyFormat.SSH_ED25519, SignatureEncoding.SSH_ED25519, "Ed25519"),
@@ -339,24 +351,45 @@ public enum PublicKeyAlgorithm {
     // Vendor extensions
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM(
-            "ssh-rsa-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM, SignatureEncoding.SSH_RSA, "SHA1WithRSA"),
+            "ssh-rsa-cert-v01@openssh.com",
+            PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.SSH_RSA,
+            "SHA1WithRSA"),
     RSA_SHA2_256_CERT_V01_OPENSSH_COM(
-            "rsa-sha2-256-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM, SignatureEncoding.RSA_SHA2_256, "SHA256WithRSA"),
+            "rsa-sha2-256-cert-v01@openssh.com",
+            PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.RSA_SHA2_256,
+            "SHA256WithRSA"),
     RSA_SHA2_512_CERT_V01_OPENSSH_COM(
-            "rsa-sha2-512-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM, SignatureEncoding.RSA_SHA2_512, "SHA512WithRSA"),
+            "rsa-sha2-512-cert-v01@openssh.com",
+            PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.RSA_SHA2_512,
+            "SHA512WithRSA"),
     SSH_DSS_CERT_V01_OPENSSH_COM(
-            "ssh-dss-cert-v01@openssh.com", PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM, SignatureEncoding.SSH_DSS, "SHA1WithDSA"),
+            "ssh-dss-cert-v01@openssh.com",
+            PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.SSH_DSS,
+            "SHA1WithDSA"),
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM(
             "ecdsa-sha2-nistp256-cert-v01@openssh.com",
-            PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM, SignatureEncoding.ECDSA_SHA2_NISTP256, "SHA256withECDSA"),
+            PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.ECDSA_SHA2_NISTP256,
+            "SHA256withECDSA"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM(
             "ecdsa-sha2-nistp384-cert-v01@openssh.com",
-            PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM, SignatureEncoding.ECDSA_SHA2_NISTP384, "SHA384withECDSA"),
+            PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.ECDSA_SHA2_NISTP384,
+            "SHA384withECDSA"),
     ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM(
             "ecdsa-sha2-nistp521-cert-v01@openssh.com",
-            PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM, SignatureEncoding.ECDSA_SHA2_NISTP521, "SHA512withECDSA"),
+            PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.ECDSA_SHA2_NISTP521,
+            "SHA512withECDSA"),
     SSH_ED25519_CERT_V01_OPENSSH_COM(
-            "ssh-ed25519-cert-v01@openssh.com", PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM, SignatureEncoding.SSH_ED25519, "Ed25519"),
+            "ssh-ed25519-cert-v01@openssh.com",
+            PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM,
+            SignatureEncoding.SSH_ED25519,
+            "Ed25519"),
     SK_ECDSA_SHA2_NISTP256_OPENSSH_COM(
             "sk-ecdsa-sha2-nistp256@openssh.com",
             PublicKeyFormat.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM),

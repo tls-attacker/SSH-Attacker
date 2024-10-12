@@ -41,8 +41,8 @@ public class CustomCertDsaPublicKey extends CustomPublicKey implements DSAPublic
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> criticalOptions;  // Map to hold critical options as key-value pairs
-    private Map<String, String> extensions;       // Map to hold extensions as key-value pairs
+    private Map<String, String> criticalOptions; // Map to hold critical options as key-value pairs
+    private Map<String, String> extensions; // Map to hold extensions as key-value pairs
 
     public CustomCertDsaPublicKey() {
         super();

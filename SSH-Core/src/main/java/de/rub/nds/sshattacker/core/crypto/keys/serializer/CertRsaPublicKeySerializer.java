@@ -12,9 +12,9 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.nio.ByteBuffer;
 
 /**
  * Serializer class to encode an RSA certificate public key (ssh-rsa-cert-v01@openssh.com) format.
@@ -50,9 +50,14 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
          */
 
         // Format identifier (ssh-rsa-cert-v01@openssh.com)
-        appendInt(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString().getBytes(StandardCharsets.US_ASCII).length,
+        appendInt(
+                PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM
+                        .toString()
+                        .getBytes(StandardCharsets.US_ASCII)
+                        .length,
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
+        appendString(
+                PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
 
         // Nonce
         byte[] nonce = publicKey.getNonce();
@@ -70,21 +75,25 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         appendBytes(encodedModulus);
 
         // Serial (uint64) -- using BigInteger instead of long
-        appendBigInteger(BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // Certificate type (uint32)
         appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
 
         // Key ID (string)
         String keyId = publicKey.getKeyId();
-        appendInt(keyId.getBytes(StandardCharsets.US_ASCII).length, DataFormatConstants.STRING_SIZE_LENGTH);
+        appendInt(
+                keyId.getBytes(StandardCharsets.US_ASCII).length,
+                DataFormatConstants.STRING_SIZE_LENGTH);
         appendString(keyId, StandardCharsets.US_ASCII);
 
         // Valid Principals (string list)
         String[] validPrincipals = publicKey.getValidPrincipals();
         if (validPrincipals != null && validPrincipals.length > 0) {
             // Append each principal as separate SSH strings, according to SSH format expectations
-            ByteBuffer principalsBuffer = ByteBuffer.allocate(1024); // Initial buffer size; grows dynamically if needed
+            ByteBuffer principalsBuffer =
+                    ByteBuffer.allocate(1024); // Initial buffer size; grows dynamically if needed
             for (String principal : validPrincipals) {
                 byte[] principalBytes = principal.getBytes(StandardCharsets.US_ASCII);
                 // Serialize each principal with length prefix
@@ -102,10 +111,12 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         }
 
         // Valid After (uint64) -- using BigInteger instead of long
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
 
         // Valid Before (uint64) -- using BigInteger instead of long
-        appendBigInteger(BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+        appendBigInteger(
+                BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
         // Critical Options
         Map<String, String> criticalOptions = publicKey.getCriticalOptions();
@@ -141,7 +152,6 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         }
         appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(signature);
-
     }
 
     private void appendStringMap(Map<String, String> stringMap) {
@@ -169,7 +179,10 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
     }
 
     private static String buildStringWithLength(byte[] valueBytes) {
-        return new String(ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH).putInt(valueBytes.length).array())
+        return new String(
+                        ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH)
+                                .putInt(valueBytes.length)
+                                .array())
                 + new String(valueBytes, StandardCharsets.US_ASCII);
     }
 }

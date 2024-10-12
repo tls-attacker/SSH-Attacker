@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -20,21 +27,21 @@ public class CustomX509DsaPublicKey extends CustomPublicKey implements DSAPublic
     private BigInteger y;
 
     // X.509-specific fields
-    private String issuer;      // Issuer Distinguished Name
-    private String subject;     // Subject Distinguished Name
+    private String issuer; // Issuer Distinguished Name
+    private String subject; // Subject Distinguished Name
     private String publicKeyAlgorithm;
     private int version;
-    private long serial;        // Certificate serial number
-    private String signatureAlgorithm;  // Signature algorithm
-    private byte[] signature;   // Certificate signature
+    private long serial; // Certificate serial number
+    private String signatureAlgorithm; // Signature algorithm
+    private byte[] signature; // Certificate signature
     private byte[] subjectKeyIdentifier; // Subject Key Identifier
 
     // Validity period
-    private long validAfter;    // Not Before (valid after)
-    private long validBefore;   // Not After (valid before)
+    private long validAfter; // Not Before (valid after)
+    private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions;  // Extensions (optional)
+    private Map<String, String> extensions; // Extensions (optional)
 
     public CustomX509DsaPublicKey() {
         super();
@@ -52,7 +59,8 @@ public class CustomX509DsaPublicKey extends CustomPublicKey implements DSAPublic
         this.signature = signature;
     }
 
-    public CustomX509DsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y, byte[] signature) {
+    public CustomX509DsaPublicKey(
+            BigInteger p, BigInteger q, BigInteger g, BigInteger y, byte[] signature) {
         super();
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");

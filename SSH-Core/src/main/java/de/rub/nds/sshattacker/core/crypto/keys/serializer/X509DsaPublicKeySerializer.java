@@ -1,13 +1,22 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509DsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -16,14 +25,7 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
 
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-/**
- * Serializer class to encode a DSA X.509 public key (X509-SSH-DSA) format.
- */
+/** Serializer class to encode a DSA X.509 public key (X509-SSH-DSA) format. */
 public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKey> {
 
     private final CustomX509DsaPublicKey publicKey;
@@ -57,10 +59,15 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
             topLevelVector.add(new org.bouncycastle.asn1.ASN1Integer(publicKey.getVersion()));
 
             // Serial (uint64) as ASN.1 INTEGER
-            topLevelVector.add(new org.bouncycastle.asn1.ASN1Integer(BigInteger.valueOf(publicKey.getSerial())));
+            topLevelVector.add(
+                    new org.bouncycastle.asn1.ASN1Integer(
+                            BigInteger.valueOf(publicKey.getSerial())));
 
             // Signature Algorithm (SHA256withDSA as OID in ASN.1 format with NULL parameter)
-            AlgorithmIdentifier signatureAlgorithm = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.2.840.10040.4.3"), DERNull.INSTANCE); // OID for sha256WithDSAEncryption
+            AlgorithmIdentifier signatureAlgorithm =
+                    new AlgorithmIdentifier(
+                            new ASN1ObjectIdentifier("1.2.840.10040.4.3"),
+                            DERNull.INSTANCE); // OID for sha256WithDSAEncryption
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
@@ -68,7 +75,8 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
-            ASN1Sequence validitySequence = getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+            ASN1Sequence validitySequence =
+                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
@@ -76,7 +84,10 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for DSA with NULL parameter)
-            AlgorithmIdentifier publicKeyAlgorithm = new AlgorithmIdentifier(new ASN1ObjectIdentifier("1.2.840.10040.4.1"), DERNull.INSTANCE); // OID for DSA
+            AlgorithmIdentifier publicKeyAlgorithm =
+                    new AlgorithmIdentifier(
+                            new ASN1ObjectIdentifier("1.2.840.10040.4.1"),
+                            DERNull.INSTANCE); // OID for DSA
             topLevelVector.add(publicKeyAlgorithm);
 
             // DSA Public Key 'y' (as ASN.1 INTEGER)
@@ -105,9 +116,7 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         }
     }
 
-    /**
-     * Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle.
-     */
+    /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
     private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
         if (dn != null && !dn.isEmpty()) {
             try {
@@ -121,9 +130,7 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         }
     }
 
-    /**
-     * Utility method to serialize validity period as ASN.1 GeneralizedTime.
-     */
+    /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
     private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
@@ -143,9 +150,7 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         }
     }
 
-    /**
-     * Utility method to serialize extensions as ASN.1 Extensions.
-     */
+    /** Utility method to serialize extensions as ASN.1 Extensions. */
     private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
@@ -179,9 +184,7 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         return null;
     }
 
-    /**
-     * Utility method to parse the extension value which could be a hex string or a raw string.
-     */
+    /** Utility method to parse the extension value which could be a hex string or a raw string. */
     private byte[] parseExtensionValue(String value) {
         if (value.startsWith("[")) {
             // Assuming value is in byte array format [4, 22, ...]
@@ -198,9 +201,7 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         }
     }
 
-    /**
-     * Utility method to convert hex string to byte array.
-     */
+    /** Utility method to convert hex string to byte array. */
     private byte[] hexStringToByteArray(String s) {
         if (s.length() % 2 != 0) {
             throw new IllegalArgumentException("Hex string must have an even length");
@@ -208,8 +209,10 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
+            data[i / 2] =
+                    (byte)
+                            ((Character.digit(s.charAt(i), 16) << 4)
+                                    + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
     }

@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.security.PublicKey;
 import java.security.Security;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -604,7 +603,6 @@ public class Config implements Serializable {
                                     PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP256,
                                     PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP384,
                                     PublicKeyAlgorithm.X509V3_ECDSA_SHA2_NISTP521,
-
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);

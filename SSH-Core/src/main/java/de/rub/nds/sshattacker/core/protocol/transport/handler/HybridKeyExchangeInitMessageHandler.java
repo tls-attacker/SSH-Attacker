@@ -45,15 +45,17 @@ public class HybridKeyExchangeInitMessageHandler
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                combined = KeyExchangeUtil.concatenateHybridKeys(
-                        message.getEncapsulationPublicKey().getValue(),
-                        message.getAgreementPublicKey().getValue());
+                combined =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getEncapsulationPublicKey().getValue(),
+                                message.getAgreementPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                combined = KeyExchangeUtil.concatenateHybridKeys(
-                        message.getAgreementPublicKey().getValue(),
-                        message.getEncapsulationPublicKey().getValue());
+                combined =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getAgreementPublicKey().getValue(),
+                                message.getEncapsulationPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             default:

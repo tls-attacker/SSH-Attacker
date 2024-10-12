@@ -52,8 +52,8 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> criticalOptions;  // Map to hold critical options as key-value pairs
-    private Map<String, String> extensions;       // Map to hold extensions as key-value pairs
+    private Map<String, String> criticalOptions; // Map to hold critical options as key-value pairs
+    private Map<String, String> extensions; // Map to hold extensions as key-value pairs
 
     public CustomCertEcdsaPublicKey() {
         super();
@@ -63,10 +63,15 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
         super();
         this.x = publicKey.getW().getAffineX();
         this.y = publicKey.getW().getAffineY();
-        this.curveName = publicKey.getParams().getCurve().toString();  // Simplified, should be set based on curve name
+        this.curveName =
+                publicKey
+                        .getParams()
+                        .getCurve()
+                        .toString(); // Simplified, should be set based on curve name
     }
 
-    public CustomCertEcdsaPublicKey(BigInteger x, BigInteger y, String curveName, NamedEcGroup group) {
+    public CustomCertEcdsaPublicKey(
+            BigInteger x, BigInteger y, String curveName, NamedEcGroup group) {
         super();
         this.x = x;
         this.y = y;
