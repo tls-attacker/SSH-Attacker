@@ -13,7 +13,15 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
@@ -233,7 +241,7 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             case "secp521r1":
             case "nistp521":
                 return "1.3.132.0.35";
-                // Additional curves from RFC 5656
+            // Additional curves from RFC 5656
             case "secp192r1":
             case "nistp192":
                 return "1.2.840.10045.3.1.1";

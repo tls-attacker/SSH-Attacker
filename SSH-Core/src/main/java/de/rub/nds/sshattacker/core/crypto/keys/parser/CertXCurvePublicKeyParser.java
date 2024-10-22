@@ -47,6 +47,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed format: {}", format);
+        publicKey.setCertFormat(format);
 
         // Check format for Ed25519 certificate
         if (format.equals(PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.getName())) {

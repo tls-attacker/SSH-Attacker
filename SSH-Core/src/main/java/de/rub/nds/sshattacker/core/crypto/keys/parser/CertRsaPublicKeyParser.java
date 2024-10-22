@@ -47,6 +47,7 @@ public class CertRsaPublicKeyParser
         LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed format: {}", format);
+        publicKey.setCertFormat(format);
 
         if (!format.equals(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.getName())) {
             LOGGER.warn(
@@ -59,7 +60,7 @@ public class CertRsaPublicKeyParser
         LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
         LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
-        publicKey.setNonce(nonce); // Setze Nonce
+        publicKey.setNonce(nonce);
 
         // Public Exponent (mpint e)
         int publicExponentLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -113,13 +114,13 @@ public class CertRsaPublicKeyParser
         long validFrom = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
         String validFromDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validFrom));
         LOGGER.debug("Parsed validFrom: {} (Date: {})", validFrom, validFromDate);
-        publicKey.setValidAfter(validFrom); // Setze Valid After
+        publicKey.setValidAfter(validFrom);
 
         // Validity period (uint64 valid before)
         long validTo = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
         String validToDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validTo));
         LOGGER.debug("Parsed validTo: {} (Date: {})", validTo, validToDate);
-        publicKey.setValidBefore(validTo); // Setze Valid Before
+        publicKey.setValidBefore(validTo);
 
         // Critical Options (parsing critical options as a map of key-value pairs)
         int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -169,10 +170,8 @@ public class CertRsaPublicKeyParser
 
         // Reserved (string reserved)
         int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        byte[] reservedBytes =
-                parseByteArrayField(reservedLength); // Lies die Bytes des reservierten Feldes
-        String reserved =
-                new String(reservedBytes, StandardCharsets.US_ASCII); // Konvertiere Bytes zu String
+        byte[] reservedBytes = parseByteArrayField(reservedLength);
+        String reserved = new String(reservedBytes, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed reserved: {}", reserved);
         publicKey.setReserved(reserved);
 
@@ -188,7 +187,7 @@ public class CertRsaPublicKeyParser
         LOGGER.debug("Parsed signatureLength: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
         LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
-        publicKey.setSignature(signature); // Setze Signatur
+        publicKey.setSignature(signature);
 
         LOGGER.debug("Successfully parsed the RSA Certificate Public Key.");
 

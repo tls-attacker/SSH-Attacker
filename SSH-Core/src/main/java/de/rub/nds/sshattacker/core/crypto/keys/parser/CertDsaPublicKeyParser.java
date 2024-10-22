@@ -48,6 +48,7 @@ public class CertDsaPublicKeyParser
         LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed format: {}", format);
+        publicKey.setCertFormat(format);
 
         if (!format.equals(PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM.getName())) {
             LOGGER.warn(

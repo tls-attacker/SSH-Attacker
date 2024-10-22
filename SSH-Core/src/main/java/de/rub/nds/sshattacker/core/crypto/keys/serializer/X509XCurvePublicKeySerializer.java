@@ -14,7 +14,14 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
@@ -132,7 +139,19 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
                 for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
-                    ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(entry.getKey());
+                    String oidString = entry.getKey();
+
+                    // OID for known extensions
+                    if (oidString.equals("SubjectKeyIdentifier")) {
+                        oidString = "2.5.29.14";
+                    }
+
+                    // Test if valid OID
+                    if (!oidString.matches("^\\d+(\\.\\d+)*$")) {
+                        throw new IllegalArgumentException("Invalid OID format: " + oidString);
+                    }
+
+                    ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(oidString);
                     DEROctetString value =
                             new DEROctetString(entry.getValue().getBytes(StandardCharsets.UTF_8));
                     Extension extension = new Extension(oid, false, value);

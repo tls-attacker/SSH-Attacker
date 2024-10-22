@@ -46,8 +46,10 @@ public class CertEcdsaPublicKeyParser
 
         // Format (string "ecdsa-sha2-nistp256-cert-v01@openssh.com", etc.)
         int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         LOGGER.debug("Parsed format: {}", format);
+        publicKey.setCertFormat(format);
 
         if (!format.startsWith("ecdsa-sha2-")) {
             LOGGER.warn("Unexpected format '{}', expected ecdsa-sha2-*", format);
@@ -55,9 +57,10 @@ public class CertEcdsaPublicKeyParser
 
         // Nonce
         int nonceLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
+        LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
         publicKey.setNonce(nonce);
-        LOGGER.debug("Parsed nonce: {}", nonce);
 
         // Curve
         int curveIdentifierLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -76,19 +79,20 @@ public class CertEcdsaPublicKeyParser
 
         // Serial
         long serial = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
-        publicKey.setSerial(serial);
         LOGGER.debug("Parsed serial: {}", serial);
+        publicKey.setSerial(serial);
 
-        // Certificate Type
+        // Type (uint32 type)
         int certType = parseIntField(DataFormatConstants.UINT32_SIZE);
-        publicKey.setCertType(String.valueOf(certType));
         LOGGER.debug("Parsed certType: {}", certType);
+        publicKey.setCertType(String.valueOf(certType));
 
-        // Key ID
+        // Key ID (string key id)
         int keyIdLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed keyIdLength: {}", keyIdLength);
         String keyId = parseByteString(keyIdLength, StandardCharsets.US_ASCII);
-        publicKey.setKeyId(keyId);
         LOGGER.debug("Parsed keyId: {}", keyId);
+        publicKey.setKeyId(keyId);
 
         // Principals (string valid principals)
         int totalPrincipalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -97,82 +101,109 @@ public class CertEcdsaPublicKeyParser
         String[] validPrincipals = new String[totalPrincipalLength];
         int bytesProcessed = 0;
         int principalIndex = 0;
+
         while (bytesProcessed < totalPrincipalLength) {
             int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+            LOGGER.debug("Parsed principal length: {}", principalLength);
+
             if (principalLength > 0) {
-                String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
+                byte[] principalBytes = parseByteArrayField(principalLength);
+                LOGGER.debug("Principal bytes: {}", Arrays.toString(principalBytes));
+
+                // Convert byte array to string using ASCII
+                String principal = new String(principalBytes, StandardCharsets.US_ASCII);
+                LOGGER.debug("Parsed principal string: '{}'", principal);
+
                 validPrincipals[principalIndex++] = principal;
             }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
 
-        // Nur die tatsächlich gesetzten Principals weitergeben
         String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
-        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+        LOGGER.debug("Parsed principals array: {}", Arrays.toString(parsedPrincipals));
         publicKey.setValidPrincipals(parsedPrincipals);
 
-        // Valid After
-        long validAfter = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
-        String validAfterDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validAfter));
-        publicKey.setValidAfter(validAfter);
-        LOGGER.debug("Parsed validAfter: {} (Date: {})", validAfter, validAfterDate);
+        // Validity period (uint64 valid after)
+        long validFrom = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
+        String validFromDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validFrom));
+        LOGGER.debug("Parsed validFrom: {} (Date: {})", validFrom, validFromDate);
+        publicKey.setValidAfter(validFrom);
 
-        // Valid Before
-        long validBefore = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
-        String validBeforeDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validBefore));
-        publicKey.setValidBefore(validBefore);
-        LOGGER.debug("Parsed validBefore: {} (Date: {})", validBefore, validBeforeDate);
+        // Validity period (uint64 valid before)
+        long validTo = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();
+        String validToDate = DATE_FORMATTER.format(Instant.ofEpochSecond(validTo));
+        LOGGER.debug("Parsed validTo: {} (Date: {})", validTo, validToDate);
+        publicKey.setValidBefore(validTo);
 
-        // Critical Options
+        // Critical Options (parsing critical options as a map of key-value pairs)
         int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        Map<String, String> criticalOptionsMap = parseOptions(criticalOptionsLength);
-        publicKey.setCriticalOptions(criticalOptionsMap);
-        LOGGER.debug("Parsed critical options: {}", criticalOptionsMap);
+        LOGGER.debug("Parsed criticalOptionsLength: {}", criticalOptionsLength);
 
-        // Extensions
-        int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        Map<String, String> extensionsMap = parseOptions(extensionsLength);
-        publicKey.setExtensions(extensionsMap);
-        LOGGER.debug("Parsed extensions: {}", extensionsMap);
-
-        // Reserved
-        int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        byte[] reserved = parseByteArrayField(reservedLength);
-        LOGGER.debug("Parsed reserved: {}", reserved);
-
-        // Signature Key
-        int signatureKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        byte[] signatureKey = parseByteArrayField(signatureKeyLength);
-        publicKey.setSignatureKey(signatureKey);
-        LOGGER.debug("Parsed signatureKey: {}", signatureKey);
-
-        // Signature
-        int signatureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
-        byte[] signature = parseByteArrayField(signatureLength);
-        publicKey.setSignature(signature);
-        LOGGER.debug("Parsed signature: {}", signature);
-
-        LOGGER.debug("Successfully parsed the ECDSA certificate public key.");
-
-        return new SshPublicKey<>(PublicKeyFormat.fromName(format), publicKey);
-    }
-
-    private Map<String, String> parseOptions(int length) {
-        Map<String, String> options = new HashMap<>();
-        if (length > 0) {
+        Map<String, String> criticalOptionsMap = new HashMap<>();
+        if (criticalOptionsLength > 0) {
             int bytesParsed = 0;
-            while (bytesParsed < length) {
+            while (bytesParsed < criticalOptionsLength) {
                 int optionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
                 String optionName = parseByteString(optionNameLength, StandardCharsets.US_ASCII);
                 int optionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
                 String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
-                options.put(optionName, optionValue);
+                criticalOptionsMap.put(optionName, optionValue);
+                LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
                 bytesParsed +=
                         optionNameLength
                                 + optionValueLength
                                 + (2 * DataFormatConstants.UINT32_SIZE);
             }
         }
-        return options;
+        publicKey.setCriticalOptions(criticalOptionsMap);
+
+        // Extensions (parsing extensions as a map of key-value pairs)
+        int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed extensionsLength: {}", extensionsLength);
+
+        Map<String, String> extensionsMap = new HashMap<>();
+        if (extensionsLength > 0) {
+            int bytesParsed = 0;
+            while (bytesParsed < extensionsLength) {
+                int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String extensionName =
+                        parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
+                int extensionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                String extensionValue =
+                        parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
+                extensionsMap.put(extensionName, extensionValue);
+                LOGGER.debug("Parsed extension: {}   {}", extensionName, extensionValue);
+                bytesParsed +=
+                        extensionNameLength
+                                + extensionValueLength
+                                + (2 * DataFormatConstants.UINT32_SIZE);
+            }
+        }
+        publicKey.setExtensions(extensionsMap);
+
+        // Reserved
+        int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        byte[] reservedBytes = parseByteArrayField(reservedLength);
+        String reserved = new String(reservedBytes, StandardCharsets.US_ASCII);
+        LOGGER.debug("Parsed reserved: {}", reserved);
+        publicKey.setReserved(reserved);
+
+        // Signature Key
+        int signatureKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed signatureKeyLength: {}", signatureKeyLength);
+        byte[] signatureKey = parseByteArrayField(signatureKeyLength);
+        LOGGER.debug("Parsed signatureKey: {}", Arrays.toString(signatureKey));
+        publicKey.setSignatureKey(signatureKey);
+
+        // Signature
+        int signatureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Parsed signatureLength: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
+        publicKey.setSignature(signature);
+
+        LOGGER.debug("Successfully parsed the ECDSA certificate public key.");
+
+        return new SshPublicKey<>(PublicKeyFormat.fromName(format), publicKey);
     }
 }

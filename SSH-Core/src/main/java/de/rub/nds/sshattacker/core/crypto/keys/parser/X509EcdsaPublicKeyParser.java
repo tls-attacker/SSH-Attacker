@@ -19,7 +19,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,15 +33,31 @@ public class X509EcdsaPublicKeyParser
         extends Parser<SshPublicKey<CustomX509EcdsaPublicKey, CustomEcPrivateKey>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(Locale.getDefault())
+                    .withZone(ZoneId.systemDefault());
 
     // Map to store OID to curve name mapping
     private static final Map<String, String> oidToCurveNameMap = new HashMap<>();
 
     static {
         // Populate with known OIDs and curve names
+        // Required  Curves (RFC 5656, Abschnitt 10.1)
         oidToCurveNameMap.put("1.2.840.10045.3.1.7", "secp256r1");
         oidToCurveNameMap.put("1.3.132.0.34", "secp384r1");
         oidToCurveNameMap.put("1.3.132.0.35", "secp521r1");
+
+        // Recommended Curves (RFC 5656, Abschnitt 10.2)
+        oidToCurveNameMap.put("1.3.132.0.1", "sect163k1");
+        oidToCurveNameMap.put("1.2.840.10045.3.1.1", "secp192r1");
+        oidToCurveNameMap.put("1.3.132.0.33", "secp224r1");
+        oidToCurveNameMap.put("1.3.132.0.26", "sect233k1");
+        oidToCurveNameMap.put("1.3.132.0.27", "sect233r1");
+        oidToCurveNameMap.put("1.3.132.0.16", "sect283k1");
+        oidToCurveNameMap.put("1.3.132.0.36", "sect409k1");
+        oidToCurveNameMap.put("1.3.132.0.37", "sect409r1");
+        oidToCurveNameMap.put("1.3.132.0.38", "sect571k1");
     }
 
     public X509EcdsaPublicKeyParser(byte[] array, int startPosition) {
@@ -75,7 +95,7 @@ public class X509EcdsaPublicKeyParser
                                 ecPublicKey.getW().getAffineX(),
                                 ecPublicKey.getW().getAffineY(),
                                 signature,
-                                curveName,
+                                curveName, // Add curve name here
                                 group);
 
                 // Set parsed values to the CustomX509EcdsaPublicKey object
@@ -84,34 +104,95 @@ public class X509EcdsaPublicKeyParser
                 customX509EcdsaPublicKey.setSubject(cert.getSubjectDN().getName());
                 customX509EcdsaPublicKey.setSignatureAlgorithm(cert.getSigAlgName());
                 customX509EcdsaPublicKey.setSerial(cert.getSerialNumber().longValue());
-                customX509EcdsaPublicKey.setValidAfter(cert.getNotBefore().getTime() / 1000);
-                customX509EcdsaPublicKey.setValidBefore(cert.getNotAfter().getTime() / 1000);
+                customX509EcdsaPublicKey.setValidAfter(cert.getNotBefore().getTime());
+                customX509EcdsaPublicKey.setValidBefore(cert.getNotAfter().getTime());
                 customX509EcdsaPublicKey.setPublicKeyAlgorithm(publicKey.getAlgorithm());
-                customX509EcdsaPublicKey.setCurveName(curveName);
+                customX509EcdsaPublicKey.setCurveName(curveName); // Add curve name to the object
 
-                // Log parsed elements
+                // Log parsed elements including the curve name
                 LOGGER.debug("Parsed Version: V{}", cert.getVersion());
                 LOGGER.debug("Parsed Subject: {}", cert.getSubjectDN());
                 LOGGER.debug("Parsed Issuer: {}", cert.getIssuerDN());
                 LOGGER.debug("Parsed Signature Algorithm: {}", cert.getSigAlgName());
                 LOGGER.debug("Parsed Serial Number: {}", cert.getSerialNumber());
-                LOGGER.debug("Parsed Valid From: {}", cert.getNotBefore());
-                LOGGER.debug("Parsed Valid To: {}", cert.getNotAfter());
+                LOGGER.debug(
+                        "Parsed Valid From: {}",
+                        DATE_FORMATTER.format(cert.getNotBefore().toInstant()));
+                LOGGER.debug(
+                        "Parsed Valid To: {}",
+                        DATE_FORMATTER.format(cert.getNotAfter().toInstant()));
                 LOGGER.debug("Parsed Public Key Algorithm: {}", publicKey.getAlgorithm());
                 LOGGER.debug(
                         "Parsed ECDSA Public Key Point: x={}, y={}",
                         ecPublicKey.getW().getAffineX(),
                         ecPublicKey.getW().getAffineY());
+                LOGGER.debug("Parsed Curve Name: {}", curveName);
 
                 // Set Extensions, if any
                 Map<String, String> extensionsMap = parseExtensions(cert);
                 customX509EcdsaPublicKey.setExtensions(extensionsMap);
+                if (extensionsMap != null && !extensionsMap.isEmpty()) {
+                    LOGGER.debug("Parsed Certificate Extensions:");
+                    for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
+                        LOGGER.debug("Extension OID: {}, Value: {}", entry.getKey(), entry.getValue());
+                    }
+                }
+                else {
+                    LOGGER.debug("No extensions found in the certificate.");
+                }
 
                 LOGGER.debug("Successfully parsed the X.509 ECDSA Certificate Public Key.");
 
+                // Dynamically determine the PublicKeyFormat based on the curve
+                PublicKeyFormat keyFormat;
+                switch (curveName) {
+                        // Required Curves (RFC 5656, Section 10.1)
+                    case "secp256r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256;
+                        break;
+                    case "secp384r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP384;
+                        break;
+                    case "secp521r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP521;
+                        break;
+
+                        // Recommended curves (RFC 5656, Section 10.2)
+                    case "sect163k1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163K1;
+                        break;
+                    case "secp192r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECP192R1;
+                        break;
+                    case "secp224r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECP224R1;
+                        break;
+                    case "sect233k1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233K1;
+                        break;
+                    case "sect233r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233R1;
+                        break;
+                    case "sect283k1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT283K1;
+                        break;
+                    case "sect409k1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409K1;
+                        break;
+                    case "sect409r1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409R1;
+                        break;
+                    case "sect571k1":
+                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571K1;
+                        break;
+
+                        // Unknown or not supported curves
+                    default:
+                        throw new IllegalArgumentException("Unsupported curve: " + curveName);
+                }
+
                 // Wrap the CustomX509EcdsaPublicKey in an SshPublicKey and return
-                return new SshPublicKey<>(
-                        PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256, customX509EcdsaPublicKey);
+                return new SshPublicKey<>(keyFormat, customX509EcdsaPublicKey);
             } else {
                 throw new IllegalArgumentException(
                         "Invalid X.509 certificate - ECDSA key missing.");
@@ -147,10 +228,31 @@ public class X509EcdsaPublicKeyParser
         return (X509Certificate) certFactory.generateCertificate(certInputStream);
     }
 
-    private String getCurveOid(ECParameterSpec ecParams) {
-        // Dynamically map ECParameterSpec to known curve OIDs
-        // Placeholder implementation, you could compare parameters to known curves here
-        return "1.2.840.10045.3.1.7"; // Default example for secp256r1
+    public static String getCurveOid(ECParameterSpec ecParams) {
+        // Hole die Bit-Länge der Kurve
+        int fieldSize = ecParams.getOrder().bitLength();
+
+        // OID based on bit length
+        switch (fieldSize) {
+            case 256:
+                return "1.2.840.10045.3.1.7"; // secp256r1 (nistp256)
+            case 384:
+                return "1.3.132.0.34"; // secp384r1 (nistp384)
+            case 521:
+                return "1.3.132.0.35"; // secp521r1 (nistp521)
+            case 163:
+                return "1.3.132.0.1"; // sect163k1 (nistk163)
+            case 192:
+                return "1.2.840.10045.3.1.1"; // secp192r1 (nistp192)
+            case 224:
+                return "1.3.132.0.33"; // secp224r1 (nistp224)
+            case 283:
+                return "1.3.132.0.16"; // sect283k1 (nistk283)
+            case 571:
+                return "1.3.132.0.38"; // sect571k1 (nistt571)
+            default:
+                return "Unknown OID";
+        }
     }
 
     private Map<String, String> parseExtensions(X509Certificate cert) {
@@ -187,12 +289,33 @@ public class X509EcdsaPublicKeyParser
     // Map curve name to NamedEcGroup locally without modifying NamedEcGroup
     private NamedEcGroup mapCurveNameToNamedEcGroup(String curveName) {
         switch (curveName) {
+                // Required Curves (RFC 5656, Section 10.1)
             case "secp256r1":
                 return NamedEcGroup.SECP256R1;
             case "secp384r1":
                 return NamedEcGroup.SECP384R1;
             case "secp521r1":
                 return NamedEcGroup.SECP521R1;
+
+                // Recommended Curves (RFC 5656, Section 10.2)
+            case "sect163k1":
+                return NamedEcGroup.SECT163K1;
+            case "secp192r1":
+                return NamedEcGroup.SECP192R1;
+            case "secp224r1":
+                return NamedEcGroup.SECP224R1;
+            case "sect233k1":
+                return NamedEcGroup.SECT233K1;
+            case "sect233r1":
+                return NamedEcGroup.SECT233R1;
+            case "sect283k1":
+                return NamedEcGroup.SECT283K1;
+            case "sect409k1":
+                return NamedEcGroup.SECT409K1;
+            case "sect409r1":
+                return NamedEcGroup.SECT409R1;
+            case "sect571k1":
+                return NamedEcGroup.SECT571K1;
             default:
                 throw new IllegalArgumentException("Unknown curve name: " + curveName);
         }

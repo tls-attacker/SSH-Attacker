@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -22,10 +23,16 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCurvePublicKey, ?>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    static {
+        // BouncyCastle-Provider added
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public X509XCurvePublicKeyParser(byte[] array, int startPosition) {
         super(array, startPosition);
@@ -36,7 +43,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
         try {
             // Start parsing the certificate dynamically based on the ASN.1 structure
             int startIndex = findX509StartIndex(getArray());
-            X509Certificate cert = extractCertificate(getArray(), startIndex);
+            X509Certificate cert = extractCertificateWithBC(getArray(), startIndex);
             PublicKey publicKey = cert.getPublicKey();
 
             // Falls der Key Ed25519 oder Ed448 ist
@@ -48,7 +55,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 CustomX509XCurvePublicKey customX509XCurvePublicKey =
                         new CustomX509XCurvePublicKey(encodedPublicKey, group, signature);
 
-                // Setze die geparsten Werte in das CustomX509XCurvePublicKey-Objekt
+                // Set parsed value in CustomX509XCurvePublicKey object
                 customX509XCurvePublicKey.setVersion(cert.getVersion());
                 customX509XCurvePublicKey.setIssuer(cert.getIssuerDN().getName());
                 customX509XCurvePublicKey.setSubject(cert.getSubjectDN().getName());
@@ -58,7 +65,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 customX509XCurvePublicKey.setValidBefore(cert.getNotAfter().getTime());
                 customX509XCurvePublicKey.setPublicKeyAlgorithm(publicKey.getAlgorithm());
 
-                // Ausgabe der geparsten Elemente ins Log
+                // Logger
                 LOGGER.debug("Parsed Version: V{}", cert.getVersion());
                 LOGGER.debug("Parsed Subject: {}", cert.getSubjectDN());
                 LOGGER.debug("Parsed Issuer: {}", cert.getIssuerDN());
@@ -68,7 +75,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 LOGGER.debug("Parsed Valid To: {}", cert.getNotAfter());
                 LOGGER.debug("Parsed Public Key Algorithm: {}", publicKey.getAlgorithm());
 
-                // Ausgabe der X.509-Erweiterungen (Extensions)
+                // X.509-Extensions
                 byte[] authorityKeyIdentifier = cert.getExtensionValue("2.5.29.35");
                 if (authorityKeyIdentifier != null) {
                     String authorityKeyIdentifierHex =
@@ -91,7 +98,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                     }
                 }
 
-                // Setze Extensions, falls vorhanden
+                // Set Extensions
                 Map<String, String> extensionsMap = new HashMap<>();
                 if (authorityKeyIdentifier != null) {
                     extensionsMap.put(
@@ -103,7 +110,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 }
                 customX509XCurvePublicKey.setExtensions(extensionsMap);
 
-                // Ausgabe der CA-Informationen, falls vorhanden
+                // CA-Information
                 if (cert.getBasicConstraints() != -1) {
                     LOGGER.debug(
                             "Parsed Certificate is a CA Certificate. Basic Constraints: {}",
@@ -124,7 +131,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
         }
     }
 
-    // Funktion zur Bestimmung des Offsets für den Start des ASN.1-Blocks
+    // Find offset for start of ASN.1-block
     private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
         int startIndex = 8; // SSH-Header überspringen
         while (startIndex < encodedPublicKeyBytes.length) {
@@ -136,19 +143,20 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
         throw new IllegalArgumentException("Konnte Start des X.509 Zertifikats nicht finden.");
     }
 
-    // Extrahiert das vollständige Zertifikat
-    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex)
+    // Extract Certificate with BouncyCastle
+    private X509Certificate extractCertificateWithBC(byte[] encodedCertificateBytes, int startIndex)
             throws Exception {
         ByteArrayInputStream certInputStream =
                 new ByteArrayInputStream(
                         encodedCertificateBytes,
                         startIndex,
                         encodedCertificateBytes.length - startIndex);
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        CertificateFactory certFactory =
+                CertificateFactory.getInstance("X.509", "BC"); // Force usage of BouncyCastle
         return (X509Certificate) certFactory.generateCertificate(certInputStream);
     }
 
-    // Funktion zur Erkennung der EdDSA-Kurve
+    // Find EdDSA-Curve
     private NamedEcGroup detectEdCurveGroup(String algorithm) {
         if (algorithm.equalsIgnoreCase("Ed25519")) {
             return NamedEcGroup.CURVE25519;

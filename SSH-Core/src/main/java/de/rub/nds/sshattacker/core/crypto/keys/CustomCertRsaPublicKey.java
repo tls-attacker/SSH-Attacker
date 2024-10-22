@@ -30,6 +30,7 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
     private byte[] signatureKey;
 
     // New fields for certificate-specific information
+    private String certformat;
     private String certType;
     private String keyId;
     private String reserved;
@@ -73,6 +74,14 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
 
     public void setPublicExponent(BigInteger publicExponent) {
         this.publicExponent = publicExponent;
+    }
+
+    public void setCertFormat(String certformat) {
+        this.certformat = certformat;
+    }
+
+    public String getCertFormat() {
+        return certformat;
     }
 
     public long getSerial() {

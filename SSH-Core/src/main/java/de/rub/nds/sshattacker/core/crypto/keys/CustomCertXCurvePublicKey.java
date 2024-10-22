@@ -33,6 +33,7 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
     // New fields for certificate-specific information
     private long serial;
     private String certType;
+    private String certformat;
     private String keyId;
     private String reserved;
     private String[] validPrincipals;
@@ -94,6 +95,14 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
 
     public void setCertType(String certType) {
         this.certType = certType;
+    }
+
+    public void setCertFormat(String certformat) {
+        this.certformat = certformat;
+    }
+
+    public String getCertFormat() {
+        return certformat;
     }
 
     // Getter and setter for key ID

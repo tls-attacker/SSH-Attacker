@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Serializer class to encode an ECDSA certificate public key
- * (ecdsa-sha2-nistp256-cert-v01@openssh.com) format.
+ * (ecdsa-sha2-nistp*-cert-v01@openssh.com) format.
  */
 public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPublicKey> {
 
@@ -45,8 +45,8 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
         LOGGER.debug("Signature: {}", publicKey.getSignature());
 
         /*
-         * The ecdsa-sha2-nistp256-cert-v01@openssh.com format as specified in the SSH protocol:
-         *   string    "ecdsa-sha2-nistp256-cert-v01@openssh.com"
+         * The ecdsa-sha2-nistp*-cert-v01@openssh.com format as specified in the SSH protocol:
+         *   string    "ecdsa-sha2-nistp*-cert-v01@openssh.com"
          *   string    nonce
          *   string    curve
          *   string    Q (the public key)
@@ -63,24 +63,52 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
          *   string    signature
          */
 
-        // Format identifier (ecdsa-sha2-nistp256-cert-v01@openssh.com)
-        appendInt(
-                PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
-                        .toString()
-                        .getBytes(StandardCharsets.US_ASCII)
-                        .length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(
-                PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
-                StandardCharsets.US_ASCII);
-
+        // Format identifier (ecdsa-sha2-nistp*-cert-v01@openssh.com)
+        String curveName = publicKey.getCurveName();
+        switch (curveName) {
+            case "nistp256":
+                appendInt(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
+                                .toString()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length,
+                        DataFormatConstants.STRING_SIZE_LENGTH);
+                appendString(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
+                        StandardCharsets.US_ASCII);
+                break;
+            case "nistp384":
+                appendInt(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM
+                                .toString()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length,
+                        DataFormatConstants.STRING_SIZE_LENGTH);
+                appendString(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM.toString(),
+                        StandardCharsets.US_ASCII);
+                break;
+            case "nistp521":
+                appendInt(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM
+                                .toString()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length,
+                        DataFormatConstants.STRING_SIZE_LENGTH);
+                appendString(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM.toString(),
+                        StandardCharsets.US_ASCII);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported curve: " + curveName);
+        }
         // Nonce
         byte[] nonce = publicKey.getNonce();
         appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(nonce);
 
         // Curve name
-        String curveName = publicKey.getCurveName();
+        // String curveName = publicKey.getCurveName();
         appendInt(
                 curveName.getBytes(StandardCharsets.US_ASCII).length,
                 DataFormatConstants.STRING_SIZE_LENGTH);

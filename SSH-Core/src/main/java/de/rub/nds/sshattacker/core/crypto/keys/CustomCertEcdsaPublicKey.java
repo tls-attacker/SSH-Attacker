@@ -45,6 +45,7 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
 
     // New fields for certificate-specific information
     private String certType;
+    private String certformat;
     private String keyId;
     private String reserved;
     private String[] validPrincipals;
@@ -95,6 +96,14 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
     // Getter for the public key as a Point (getWAsPoint)
     public Point getWAsPoint() {
         return publicKey;
+    }
+
+    public void setCertFormat(String certformat) {
+        this.certformat = certformat;
+    }
+
+    public String getCertFormat() {
+        return certformat;
     }
 
     // Getter und setter for the curve name
