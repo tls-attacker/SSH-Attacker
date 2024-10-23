@@ -20,6 +20,7 @@ public class ChannelRequestEnvMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
+        getObject().setWantReply(true);
         getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
         getObject().setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
     }

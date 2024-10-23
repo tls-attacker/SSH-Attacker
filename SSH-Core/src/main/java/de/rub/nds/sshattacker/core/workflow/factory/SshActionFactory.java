@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public final class SshActionFactory {
 
@@ -40,6 +41,14 @@ public final class SshActionFactory {
             action = new ReceiveAction(protocolMessages);
         }
         action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction withReceiveOptions(
+            MessageAction action, Set<ReceiveAction.ReceiveOption> receiveOptions) {
+        if (action instanceof ReceiveAction) {
+            ((ReceiveAction) action).setReceiveOptions(receiveOptions);
+        }
         return action;
     }
 

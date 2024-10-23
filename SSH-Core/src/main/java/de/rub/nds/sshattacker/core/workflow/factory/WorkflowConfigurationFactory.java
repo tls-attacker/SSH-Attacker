@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -471,22 +472,23 @@ public class WorkflowConfigurationFactory {
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new ChannelOpenSessionMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new ChannelOpenConfirmationMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)),
                 SshActionFactory.createMessageAction(
                         connection,
                         ConnectionEndType.CLIENT,
                         new ChannelRequestPtyMessage(),
-                        new ChannelRequestEnvMessage(),
-                        new ChannelRequestEnvMessage(),
-                        new ChannelRequestEnvMessage(),
                         new ChannelRequestEnvMessage()),
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelRequestEnvMessage()));
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
