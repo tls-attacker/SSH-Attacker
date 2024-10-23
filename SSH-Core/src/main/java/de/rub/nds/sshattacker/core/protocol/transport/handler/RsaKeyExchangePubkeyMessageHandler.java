@@ -59,7 +59,6 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
-        // TODO: Implement Serializer
         return new RsaKeyExchangePubkeyMessageSerializer(message);
     }
 }
