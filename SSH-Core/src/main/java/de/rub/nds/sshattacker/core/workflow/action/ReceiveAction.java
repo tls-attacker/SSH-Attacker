@@ -160,6 +160,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages;
 
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS}
+     * option has been set.
+     */
+    @XmlElement protected Boolean ignoreUnexpectedChannelWindowAdjusts;
+
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements({
@@ -336,6 +342,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 //   to 0.
                 // - the `FAIL_ON_UNEXPECTED_IGNORE_MESSAGES` receive option is not
                 //   set and the actual message is an SSH_MSG_IGNORE message.
+                // - the `IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS`
+                //   receive option is set and the actual message is an
+                //   SSH_MSG_CHANNEL_WINDOW_ADJUST.
                 //
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
@@ -351,7 +360,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                                 && actualMessage instanceof IgnoreMessage
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
-                                && actualMessage instanceof DebugMessage) {
+                                && actualMessage instanceof DebugMessage
+                        || hasReceiveOption(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)
+                                && actualMessage instanceof ChannelWindowAdjustMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }
@@ -427,6 +438,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES:
                 value = failOnUnexpectedDebugMessages;
                 break;
+            case IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS:
+                value = ignoreUnexpectedChannelWindowAdjusts;
+                break;
         }
 
         return value != null && value;
@@ -458,6 +472,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
         failOnUnexpectedDebugMessages =
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
+        ignoreUnexpectedChannelWindowAdjusts =
+                receiveOptions.contains(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS);
 
         if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                 && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
@@ -558,7 +574,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
          *     section 11.3 "Debug Message"</a>
          */
-        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES;
+        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES,
+        /**
+         * Ignore unexpected {@code SSH_MSG_CHANNEL_WINDOW_ADJUST} messages when checking if the
+         * reception action was executed as planned.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
+         *     section 5.2 "Data Transfer"</a>
+         */
+        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));

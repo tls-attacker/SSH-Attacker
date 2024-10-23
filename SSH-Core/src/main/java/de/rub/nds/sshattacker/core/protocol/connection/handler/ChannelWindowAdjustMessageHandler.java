@@ -38,7 +38,7 @@ public class ChannelWindowAdjustMessageHandler
                         message.getRecipientChannelId().getValue());
             }
             channel.setRemoteWindowSize(
-                    channel.getLocalWindowSize().getValue() + message.getBytesToAdd().getValue());
+                    channel.getRemoteWindowSize().getValue() + message.getBytesToAdd().getValue());
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",

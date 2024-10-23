@@ -21,5 +21,6 @@ public enum WorkflowTraceType {
     AUTH_PUBLICKEY,
     AUTH_DYNAMIC,
     FULL,
+    SFTP_INIT,
     MITM
 }

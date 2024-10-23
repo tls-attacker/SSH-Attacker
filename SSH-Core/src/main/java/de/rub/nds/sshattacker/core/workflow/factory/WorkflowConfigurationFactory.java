@@ -70,6 +70,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicAuthenticationWorkflowTrace();
             case FULL:
                 return createFullWorkflowTrace();
+            case SFTP_INIT:
+                return createSftpInitWorkflowTrace();
             case MITM:
                 return createSimpleMitmProxyWorkflow();
             default:
@@ -141,6 +143,16 @@ public class WorkflowConfigurationFactory {
         addTransportProtocolActions(workflow);
         addAuthenticationProtocolActions(workflow);
         addConnectionProtocolActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSftpInitWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
+        // Connection Protocol Actions
+        addChannelOpenActions(workflow);
+        addChannelRequestSubsystemActions(workflow);
         return workflow;
     }
 
@@ -463,11 +475,28 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Add connections protocol actions to an existing workflow.
+     * Add connections protocol actions to an existing workflow. The actions include opening a
+     * channel and executing two channel requests. First a PTY is requested and then an environment
+     * variable is passed.
      *
      * @param workflow the workflow trace to add actions to
      */
     public void addConnectionProtocolActions(WorkflowTrace workflow) {
+        addChannelOpenActions(workflow);
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ChannelRequestPtyMessage(),
+                        new ChannelRequestEnvMessage()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()));
+    }
+
+    public void addChannelOpenActions(WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
@@ -479,16 +508,20 @@ public class WorkflowConfigurationFactory {
                                 new ChannelOpenConfirmationMessage()),
                         Set.of(
                                 ReceiveAction.ReceiveOption
-                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)),
+                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)));
+    }
+
+    public void addChannelRequestSubsystemActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelRequestPtyMessage(),
-                        new ChannelRequestEnvMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()));
+                        connection, ConnectionEndType.CLIENT, new ChannelRequestSubsystemMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
