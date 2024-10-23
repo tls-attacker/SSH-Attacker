@@ -16,9 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
@@ -288,9 +286,23 @@ public class Config implements Serializable {
 
     // region SSH Extensions
     /** List of extensions supported by the client */
+    @XmlElementWrapper
+    @XmlElements({
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
+        @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
+    })
     private List<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
+    @XmlElementWrapper
+    @XmlElements({
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
+        @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
+    })
     private List<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Flag for enabling and disabling the server-sig-algs extension */

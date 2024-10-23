@@ -13,13 +13,8 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.nio.charset.StandardCharsets;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({DelayCompressionExtension.class, PingExtension.class, ServerSigAlgsExtension.class})
 public abstract class AbstractExtension<E extends AbstractExtension<E>>
         extends ModifiableVariableHolder {
 
