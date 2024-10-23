@@ -33,10 +33,13 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
         context.getPacketLayer()
                 .updateDecryptionCipher(
                         PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT));
+        setExecuted(true);
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {

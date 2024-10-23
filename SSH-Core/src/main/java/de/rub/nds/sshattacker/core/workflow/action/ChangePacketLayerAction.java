@@ -81,7 +81,9 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {

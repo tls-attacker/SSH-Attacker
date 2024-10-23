@@ -63,10 +63,13 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
             context.setReadSequenceNumber(0);
             context.setWriteSequenceNumber(0);
         }
+        setExecuted(true);
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {
