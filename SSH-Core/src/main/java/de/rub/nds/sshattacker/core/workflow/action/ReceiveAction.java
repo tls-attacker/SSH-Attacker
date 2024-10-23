@@ -402,7 +402,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return receivedPackets;
     }
 
-    public void setReceivedPackets(List<AbstractPacket> packetList) {
+    public void setReceivedPackets(List<AbstractPacket> receivedPackets) {
         this.receivedPackets = receivedPackets;
     }
 
