@@ -13,13 +13,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.ArrayList;
-import java.util.List;
 
-public class DynamicExtensionNegotiationAction extends SendAction {
-
-    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
-    private List<SshAction> sshActions = new ArrayList<>();
+public class DynamicExtensionNegotiationAction extends DynamicMessageAction {
 
     public DynamicExtensionNegotiationAction() {
         super();
@@ -52,5 +47,6 @@ public class DynamicExtensionNegotiationAction extends SendAction {
                             new ExtensionInfoMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
         }
+        setExecuted(true);
     }
 }
