@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestSuccessMessagePreparator
-        extends ChannelMessagePreparator<GlobalRequestSuccessMessage> {
+        extends SshMessagePreparator<GlobalRequestSuccessMessage> {
 
     public GlobalRequestSuccessMessagePreparator(
             Chooser chooser, GlobalRequestSuccessMessage message) {
@@ -20,5 +21,5 @@ public class GlobalRequestSuccessMessagePreparator
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {}
+    public void prepareMessageSpecificContents() {}
 }

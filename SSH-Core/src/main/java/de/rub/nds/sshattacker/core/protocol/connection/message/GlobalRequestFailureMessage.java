@@ -7,10 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class GlobalRequestFailureMessage extends ChannelMessage<GlobalRequestFailureMessage> {
+public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailureMessage> {
 
     @Override
     public GlobalRequestFailureMessageHandler getHandler(SshContext context) {

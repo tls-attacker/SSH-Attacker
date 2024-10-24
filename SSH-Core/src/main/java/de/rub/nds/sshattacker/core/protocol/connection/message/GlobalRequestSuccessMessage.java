@@ -7,10 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class GlobalRequestSuccessMessage extends ChannelMessage<GlobalRequestSuccessMessage> {
+public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccessMessage> {
+
+    private ModifiableByteArray responseSpecificData;
+
+    public ModifiableByteArray getResponseSpecificData() {
+        return responseSpecificData;
+    }
+
+    public void setResponseSpecificData(ModifiableByteArray responseSpecificData) {
+        this.responseSpecificData = responseSpecificData;
+    }
+
+    public void setResponseSpecificData(byte[] responseSpecificData) {
+        this.responseSpecificData =
+                ModifiableVariableFactory.safelySetValue(
+                        this.responseSpecificData, responseSpecificData);
+    }
 
     @Override
     public GlobalRequestSuccessMessageHandler getHandler(SshContext context) {

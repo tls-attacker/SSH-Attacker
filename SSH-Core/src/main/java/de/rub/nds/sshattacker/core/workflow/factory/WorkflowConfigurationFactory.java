@@ -72,6 +72,8 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflowTrace();
             case SFTP_INIT:
                 return createSftpInitWorkflowTrace();
+            case REQ_TCP_IP_FORWARD:
+                return createRequestTcpIpForwardWorkflowTrace();
             case MITM:
                 return createSimpleMitmProxyWorkflow();
             default:
@@ -153,6 +155,15 @@ public class WorkflowConfigurationFactory {
         // Connection Protocol Actions
         addChannelOpenActions(workflow);
         addChannelRequestSubsystemActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createRequestTcpIpForwardWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
+        // Connection Protocol Actions
+        addGlobalRequestActions(workflow);
         return workflow;
     }
 
@@ -522,6 +533,23 @@ public class WorkflowConfigurationFactory {
                         Set.of(
                                 ReceiveAction.ReceiveOption
                                         .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+    }
+
+    public void addGlobalRequestActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new GlobalRequestTcpIpForwardMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new GlobalRequestSuccessMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestFailureMessagePreparator
-        extends ChannelMessagePreparator<GlobalRequestFailureMessage> {
+        extends SshMessagePreparator<GlobalRequestFailureMessage> {
 
     public GlobalRequestFailureMessagePreparator(
             Chooser chooser, GlobalRequestFailureMessage message) {
@@ -20,5 +21,5 @@ public class GlobalRequestFailureMessagePreparator
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {}
+    public void prepareMessageSpecificContents() {}
 }
