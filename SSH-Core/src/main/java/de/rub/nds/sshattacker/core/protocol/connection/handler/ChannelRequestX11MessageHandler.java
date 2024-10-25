@@ -25,6 +25,13 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
     }
 
     @Override
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
+
+    @Override
     public ChannelRequestX11MessageParser getParser(byte[] array) {
         return new ChannelRequestX11MessageParser(array);
     }
@@ -42,12 +49,5 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
     @Override
     public ChannelRequestX11MessageSerializer getSerializer() {
         return new ChannelRequestX11MessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
     }
 }

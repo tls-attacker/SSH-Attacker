@@ -30,6 +30,7 @@ public class ChannelRequestSignalMessageHandler
     @Override
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }

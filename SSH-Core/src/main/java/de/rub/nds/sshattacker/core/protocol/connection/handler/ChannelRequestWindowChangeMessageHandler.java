@@ -27,6 +27,14 @@ public class ChannelRequestWindowChangeMessageHandler
     }
 
     @Override
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
+
+    @Override
     public ChannelRequestWindowChangeMessageParser getParser(byte[] array) {
         return new ChannelRequestWindowChangeMessageParser(array);
     }
@@ -44,12 +52,5 @@ public class ChannelRequestWindowChangeMessageHandler
     @Override
     public ChannelRequestWindowChangeMessageSerializer getSerializer() {
         return new ChannelRequestWindowChangeMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
     }
 }

@@ -28,6 +28,14 @@ public class ChannelRequestXonXoffMessageHandler
     }
 
     @Override
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
+
+    @Override
     public ChannelRequestXonXoffMessageParser getParser(byte[] array) {
         return new ChannelRequestXonXoffMessageParser(array);
     }
@@ -45,12 +53,5 @@ public class ChannelRequestXonXoffMessageHandler
     @Override
     public ChannelRequestXonXoffMessageSerializer getSerializer() {
         return new ChannelRequestXonXoffMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
     }
 }

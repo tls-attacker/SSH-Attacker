@@ -28,6 +28,14 @@ public class ChannelRequestExitStatusMessageHandler
     }
 
     @Override
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
+
+    @Override
     public ChannelRequestExitStatusMessageParser getParser(byte[] array) {
         return new ChannelRequestExitStatusMessageParser(array);
     }
@@ -45,12 +53,5 @@ public class ChannelRequestExitStatusMessageHandler
     @Override
     public ChannelRequestExitStatusMessageSerializer getSerializer() {
         return new ChannelRequestExitStatusMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
     }
 }
