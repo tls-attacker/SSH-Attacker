@@ -24,7 +24,9 @@ public class ChannelOpenSessionMessageHandler extends SshMessageHandler<ChannelO
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        context.getChannelManager().handleChannelOpenMessage(message);
+    }
 
     @Override
     public ChannelOpenSessionMessageParser getParser(byte[] array) {

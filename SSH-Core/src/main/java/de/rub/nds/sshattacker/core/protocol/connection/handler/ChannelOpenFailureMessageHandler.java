@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
@@ -30,13 +31,15 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
 
     @Override
     public void adjustContext() {
-        if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
+        ChannelManager channelManager = context.getChannelManager();
+        if (!channelManager.containsPendingChannelWithLocalId(
+                message.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    getClass().getSimpleName(),
+                    message.getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
-        context.getChannels().remove(message.getRecipientChannelId().getValue());
+        channelManager.removePendingChannelByLocalId(message.getRecipientChannelId().getValue());
     }
 
     @Override

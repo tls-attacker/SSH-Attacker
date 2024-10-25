@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -17,5 +18,8 @@ public class ChannelOpenSessionMessagePreperator
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {}
+    protected void prepareChannelOpenMessageSpecificContents() {
+        channel.setChannelType(ChannelType.SESSION);
+        getObject().setChannelType(channel.getChannelType(), true);
+    }
 }

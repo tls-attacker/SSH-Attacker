@@ -16,8 +16,11 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
 
     protected ModifiableInteger recipientChannelId;
 
-    @XmlAttribute(name = "channel")
-    protected Integer configSenderChannelId;
+    @XmlAttribute(name = "localChannel")
+    protected Integer configLocalChannelId;
+
+    @XmlAttribute(name = "remoteChannel")
+    protected Integer configRemoteChannelId;
 
     public ModifiableInteger getRecipientChannelId() {
         return recipientChannelId;
@@ -32,11 +35,19 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
                 ModifiableVariableFactory.safelySetValue(recipientChannelId, recipientChannel);
     }
 
-    public Integer getConfigSenderChannelId() {
-        return configSenderChannelId;
+    public Integer getConfigLocalChannelId() {
+        return configLocalChannelId;
     }
 
-    public void setConfigSenderChannelId(int configSenderChannelId) {
-        this.configSenderChannelId = configSenderChannelId;
+    public void setConfigLocalChannelId(int configLocalChannelId) {
+        this.configLocalChannelId = configLocalChannelId;
+    }
+
+    public Integer getConfigRemoteChannelId() {
+        return configRemoteChannelId;
+    }
+
+    public void setConfigRemoteChannelId(int configRemoteChannelId) {
+        this.configRemoteChannelId = configRemoteChannelId;
     }
 }

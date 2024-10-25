@@ -18,10 +18,5 @@ public class ChannelCloseMessagePreparator extends ChannelMessagePreparator<Chan
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {
-        channel.setCloseMessageSent(true);
-        if (!channel.isOpen().getValue()) {
-            chooser.getContext().getChannels().remove(channel.getLocalChannelId().getValue());
-        }
-    }
+    protected void prepareChannelMessageSpecificContents() {}
 }

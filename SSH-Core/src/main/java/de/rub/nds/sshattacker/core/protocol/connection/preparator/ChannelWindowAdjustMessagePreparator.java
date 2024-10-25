@@ -22,10 +22,9 @@ public class ChannelWindowAdjustMessagePreparator
     @Override
     public void prepareChannelMessageSpecificContents() {
         getObject().setRecipientChannelId(channel.getRemoteChannelId());
-        int bytesToAdd =
-                chooser.getConfig().getChannelDefaults().getLocalWindowSize()
-                        - channel.getLocalWindowSize().getValue();
-        getObject().setBytesToAdd(bytesToAdd);
-        channel.setLocalWindowSize(chooser.getConfig().getChannelDefaults().getLocalWindowSize());
+        getObject()
+                .setBytesToAdd(
+                        chooser.getConfig().getChannelDefaults().getLocalWindowSize()
+                                - channel.getLocalWindowSize().getValue());
     }
 }

@@ -23,8 +23,8 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     private ModifiableInteger packetSize;
     private ModifiableInteger senderChannelId;
 
-    @XmlAttribute(name = "channel")
-    private Integer configSenderChannelId;
+    @XmlAttribute(name = "localChannel")
+    private Integer configLocalChannelId;
 
     public ModifiableInteger getChannelTypeLength() {
         return channelTypeLength;
@@ -112,11 +112,11 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
     }
 
-    public Integer getConfigSenderChannelId() {
-        return configSenderChannelId;
+    public Integer getConfigLocalChannelId() {
+        return configLocalChannelId;
     }
 
-    public void setConfigSenderChannelId(int configSenderChannelId) {
-        this.configSenderChannelId = configSenderChannelId;
+    public void setConfigLocalChannelId(int configLocalChannelId) {
+        this.configLocalChannelId = configLocalChannelId;
     }
 }

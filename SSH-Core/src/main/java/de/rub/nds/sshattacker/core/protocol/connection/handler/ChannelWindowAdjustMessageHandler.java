@@ -15,8 +15,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowA
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelWindowAdjustMessageHandler
-        extends SshMessageHandler<ChannelWindowAdjustMessage> {
+public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<ChannelWindowAdjustMessage>
+        implements MessageSentHandler {
 
     public ChannelWindowAdjustMessageHandler(SshContext context) {
         super(context);
@@ -29,23 +29,37 @@ public class ChannelWindowAdjustMessageHandler
 
     @Override
     public void adjustContext() {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
                         "{} received but channel with id {} is not open, continuing anyway.",
                         getClass().getSimpleName(),
-                        message.getRecipientChannelId().getValue());
+                        recipientChannelId);
             }
             channel.setRemoteWindowSize(
                     channel.getRemoteWindowSize().getValue() + message.getBytesToAdd().getValue());
         } else {
             LOGGER.warn(
-                    "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
+                    "{} received but no channel with id {} found locally, ignoring request to adjust window of the channel.",
                     getClass().getSimpleName(),
-                    message.getRecipientChannelId().getValue());
-            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
-            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
+                    recipientChannelId);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Channel channel = context.getChannelManager().getChannelByRemoteId(recipientChannelId);
+        if (channel != null) {
+            channel.setLocalWindowSize(
+                    channel.getLocalWindowSize().getValue() + message.getBytesToAdd().getValue());
+        } else {
+            LOGGER.warn(
+                    "{} sent but no channel with remote id {} found, ignoring request to adjust window of the channel.",
+                    getClass().getSimpleName(),
+                    recipientChannelId);
         }
     }
 
