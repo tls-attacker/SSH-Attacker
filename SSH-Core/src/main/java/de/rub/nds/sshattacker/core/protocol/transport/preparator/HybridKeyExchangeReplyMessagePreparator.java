@@ -24,7 +24,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final HybridKeyExchangeCombiner combiner;
+    private HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessagePreparator(
             Chooser chooser,
@@ -36,17 +36,21 @@ public class HybridKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext().getSshContext(), getObject());
         prepareHybridKey();
         chooser.getHybridKeyExchange().combineSharedSecrets();
-        chooser.getContext().setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
         chooser.getContext()
+                .getSshContext()
+                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
+        chooser.getContext()
+                .getSshContext()
                 .getExchangeHashInputHolder()
                 .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext().getSshContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(
+                chooser.getContext().getSshContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext().getSshContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext().getSshContext());
     }
 
     private void prepareHybridKey() {
@@ -56,7 +60,8 @@ public class HybridKeyExchangeReplyMessagePreparator
         agreement.generateLocalKeyPair();
         encapsulation.encryptSharedSecret();
 
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder =
+                chooser.getContext().getSshContext().getExchangeHashInputHolder();
         byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);

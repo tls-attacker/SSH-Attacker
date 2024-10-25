@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelDataMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelDataMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelDataMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
@@ -58,6 +62,26 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
     @Override
     public ChannelDataMessageHandler getHandler(SshContext context) {
-        return new ChannelDataMessageHandler(context, this);
+        return new ChannelDataMessageHandler(context);
+    }
+
+    @Override
+    public ChannelDataMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelDataMessageParser(stream);
+    }
+
+    @Override
+    public ChannelDataMessagePreparator getPreparator(SshContext context) {
+        return new ChannelDataMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelDataMessageSerializer getSerializer(SshContext context) {
+        return new ChannelDataMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_DATA";
     }
 }

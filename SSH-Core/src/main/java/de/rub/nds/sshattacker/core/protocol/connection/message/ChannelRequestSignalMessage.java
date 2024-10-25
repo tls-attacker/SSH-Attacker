@@ -11,8 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SignalType;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSignalMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSignalMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSignalMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSignalMessage
@@ -70,6 +74,26 @@ public class ChannelRequestSignalMessage
 
     @Override
     public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestSignalMessageHandler(context, this);
+        return new ChannelRequestSignalMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestSignalMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestSignalMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestSignalMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestSignalMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestSignalMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestSignalMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_SIGNAL";
     }
 }

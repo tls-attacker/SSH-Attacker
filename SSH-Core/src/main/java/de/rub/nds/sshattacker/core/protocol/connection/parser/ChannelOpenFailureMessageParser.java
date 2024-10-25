@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,25 +21,21 @@ public class ChannelOpenFailureMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenFailureMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelOpenFailureMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelOpenFailureMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelOpenFailureMessage createMessage() {
-        return new ChannelOpenFailureMessage();
+    public void parse(ChannelOpenFailureMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseReasonCode() {
+    private void parseReasonCode(ChannelOpenFailureMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reason code: {}", message.getReasonCode());
     }
 
-    private void parseReason() {
+    private void parseReason(ChannelOpenFailureMessage message) {
         message.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Reason length: {}", message.getReasonLength());
         message.setReason(
@@ -46,7 +43,7 @@ public class ChannelOpenFailureMessageParser
         LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(ChannelOpenFailureMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -57,10 +54,10 @@ public class ChannelOpenFailureMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseReasonCode();
-        parseReason();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(ChannelOpenFailureMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseReasonCode(message);
+        parseReason(message);
+        parseLanguageTag(message);
     }
 }

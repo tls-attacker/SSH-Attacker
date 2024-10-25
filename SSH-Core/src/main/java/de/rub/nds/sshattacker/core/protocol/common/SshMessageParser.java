@@ -8,26 +8,22 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
+import java.io.InputStream;
 
 public abstract class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessageParser<T> {
 
-    protected SshMessageParser(byte[] array) {
-        super(array);
+    protected SshMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    protected SshMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    protected final void parseProtocolMessageContents(T message) {
+        parseMessageID(message);
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    protected final void parseProtocolMessageContents() {
-        parseMessageID();
-        parseMessageSpecificContents();
-    }
-
-    private void parseMessageID() {
+    private void parseMessageID(T message) {
         message.setMessageId(parseByteField(SshMessageConstants.MESSAGE_ID_LENGTH));
     }
 
-    protected abstract void parseMessageSpecificContents();
+    protected abstract void parseMessageSpecificContents(T message);
 }

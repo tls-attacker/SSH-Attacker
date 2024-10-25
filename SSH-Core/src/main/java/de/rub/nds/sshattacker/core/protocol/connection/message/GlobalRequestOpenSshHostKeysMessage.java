@@ -12,9 +12,16 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestOpenSshHostKeysMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenSshHostKeysMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestOpenSshHostKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.util.List;
 
 public class GlobalRequestOpenSshHostKeysMessage
@@ -41,7 +48,25 @@ public class GlobalRequestOpenSshHostKeysMessage
 
     @Override
     public GlobalRequestOpenSshHostKeysMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestOpenSshHostKeysMessageHandler(context, this);
+        return new GlobalRequestOpenSshHostKeysMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new GlobalRequestOpenSshHostKeysMessageParser(stream);
+    }
+
+    @Override
+    public SshMessagePreparator<GlobalRequestOpenSshHostKeysMessage> getPreparator(
+            SshContext context) {
+        return new GlobalRequestOpenSshHostKeysMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<GlobalRequestOpenSshHostKeysMessage> getSerializer(
+            SshContext context) {
+        return new GlobalRequestOpenSshHostKeysMessageSerializer(this);
     }
 
     /**
@@ -57,5 +82,10 @@ public class GlobalRequestOpenSshHostKeysMessage
                 .map(Converter::bytesToLengthPrefixedBinaryString)
                 .reduce(ArrayConverter::concatenate)
                 .orElseGet(() -> new byte[0]);
+    }
+
+    @Override
+    public String toShortString() {
+        return "OPENSSH";
     }
 }

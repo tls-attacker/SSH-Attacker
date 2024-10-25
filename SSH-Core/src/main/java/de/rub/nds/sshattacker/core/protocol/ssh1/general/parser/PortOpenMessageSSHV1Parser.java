@@ -1,0 +1,44 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.ssh1.general.parser;
+
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.PortOpenMessageSSH1;
+import java.io.InputStream;
+
+public class PortOpenMessageSSHV1Parser extends Ssh1MessageParser<PortOpenMessageSSH1> {
+
+    public PortOpenMessageSSHV1Parser(SshContext context, InputStream stream) {
+        super(stream);
+    }
+
+    private void parseData(PortOpenMessageSSH1 message) {
+        int localChannel = parseIntField(4);
+        int hostnameLenght = parseIntField(4);
+        String hostname = parseByteString(hostnameLenght);
+        int portToConnect = parseIntField(4);
+        int originatorStringLenght = parseIntField(4);
+        String originatorString = parseByteString(originatorStringLenght);
+
+        message.setLocalChannel(localChannel);
+        message.setHostName(hostname);
+        message.setPort(portToConnect);
+        message.setOriginatorString(originatorString);
+    }
+
+    @Override
+    protected void parseMessageSpecificContents(PortOpenMessageSSH1 message) {
+        parseData(message);
+    }
+
+    @Override
+    public void parse(PortOpenMessageSSH1 message) {
+        parseProtocolMessageContents(message);
+    }
+}

@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBannerMessage> {
 
@@ -20,32 +17,8 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
         super(context);
     }
 
-    public UserAuthBannerMessageHandler(SshContext context, UserAuthBannerMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(UserAuthBannerMessage message) {
         // TODO: Handle UserAuthBannerMessage
-    }
-
-    @Override
-    public UserAuthBannerMessageParser getParser(byte[] array) {
-        return new UserAuthBannerMessageParser(array);
-    }
-
-    @Override
-    public UserAuthBannerMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthBannerMessageParser(array, startPosition);
-    }
-
-    @Override
-    public UserAuthBannerMessagePreparator getPreparator() {
-        return new UserAuthBannerMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UserAuthBannerMessageSerializer getSerializer() {
-        return new UserAuthBannerMessageSerializer(message);
     }
 }

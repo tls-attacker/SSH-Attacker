@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,20 +21,18 @@ public class UserAuthKeyboardInteractiveMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthKeyboardInteractiveMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public UserAuthKeyboardInteractiveMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthKeyboardInteractiveMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected UserAuthKeyboardInteractiveMessage createMessage() {
-        return new UserAuthKeyboardInteractiveMessage();
+    public void parse(UserAuthKeyboardInteractiveMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(UserAuthKeyboardInteractiveMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -43,7 +42,7 @@ public class UserAuthKeyboardInteractiveMessageParser
                 "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
-    private void parseSubMethods() {
+    private void parseSubMethods(UserAuthKeyboardInteractiveMessage message) {
         message.setSubMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Sub methods length: {}", message.getSubMethodsLength().getValue());
         message.setSubMethods(
@@ -52,9 +51,9 @@ public class UserAuthKeyboardInteractiveMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseLanguageTag();
-        parseSubMethods();
+    protected void parseMessageSpecificContents(UserAuthKeyboardInteractiveMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseLanguageTag(message);
+        parseSubMethods(message);
     }
 }

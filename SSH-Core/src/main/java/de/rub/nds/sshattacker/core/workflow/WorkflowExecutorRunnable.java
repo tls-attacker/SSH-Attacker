@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
@@ -68,31 +68,20 @@ public class WorkflowExecutorRunnable implements Runnable {
         // execution. Let's hope this is true in practice ;)
         State state = new State(globalState.getConfig(), localTrace);
 
-        initConnectionForState(state);
-        SshContext context = state.getInboundSshContexts().get(0);
+        // Do this post state init only if you know what yout are doing.
 
-        LOGGER.info("Exectuting workflow for {} ({})", socket, context);
-        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
-        workflowExecutor.executeWorkflow();
-        LOGGER.info("Workflow execution done on {} ({})", socket, context);
-    }
-
-    protected void initConnectionForState(State state) {
-        // Do this post state init only if you know what you are doing.
-        SshContext context = state.getInboundSshContexts().get(0);
-        AliasedConnection connection = context.getConnection();
-        // getting the hostname is slow, so we just set the ip
-        connection.setHostname(socket.getInetAddress().getHostAddress());
-        connection.setIp(socket.getInetAddress().getHostAddress());
-        connection.setPort(socket.getPort());
+        SshContext serverCtx = state.getInboundContexts().get(0).getSshContext();
+        AliasedConnection serverCon = serverCtx.getConnection();
+        serverCon.setHostname(socket.getInetAddress().getHostAddress());
+        serverCon.setPort(socket.getLocalPort());
         ServerTcpTransportHandler th;
         try {
-            th = new ServerTcpTransportHandler(connection, socket);
+            th = new ServerTcpTransportHandler(serverCon, socket);
         } catch (IOException ex) {
             LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
             LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
-        context.setTransportHandler(th);
+        serverCtx.setTransportHandler(th);
     }
 }

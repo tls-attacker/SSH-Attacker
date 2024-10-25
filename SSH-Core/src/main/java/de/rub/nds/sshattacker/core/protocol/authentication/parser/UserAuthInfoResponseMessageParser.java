@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,20 +20,18 @@ public class UserAuthInfoResponseMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoResponseMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public UserAuthInfoResponseMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthInfoResponseMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected UserAuthInfoResponseMessage createMessage() {
-        return new UserAuthInfoResponseMessage();
+    public void parse(UserAuthInfoResponseMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseResponseEntries() {
+    private void parseResponseEntries(UserAuthInfoResponseMessage message) {
         message.setResponseEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Number of response entries: {}", message.getResponseEntryCount().getValue());
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
@@ -46,7 +45,7 @@ public class UserAuthInfoResponseMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseResponseEntries();
+    protected void parseMessageSpecificContents(UserAuthInfoResponseMessage message) {
+        parseResponseEntries(message);
     }
 }

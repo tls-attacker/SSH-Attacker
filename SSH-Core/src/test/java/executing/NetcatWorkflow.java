@@ -21,7 +21,8 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public final class NetcatWorkflow {
 
@@ -80,11 +81,11 @@ public final class NetcatWorkflow {
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
 
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         // noinspection InfiniteLoopStatement
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            ReceiveMessageHelper.receiveMessages(state.getSshContext());
         }
     }
 }

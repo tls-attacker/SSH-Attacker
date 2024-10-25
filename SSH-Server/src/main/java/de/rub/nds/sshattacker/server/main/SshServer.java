@@ -37,13 +37,20 @@ public final class SshServer {
                 return;
             }
 
-            try {
-                Config sshConfig = config.createConfig();
-                startSshServer(sshConfig);
-            } catch (Exception e) {
-                LOGGER.error(
-                        "Encountered an uncaught exception, aborting. See debug for more info.", e);
-            }
+            Config sshConfig = config.createConfig();
+
+            do {
+                try {
+
+                    SshServer server = new SshServer();
+                    LOGGER.info("Starting Server now... ");
+                    server.startSshServer(sshConfig);
+                } catch (Exception e) {
+                    LOGGER.error(
+                            "Encountered an uncaught exception, aborting. See debug for more info.",
+                            e);
+                }
+            } while (sshConfig.getEndless());
         } catch (ParameterException e) {
             LOGGER.error("Could not parse provided parameters: {}", e.getLocalizedMessage());
             LOGGER.debug(e);

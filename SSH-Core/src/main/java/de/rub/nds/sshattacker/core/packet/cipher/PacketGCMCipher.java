@@ -12,11 +12,12 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     public PacketGCMCipher(
             SshContext context,
-            KeySet keySet,
+            AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             CipherMode mode) {
         super(context, keySet, encryptionAlgorithm, null, mode);
@@ -65,6 +66,18 @@ public class PacketGCMCipher extends PacketCipher {
                                         : keySet.getReadIv(getLocalConnectionEndType()),
                                 4,
                                 12));
+    }
+
+    @Override
+    public void encrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support GCM Cipher");
+        throw new RuntimeException();
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support GCM Cipher");
+        throw new RuntimeException();
     }
 
     @Override
@@ -165,7 +178,7 @@ public class PacketGCMCipher extends PacketCipher {
                         .collect(Collectors.toSet()));
 
         DecryptionParser parser =
-                new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
+                new DecryptionParser(computations.getPlainPacketBytes().getValue() /*, 0*/);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setCompressedPayload(
                 parser.parseByteArrayField(

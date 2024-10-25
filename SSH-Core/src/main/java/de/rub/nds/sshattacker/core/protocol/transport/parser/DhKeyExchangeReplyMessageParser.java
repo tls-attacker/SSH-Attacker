@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,20 +19,11 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeReplyMessageParser(byte[] array) {
-        super(array);
+    public DhKeyExchangeReplyMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public DhKeyExchangeReplyMessage createMessage() {
-        return new DhKeyExchangeReplyMessage();
-    }
-
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(DhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -40,7 +32,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
                 ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey(DhKeyExchangeReplyMessage message) {
         message.setEphemeralPublicKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
@@ -51,7 +43,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
         LOGGER.debug("Ephemeral public key (server): {}", message.getEphemeralPublicKey());
     }
 
-    private void parseSignature() {
+    private void parseSignature(DhKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -59,9 +51,14 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseEphemeralPublicKey();
-        parseSignature();
+    protected void parseMessageSpecificContents(DhKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseEphemeralPublicKey(message);
+        parseSignature(message);
+    }
+
+    @Override
+    public void parse(DhKeyExchangeReplyMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

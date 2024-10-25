@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
+import java.io.InputStream;
 
 public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
@@ -174,6 +178,26 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     @Override
     public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeReplyMessageHandler(context, this);
+        return new EcdhKeyExchangeReplyMessageHandler(context);
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessageParser getParser(SshContext context, InputStream stream) {
+        return new EcdhKeyExchangeReplyMessageParser(stream);
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessagePreparator getPreparator(SshContext context) {
+        return new EcdhKeyExchangeReplyMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessageSerializer getSerializer(SshContext context) {
+        return new EcdhKeyExchangeReplyMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "KEX_REPLY";
     }
 }

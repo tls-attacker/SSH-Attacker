@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class VersionExchangeMessageHandler extends ProtocolMessageHandler<VersionExchangeMessage> {
 
@@ -20,40 +17,16 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         super(context);
     }
 
-    public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        if (context.isHandleAsClient()) {
-            context.setServerVersion(message.getVersion().getValue());
-            context.setServerComment(message.getComment().getValue());
-            context.getExchangeHashInputHolder().setServerVersion(message);
+    public void adjustContext(VersionExchangeMessage message) {
+        if (sshContext.isHandleAsClient()) {
+            sshContext.setServerVersion(message.getVersion().getValue());
+            sshContext.setServerComment(message.getComment().getValue());
+            sshContext.getExchangeHashInputHolder().setServerVersion(message);
         } else {
-            context.setClientVersion(message.getVersion().getValue());
-            context.setClientComment(message.getComment().getValue());
-            context.getExchangeHashInputHolder().setClientVersion(message);
+            sshContext.setClientVersion(message.getVersion().getValue());
+            sshContext.setClientComment(message.getComment().getValue());
+            sshContext.getExchangeHashInputHolder().setClientVersion(message);
         }
-    }
-
-    @Override
-    public VersionExchangeMessageParser getParser(byte[] array) {
-        return new VersionExchangeMessageParser(array);
-    }
-
-    @Override
-    public VersionExchangeMessageParser getParser(byte[] array, int startPosition) {
-        return new VersionExchangeMessageParser(array, startPosition);
-    }
-
-    @Override
-    public VersionExchangeMessagePreparator getPreparator() {
-        return new VersionExchangeMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public VersionExchangeMessageSerializer getSerializer() {
-        return new VersionExchangeMessageSerializer(message);
     }
 }

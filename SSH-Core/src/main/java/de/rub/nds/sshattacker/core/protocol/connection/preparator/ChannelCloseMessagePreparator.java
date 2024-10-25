@@ -21,7 +21,10 @@ public class ChannelCloseMessagePreparator extends ChannelMessagePreparator<Chan
     protected void prepareChannelMessageSpecificContents() {
         channel.setCloseMessageSent(true);
         if (!channel.isOpen().getValue()) {
-            chooser.getContext().getChannels().remove(channel.getLocalChannelId().getValue());
+            chooser.getContext()
+                    .getSshContext()
+                    .getChannels()
+                    .remove(channel.getLocalChannelId().getValue());
         }
     }
 }

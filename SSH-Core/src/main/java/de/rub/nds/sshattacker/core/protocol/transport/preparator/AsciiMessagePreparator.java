@@ -19,7 +19,7 @@ public class AsciiMessagePreparator extends ProtocolMessagePreparator<AsciiMessa
     @Override
     public void prepareProtocolMessageContents() {
         getObject().setText(""); // TODO: Add a way to set this via configuration.
-        if (chooser.getContext().isClient()) {
+        if (chooser.getContext().getSshContext().isClient()) {
             getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
         } else {
             getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());

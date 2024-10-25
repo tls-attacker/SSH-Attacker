@@ -126,6 +126,7 @@ public final class WorkflowTraceSerializer {
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
         WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
+        LOGGER.debug(wt.toString());
         inputStream.close();
         return wt;
     }

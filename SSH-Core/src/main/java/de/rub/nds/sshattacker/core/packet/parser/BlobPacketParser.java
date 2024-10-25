@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.packet.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,22 +17,31 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public BlobPacketParser(byte[] array, int startPosition) {
+    /*public BlobPacketParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public BlobPacketParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public BlobPacket parse() {
+    public void parse(BlobPacket blobPacket) {
         LOGGER.debug("Parsing BlobPacket from serialized bytes:");
 
-        BlobPacket packet = new BlobPacket();
-        packet.setCiphertext(parseByteArrayField(getBytesLeft()));
-        packet.setCompletePacketBytes(getAlreadyParsed());
+        // BlobPacket packet = new BlobPacket();
+        blobPacket.setCiphertext(parseByteArrayField(getBytesLeft()));
+
+        LOGGER.debug(
+                "Ciphertext bytes: {}",
+                ArrayConverter.bytesToHexString(blobPacket.getCiphertext().getValue()));
+
+        blobPacket.setCompletePacketBytes(getAlreadyParsed());
 
         LOGGER.debug(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
+                ArrayConverter.bytesToHexString(blobPacket.getCompletePacketBytes().getValue()));
 
-        return packet;
+        // return packet;
     }
 }

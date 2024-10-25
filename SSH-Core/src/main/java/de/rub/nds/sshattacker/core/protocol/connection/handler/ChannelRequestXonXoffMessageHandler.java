@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestXonXoffMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestXonXoffMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestXonXoffMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestXonXoffMessageHandler
@@ -22,35 +19,10 @@ public class ChannelRequestXonXoffMessageHandler
         super(context);
     }
 
-    public ChannelRequestXonXoffMessageHandler(
-            SshContext context, ChannelRequestXonXoffMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array) {
-        return new ChannelRequestXonXoffMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestXonXoffMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessagePreparator getPreparator() {
-        return new ChannelRequestXonXoffMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestXonXoffMessageSerializer getSerializer() {
-        return new ChannelRequestXonXoffMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestXonXoffMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

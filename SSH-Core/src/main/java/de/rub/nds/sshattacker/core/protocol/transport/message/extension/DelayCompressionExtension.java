@@ -13,8 +13,12 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.DelayCompressionExtensionHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.DelayCompressionExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -220,5 +224,20 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     @Override
     public DelayCompressionExtensionHandler getHandler(SshContext context) {
         return new DelayCompressionExtensionHandler(context, this);
+    }
+
+    @Override
+    public DelayCompressionExtensionParser getParser(SshContext context, InputStream stream) {
+        return new DelayCompressionExtensionParser(stream);
+    }
+
+    @Override
+    public DelayCompressionExtensionPreparator getPreparator(SshContext sshContext) {
+        return new DelayCompressionExtensionPreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public DelayCompressionExtensionSerializer getSerializer(SshContext sshContext) {
+        return new DelayCompressionExtensionSerializer(this);
     }
 }

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,20 +23,18 @@ public class UserAuthPubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPubkeyMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public UserAuthPubkeyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthPubkeyMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected UserAuthPubkeyMessage createMessage() {
-        return new UserAuthPubkeyMessage();
+    public void parse(UserAuthPubkeyMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parsePubkey() {
+    private void parsePubkey(UserAuthPubkeyMessage message) {
         message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
         message.setPubkey(parseByteArrayField(message.getPubkeyLength().getValue()));
@@ -43,7 +42,7 @@ public class UserAuthPubkeyMessageParser
                 "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
     }
 
-    private void parsePubkeyAlgName() {
+    private void parsePubkeyAlgName(UserAuthPubkeyMessage message) {
         message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
@@ -55,12 +54,12 @@ public class UserAuthPubkeyMessageParser
                 backslashEscapeString(message.getPubkeyAlgName().getValue()));
     }
 
-    private void parseUseSignature() {
+    private void parseUseSignature(UserAuthPubkeyMessage message) {
         message.setUseSignature(parseByteField(1));
         LOGGER.debug("Use signature: {}", message.getUseSignature().getValue());
     }
 
-    private void parseSignature() {
+    private void parseSignature(UserAuthPubkeyMessage message) {
         message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -70,13 +69,13 @@ public class UserAuthPubkeyMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseUseSignature();
-        parsePubkeyAlgName();
-        parsePubkey();
+    protected void parseMessageSpecificContents(UserAuthPubkeyMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseUseSignature(message);
+        parsePubkeyAlgName(message);
+        parsePubkey(message);
         if (Converter.byteToBoolean(message.getUseSignature().getValue())) {
-            parseSignature();
+            parseSignature(message);
         }
     }
 }

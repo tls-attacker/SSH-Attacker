@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,8 +46,10 @@ public class RsaKeyExchangeDoneMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes, int expectedSignatureLength, byte[] expectedSignature) {
-        RsaKeyExchangeDoneMessageParser parser = new RsaKeyExchangeDoneMessageParser(providedBytes);
-        RsaKeyExchangeDoneMessage msg = parser.parse();
+        RsaKeyExchangeDoneMessageParser parser =
+                new RsaKeyExchangeDoneMessageParser(new ByteArrayInputStream(providedBytes));
+        RsaKeyExchangeDoneMessage msg = new RsaKeyExchangeDoneMessage();
+        parser.parse(msg);
 
         assertEquals(MessageIdConstant.SSH_MSG_KEXRSA_DONE.getId(), msg.getMessageId().getValue());
         assertEquals(expectedSignatureLength, msg.getSignatureLength().getValue().intValue());

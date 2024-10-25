@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,21 +19,17 @@ public abstract class ChannelMessageParser<T extends ChannelMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ChannelMessageParser(byte[] array) {
-        super(array);
+    public ChannelMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    protected ChannelMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    private void parseRecipientChannel() {
+    private void parseRecipientChannel(T message) {
         message.setRecipientChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Recipient channel id: {}", message.getRecipientChannelId().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseRecipientChannel();
+    protected void parseMessageSpecificContents(T message) {
+        parseRecipientChannel(message);
     }
 }

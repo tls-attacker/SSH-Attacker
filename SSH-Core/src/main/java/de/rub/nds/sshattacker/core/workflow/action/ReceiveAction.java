@@ -10,17 +10,21 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.BinaryPacket;
-import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.AuthPasswordSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.UserMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.FailureMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -35,137 +39,177 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements({
-        // Authentication Protocol Messages
-        @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
-        @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
-        @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
-        @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
-        @XmlElement(type = UserAuthInfoResponseMessage.class, name = "UserAuthInfoResponse"),
-        @XmlElement(
-                type = UserAuthKeyboardInteractiveMessage.class,
-                name = "UserAuthKeyboardInteractive"),
-        @XmlElement(type = UserAuthNoneMessage.class, name = "UserAuthNone"),
-        @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
-        @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
-        @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
-        @XmlElement(type = UserAuthRequestMessage.class, name = "UserAuthRequest"),
-        @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
-        @XmlElement(type = UserAuthUnknownMessage.class, name = "UserAuthUnknownRequest"),
-        // Connection Protocol Messages
-        @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
-        @XmlElement(type = ChannelDataMessage.class, name = "ChannelData"),
-        @XmlElement(type = ChannelEofMessage.class, name = "ChannelEof"),
-        @XmlElement(type = ChannelExtendedDataMessage.class, name = "ChannelExtendedData"),
-        @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailure"),
-        @XmlElement(type = ChannelOpenConfirmationMessage.class, name = "ChannelOpenConfirmation"),
-        @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
-        @XmlElement(type = ChannelOpenSessionMessage.class, name = "ChannelOpenSession"),
-        @XmlElement(type = ChannelOpenUnknownMessage.class, name = "ChannelOpenUnknown"),
-        @XmlElement(type = ChannelRequestAuthAgentMessage.class, name = "ChannelRequestAuthAgent"),
-        @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
-        @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
-        @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
-        @XmlElement(
-                type = ChannelRequestExitSignalMessage.class,
-                name = "ChannelRequestExitSignal"),
-        @XmlElement(
-                type = ChannelRequestExitStatusMessage.class,
-                name = "ChannelRequestExitStatus"),
-        @XmlElement(type = ChannelRequestPtyMessage.class, name = "ChannelRequestPty"),
-        @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
-        @XmlElement(type = ChannelRequestSignalMessage.class, name = "ChannelRequestSignal"),
-        @XmlElement(type = ChannelRequestSubsystemMessage.class, name = "ChannelRequestSubsystem"),
-        @XmlElement(type = ChannelRequestUnknownMessage.class, name = "ChannelRequestUnknown"),
-        @XmlElement(
-                type = ChannelRequestWindowChangeMessage.class,
-                name = "ChannelRequestWindowChange"),
-        @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),
-        @XmlElement(type = ChannelRequestXonXoffMessage.class, name = "ChannelRequestXonXoff"),
-        @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
-        @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
-        @XmlElement(
-                type = GlobalRequestCancelTcpIpForwardMessage.class,
-                name = "GlobalRequestCancelTcpIpForward"),
-        @XmlElement(type = GlobalRequestFailureMessage.class, name = "GlobalRequestFailure"),
-        @XmlElement(
-                type = GlobalRequestNoMoreSessionsMessage.class,
-                name = "GlobalRequestNoMoreSessions"),
-        @XmlElement(type = GlobalRequestSuccessMessage.class, name = "GlobalRequestSuccess"),
-        @XmlElement(
-                type = GlobalRequestTcpIpForwardMessage.class,
-                name = "GlobalRequestTcpIpForward"),
-        @XmlElement(
-                type = GlobalRequestOpenSshHostKeysMessage.class,
-                name = "GlobalRequestOpenSshHostKeys"),
-        @XmlElement(type = GlobalRequestUnknownMessage.class, name = "GlobalRequestUnknown"),
-        // Transport Layer Protocol Messages
-        @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
-        @XmlElement(type = DhGexKeyExchangeGroupMessage.class, name = "DhGexKeyExchangeGroup"),
-        @XmlElement(type = DhGexKeyExchangeInitMessage.class, name = "DhGexKeyExchangeInit"),
-        @XmlElement(
-                type = DhGexKeyExchangeOldRequestMessage.class,
-                name = "DhGexKeyExchangeOldRequest"),
-        @XmlElement(type = DhGexKeyExchangeReplyMessage.class, name = "DhGexKeyExchangeReply"),
-        @XmlElement(type = DhGexKeyExchangeRequestMessage.class, name = "DhGexKeyExchangeRequest"),
-        @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInit"),
-        @XmlElement(type = DhKeyExchangeReplyMessage.class, name = "DhKeyExchangeReply"),
-        @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
-        @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInit"),
-        @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReply"),
-        @XmlElement(type = ExtensionInfoMessage.class, name = "ExtensionInfo"),
-        @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
-        @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
-        @XmlElement(type = NewCompressMessage.class, name = "NewCompress"),
-        @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
-        @XmlElement(type = PingMessage.class, name = "Ping"),
-        @XmlElement(type = PongMessage.class, name = "Pong"),
-        @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
-        @XmlElement(type = RsaKeyExchangePubkeyMessage.class, name = "RsaKeyExchangePubkey"),
-        @XmlElement(type = RsaKeyExchangeSecretMessage.class, name = "RsaKeyExchangeSecret"),
-        @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAccept"),
-        @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequest"),
-        @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
-        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-        @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
-        @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
-        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
-    })
+    @XmlElements(
+            value = {
+                // Authentication Protocol Messages
+                @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
+                @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
+                @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
+                @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
+                @XmlElement(
+                        type = UserAuthInfoResponseMessage.class,
+                        name = "UserAuthInfoResponse"),
+                @XmlElement(
+                        type = UserAuthKeyboardInteractiveMessage.class,
+                        name = "UserAuthKeyboardInteractive"),
+                @XmlElement(type = UserAuthNoneMessage.class, name = "UserAuthNone"),
+                @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
+                @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
+                @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
+                @XmlElement(type = UserAuthRequestMessage.class, name = "UserAuthRequest"),
+                @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
+                @XmlElement(type = UserAuthUnknownMessage.class, name = "UserAuthUnknownRequest"),
+                // Connection Protocol Messages
+                @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
+                @XmlElement(type = ChannelDataMessage.class, name = "ChannelData"),
+                @XmlElement(type = ChannelEofMessage.class, name = "ChannelEof"),
+                @XmlElement(type = ChannelExtendedDataMessage.class, name = "ChannelExtendedData"),
+                @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailure"),
+                @XmlElement(
+                        type = ChannelOpenConfirmationMessage.class,
+                        name = "ChannelOpenConfirmation"),
+                @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
+                @XmlElement(type = ChannelOpenSessionMessage.class, name = "ChannelOpenSession"),
+                @XmlElement(type = ChannelOpenUnknownMessage.class, name = "ChannelOpenUnknown"),
+                @XmlElement(
+                        type = ChannelRequestAuthAgentMessage.class,
+                        name = "ChannelRequestAuthAgent"),
+                @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
+                @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
+                @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
+                @XmlElement(
+                        type = ChannelRequestExitSignalMessage.class,
+                        name = "ChannelRequestExitSignal"),
+                @XmlElement(
+                        type = ChannelRequestExitStatusMessage.class,
+                        name = "ChannelRequestExitStatus"),
+                @XmlElement(type = ChannelRequestPtyMessage.class, name = "ChannelRequestPty"),
+                @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
+                @XmlElement(
+                        type = ChannelRequestSignalMessage.class,
+                        name = "ChannelRequestSignal"),
+                @XmlElement(
+                        type = ChannelRequestSubsystemMessage.class,
+                        name = "ChannelRequestSubsystem"),
+                @XmlElement(
+                        type = ChannelRequestUnknownMessage.class,
+                        name = "ChannelRequestUnknown"),
+                @XmlElement(
+                        type = ChannelRequestWindowChangeMessage.class,
+                        name = "ChannelRequestWindowChange"),
+                @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),
+                @XmlElement(
+                        type = ChannelRequestXonXoffMessage.class,
+                        name = "ChannelRequestXonXoff"),
+                @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
+                @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
+                @XmlElement(
+                        type = GlobalRequestCancelTcpIpForwardMessage.class,
+                        name = "GlobalRequestCancelTcpIpForward"),
+                @XmlElement(
+                        type = GlobalRequestFailureMessage.class,
+                        name = "GlobalRequestFailure"),
+                @XmlElement(
+                        type = GlobalRequestNoMoreSessionsMessage.class,
+                        name = "GlobalRequestNoMoreSessions"),
+                @XmlElement(
+                        type = GlobalRequestSuccessMessage.class,
+                        name = "GlobalRequestSuccess"),
+                @XmlElement(
+                        type = GlobalRequestTcpIpForwardMessage.class,
+                        name = "GlobalRequestTcpIpForward"),
+                @XmlElement(
+                        type = GlobalRequestOpenSshHostKeysMessage.class,
+                        name = "GlobalRequestOpenSshHostKeys"),
+                @XmlElement(
+                        type = GlobalRequestUnknownMessage.class,
+                        name = "GlobalRequestUnknown"),
+                // Transport Layer Protocol Messages
+                @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeGroupMessage.class,
+                        name = "DhGexKeyExchangeGroup"),
+                @XmlElement(
+                        type = DhGexKeyExchangeInitMessage.class,
+                        name = "DhGexKeyExchangeInit"),
+                @XmlElement(
+                        type = DhGexKeyExchangeOldRequestMessage.class,
+                        name = "DhGexKeyExchangeOldRequest"),
+                @XmlElement(
+                        type = DhGexKeyExchangeReplyMessage.class,
+                        name = "DhGexKeyExchangeReply"),
+                @XmlElement(
+                        type = DhGexKeyExchangeRequestMessage.class,
+                        name = "DhGexKeyExchangeRequest"),
+                @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInit"),
+                @XmlElement(type = DhKeyExchangeReplyMessage.class, name = "DhKeyExchangeReply"),
+                @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
+                @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInit"),
+                @XmlElement(
+                        type = EcdhKeyExchangeReplyMessage.class,
+                        name = "EcdhKeyExchangeReply"),
+                @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
+                @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
+                @XmlElement(type = NewCompressMessage.class, name = "NewCompress"),
+                @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
+                @XmlElement(type = PingMessage.class, name = "Ping"),
+                @XmlElement(type = PongMessage.class, name = "Pong"),
+                @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
+                @XmlElement(
+                        type = RsaKeyExchangePubkeyMessage.class,
+                        name = "RsaKeyExchangePubkey"),
+                @XmlElement(
+                        type = RsaKeyExchangeSecretMessage.class,
+                        name = "RsaKeyExchangeSecret"),
+                @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAccept"),
+                @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequest"),
+                @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
+                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
+                @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+                @XmlElement(type = VersionExchangeMessageSSHV1.class, name = "VersionExchangeSSH1"),
+                @XmlElement(type = ServerPublicKeyMessage.class, name = "PublicKeyMessageSSH1"),
+                @XmlElement(
+                        type = ClientSessionKeyMessage.class,
+                        name = "ClientSessionKeyMessageSSH1"),
+                @XmlElement(type = SuccessMessageSSH1.class, name = "SuccessMessageSSH1"),
+                @XmlElement(type = FailureMessageSSH1.class, name = "FailureMessageSSH1"),
+                @XmlElement(type = UserMessageSSH1.class, name = "UserMessageSSH1"),
+                @XmlElement(type = AuthPasswordSSH1.class, name = "AuthPasswordSSH1"),
+                @XmlElement(type = DisconnectMessageSSH1.class, name = "DisconnectMessageSSH1")
+            })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
     /**
      * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
      */
-    @XmlElement protected Boolean earlyCleanShutdown;
+    @XmlElement protected Boolean earlyCleanShutdown = null;
 
     /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
-    @XmlElement protected Boolean checkOnlyExpected;
+    @XmlElement protected Boolean checkOnlyExpected = null;
+
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
+    }
 
     /**
      * Set to {@code true} if the {@link
      * ReceiveOption#IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY} option has been set.
      */
-    @XmlElement protected Boolean ignoreUnexpectedGlobalRequestsWithoutWantReply;
+    @XmlElement protected Boolean ignoreUnexpectedGlobalRequestsWithoutWantReply = null;
 
     /**
      * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} option
      * has been set.
      */
-    @XmlElement protected Boolean failOnUnexpectedIgnoreMessages;
+    @XmlElement protected Boolean failOnUnexpectedIgnoreMessages = null;
 
     /**
      * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_DEBUG_MESSAGES} option has
      * been set.
      */
-    @XmlElement protected Boolean failOnUnexpectedDebugMessages;
+    @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements({
-        @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
-        @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
-    })
     protected List<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ReceiveAction() {
@@ -182,9 +226,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(
-            Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> expectedMessages) {
-        this(expectedMessages);
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
+        this(messages);
         setReceiveOptions(receiveOptions);
     }
 
@@ -192,8 +235,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> expectedMessages) {
-        this(Set.of(receiveOption), expectedMessages);
+    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
+        this(Set.of(receiveOption), messages);
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -204,32 +247,37 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
-        super(connectionAlias);
-        expectedMessages = messages;
+    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage<?>> messages) {
+        super(connectionAliasAlias);
+        this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
-        this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
+    public ReceiveAction(String connectionAliasAlias, ProtocolMessage<?>... messages) {
+        this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
 
+        LOGGER.debug("[bro] Receiving Messages");
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
+        receive(context, expectedMessages, packets);
+
+        receivedPackets = packets;
+
+        /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =
-                ReceiveMessageHelper.receiveMessages(context, expectedMessages);
-        messages = result.getMessageList();
-        receivedPackets = result.getPacketList();
+                receiveMessageHelper.receiveMessages(context, expectedMessages);
+        setReceivedMessages(result.getMessageList());*/
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Expected messages: {}", expected);
+        LOGGER.info("Expected messages: {}", expected);
         String received = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Received messages: {}", received);
@@ -289,6 +337,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // If no expected messages were defined, we consider this receive
         // action as "let's see what the other side sends".
         if (expectedMessages.isEmpty()) {
+            // TODO: Handle for SSH-Attacker
+
             // FIXME: In case TLS-Attacker's `GenericReceiveAction` is ported
             // to SSH-Attacker at some point and the `messages` list is also
             // empty, it might make sense to log a warning that tells the user
@@ -305,7 +355,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
 
-        Iterator<ProtocolMessage<?>> actualMessages = messages.iterator();
+        final Iterator<ProtocolMessage<?>> actualMessages = messages.iterator();
         for (ProtocolMessage<?> expectedMessage : expectedMessages) {
             while (true) {
                 if (!actualMessages.hasNext()) {
@@ -318,7 +368,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                     return false;
                 }
 
-                ProtocolMessage<?> actualMessage = actualMessages.next();
+                final ProtocolMessage<?> actualMessage = actualMessages.next();
 
                 // Check if the actual message matches the expected message. If
                 // so, continue with the next expected message.
@@ -339,18 +389,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 //
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
-                if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                        || hasReceiveOption(
+                if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                        || this.hasReceiveOption(
                                         ReceiveOption
                                                 .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)
                                 && actualMessage instanceof GlobalRequestMessage
-                                && ((GlobalRequestMessage<?>) actualMessage)
-                                                .getWantReply()
-                                                .getValue()
+                                && ((GlobalRequestMessage) actualMessage).getWantReply().getValue()
                                         == 0
-                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                        || !this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                                 && actualMessage instanceof IgnoreMessage
-                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
+                        || !this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
                                 && actualMessage instanceof DebugMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
@@ -384,11 +432,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @SuppressWarnings("SuspiciousGetterSetter")
     void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
         messages = receivedMessages;
-    }
-
-    @Override
-    public List<AbstractPacket> getReceivedPackets() {
-        return receivedPackets;
     }
 
     public void setReceivedPackets(List<AbstractPacket> packetList) {
@@ -429,7 +472,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 break;
         }
 
-        return value != null && value;
+        return value != null && value.booleanValue();
     }
 
     /**
@@ -486,18 +529,39 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (!super.equals(obj)) return false;
         ReceiveAction that = (ReceiveAction) obj;
         return Objects.equals(expectedMessages, that.expectedMessages)
-                && Objects.equals(messages, that.messages)
-                && Objects.equals(receivedPackets, that.receivedPackets);
+                && Objects.equals(messages, that.messages);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), expectedMessages, messages, receivedPackets);
+        return Objects.hash(super.hashCode(), expectedMessages, messages);
     }
 
     @Override
-    protected void stripEmptyLists() {
-        super.stripEmptyLists();
+    public void normalize() {
+        super.normalize();
+        initEmptyLists();
+    }
+
+    @Override
+    public void normalize(SshAction defaultAction) {
+        super.normalize(defaultAction);
+        initEmptyLists();
+    }
+
+    @Override
+    public void filter() {
+        super.filter();
+        filterEmptyLists();
+    }
+
+    @Override
+    public void filter(SshAction defaultCon) {
+        super.filter(defaultCon);
+        filterEmptyLists();
+    }
+
+    private void filterEmptyLists() {
         if (expectedMessages == null || expectedMessages.isEmpty()) {
             expectedMessages = null;
         }

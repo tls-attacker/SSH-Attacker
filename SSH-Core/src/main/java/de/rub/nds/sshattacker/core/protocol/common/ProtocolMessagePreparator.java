@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
+import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public abstract class ProtocolMessagePreparator<T extends ProtocolMessage<T>>
-        extends Preparator<T> {
+public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 
     protected ProtocolMessagePreparator(Chooser chooser, T message) {
         super(chooser, message);

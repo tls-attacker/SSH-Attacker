@@ -8,8 +8,9 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,30 +21,39 @@ public abstract class AbstractExtensionParser<E extends AbstractExtension<E>> ex
 
     protected final E extension = createExtension();
 
-    protected AbstractExtensionParser(byte[] array) {
+    protected AbstractExtensionParser(InputStream stream) {
+        super(stream);
+    }
+
+    /*    protected AbstractExtensionParser(byte[] array) {
         super(array);
     }
 
     protected AbstractExtensionParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
 
     protected abstract E createExtension();
 
-    @Override
+    protected void parseExtensionData(E abstractExtension) {
+        parseExtensionName(abstractExtension);
+        parseExtensionValue(abstractExtension);
+    }
+
+    /* @Override
     public final E parse() {
         parseExtensionName();
         parseExtensionValue();
         return extension;
-    }
+    }*/
 
-    protected void parseExtensionName() {
-        extension.setNameLength(parseIntField(DataFormatConstants.UINT32_SIZE));
+    protected void parseExtensionName(E abstractExtension) {
+        abstractExtension.setNameLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
-        extension.setName(
+        abstractExtension.setName(
                 parseByteString(extension.getNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Extension name: {}", extension.getName().getValue());
     }
 
-    protected abstract void parseExtensionValue();
+    protected abstract void parseExtensionValue(E AbstractExtension);
 }

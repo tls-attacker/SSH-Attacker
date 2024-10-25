@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeInitMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessage> {
@@ -64,6 +68,27 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
 
     @Override
     public DhKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeInitMessageHandler(context, this);
+        return new DhKeyExchangeInitMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<DhKeyExchangeInitMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new DhKeyExchangeInitMessageParser(stream);
+    }
+
+    @Override
+    public DhKeyExchangeInitMessagePreparator getPreparator(SshContext context) {
+        return new DhKeyExchangeInitMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public DhKeyExchangeInitMessageSerializer getSerializer(SshContext context) {
+        return new DhKeyExchangeInitMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "KEXDH_INIT";
     }
 }

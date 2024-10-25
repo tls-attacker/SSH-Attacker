@@ -12,8 +12,24 @@ import java.math.BigInteger;
 /** M interval as mentioned in the Bleichenbacher paper. */
 public class Interval {
 
-    public final BigInteger lower;
-    public final BigInteger upper;
+    public BigInteger getLower() {
+        return lower;
+    }
+
+    public void setLower(BigInteger lower) {
+        this.lower = lower;
+    }
+
+    public BigInteger getUpper() {
+        return upper;
+    }
+
+    public void setUpper(BigInteger upper) {
+        this.upper = upper;
+    }
+
+    public BigInteger lower;
+    public BigInteger upper;
 
     /**
      * @param a Start of interval

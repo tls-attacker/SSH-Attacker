@@ -15,27 +15,32 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 public class ClientCommandConfig extends SshDelegateConfig {
 
+    public static final String COMMAND = "client";
+
     @ParametersDelegate private final ClientDelegate clientDelegate;
     @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
     @ParametersDelegate private final WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate private final WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate private final WorkflowTypeDelegate workflowTypeDelegate;
+    @ParametersDelegate private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        clientDelegate = new ClientDelegate();
-        configOutputDelegate = new ConfigOutputDelegate();
-        timeoutDelegate = new TimeoutDelegate();
-        workflowInputDelegate = new WorkflowInputDelegate();
-        workflowOutputDelegate = new WorkflowOutputDelegate();
-        workflowTypeDelegate = new WorkflowTypeDelegate();
+        this.clientDelegate = new ClientDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
+        this.workflowInputDelegate = new WorkflowInputDelegate();
+        this.workflowOutputDelegate = new WorkflowOutputDelegate();
+        this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        this.protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
+        addDelegate(protocolVersionDelegate);
     }
 
     @Override

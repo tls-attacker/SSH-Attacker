@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -52,8 +53,10 @@ public class VersionExchangeMessageParserTest {
             String expectedVersion,
             String expectedComment,
             String expectedEndOfMessageSequence) {
-        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(providedBytes);
-        VersionExchangeMessage msg = parser.parse();
+        VersionExchangeMessageParser parser =
+                new VersionExchangeMessageParser(new ByteArrayInputStream(providedBytes));
+        VersionExchangeMessage msg = new VersionExchangeMessage();
+        parser.parse(msg);
 
         assertEquals(expectedVersion, msg.getVersion().getValue());
         assertEquals(expectedComment, msg.getComment().getValue());

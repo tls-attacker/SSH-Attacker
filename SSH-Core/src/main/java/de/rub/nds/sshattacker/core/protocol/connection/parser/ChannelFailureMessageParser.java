@@ -8,19 +8,16 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
+import java.io.InputStream;
 
 public class ChannelFailureMessageParser extends ChannelMessageParser<ChannelFailureMessage> {
 
-    public ChannelFailureMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelFailureMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelFailureMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelFailureMessage createMessage() {
-        return new ChannelFailureMessage();
+    public void parse(ChannelFailureMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

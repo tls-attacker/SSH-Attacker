@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -73,8 +74,8 @@ public class DelayCompressionExtensionParserTest {
             String expectedCompressionMethodsClientToServer,
             int expectedCompressionMethodsServerToClientLength,
             String expectedCompressionMethodsServerToClient) {
-        DelayCompressionExtensionParser parser = new DelayCompressionExtensionParser(providedBytes);
-        DelayCompressionExtension extension = parser.parse();
+        DelayCompressionExtension extension = new DelayCompressionExtension();
+        extension.getParser(null, new ByteArrayInputStream(providedBytes)).parse(extension);
 
         assertEquals(expectedNameLength, extension.getNameLength().getValue());
         assertEquals(expectedName, extension.getName().getValue());

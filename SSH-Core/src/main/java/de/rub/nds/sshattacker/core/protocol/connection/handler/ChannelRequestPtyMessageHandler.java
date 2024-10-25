@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestPtyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestPtyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestPtyMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRequestPtyMessage> {
@@ -21,34 +18,10 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
         super(context);
     }
 
-    public ChannelRequestPtyMessageHandler(SshContext context, ChannelRequestPtyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestPtyMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
-    }
-
-    @Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array) {
-        return new ChannelRequestPtyMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestPtyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestPtyMessagePreparator getPreparator() {
-        return new ChannelRequestPtyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestPtyMessageSerializer getSerializer() {
-        return new ChannelRequestPtyMessageSerializer(message);
     }
 }

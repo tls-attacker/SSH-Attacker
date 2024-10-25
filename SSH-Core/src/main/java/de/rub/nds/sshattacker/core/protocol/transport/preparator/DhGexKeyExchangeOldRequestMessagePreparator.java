@@ -23,6 +23,7 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         chooser.getContext()
+                .getSshContext()
                 .getExchangeHashInputHolder()
                 .setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
         getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());

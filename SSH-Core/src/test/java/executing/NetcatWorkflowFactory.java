@@ -13,8 +13,6 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessag
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
@@ -44,12 +42,10 @@ public final class NetcatWorkflowFactory {
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            ReceiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
             ChannelDataMessage dataMessage = new ChannelDataMessage();
             dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
-            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
         }
     }
 }

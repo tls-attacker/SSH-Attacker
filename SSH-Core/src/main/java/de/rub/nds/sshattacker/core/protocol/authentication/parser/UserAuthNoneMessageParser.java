@@ -8,19 +8,27 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneMessage;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthNoneMessageParser extends UserAuthRequestMessageParser<UserAuthNoneMessage> {
 
-    public UserAuthNoneMessageParser(byte[] array) {
-        super(array);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthNoneMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthNoneMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public UserAuthNoneMessage createMessage() {
-        return new UserAuthNoneMessage();
+    public void parse(UserAuthNoneMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents(UserAuthNoneMessage message) {
+        super.parseMessageSpecificContents(message);
     }
 }

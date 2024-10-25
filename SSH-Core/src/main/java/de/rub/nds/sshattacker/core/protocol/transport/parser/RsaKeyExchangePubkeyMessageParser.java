@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,27 +19,23 @@ public class RsaKeyExchangePubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangePubkeyMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public RsaKeyExchangePubkeyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public RsaKeyExchangePubkeyMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected RsaKeyExchangePubkeyMessage createMessage() {
-        return new RsaKeyExchangePubkeyMessage();
+    public void parse(RsaKeyExchangePubkeyMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(RsaKeyExchangePubkeyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug("Host key bytes: {}", message.getHostKeyBytes());
     }
 
-    private void parseTransientPublicKey() {
+    private void parseTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
         message.setTransientPublicKeyBytesLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
@@ -50,8 +47,8 @@ public class RsaKeyExchangePubkeyMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseTransientPublicKey();
+    protected void parseMessageSpecificContents(RsaKeyExchangePubkeyMessage message) {
+        parseHostKeyBytes(message);
+        parseTransientPublicKey(message);
     }
 }

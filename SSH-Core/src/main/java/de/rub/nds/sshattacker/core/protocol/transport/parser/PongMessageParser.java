@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.PongMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,21 +19,17 @@ public class PongMessageParser extends SshMessageParser<PongMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PongMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public PongMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public PongMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected PongMessage createMessage() {
-        return new PongMessage();
+    public void parse(PongMessage message) {
+        parseProtocolMessageContents(message);
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
+    protected void parseMessageSpecificContents(PongMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));

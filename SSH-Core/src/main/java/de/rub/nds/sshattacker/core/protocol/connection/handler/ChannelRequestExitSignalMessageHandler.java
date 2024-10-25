@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitSignalMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitSignalMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExitSignalMessageHandler
@@ -22,35 +19,10 @@ public class ChannelRequestExitSignalMessageHandler
         super(context);
     }
 
-    public ChannelRequestExitSignalMessageHandler(
-            SshContext context, ChannelRequestExitSignalMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestExitSignalMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageParser getParser(byte[] array) {
-        return new ChannelRequestExitSignalMessageParser(array);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelRequestExitSignalMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessagePreparator getPreparator() {
-        return new ChannelRequestExitSignalMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageSerializer getSerializer() {
-        return new ChannelRequestExitSignalMessageSerializer(message);
     }
 }

@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,22 +20,13 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public VersionExchangeMessageParser(byte[] array) {
-        super(array);
+    public VersionExchangeMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public VersionExchangeMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    protected VersionExchangeMessage createMessage() {
-        return new VersionExchangeMessage();
-    }
-
-    private void parseVersion() {
+    private void parseVersion(VersionExchangeMessage message) {
         // parse till CR NL (and remove them)
-        String result = parseStringTill(new byte[] {CharConstants.NEWLINE});
+        String result = this.parseStringTill(CharConstants.NEWLINE);
         if (result.contains("\r")) {
             message.setEndOfMessageSequence("\r\n");
         } else {
@@ -54,8 +46,13 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
         }
     }
 
+    // @Override
+    public void parseProtocolMessageContents(VersionExchangeMessage message) {
+        parseVersion(message);
+    }
+
     @Override
-    public void parseProtocolMessageContents() {
-        parseVersion();
+    public void parse(VersionExchangeMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

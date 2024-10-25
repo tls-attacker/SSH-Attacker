@@ -13,10 +13,14 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthFailureMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,6 +129,26 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     @Override
     public UserAuthFailureMessageHandler getHandler(SshContext context) {
-        return new UserAuthFailureMessageHandler(context, this);
+        return new UserAuthFailureMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthFailureMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthFailureMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthFailureMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthFailureMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthFailureMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthFailureMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTH_FAILURE";
     }
 }

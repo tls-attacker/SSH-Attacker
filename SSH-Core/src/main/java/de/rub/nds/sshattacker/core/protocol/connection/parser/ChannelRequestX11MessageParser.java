@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,27 +20,18 @@ public class ChannelRequestX11MessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestX11MessageParser(byte[] array) {
-        super(array);
+    public ChannelRequestX11MessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestX11MessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public ChannelRequestX11Message createMessage() {
-        return new ChannelRequestX11Message();
-    }
-
-    public void parseSingleConnection() {
+    public void parseSingleConnection(ChannelRequestX11Message message) {
         message.setSingleConnection(parseByteField(1));
         LOGGER.debug(
                 "Single connection: {}",
                 Converter.byteToBoolean(message.getSingleConnection().getValue()));
     }
 
-    public void parseX11AuthenticationProtocol() {
+    public void parseX11AuthenticationProtocol(ChannelRequestX11Message message) {
         message.setX11AuthenticationProtocolLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -54,7 +46,7 @@ public class ChannelRequestX11MessageParser
                 message.getX11AuthenticationProtocol().getValue());
     }
 
-    public void parseX11AuthenticationCookie() {
+    public void parseX11AuthenticationCookie(ChannelRequestX11Message message) {
         message.setX11AuthenticationCookieLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -67,17 +59,22 @@ public class ChannelRequestX11MessageParser
                 "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
     }
 
-    public void parseX11ScreenNumber() {
+    public void parseX11ScreenNumber(ChannelRequestX11Message message) {
         message.setX11ScreenNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("X11 screen number: {}", message.getX11ScreenNumber().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSingleConnection();
-        parseX11AuthenticationProtocol();
-        parseX11AuthenticationCookie();
-        parseX11ScreenNumber();
+    protected void parseMessageSpecificContents(ChannelRequestX11Message message) {
+        super.parseMessageSpecificContents(message);
+        parseSingleConnection(message);
+        parseX11AuthenticationProtocol(message);
+        parseX11AuthenticationCookie(message);
+        parseX11ScreenNumber(message);
+    }
+
+    @Override
+    public void parse(ChannelRequestX11Message message) {
+        parseProtocolMessageContents(message);
     }
 }

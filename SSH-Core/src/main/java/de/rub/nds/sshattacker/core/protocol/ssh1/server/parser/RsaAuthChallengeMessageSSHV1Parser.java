@@ -1,0 +1,38 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.ssh1.server.parser;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.Ssh1MessageParser;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.RsaAuthChallengeMessageSSH1;
+import java.io.InputStream;
+import java.math.BigInteger;
+
+public class RsaAuthChallengeMessageSSHV1Parser
+        extends Ssh1MessageParser<RsaAuthChallengeMessageSSH1> {
+
+    public RsaAuthChallengeMessageSSHV1Parser(SshContext context, InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    protected void parseMessageSpecificContents(RsaAuthChallengeMessageSSH1 message) {
+        parseEncryptedChallengeModulus(message);
+    }
+
+    @Override
+    public void parse(RsaAuthChallengeMessageSSH1 message) {
+        parseProtocolMessageContents(message);
+    }
+
+    private void parseEncryptedChallengeModulus(RsaAuthChallengeMessageSSH1 message) {
+        BigInteger encryptedChallenge = parseMultiprecision();
+        message.setIdentityPublicModulus(ArrayConverter.bigIntegerToByteArray(encryptedChallenge));
+    }
+}

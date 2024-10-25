@@ -9,11 +9,12 @@ package de.rub.nds.sshattacker.core.packet.crypto;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,6 +51,23 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
             }
         }
         context.incrementWriteSequenceNumber();
+    }
+
+    // TODO Adding real Encryption after Handshake
+    @Override
+    public void encrypt(BinaryPacketSSHv1 packet) {
+        PacketCipher packetCipher = getPacketMostRecentCipher();
+        try {
+            packet.setSequenceNumber(context.getWriteSequenceNumber());
+            packetCipher.process(packet);
+        } catch (CryptoException e) {
+            LOGGER.warn("Could not encrypt binary packet. Using " + noneCipher, e);
+            try {
+                noneCipher.process(packet);
+            } catch (CryptoException ex) {
+                LOGGER.error("Could not encrypt with " + noneCipher, ex);
+            }
+        }
     }
 
     @Override

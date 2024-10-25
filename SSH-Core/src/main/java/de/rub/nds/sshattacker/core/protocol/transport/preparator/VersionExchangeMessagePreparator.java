@@ -20,16 +20,22 @@ public class VersionExchangeMessagePreparator
 
     @Override
     public void prepareProtocolMessageContents() {
-        if (chooser.getContext().isClient()) {
+        if (chooser.getContext().getSshContext().isClient()) {
             getObject().setVersion(chooser.getClientVersion());
             getObject().setComment(chooser.getClientComment());
             getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInputHolder().setClientVersion(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setClientVersion(getObject());
         } else {
             getObject().setVersion(chooser.getServerVersion());
             getObject().setComment(chooser.getServerComment());
             getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInputHolder().setServerVersion(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setServerVersion(getObject());
         }
     }
 }

@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
@@ -116,6 +120,26 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
 
     @Override
     public ChannelOpenFailureMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenFailureMessageHandler(context, this);
+        return new ChannelOpenFailureMessageHandler(context);
+    }
+
+    @Override
+    public ChannelOpenFailureMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelOpenFailureMessageParser(stream);
+    }
+
+    @Override
+    public ChannelOpenFailureMessagePreparator getPreparator(SshContext context) {
+        return new ChannelOpenFailureMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelOpenFailureMessageSerializer getSerializer(SshContext context) {
+        return new ChannelOpenFailureMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_OPEN_FAILURE";
     }
 }

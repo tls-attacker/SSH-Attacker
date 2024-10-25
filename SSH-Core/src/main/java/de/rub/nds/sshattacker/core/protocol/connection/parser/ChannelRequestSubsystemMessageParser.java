@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,20 +20,16 @@ public class ChannelRequestSubsystemMessageParser
         extends ChannelRequestMessageParser<ChannelRequestSubsystemMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestSubsystemMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelRequestSubsystemMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelRequestSubsystemMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelRequestSubsystemMessage createMessage() {
-        return new ChannelRequestSubsystemMessage();
+    public void parse(ChannelRequestSubsystemMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    public void parseSubsystemName() {
+    public void parseSubsystemName(ChannelRequestSubsystemMessage message) {
         message.setSubsystemNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
         message.setSubsystemName(
@@ -43,8 +40,8 @@ public class ChannelRequestSubsystemMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSubsystemName();
+    protected void parseMessageSpecificContents(ChannelRequestSubsystemMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSubsystemName(message);
     }
 }

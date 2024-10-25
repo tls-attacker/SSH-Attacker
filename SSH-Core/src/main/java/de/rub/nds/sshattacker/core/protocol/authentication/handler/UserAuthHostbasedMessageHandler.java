@@ -13,12 +13,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthHostbasedMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthHostbasedMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 
@@ -28,16 +25,12 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         super(context);
     }
 
-    public UserAuthHostbasedMessageHandler(SshContext context, UserAuthHostbasedMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        checkSignature();
+    public void adjustContext(UserAuthHostbasedMessage message) {
+        checkSignature(message);
     }
 
-    public void checkSignature() {
+    public void checkSignature(UserAuthHostbasedMessage message) {
         if (message.getHostKeyBytes() != null && message.getHostKeyBytes().getValue() != null) {
             PublicKeyAlgorithm hostKeyAlgorithm =
                     PublicKeyAlgorithm.fromName(message.getPubKeyAlgorithm().getValue());
@@ -51,7 +44,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey);
                 if (verifyingSignature.verify(
-                        prepareSignatureInput(), signature.getSignatureBytes())) {
+                        this.prepareSignatureInput(message), signature.getSignatureBytes())) {
                     LOGGER.info("Signature verification successful: Signature is valid.");
                 } else {
                     LOGGER.warn(
@@ -67,10 +60,10 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         }
     }
 
-    public byte[] prepareSignatureInput() {
+    public byte[] prepareSignatureInput(UserAuthHostbasedMessage message) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
-                        context.getSessionID().orElse(new byte[] {})),
+                        sshContext.getSessionID().orElse(new byte[] {})),
                 new byte[] {message.getMessageId().getValue()},
                 Converter.stringToLengthPrefixedBinaryString(message.getUserName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(message.getServiceName().getValue()),
@@ -81,25 +74,5 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
                 Converter.stringToLengthPrefixedBinaryString(message.getHostName().getValue()),
                 Converter.bytesToLengthPrefixedBinaryString(
                         message.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
-    }
-
-    @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array) {
-        return new UserAuthHostbasedMessageParser(array);
-    }
-
-    @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthHostbasedMessageParser(array, startPosition);
-    }
-
-    @Override
-    public UserAuthHostbasedMessagePreparator getPreparator() {
-        return new UserAuthHostbasedMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UserAuthHostbasedMessageSerializer getSerializer() {
-        return new UserAuthHostbasedMessageSerializer(message);
     }
 }

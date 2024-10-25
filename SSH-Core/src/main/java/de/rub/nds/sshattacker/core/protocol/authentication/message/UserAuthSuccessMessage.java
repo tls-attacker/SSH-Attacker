@@ -7,14 +7,38 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthSuccessMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSuccessMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.InputStream;
 
 public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
 
     @Override
     public UserAuthSuccessMessageHandler getHandler(SshContext context) {
-        return new UserAuthSuccessMessageHandler(context, this);
+        return new UserAuthSuccessMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthSuccessMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthSuccessMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthSuccessMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthSuccessMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthSuccessMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthSuccessMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTH_SUCCESS";
     }
 }

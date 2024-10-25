@@ -9,23 +9,20 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
+import java.io.InputStream;
 
 public class GlobalRequestSuccessMessageParser
         extends SshMessageParser<GlobalRequestSuccessMessage> {
 
-    public GlobalRequestSuccessMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public GlobalRequestSuccessMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public GlobalRequestSuccessMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public GlobalRequestSuccessMessage createMessage() {
-        return new GlobalRequestSuccessMessage();
+    public void parse(GlobalRequestSuccessMessage message) {
+        parseProtocolMessageContents(message);
     }
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(GlobalRequestSuccessMessage message) {}
 }

@@ -11,9 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPasswordMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPasswordMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPasswordMessage> {
@@ -123,6 +128,27 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
 
     @Override
     public UserAuthPasswordMessageHandler getHandler(SshContext context) {
-        return new UserAuthPasswordMessageHandler(context, this);
+        return new UserAuthPasswordMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<UserAuthPasswordMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new UserAuthPasswordMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthPasswordMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthPasswordMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthPasswordMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthPasswordMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTH_REQUEST";
     }
 }

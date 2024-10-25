@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,20 +18,16 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelDataMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelDataMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelDataMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelDataMessage createMessage() {
-        return new ChannelDataMessage();
+    public void parse(ChannelDataMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseData() {
+    private void parseData(ChannelDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));
@@ -38,8 +35,8 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseData();
+    protected void parseMessageSpecificContents(ChannelDataMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseData(message);
     }
 }

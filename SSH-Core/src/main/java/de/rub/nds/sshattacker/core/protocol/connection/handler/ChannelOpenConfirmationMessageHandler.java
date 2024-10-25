@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,47 +23,22 @@ public class ChannelOpenConfirmationMessageHandler
         super(context);
     }
 
-    public ChannelOpenConfirmationMessageHandler(
-            SshContext context, ChannelOpenConfirmationMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+    public void adjustContext(ChannelOpenConfirmationMessage message) {
+        Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
                     getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
-            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+            channel = sshContext.getConfig().getChannelDefaults().newChannelFromDefaults();
             channel.setLocalChannelId(message.getRecipientChannelId().getValue());
-            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
+            sshContext.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
 
         channel.setRemoteChannelId(message.getSenderChannelId());
         channel.setRemotePacketSize(message.getPacketSize());
         channel.setRemoteWindowSize(message.getWindowSize());
         channel.setOpen(true);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
-        return new ChannelOpenConfirmationMessageParser(array);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
-        return new ChannelOpenConfirmationMessageParser(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessagePreparator getPreparator() {
-        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageSerializer getSerializer() {
-        return new ChannelOpenConfirmationMessageSerializer(message);
     }
 }

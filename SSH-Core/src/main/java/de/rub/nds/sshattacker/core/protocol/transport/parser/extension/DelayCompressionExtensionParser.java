@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,12 +19,13 @@ public class DelayCompressionExtensionParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DelayCompressionExtensionParser(byte[] array) {
-        super(array);
+    public DelayCompressionExtensionParser(InputStream stream) {
+        super(stream);
     }
 
-    public DelayCompressionExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(DelayCompressionExtension delayCompressionExtension) {
+        parseExtensionData(delayCompressionExtension);
     }
 
     @Override
@@ -32,13 +34,13 @@ public class DelayCompressionExtensionParser
     }
 
     @Override
-    protected void parseExtensionValue() {
-        parseCompressionMethodsLength();
-        parseCompressionMethodsClientToServer();
-        parseCompressionMethodsServerToClient();
+    protected void parseExtensionValue(DelayCompressionExtension extension) {
+        parseCompressionMethodsLength(extension);
+        parseCompressionMethodsClientToServer(extension);
+        parseCompressionMethodsServerToClient(extension);
     }
 
-    private void parseCompressionMethodsLength() {
+    private void parseCompressionMethodsLength(DelayCompressionExtension extension) {
         extension.setCompressionMethodsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -46,7 +48,7 @@ public class DelayCompressionExtensionParser
                 extension.getCompressionMethodsLength().getValue());
     }
 
-    private void parseCompressionMethodsClientToServer() {
+    private void parseCompressionMethodsClientToServer(DelayCompressionExtension extension) {
         extension.setCompressionMethodsClientToServerLength(
                 parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
@@ -61,7 +63,7 @@ public class DelayCompressionExtensionParser
                 extension.getCompressionMethodsClientToServer().getValue());
     }
 
-    private void parseCompressionMethodsServerToClient() {
+    private void parseCompressionMethodsServerToClient(DelayCompressionExtension extension) {
         extension.setCompressionMethodsServerToClientLength(
                 parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(

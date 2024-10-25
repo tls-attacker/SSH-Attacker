@@ -9,9 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,30 +25,46 @@ public class HybridKeyExchangeReplyMessageParser
     private final int agreementSize;
     private final int encapsulationSize;
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            int startPosition,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array, startPosition);
-        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
+    public HybridKeyExchangeReplyMessageParser(SshContext context, InputStream stream) {
+        super(stream);
+
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: {}",
+                context.getChooser().getKeyExchangeAlgorithm());
+        switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
+            case SNTRUP761_X25519:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE;
+                break;
+            case CURVE25519_FRODOKEM1344:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE;
+                break;
+            case SNTRUP4591761_X25519:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE;
+                break;
+            case NISTP521_FIRESABER:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FIRESABER_CIPHERTEXT_SIZE;
+                break;
+            case NISTP521_KYBER1024:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.KYBER1024_CIPHERTEXT_SIZE;
+                break;
+        }
     }
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array);
-        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
-    }
-
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(HybridKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key byte length{}", message.getHostKeyBytesLength());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -54,7 +73,7 @@ public class HybridKeyExchangeReplyMessageParser
                 ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseHybridKey() {
+    private void parseHybridKey(HybridKeyExchangeReplyMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: {}", length);
 
@@ -77,7 +96,7 @@ public class HybridKeyExchangeReplyMessageParser
         }
     }
 
-    private void parseSignature() {
+    private void parseSignature(HybridKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -85,14 +104,14 @@ public class HybridKeyExchangeReplyMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseHybridKey();
-        parseSignature();
+    protected void parseMessageSpecificContents(HybridKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseHybridKey(message);
+        parseSignature(message);
     }
 
     @Override
-    protected HybridKeyExchangeReplyMessage createMessage() {
-        return new HybridKeyExchangeReplyMessage();
+    public void parse(HybridKeyExchangeReplyMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

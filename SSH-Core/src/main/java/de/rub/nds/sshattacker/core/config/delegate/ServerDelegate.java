@@ -16,7 +16,12 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", required = true, description = "ServerPort")
-    protected Integer port;
+    protected Integer port = null;
+
+    @Parameter(names = "-endless", description = "EndlessMode")
+    protected Boolean endless = false;
+
+    public ServerDelegate() {}
 
     public Integer getPort() {
         return port;
@@ -24,6 +29,14 @@ public class ServerDelegate extends Delegate {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public Boolean getEndless() {
+        return endless;
+    }
+
+    public void setEndless(Boolean endless) {
+        this.endless = endless;
     }
 
     @Override
@@ -39,9 +52,16 @@ public class ServerDelegate extends Delegate {
             inboundConnection = new InboundConnection(parsedPort);
             config.setDefaultServerConnection(inboundConnection);
         }
+
+        if (endless) {
+            LOGGER.debug("ENDLESS");
+            config.setWorkflowExecutorShouldClose(true);
+            config.setStopActionsAfterDisconnect(true);
+            config.setEndless(true);
+        }
     }
 
-    private static int parsePort(Integer port) {
+    private int parsePort(Integer port) {
         if (port == null) {
             throw new ParameterException("Port must be set, but was not specified");
         }

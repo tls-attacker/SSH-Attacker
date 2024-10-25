@@ -9,8 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestBreakMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestBreakMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestBreakMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestBreakMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage> {
 
@@ -30,6 +34,26 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
 
     @Override
     public ChannelRequestBreakMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestBreakMessageHandler(context, this);
+        return new ChannelRequestBreakMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestBreakMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestBreakMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestBreakMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestBreakMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestBreakMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestBreakMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "CHAN_REQ_BREAK";
     }
 }

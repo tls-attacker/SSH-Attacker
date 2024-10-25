@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -49,8 +50,10 @@ public class UserAuthBannerMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes, String expectedMessage, String expectedLanguageTag) {
-        UserAuthBannerMessageParser parser = new UserAuthBannerMessageParser(providedBytes);
-        UserAuthBannerMessage msg = parser.parse();
+        UserAuthBannerMessageParser parser =
+                new UserAuthBannerMessageParser(new ByteArrayInputStream(providedBytes));
+        UserAuthBannerMessage msg = new UserAuthBannerMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_USERAUTH_BANNER.getId(), msg.getMessageId().getValue());

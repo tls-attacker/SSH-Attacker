@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +34,13 @@ public class Pkcs1Attack {
     protected BigInteger solution;
 
     protected BigInteger bigB;
+
+    protected double averageTimeforRequestInnerOracle;
+    protected double averageTimeforRequestOuterOracle;
+
+    // Array list of longs
+    protected ArrayList<Long> innerTimings = new ArrayList<>();
+    protected ArrayList<Long> outerTimings = new ArrayList<>();
 
     /**
      * @param msg The message that should be decrypted with the attack
@@ -93,6 +101,40 @@ public class Pkcs1Attack {
 
     /**
      * @param message Message to query the oracle with
+     * @param inner True, if the query is for the inner encryption
+     * @return The return value of the oracle (true/false), the result belongs to the inner / outer
+     *     encryption give with the parameter inner
+     */
+    protected boolean queryOracle(BigInteger message, boolean inner) {
+        byte[] msg = ArrayConverter.bigIntegerToByteArray(message);
+        long start = System.nanoTime();
+        boolean[] results = oracle.checkDoublePKCSConformity(msg);
+        long end = System.nanoTime();
+        long tookTime = end - start;
+        if (inner) {
+            innerTimings.add(tookTime);
+            averageTimeforRequestInnerOracle = calculateAverage(innerTimings);
+        } else {
+            outerTimings.add(tookTime);
+            averageTimeforRequestOuterOracle = calculateAverage(outerTimings);
+        }
+        if (inner) {
+            return results[1];
+        } else {
+            return results[0];
+        }
+    }
+
+    protected double calculateAverage(ArrayList<Long> timings) {
+        long sum = 0;
+        for (Long timing : timings) {
+            sum += timing;
+        }
+        return (double) sum / timings.size();
+    }
+
+    /**
+     * @param message Message to query the oracle with
      * @return The return value of the oracle (true/false)
      */
     protected boolean queryOracle(BigInteger message) {
@@ -102,5 +144,13 @@ public class Pkcs1Attack {
 
     public BigInteger getSolution() {
         return solution;
+    }
+
+    public double getAverageTimeforRequestInnerOracle() {
+        return averageTimeforRequestInnerOracle;
+    }
+
+    public double getAverageTimeforRequestOuterOracle() {
+        return averageTimeforRequestOuterOracle;
     }
 }

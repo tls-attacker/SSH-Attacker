@@ -11,9 +11,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestX11MessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestX11MessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestX11MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelRequestX11Message> {
@@ -166,6 +170,26 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
 
     @Override
     public ChannelRequestX11MessageHandler getHandler(SshContext context) {
-        return new ChannelRequestX11MessageHandler(context, this);
+        return new ChannelRequestX11MessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestX11MessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestX11MessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestX11MessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestX11MessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestX11MessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestX11MessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_X11";
     }
 }

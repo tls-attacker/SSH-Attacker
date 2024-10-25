@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.connection;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.*;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +44,7 @@ public class ChannelManager {
      */
     private int findUnusedChannelId() {
         return IntStream.iterate(0, i -> i + 1)
-                .filter(i -> channels.get(i) == null)
+                .filter(i -> this.channels.get(i) == null)
                 .findFirst()
                 .orElseThrow(); // should never occur with infinite stream
     }
@@ -95,11 +95,13 @@ public class ChannelManager {
      * @param remoteChannelId the remote channel ID
      * @return the created channel
      */
-    private Channel createNewChannelFromDefaults(int localChannelId, int remoteChannelId) {
-        Channel channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+    private Channel createNewChannelFromDefaults(
+            final int localChannelId, final int remoteChannelId) {
+        final Channel channel =
+                this.context.getConfig().getChannelDefaults().newChannelFromDefaults();
         channel.setLocalChannelId(localChannelId);
         channel.setRemoteChannelId(remoteChannelId);
-        channels.put(remoteChannelId, channel);
+        this.channels.put(remoteChannelId, channel);
         return channel;
     }
 

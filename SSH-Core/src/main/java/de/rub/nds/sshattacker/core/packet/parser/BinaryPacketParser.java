@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
+import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,17 +33,17 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     private final int sequenceNumber;
 
     public BinaryPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-        super(array, startPosition);
+            InputStream stream, PacketCipher activeDecryptCipher, int sequenceNumber) {
+        super(stream);
         this.activeDecryptCipher = activeDecryptCipher;
         this.sequenceNumber = sequenceNumber;
     }
 
     @Override
-    public BinaryPacket parse() {
+    public void parse(BinaryPacket binaryPacket) {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
         try {
-            BinaryPacket binaryPacket = new BinaryPacket();
+            // BinaryPacket binaryPacket = new BinaryPacket();
             if (activeDecryptCipher.getEncryptionAlgorithm()
                     == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
                 LOGGER.debug("Packet structure: ChaCha20-Poly1305");
@@ -58,6 +59,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 LOGGER.debug("Packet structure: Encrypt-and-MAC");
                 parseEAMPacket(binaryPacket);
             }
+            LOGGER.debug("SET COMPLETE BYTES TO {}", getAlreadyParsed());
             binaryPacket.setCompletePacketBytes(getAlreadyParsed());
 
             LOGGER.trace(
@@ -86,10 +88,12 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                     LOGGER.debug("MAC: [empty]");
                 }
             }
-            return binaryPacket;
+            // return binaryPacket;
         } catch (CryptoException e) {
             LOGGER.warn("Caught a CryptoException while parsing an encrypted binary packet", e);
-            return null;
+            //
+            //
+            // return null;
         }
     }
 
@@ -147,6 +151,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     }
 
     private void parseEAMPacket(BinaryPacket binaryPacket) throws CryptoException {
+        LOGGER.debug("Parsing EAM");
         binaryPacket.prepareComputations();
         PacketCryptoComputations computations = binaryPacket.getComputations();
         // This cast is safe due to EAM being exclusively used with PacketMacedCipher
@@ -156,11 +161,12 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = 4 + packet_length (decryption of first block required)
          *  byte[m] mac             ; m = length of mac output
          */
-        int pointer = getPointer();
+
         int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
         int decryptedByteCount = 0;
         // Loop required for stream cipher support (effective block length is 1 in this case)
         byte[] firstBlock = new byte[0];
+        byte[] firstBlockEncrypted = new byte[0];
         do {
             byte[] block = parseByteArrayField(blockSize);
             byte[] decryptedBlock;
@@ -173,9 +179,9 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 decryptedBlock = activeDecryptCipher.getCipher().decrypt(block);
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
+            firstBlockEncrypted = ArrayConverter.concatenate(firstBlockEncrypted, block);
             decryptedByteCount += blockSize;
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        setPointer(pointer);
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
@@ -183,9 +189,12 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(
-                parseByteArrayField(
-                        BinaryPacketConstants.LENGTH_FIELD_LENGTH
-                                + binaryPacket.getLength().getValue()));
+                ArrayConverter.concatenate(
+                        firstBlockEncrypted,
+                        parseByteArrayField(
+                                binaryPacket.getLength().getValue()
+                                        - (firstBlockEncrypted.length
+                                                - BinaryPacketConstants.LENGTH_FIELD_LENGTH))));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
     }

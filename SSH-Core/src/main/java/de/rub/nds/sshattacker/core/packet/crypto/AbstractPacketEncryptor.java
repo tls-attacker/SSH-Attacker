@@ -9,18 +9,21 @@ package de.rub.nds.sshattacker.core.packet.crypto;
 
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 
 public abstract class AbstractPacketEncryptor extends PacketCryptoUnit {
 
-    protected AbstractPacketEncryptor(PacketCipher packetCipher) {
-        super(packetCipher);
+    public AbstractPacketEncryptor(PacketCipher cipher) {
+        super(cipher);
     }
 
-    public void encrypt(AbstractPacket object) {
+    public void encrypt(AbstractPacket<?> object) {
         if (object instanceof BinaryPacket) {
             encrypt((BinaryPacket) object);
+        } else if (object instanceof BinaryPacketSSHv1) {
+            encrypt((BinaryPacketSSHv1) object);
         } else if (object instanceof BlobPacket) {
             encrypt((BlobPacket) object);
         } else {
@@ -28,7 +31,9 @@ public abstract class AbstractPacketEncryptor extends PacketCryptoUnit {
         }
     }
 
-    public abstract void encrypt(BinaryPacket packet);
+    public abstract void encrypt(BinaryPacket object);
 
-    public abstract void encrypt(BlobPacket packet);
+    public abstract void encrypt(BinaryPacketSSHv1 object);
+
+    public abstract void encrypt(BlobPacket object);
 }

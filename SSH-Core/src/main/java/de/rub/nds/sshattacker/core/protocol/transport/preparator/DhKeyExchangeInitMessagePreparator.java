@@ -25,6 +25,7 @@ public class DhKeyExchangeInitMessagePreparator
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
         chooser.getContext()
+                .getSshContext()
                 .getExchangeHashInputHolder()
                 .setDhClientPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
 

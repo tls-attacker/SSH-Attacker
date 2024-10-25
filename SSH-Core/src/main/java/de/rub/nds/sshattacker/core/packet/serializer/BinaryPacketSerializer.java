@@ -27,7 +27,7 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
     }
 
     @Override
-    protected void serializeBytes() {
+    protected byte[] serializeBytes() {
         LOGGER.debug("Serializing BinaryPacket to bytes:");
 
         Set<BinaryPacketField> encryptedFields =
@@ -60,5 +60,6 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
         LOGGER.trace(
                 "Complete packet bytes: {}",
                 ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
+        return getAlreadySerialized();
     }
 }

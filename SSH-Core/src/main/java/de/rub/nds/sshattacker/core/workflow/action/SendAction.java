@@ -8,15 +8,14 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlElement;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -101,16 +100,11 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
-        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
-        MessageActionResult result = SendMessageHelper.sendMessages(context, messages.stream());
-
-        // Check if all actions that were expected to be sent were actually
-        // sent or if some failure occurred.
-        int failedMessageCount = messages.size() - result.getPacketList().size();
-        setFailed(failedMessageCount != 0);
-        if (isFailed()) {
-            LOGGER.error(
-                    "Failed to send {} out of {} message(s)!", failedMessageCount, messages.size());
+        try {
+            send(context, messages, packets);
+            setExecuted(true);
+        } catch (IOException e) {
+            LOGGER.warn(e);
         }
 
         setExecuted(true);

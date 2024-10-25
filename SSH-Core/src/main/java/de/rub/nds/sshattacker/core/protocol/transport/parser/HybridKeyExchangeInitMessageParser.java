@@ -8,9 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,30 +26,45 @@ public class HybridKeyExchangeInitMessageParser
     private final int encapsulationSize;
     private final int agreementSize;
 
-    public HybridKeyExchangeInitMessageParser(
-            byte[] array,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array);
-        this.combiner = combiner;
-        this.encapsulationSize = encapsulationSize;
-        this.agreementSize = agreementSize;
+    public HybridKeyExchangeInitMessageParser(SshContext context, InputStream stream) {
+        super(stream);
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
+        switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
+            case SNTRUP761_X25519:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE;
+                break;
+            case CURVE25519_FRODOKEM1344:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE;
+                break;
+            case SNTRUP4591761_X25519:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                encapsulationSize = CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE;
+                break;
+            case NISTP521_FIRESABER:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE;
+                break;
+            case NISTP521_KYBER1024:
+                combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                encapsulationSize = CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE;
+                break;
+        }
     }
 
-    public HybridKeyExchangeInitMessageParser(
-            byte[] array,
-            int startPosition,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array, startPosition);
-        this.combiner = combiner;
-        this.encapsulationSize = encapsulationSize;
-        this.agreementSize = agreementSize;
-    }
-
-    private void parseHybridKey() {
+    private void parseHybridKey(HybridKeyExchangeInitMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: {}", length);
 
@@ -67,15 +85,20 @@ public class HybridKeyExchangeInitMessageParser
                 LOGGER.warn("combiner not supported. Can not update message");
                 break;
         }
+
+        LOGGER.debug(
+                "Agreement: {}, Encapsulation: {}",
+                message.getAgreementPublicKey(),
+                message.getEncapsulationPublicKey());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHybridKey();
+    protected void parseMessageSpecificContents(HybridKeyExchangeInitMessage message) {
+        parseHybridKey(message);
     }
 
     @Override
-    protected HybridKeyExchangeInitMessage createMessage() {
-        return new HybridKeyExchangeInitMessage();
+    public void parse(HybridKeyExchangeInitMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

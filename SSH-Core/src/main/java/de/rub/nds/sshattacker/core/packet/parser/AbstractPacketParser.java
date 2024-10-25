@@ -7,12 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.packet.parser;
 
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import java.io.InputStream;
 
-public abstract class AbstractPacketParser<T extends AbstractPacket> extends Parser<T> {
+public abstract class AbstractPacketParser<T extends AbstractPacket<?>> extends Parser<T> {
 
-    protected AbstractPacketParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public AbstractPacketParser(InputStream stream) {
+        super(stream);
     }
 }

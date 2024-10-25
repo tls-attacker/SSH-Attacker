@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,20 +17,17 @@ public class GlobalRequestUnknownMessageParser
         extends GlobalRequestMessageParser<GlobalRequestUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestUnknownMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public GlobalRequestUnknownMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public GlobalRequestUnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public GlobalRequestUnknownMessage createMessage() {
-        return new GlobalRequestUnknownMessage();
+    public void parse(GlobalRequestUnknownMessage message) {
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    public void parseTypeSpecificData() {
+    public void parseTypeSpecificData(GlobalRequestUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: {}",
@@ -37,8 +35,8 @@ public class GlobalRequestUnknownMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseTypeSpecificData();
+    protected void parseMessageSpecificContents(GlobalRequestUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseTypeSpecificData(message);
     }
 }

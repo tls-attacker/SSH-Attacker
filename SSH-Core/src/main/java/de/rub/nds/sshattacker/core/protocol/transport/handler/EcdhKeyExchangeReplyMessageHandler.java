@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeReplyMessageHandler
         extends SshMessageHandler<EcdhKeyExchangeReplyMessage> {
@@ -22,47 +19,25 @@ public class EcdhKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    public EcdhKeyExchangeReplyMessageHandler(
-            SshContext context, EcdhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithRemotePublicKey();
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+    public void adjustContext(EcdhKeyExchangeReplyMessage message) {
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
+        updateContextWithRemotePublicKey(message);
+        KeyExchangeUtil.computeSharedSecret(
+                sshContext, sshContext.getChooser().getEcdhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
-    private void updateContextWithRemotePublicKey() {
-        context.getChooser()
+    private void updateContextWithRemotePublicKey(EcdhKeyExchangeReplyMessage message) {
+        sshContext
+                .getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setEcdhServerPublicKey(message.getEphemeralPublicKey().getValue());
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array) {
-        return new EcdhKeyExchangeReplyMessageParser(array);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
-        return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeReplyMessageSerializer(message);
     }
 }

@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,27 +22,28 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DebugMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public DebugMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public DebugMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
+    public void parse(DebugMessage message) {
+        parseProtocolMessageContents(message);
+    }
+
+    // @Override
     public DebugMessage createMessage() {
         return new DebugMessage();
     }
 
-    private void parseAlwaysDisplay() {
+    private void parseAlwaysDisplay(DebugMessage message) {
         message.setAlwaysDisplay(parseByteField(1));
         LOGGER.debug(
                 "Always display: {}",
                 Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
     }
 
-    private void parseMessage() {
+    private void parseMessage(DebugMessage message) {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         message.setMessage(
@@ -49,7 +51,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(DebugMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -59,10 +61,10 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
                 "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
-    @Override
-    protected void parseMessageSpecificContents() {
-        parseAlwaysDisplay();
-        parseMessage();
-        parseLanguageTag();
+    // @Override
+    protected void parseMessageSpecificContents(DebugMessage message) {
+        parseAlwaysDisplay(message);
+        parseMessage(message);
+        parseLanguageTag(message);
     }
 }

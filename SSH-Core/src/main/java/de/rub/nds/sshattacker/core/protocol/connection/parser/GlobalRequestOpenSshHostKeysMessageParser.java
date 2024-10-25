@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,29 +18,25 @@ public class GlobalRequestOpenSshHostKeysMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestOpenSshHostKeysMessageParser(byte[] array) {
-        super(array);
+    public GlobalRequestOpenSshHostKeysMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public GlobalRequestOpenSshHostKeysMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(GlobalRequestOpenSshHostKeysMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseHostKeys() {
-        message.setHostKeys(parseByteArrayField(getBytesLeft()));
+    private void parseHostKeys(GlobalRequestOpenSshHostKeysMessage message) {
+        message.setHostKeys(this.parseByteArrayField(this.getBytesLeft()));
         LOGGER.debug(
                 "Host keys blob: {}",
                 ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
     }
 
     @Override
-    public GlobalRequestOpenSshHostKeysMessage createMessage() {
-        return new GlobalRequestOpenSshHostKeysMessage();
-    }
-
-    @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseHostKeys();
+    protected void parseMessageSpecificContents(GlobalRequestOpenSshHostKeysMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseHostKeys(message);
     }
 }

@@ -8,12 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.DelayCompressionExtensionPreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +33,12 @@ public class DelayCompressionExtensionHandler
     }
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(AbstractExtension<?> extension) {
+        adjustContext((DelayCompressionExtension) extension);
+    }
+
+    @Override
+    public void adjustContext(DelayCompressionExtension extension) {
         if (context.isHandleAsClient()) {
             context.setServerSupportedDelayCompressionMethods(
                     Converter.nameListToEnumValues(
@@ -60,26 +63,6 @@ public class DelayCompressionExtensionHandler
         // set in context
         context.setSelectedDelayCompressionMethod(commonCompressionMethod);
         context.setDelayCompressionExtensionReceived(true);
-    }
-
-    @Override
-    public DelayCompressionExtensionParser getParser(byte[] array) {
-        return new DelayCompressionExtensionParser(array);
-    }
-
-    @Override
-    public DelayCompressionExtensionParser getParser(byte[] array, int startPosition) {
-        return new DelayCompressionExtensionParser(array, startPosition);
-    }
-
-    @Override
-    public DelayCompressionExtensionPreparator getPreparator() {
-        return new DelayCompressionExtensionPreparator(context.getChooser(), extension);
-    }
-
-    @Override
-    public DelayCompressionExtensionSerializer getSerializer() {
-        return new DelayCompressionExtensionSerializer(extension);
     }
 
     private CompressionMethod getCommonCompressionMethod(

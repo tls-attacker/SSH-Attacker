@@ -10,8 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.AbstractExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.UnknownExtensionSerializer;
+import java.io.InputStream;
 
 public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
@@ -60,5 +65,20 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
     @Override
     public UnknownExtensionHandler getHandler(SshContext context) {
         return new UnknownExtensionHandler(context, this);
+    }
+
+    @Override
+    public AbstractExtensionPreparator<UnknownExtension> getPreparator(SshContext sshContext) {
+        throw new NotImplementedException("UnknownExtensionHandler::getPreparator");
+    }
+
+    @Override
+    public UnknownExtensionParser getParser(SshContext context, InputStream stream) {
+        return new UnknownExtensionParser(stream);
+    }
+
+    @Override
+    public UnknownExtensionSerializer getSerializer(SshContext sshContext) {
+        return new UnknownExtensionSerializer(this);
     }
 }

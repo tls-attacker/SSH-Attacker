@@ -46,18 +46,18 @@ public class WorkflowTrace implements Serializable {
     public static WorkflowTrace copy(WorkflowTrace orig) {
         WorkflowTrace copy;
 
-        List<SshAction> origActions = orig.sshActions;
+        List<SshAction> origActions = orig.getSshActions();
 
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is =
-                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8));
+                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
             copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
         }
 
-        List<SshAction> copiedActions = copy.sshActions;
+        List<SshAction> copiedActions = copy.getSshActions();
         for (int i = 0; i < origActions.size(); i++) {
             copiedActions
                     .get(i)
@@ -67,36 +67,42 @@ public class WorkflowTrace implements Serializable {
         return copy;
     }
 
-    @XmlElements({
-        @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
-        @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
-        @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")
-    })
+    @XmlElements(
+            value = {
+                @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+                @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+                @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")
+            })
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements({
-        @XmlElement(type = SendAction.class, name = "Send"),
-        @XmlElement(type = ReceiveAction.class, name = "Receive"),
-        @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
-        @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
-        @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayer"),
-        @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
-        @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchange"),
-        @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecret"),
-        @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
-        @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages"),
-        @XmlElement(
-                type = DynamicExtensionNegotiationAction.class,
-                name = "DynamicExtensionNegotiation"),
-        @XmlElement(
-                type = DynamicDelayCompressionAction.class,
-                name = "DynamicDelayCompressionAction")
-    })
+    @XmlElements(
+            value = {
+                @XmlElement(type = SendAction.class, name = "Send"),
+                @XmlElement(type = ReceiveAction.class, name = "Receive"),
+                @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
+                @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
+                @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayer"),
+                @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
+                @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchange"),
+                @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecret"),
+                @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
+                @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages"),
+                @XmlElement(
+                        type = SendBleichenbacherOracleReply.class,
+                        name = "SendBleichenbacherOracle"),
+                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+                @XmlElement(
+                        type = DynamicExtensionNegotiationAction.class,
+                        name = "DynamicExtensionNegotiation"),
+                @XmlElement(
+                        type = DynamicDelayCompressionAction.class,
+                        name = "DynamicDelayCompressionAction")
+            })
     private List<SshAction> sshActions = new ArrayList<>();
 
-    private String name;
-    private String description;
+    private String name = null;
+    private String description = null;
 
     public WorkflowTrace() {
         super();
@@ -109,7 +115,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void reset() {
-        for (SshAction action : sshActions) {
+        for (SshAction action : getSshActions()) {
             action.reset();
         }
     }
@@ -154,7 +160,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setSshActions(SshAction... sshActions) {
-        this.sshActions = new ArrayList<>(Arrays.asList(sshActions));
+        setSshActions(new ArrayList<>(Arrays.asList(sshActions)));
     }
 
     public List<AliasedConnection> getConnections() {
@@ -234,7 +240,7 @@ public class WorkflowTrace implements Serializable {
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof MessageAction) {
-                return (MessageAction) sshActions.get(i);
+                return (MessageAction) (sshActions.get(i));
             }
         }
         return null;
@@ -248,7 +254,7 @@ public class WorkflowTrace implements Serializable {
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof SendingAction) {
-                return (SendingAction) sshActions.get(i);
+                return (SendingAction) (sshActions.get(i));
             }
         }
         return null;
@@ -263,7 +269,7 @@ public class WorkflowTrace implements Serializable {
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof ReceivingAction) {
-                return (ReceivingAction) sshActions.get(i);
+                return (ReceivingAction) (sshActions.get(i));
             }
         }
         return null;
@@ -288,18 +294,33 @@ public class WorkflowTrace implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        WorkflowTrace that = (WorkflowTrace) obj;
-        return Objects.equals(sshActions, that.sshActions)
-                && Objects.equals(name, that.name)
-                && Objects.equals(description, that.description);
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.sshActions);
+        hash = 23 * hash + Objects.hashCode(this.name);
+        hash = 23 * hash + Objects.hashCode(this.description);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(sshActions, name, description);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WorkflowTrace other = (WorkflowTrace) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        return Objects.equals(this.sshActions, other.sshActions);
     }
 
     public boolean executedAsPlanned() {

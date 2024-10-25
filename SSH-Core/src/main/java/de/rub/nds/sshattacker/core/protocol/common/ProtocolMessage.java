@@ -8,16 +8,24 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
-        extends ModifiableVariableHolder {
+public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
+        extends ModifiableVariableHolder implements DataContainer<Self, SshContext> {
 
     /** content type */
     protected static final boolean GOING_TO_BE_SENT_DEFAULT = true;
@@ -45,6 +53,30 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
+    public byte getMessageIdConstant() {
+        return messageIdConstant;
+    }
+
+    public void setMessageIdConstant(MessageIdConstant MessageIdConstant) {
+        messageIdConstant = MessageIdConstant.getId();
+    }
+
+    public void setMessageIdConstant(MessageIdConstantSSH1 MessageIdConstant) {
+        messageIdConstant = MessageIdConstant.getId();
+    }
+
+    public void setMessageIdConstant(byte MessageIdConstant) {
+        messageIdConstant = MessageIdConstant;
+    }
+
+    /** content type */
+    // @XmlTransient protected MessageIdConstant messageIdConstant;
+    @XmlTransient protected byte messageIdConstant;
+
+    protected ProtocolMessage() {
+        super();
+    }
+
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
@@ -70,6 +102,13 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
+    }
+
+    @Override
+    public Field getRandomModifiableVariableField(Random random) {
+        List<Field> fields = getAllModifiableVariableFields();
+        int randomField = random.nextInt(fields.size());
+        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {
@@ -102,7 +141,14 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
+    @Override
+    public abstract ProtocolMessageHandler<Self> getHandler(SshContext sshContext);
+
+    @Override
+    public abstract ProtocolMessagePreparator<Self> getPreparator(SshContext sshContext);
+
+    @Override
+    public abstract ProtocolMessageSerializer<Self> getSerializer(SshContext sshContext);
 
     public abstract String toCompactString();
 }

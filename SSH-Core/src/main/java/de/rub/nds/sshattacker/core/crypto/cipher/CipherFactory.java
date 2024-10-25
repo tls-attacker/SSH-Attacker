@@ -24,6 +24,7 @@ public final class CipherFactory {
 
     public static AbstractCipher getCipher(
             EncryptionAlgorithm encryptionAlgorithm, byte[] key, boolean mainCipher) {
+        LOGGER.debug("Getting Cipher {}", encryptionAlgorithm.toString());
         if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
         } else if (mainCipher
@@ -31,6 +32,9 @@ public final class CipherFactory {
             // If mainCipher is not set, the factory will return a JavaCipher wrapping a ChaCha20
             // instance used for header encryption / decryption
             return new ChaCha20Poly1305Cipher(key);
+        } else if (encryptionAlgorithm == EncryptionAlgorithm.TRIPLE_DES_CBC) {
+            LOGGER.debug("Getting Cipher {}", encryptionAlgorithm.toString());
+            return new TribleDESCipher(key);
         } else if (encryptionAlgorithm.getJavaName() != null) {
             return new JavaCipher(
                     encryptionAlgorithm,
@@ -57,6 +61,14 @@ public final class CipherFactory {
                         keyExchangeAlgorithm);
                 return new NoneCipher();
         }
+    }
+
+    public static AbstractCipher getRsaPkcs1Cipher(Key key) {
+        return new RsaPkcs1Cipher(key);
+    }
+
+    public static AbstractCipher getRsaTextbookCipher(Key key) {
+        return new RsaTextbookCipher(key);
     }
 
     private CipherFactory() {

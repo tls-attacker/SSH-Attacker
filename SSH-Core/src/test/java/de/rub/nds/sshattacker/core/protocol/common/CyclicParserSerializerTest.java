@@ -13,14 +13,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.security.Security;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +40,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.opentest4j.TestAbortedException;
 import org.reflections.Reflections;
 
+@SuppressWarnings("rawtypes")
 public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -47,7 +52,7 @@ public class CyclicParserSerializerTest {
 
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
-        Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
+        Set<Class<? extends ProtocolMessage>> excludedClasses = new HashSet<>();
         // TODO: Fix HybridKeyExchangeReplyMessagePreparator
         excludedClasses.add(HybridKeyExchangeReplyMessage.class);
         return new Reflections("de.rub.nds.sshattacker.core.protocol")
@@ -66,30 +71,24 @@ public class CyclicParserSerializerTest {
 
     private static final class CyclicDefaultConstructorPairsTest implements Executable {
 
-        private final Class<?> messageClass;
+        private final Class<? extends ProtocolMessage> messageClass;
         private final String messageClassName;
 
-        private CyclicDefaultConstructorPairsTest(Class<?> messageClass) {
-            super();
+        private CyclicDefaultConstructorPairsTest(Class<? extends ProtocolMessage> messageClass) {
             this.messageClass = messageClass;
-            messageClassName = messageClass.getSimpleName();
-            if (!ProtocolMessage.class.isAssignableFrom(messageClass)) {
-                throw new IllegalArgumentException(
-                        "CyclicDefaultConstructorPairsTest is intended for ProtocolMessage subclasses only, but we received class "
-                                + messageClass.getSimpleName());
-            }
+            this.messageClassName = messageClass.getSimpleName();
         }
 
         @Override
         public void execute() {
-            LOGGER.info("Testing ProtocolMessage subclass: {}", messageClassName);
+            LOGGER.info("Testing ProtocolMessage subclass: " + messageClassName);
 
             // Construct a new instance of the message class to test
-            ProtocolMessage<?> message = null;
+            ProtocolMessage message = null;
             // Create a fresh SshContext
             SshContext context = new SshContext();
             try {
-                Constructor<?> someMessageConstructor;
+                Constructor someMessageConstructor;
 
                 someMessageConstructor = getDefaultMessageConstructor(messageClass);
                 if (someMessageConstructor == null) {
@@ -98,7 +97,7 @@ public class CyclicParserSerializerTest {
                                     + messageClassName
                                     + "' does not have the needed constructor.");
                 } else {
-                    message = (ProtocolMessage<?>) someMessageConstructor.newInstance();
+                    message = (ProtocolMessage) someMessageConstructor.newInstance();
                 }
             } catch (SecurityException
                     | InstantiationException
@@ -123,7 +122,7 @@ public class CyclicParserSerializerTest {
             }
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare();
+                message.getPreparator(context).prepare();
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -142,7 +141,7 @@ public class CyclicParserSerializerTest {
             // Serialize message into a byte array
             byte[] serializedMessage = null;
             try {
-                serializedMessage = message.getHandler(context).getSerializer().serialize();
+                serializedMessage = message.getSerializer(context).serialize();
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -159,9 +158,36 @@ public class CyclicParserSerializerTest {
             }
 
             // Parse the serialized message back into a new instance
-            ProtocolMessage<?> parsedMessage = null;
+            ProtocolMessage parsedMessage = null;
+
             try {
-                parsedMessage = message.getHandler(context).getParser(serializedMessage).parse();
+                Constructor someMessageConstructor;
+
+                someMessageConstructor = getDefaultMessageConstructor(messageClass);
+                if (someMessageConstructor == null) {
+                    fail(
+                            "Subclass '"
+                                    + messageClassName
+                                    + "' does not have the needed constructor.");
+                } else {
+                    parsedMessage = (ProtocolMessage) someMessageConstructor.newInstance();
+                }
+            } catch (SecurityException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e) {
+                LOGGER.fatal(e);
+                fail(
+                        "Unable to construct message instance for subclass '"
+                                + messageClassName
+                                + "'");
+            }
+
+            InputStream streamedMessage = new ByteArrayInputStream(serializedMessage);
+            try {
+                Parser parser = message.getParser(context, streamedMessage);
+                parser.parse(parsedMessage);
             } catch (ParserException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -182,8 +208,7 @@ public class CyclicParserSerializerTest {
             // This validates the order parse -> serialize
             try {
                 assertArrayEquals(
-                        serializedMessage,
-                        parsedMessage.getHandler(context).getSerializer().serialize());
+                        serializedMessage, parsedMessage.getSerializer(context).serialize());
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -196,13 +221,28 @@ public class CyclicParserSerializerTest {
         }
 
         private static Constructor<?> getDefaultMessageConstructor(Class<?> someClass) {
-            for (Constructor<?> constructor : someClass.getDeclaredConstructors()) {
-                if (constructor.getParameterCount() == 0) {
-                    return constructor;
+            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
+                if (c.getParameterCount() == 0) {
+                    return c;
                 }
             }
             LOGGER.warn(
-                    "Unable to find default constructor for class: {}", someClass.getSimpleName());
+                    "Unable to find default constructor for class: " + someClass.getSimpleName());
+            return null;
+        }
+
+        private static Constructor<?> getChannelMessageConstructor(Class<?> someClass) {
+            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
+                if (c.getParameterCount() == 1) {
+                    for (Parameter p : c.getParameters()) {
+                        if (p.getType() == Integer.class) {
+                            return c;
+                        }
+                    }
+                }
+            }
+            LOGGER.warn(
+                    "Unable to find channel constructor for class: " + someClass.getSimpleName());
             return null;
         }
     }

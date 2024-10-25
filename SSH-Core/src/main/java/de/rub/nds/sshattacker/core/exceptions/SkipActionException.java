@@ -9,9 +9,7 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class SkipActionException extends RuntimeException {
 
-    public SkipActionException() {
-        super();
-    }
+    public SkipActionException() {}
 
     public SkipActionException(String message) {
         super(message);

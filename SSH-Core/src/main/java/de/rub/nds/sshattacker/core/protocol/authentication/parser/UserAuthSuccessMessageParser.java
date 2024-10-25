@@ -9,22 +9,25 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessageParser(byte[] array) {
-        super(array);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthSuccessMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public UserAuthSuccessMessage createMessage() {
-        return new UserAuthSuccessMessage();
+    public UserAuthSuccessMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    public void parse(UserAuthSuccessMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents(UserAuthSuccessMessage message) {}
 }

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,20 +17,17 @@ public class ChannelRequestUnknownMessageParser
         extends ChannelRequestMessageParser<ChannelRequestUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestUnknownMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelRequestUnknownMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelRequestUnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelRequestUnknownMessage createMessage() {
-        return new ChannelRequestUnknownMessage();
+    public void parse(ChannelRequestUnknownMessage message) {
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    public void parseTypeSpecificData() {
+    public void parseTypeSpecificData(ChannelRequestUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: {}",
@@ -37,8 +35,8 @@ public class ChannelRequestUnknownMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseTypeSpecificData();
+    protected void parseMessageSpecificContents(ChannelRequestUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseTypeSpecificData(message);
     }
 }

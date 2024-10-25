@@ -16,6 +16,9 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.client.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.general.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.server.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.*;
@@ -44,6 +47,8 @@ public class WorkflowConfigurationFactory {
         switch (workflowTraceType) {
             case KEX_INIT_ONLY:
                 return createInitKeyExchangeWorkflowTrace();
+            case KEX_SSH1_ONLY:
+                return createSSH1KeyExchangeWorkflowTrace();
             case KEX_DH:
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
             case KEX_DH_GEX:
@@ -71,6 +76,8 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflowTrace();
             case MITM:
                 return createSimpleMitmProxyWorkflow();
+            case SSH1:
+                return createSSHv1Workflow();
             default:
                 throw new ConfigurationException(
                         "Unable to create workflow trace - Unknown WorkflowTraceType: "
@@ -96,9 +103,21 @@ public class WorkflowConfigurationFactory {
         }
     }
 
+    public WorkflowTrace createSSHv1Workflow() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addSSHV1Packates(workflow);
+        return workflow;
+    }
+
     public WorkflowTrace createInitKeyExchangeWorkflowTrace() {
         WorkflowTrace workflow = new WorkflowTrace();
         addTransportProtocolInitActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSSH1KeyExchangeWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addSSH1KexProtocolInitActions(workflow);
         return workflow;
     }
 
@@ -143,6 +162,20 @@ public class WorkflowConfigurationFactory {
         return workflow;
     }
 
+    private void addSSHV1Packates(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new VersionExchangeMessageSSHV1()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessageSSHV1()),
+                new ChangePacketLayerAction(connection.getAlias(), PacketLayerType.BINARY_PACKET),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new ServerPublicKeyMessage()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new ServerPublicKeyMessage()));
+    }
+
     private void addTransportProtocolInitActions(WorkflowTrace workflow) {
         if (mode == RunningModeType.MITM) {
             AliasedConnection inboundConnection = config.getDefaultServerConnection();
@@ -185,6 +218,51 @@ public class WorkflowConfigurationFactory {
                             connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
+        }
+    }
+
+    private void addSSH1KexProtocolInitActions(WorkflowTrace workflow) {
+        if (mode == RunningModeType.MITM) {
+            AliasedConnection inboundConnection = config.getDefaultServerConnection();
+            AliasedConnection outboundConnection = config.getDefaultClientConnection();
+            workflow.addSshActions(
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.SERVER,
+                            new VersionExchangeMessageSSHV1()),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.CLIENT,
+                            new VersionExchangeMessageSSHV1()),
+                    new ChangePacketLayerAction(
+                            inboundConnection.getAlias(), PacketLayerType.BINARY_PACKET),
+                    new ChangePacketLayerAction(
+                            outboundConnection.getAlias(), PacketLayerType.BINARY_PACKET),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.CLIENT,
+                            new ServerPublicKeyMessage()),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.SERVER,
+                            new ClientSessionKeyMessage()));
+        } else {
+            AliasedConnection connection = getDefaultConnection();
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new VersionExchangeMessageSSHV1()),
+                    SshActionFactory.createMessageAction(
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new VersionExchangeMessageSSHV1()),
+                    new ChangePacketLayerAction(
+                            connection.getAlias(), PacketLayerType.BINARY_PACKET));
         }
     }
 

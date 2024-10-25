@@ -9,12 +9,16 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.AsciiMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
+import java.io.InputStream;
 
 /**
- * A generic text message sent via the Blob message layer.
+ * An generic text message sent via the Blob message layer.
  *
  * <p>Examples for this kind of message are the {@code Exceeded MaxStartups} and {@code Invalid SSH
  * identification string} messages sent by OpenSSH.
@@ -24,15 +28,19 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     private ModifiableString text;
     private ModifiableString endOfMessageSequence;
 
+    public AsciiMessage() {
+        super();
+    }
+
     public ModifiableString getText() {
         return text;
     }
 
-    public void setText(ModifiableString text) {
+    public void setText(final ModifiableString text) {
         this.text = text;
     }
 
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = ModifiableVariableFactory.safelySetValue(this.text, text);
     }
 
@@ -52,11 +60,32 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
 
     @Override
     public AsciiMessageHandler getHandler(SshContext context) {
-        return new AsciiMessageHandler(context, this);
+        // return new AsciiMessageHandler(context, this);
+        return new AsciiMessageHandler(context);
+    }
+
+    @Override
+    public AsciiMessagePreparator getPreparator(SshContext sshContext) {
+        return new AsciiMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public AsciiMessageSerializer getSerializer(SshContext sshContext) {
+        return new AsciiMessageSerializer(this);
+    }
+
+    @Override
+    public AsciiMessageParser getParser(SshContext sshContext, InputStream stream) {
+        return new AsciiMessageParser(stream);
     }
 
     @Override
     public String toCompactString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public String toShortString() {
+        return "ASCII_MESSAGE";
     }
 }

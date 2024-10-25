@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,39 +18,35 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
     @Override
-    public ChannelOpenConfirmationMessage createMessage() {
-        return new ChannelOpenConfirmationMessage();
+    public void parse(ChannelOpenConfirmationMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseSenderChannel() {
+    public ChannelOpenConfirmationMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    private void parseSenderChannel(ChannelOpenConfirmationMessage message) {
         message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
     }
 
-    private void parseWindowSize() {
+    private void parseWindowSize(ChannelOpenConfirmationMessage message) {
         message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
     }
 
-    private void parsePacketSize() {
+    private void parsePacketSize(ChannelOpenConfirmationMessage message) {
         message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSenderChannel();
-        parseWindowSize();
-        parsePacketSize();
+    protected void parseMessageSpecificContents(ChannelOpenConfirmationMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSenderChannel(message);
+        parseWindowSize(message);
+        parsePacketSize(message);
     }
 }

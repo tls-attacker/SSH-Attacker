@@ -54,7 +54,7 @@ public class VersionExchangeMessageSerializer
         appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 
-    @Override
+    // @Override
     protected void serializeProtocolMessageContents() {
         serializeVersion();
         serializeComment();

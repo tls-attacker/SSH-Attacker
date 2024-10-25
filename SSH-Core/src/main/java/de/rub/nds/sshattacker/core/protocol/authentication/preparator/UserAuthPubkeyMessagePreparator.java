@@ -52,9 +52,14 @@ public class UserAuthPubkeyMessagePreparator
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            chooser.getContext().getSessionID().orElse(new byte[0]).length,
+                            chooser.getContext()
+                                    .getSshContext()
+                                    .getSessionID()
+                                    .orElse(new byte[0])
+                                    .length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(chooser.getContext().getSessionID().orElse(new byte[0]));
+            signatureOutput.write(
+                    chooser.getContext().getSshContext().getSessionID().orElse(new byte[0]));
             signatureOutput.write(getObject().getMessageId().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,20 +19,16 @@ public class RsaKeyExchangeSecretMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeSecretMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public RsaKeyExchangeSecretMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public RsaKeyExchangeSecretMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public RsaKeyExchangeSecretMessage createMessage() {
-        return new RsaKeyExchangeSecretMessage();
+    public void parse(RsaKeyExchangeSecretMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseEncryptedSecret() {
+    private void parseEncryptedSecret(RsaKeyExchangeSecretMessage message) {
         message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
         message.setEncryptedSecret(
@@ -40,7 +37,7 @@ public class RsaKeyExchangeSecretMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseEncryptedSecret();
+    protected void parseMessageSpecificContents(RsaKeyExchangeSecretMessage message) {
+        parseEncryptedSecret(message);
     }
 }

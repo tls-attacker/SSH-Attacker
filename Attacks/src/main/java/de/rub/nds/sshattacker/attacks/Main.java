@@ -12,9 +12,11 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.sshattacker.attacks.impl.Attacker;
+import de.rub.nds.sshattacker.attacks.impl.BleichenbacherAttacker;
 import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
@@ -37,6 +39,9 @@ public final class Main {
 
         MangerCommandConfig mangerTest = new MangerCommandConfig(generalDelegate);
         builder.addCommand(MangerCommandConfig.ATTACK_COMMAND, mangerTest);
+
+        BleichenbacherCommandConfig bbTest = new BleichenbacherCommandConfig(generalDelegate);
+        builder.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bbTest);
 
         JCommander jc = builder.build();
 
@@ -69,6 +74,9 @@ public final class Main {
         switch (jc.getParsedCommand()) {
             case MangerCommandConfig.ATTACK_COMMAND:
                 attacker = new MangerAttacker(mangerTest, mangerTest.createConfig());
+                break;
+            case BleichenbacherCommandConfig.ATTACK_COMMAND:
+                attacker = new BleichenbacherAttacker(bbTest, bbTest.createConfig());
                 break;
             default:
                 break;

@@ -15,8 +15,8 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -215,6 +215,7 @@ public final class ExchangeHash {
                                 PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
         // Restore the old log level
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), oldLevel);
+        LOGGER.debug("[bro - hash,prefix] {}", ArrayConverter.bytesToHexString(prefix));
         return prefix;
     }
 

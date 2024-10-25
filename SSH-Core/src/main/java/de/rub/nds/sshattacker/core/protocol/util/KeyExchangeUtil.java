@@ -19,11 +19,11 @@ import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -256,7 +256,7 @@ public final class KeyExchangeUtil {
      * @param context SSH context
      */
     public static void generateKeySet(SshContext context) {
-        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        AbstractKeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
     }
 

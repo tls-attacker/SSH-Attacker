@@ -24,6 +24,10 @@ public abstract class Pkcs1Oracle {
     @SuppressWarnings("FieldMayBeStatic")
     protected final boolean plaintextOracle = false;
 
+    protected double averageTimeforRequest;
+    protected double averageTimeforRequestInnerOracle;
+    protected double averageTimeforRequestOuterOracle;
+
     /**
      * Gets the block size of the encryption algorithm.
      *
@@ -58,6 +62,10 @@ public abstract class Pkcs1Oracle {
      * @return True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(byte[] msg) throws OracleException;
+
+    public boolean[] checkDoublePKCSConformity(final byte[] msg) throws OracleException {
+        return new boolean[] {false, false};
+    }
 
     /**
      * Returns true if the oracle is a plaintext oracle (does not decrypt the data received)

@@ -23,7 +23,7 @@ import java.util.List;
 /** Builds a "normalized" workflow trace. */
 public final class WorkflowTraceNormalizer {
 
-    private WorkflowTraceNormalizer() {
+    public WorkflowTraceNormalizer() {
         super();
     }
 

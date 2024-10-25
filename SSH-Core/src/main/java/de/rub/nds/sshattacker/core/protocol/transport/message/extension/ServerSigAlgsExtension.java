@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.ServerSigAlgsExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -106,5 +110,20 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     @Override
     public ServerSigAlgsExtensionHandler getHandler(SshContext context) {
         return new ServerSigAlgsExtensionHandler(context, this);
+    }
+
+    @Override
+    public ServerSigAlgsExtensionParser getParser(SshContext context, InputStream stream) {
+        return new ServerSigAlgsExtensionParser(stream);
+    }
+
+    @Override
+    public ServerSigAlgsExtensionPreparator getPreparator(SshContext sshContext) {
+        return new ServerSigAlgsExtensionPreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public ServerSigAlgsExtensionSerializer getSerializer(SshContext sshContext) {
+        return new ServerSigAlgsExtensionSerializer(this);
     }
 }

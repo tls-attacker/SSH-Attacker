@@ -28,13 +28,14 @@ public class ChannelOpenConfirmationMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         ChannelOpenConfirmationMessage toCopy =
-                chooser.getContext().getChannelManager().prepareNextOpenConfirm();
+                chooser.getContext().getSshContext().getChannelManager().prepareNextOpenConfirm();
         getObject().setRecipientChannelId(toCopy.getRecipientChannelId());
         getObject().setSenderChannelId(toCopy.getSenderChannelId());
 
         // get the closed Channel
         Channel channel =
                 chooser.getContext()
+                        .getSshContext()
                         .getChannelManager()
                         .getChannels()
                         .get(toCopy.getRecipientChannelId().getValue());

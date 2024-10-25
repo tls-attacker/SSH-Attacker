@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -56,8 +57,10 @@ public class UserAuthFailureMessageParserTest {
             byte[] providedBytes,
             String expectedAuthenticationMethods,
             byte expectedPartialSuccess) {
-        UserAuthFailureMessageParser parser = new UserAuthFailureMessageParser(providedBytes);
-        UserAuthFailureMessage msg = parser.parse();
+        UserAuthFailureMessageParser parser =
+                new UserAuthFailureMessageParser(new ByteArrayInputStream(providedBytes));
+        UserAuthFailureMessage msg = new UserAuthFailureMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_USERAUTH_FAILURE.getId(), msg.getMessageId().getValue());

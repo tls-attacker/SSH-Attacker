@@ -33,6 +33,14 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
     private boolean quiet;
 
+    @Parameter(names = "-info", description = "Info output (sets logLevel to INFO)")
+    private boolean info;
+
+    @Parameter(names = "-warn", description = "Info output (sets logLevel to warn)")
+    private boolean warn;
+
+    public GeneralDelegate() {}
+
     public boolean isHelp() {
         return help;
     }
@@ -60,10 +68,14 @@ public class GeneralDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
-        if (debug) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
+        if (isDebug()) {
+            Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
+        } else if (info) {
+            Configurator.setAllLevels("de.rub.nds", Level.INFO);
+        } else if (warn) {
+            Configurator.setAllLevels("de.rub.nds", Level.WARN);
         } else if (quiet) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);
+            Configurator.setAllLevels("de.rub.nds", Level.OFF);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

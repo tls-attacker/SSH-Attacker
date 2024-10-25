@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,20 +20,11 @@ public class DhGexKeyExchangeGroupMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeGroupMessageParser(byte[] array) {
-        super(array);
+    public DhGexKeyExchangeGroupMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public DhGexKeyExchangeGroupMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public DhGexKeyExchangeGroupMessage createMessage() {
-        return new DhGexKeyExchangeGroupMessage();
-    }
-
-    private void parseGroupModulus() {
+    private void parseGroupModulus(DhGexKeyExchangeGroupMessage message) {
         message.setGroupModulusLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group modulus length: {}", message.getGroupModulusLength().getValue());
         message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
@@ -41,7 +33,7 @@ public class DhGexKeyExchangeGroupMessageParser
                 ArrayConverter.bytesToRawHexString(message.getGroupModulus().getByteArray()));
     }
 
-    private void parseGroupGenerator() {
+    private void parseGroupGenerator(DhGexKeyExchangeGroupMessage message) {
         message.setGroupGeneratorLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group generator length: {}", message.getGroupGeneratorLength().getValue());
         message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
@@ -51,8 +43,13 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseGroupModulus();
-        parseGroupGenerator();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeGroupMessage message) {
+        parseGroupModulus(message);
+        parseGroupGenerator(message);
+    }
+
+    @Override
+    public void parse(DhGexKeyExchangeGroupMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

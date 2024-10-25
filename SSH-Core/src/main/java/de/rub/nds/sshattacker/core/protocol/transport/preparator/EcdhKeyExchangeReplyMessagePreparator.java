@@ -24,13 +24,15 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext().getSshContext(), getObject());
         prepareEphemeralPublicKey();
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getEcdhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeSharedSecret(
+                chooser.getContext().getSshContext(), chooser.getEcdhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext().getSshContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(
+                chooser.getContext().getSshContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext().getSshContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext().getSshContext());
     }
 
     private void prepareEphemeralPublicKey() {
@@ -41,6 +43,7 @@ public class EcdhKeyExchangeReplyMessagePreparator
                         keyExchange.getLocalKeyPair().getPublicKey().getEncoded(), true);
         // Update exchange hash with local public key
         chooser.getContext()
+                .getSshContext()
                 .getExchangeHashInputHolder()
                 .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getEncoded());
     }

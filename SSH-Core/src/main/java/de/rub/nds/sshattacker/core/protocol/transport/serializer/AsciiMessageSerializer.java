@@ -43,7 +43,7 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
         appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 
-    @Override
+    // @Override
     protected void serializeProtocolMessageContents() {
         serializeText();
         serializeEndOfMessageSequence();

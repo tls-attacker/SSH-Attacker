@@ -11,8 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelExtendedDataMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
 
@@ -77,6 +81,26 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
 
     @Override
     public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
-        return new ChannelExtendedDataMessageHandler(context, this);
+        return new ChannelExtendedDataMessageHandler(context);
+    }
+
+    @Override
+    public ChannelExtendedDataMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelExtendedDataMessageParser(stream);
+    }
+
+    @Override
+    public ChannelExtendedDataMessagePreparator getPreparator(SshContext sshContext) {
+        return new ChannelExtendedDataMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public ChannelExtendedDataMessageSerializer getSerializer(SshContext context) {
+        return new ChannelExtendedDataMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_EXTENDED_DATA";
     }
 }

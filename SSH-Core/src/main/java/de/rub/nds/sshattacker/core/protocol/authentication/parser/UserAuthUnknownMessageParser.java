@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,20 +18,11 @@ public class UserAuthUnknownMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthUnknownMessageParser(byte[] array) {
-        super(array);
+    public UserAuthUnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public UserAuthUnknownMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public UserAuthUnknownMessage createMessage() {
-        return new UserAuthUnknownMessage();
-    }
-
-    private void parseMethodSpecificFields() {
+    private void parseMethodSpecificFields(UserAuthUnknownMessage message) {
         message.setMethodSpecificFields(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Method Specific Fields: {}",
@@ -38,8 +30,15 @@ public class UserAuthUnknownMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseMethodSpecificFields();
+    public void parse(UserAuthUnknownMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents(UserAuthUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseMethodSpecificFields(message);
     }
 }

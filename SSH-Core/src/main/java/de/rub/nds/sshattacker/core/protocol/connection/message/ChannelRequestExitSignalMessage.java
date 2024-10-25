@@ -12,8 +12,12 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SignalType;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitSignalMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitSignalMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
@@ -173,6 +177,26 @@ public class ChannelRequestExitSignalMessage
 
     @Override
     public ChannelRequestExitSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExitSignalMessageHandler(context, this);
+        return new ChannelRequestExitSignalMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestExitSignalMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestExitSignalMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestExitSignalMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestExitSignalMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestExitSignalMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestExitSignalMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "EXIT_SIGNAL";
     }
 }

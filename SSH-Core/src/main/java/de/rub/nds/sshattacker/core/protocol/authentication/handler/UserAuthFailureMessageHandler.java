@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthFailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFailureMessage> {
 
@@ -20,32 +17,8 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
         super(context);
     }
 
-    public UserAuthFailureMessageHandler(SshContext context, UserAuthFailureMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(UserAuthFailureMessage message) {
         // TODO: Handle UserAuthFailureMessage
-    }
-
-    @Override
-    public UserAuthFailureMessageParser getParser(byte[] array) {
-        return new UserAuthFailureMessageParser(array);
-    }
-
-    @Override
-    public UserAuthFailureMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthFailureMessageParser(array, startPosition);
-    }
-
-    @Override
-    public UserAuthFailureMessagePreparator getPreparator() {
-        return new UserAuthFailureMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UserAuthFailureMessageSerializer getSerializer() {
-        return new UserAuthFailureMessageSerializer(message);
     }
 }

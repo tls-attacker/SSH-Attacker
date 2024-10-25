@@ -10,31 +10,40 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessageParser(byte[] array) {
-        super(array);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthBannerMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthBannerMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public UserAuthBannerMessage createMessage() {
-        return new UserAuthBannerMessage();
+    public void parse(UserAuthBannerMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseProtocolMessageContents(message);
+        // parseData(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseMessage() {
+    private void parseData(UserAuthBannerMessage msg) {
+        msg.setMessage(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Data: {}", msg.getMessage().getValue());
+    }
+
+    private void parseMessage(UserAuthBannerMessage message) {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8),
                 false);
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(UserAuthBannerMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         message.setLanguageTag(
                 parseByteString(
@@ -43,8 +52,8 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseMessage();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(UserAuthBannerMessage message) {
+        parseMessage(message);
+        parseLanguageTag(message);
     }
 }

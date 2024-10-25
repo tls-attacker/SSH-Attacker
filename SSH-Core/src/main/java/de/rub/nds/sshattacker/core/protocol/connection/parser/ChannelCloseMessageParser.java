@@ -8,19 +8,16 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
+import java.io.InputStream;
 
 public class ChannelCloseMessageParser extends ChannelMessageParser<ChannelCloseMessage> {
 
-    public ChannelCloseMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelCloseMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelCloseMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelCloseMessage createMessage() {
-        return new ChannelCloseMessage();
+    public void parse(ChannelCloseMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PongMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.PongMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.PongMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.PongMessageSerializer;
+import java.io.InputStream;
 
 public class PongMessage extends SshMessage<PongMessage> {
 
@@ -59,6 +63,21 @@ public class PongMessage extends SshMessage<PongMessage> {
 
     @Override
     public PongMessageHandler getHandler(SshContext context) {
-        return new PongMessageHandler(context, this);
+        return new PongMessageHandler(context);
+    }
+
+    @Override
+    public PongMessageParser getParser(SshContext context, InputStream stream) {
+        return new PongMessageParser(stream);
+    }
+
+    @Override
+    public PongMessagePreparator getPreparator(SshContext context) {
+        return new PongMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public PongMessageSerializer getSerializer(SshContext context) {
+        return new PongMessageSerializer(this);
     }
 }

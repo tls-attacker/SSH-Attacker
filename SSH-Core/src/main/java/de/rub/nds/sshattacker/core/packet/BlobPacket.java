@@ -7,32 +7,36 @@
  */
 package de.rub.nds.sshattacker.core.packet;
 
-import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BlobPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
-import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.io.InputStream;
 
-public class BlobPacket extends AbstractPacket {
+public class BlobPacket extends AbstractPacket<BlobPacket> {
+
     @Override
-    public BlobPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-        return new BlobPacketPreparator(chooser, this, encryptor, compressor);
+    public void prepareComputations() {}
+
+    @Override
+    public BlobPacketParser getParser(SshContext context, InputStream stream) {
+        return new BlobPacketParser(stream);
     }
 
     @Override
-    public BlobPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-        return new BlobPacketParser(array, startPosition);
+    public BlobPacketPreparator getPreparator(SshContext context) {
+        return new BlobPacketPreparator(
+                context.getChooser(), this, context.getEncryptor(), context.getCompressor());
     }
 
     @Override
-    public BlobPacketSerializer getPacketSerializer() {
+    public BlobPacketSerializer getSerializer(SshContext context) {
         return new BlobPacketSerializer(this);
     }
 
     @Override
-    public void prepareComputations() {}
+    public Handler<BlobPacket> getHandler(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

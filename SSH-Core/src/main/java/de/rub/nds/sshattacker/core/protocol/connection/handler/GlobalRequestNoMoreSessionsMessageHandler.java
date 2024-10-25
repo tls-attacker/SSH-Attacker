@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestNoMoreSessionsMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestNoMoreSessionsMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestNoMoreSessionsMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestNoMoreSessionsMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestNoMoreSessionsMessageHandler
         extends SshMessageHandler<GlobalRequestNoMoreSessionsMessage> {
@@ -21,31 +18,6 @@ public class GlobalRequestNoMoreSessionsMessageHandler
         super(context);
     }
 
-    public GlobalRequestNoMoreSessionsMessageHandler(
-            SshContext context, GlobalRequestNoMoreSessionsMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array) {
-        return new GlobalRequestNoMoreSessionsMessageParser(array);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array, int startPosition) {
-        return new GlobalRequestNoMoreSessionsMessageParser(array, startPosition);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessagePreparator getPreparator() {
-        return new GlobalRequestNoMoreSessionsMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageSerializer getSerializer() {
-        return new GlobalRequestNoMoreSessionsMessageSerializer(message);
-    }
+    public void adjustContext(GlobalRequestNoMoreSessionsMessage message) {}
 }

@@ -8,22 +8,21 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.*;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
-import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-public class BinaryPacket extends AbstractPacket {
+public class BinaryPacket extends AbstractPacket<BinaryPacket> {
 
     /**
      * The length of the packet in bytes, not including 'mac' or the 'packet_length' field itself.
@@ -115,23 +114,6 @@ public class BinaryPacket extends AbstractPacket {
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
-    @Override
-    public BinaryPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-        return new BinaryPacketPreparator(chooser, this, encryptor, compressor);
-    }
-
-    @Override
-    public BinaryPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-        return new BinaryPacketParser(array, startPosition, activeDecryptCipher, sequenceNumber);
-    }
-
-    @Override
-    public BinaryPacketSerializer getPacketSerializer() {
-        return new BinaryPacketSerializer(this);
-    }
-
     public PacketCryptoComputations getComputations() {
         return computations;
     }
@@ -174,5 +156,30 @@ public class BinaryPacket extends AbstractPacket {
             holders.add(computations);
         }
         return holders;
+    }
+
+    @Override
+    public BinaryPacketParser getParser(SshContext context, InputStream stream) {
+        return new BinaryPacketParser(
+                stream, context.getActiveDecryptCipher(), sequenceNumber.getValue());
+    }
+
+    @Override
+    public BinaryPacketPreparator getPreparator(SshContext context) {
+        return new BinaryPacketPreparator(
+                context.getChooser(),
+                this,
+                context.getPacketLayer().getEncryptor(),
+                context.getCompressor());
+    }
+
+    @Override
+    public BinaryPacketSerializer getSerializer(SshContext context) {
+        return new BinaryPacketSerializer(this);
+    }
+
+    @Override
+    public Handler<BinaryPacket> getHandler(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

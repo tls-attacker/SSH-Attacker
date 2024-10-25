@@ -9,8 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestUnknownMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestUnknownMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestUnknownMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelRequestUnknownMessage
         extends ChannelRequestMessage<ChannelRequestUnknownMessage> {
@@ -32,6 +36,26 @@ public class ChannelRequestUnknownMessage
 
     @Override
     public ChannelRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestUnknownMessageHandler(context, this);
+        return new ChannelRequestUnknownMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestUnknownMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestUnknownMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestUnknownMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestUnknownMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestUnknownMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestUnknownMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_UNKONW_MESSAEG";
     }
 }

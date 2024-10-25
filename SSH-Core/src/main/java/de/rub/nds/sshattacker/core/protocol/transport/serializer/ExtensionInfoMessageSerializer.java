@@ -28,10 +28,7 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
 
     private void serializeExtensions() {
         message.getExtensions()
-                .forEach(
-                        extension ->
-                                appendBytes(
-                                        extension.getHandler(null).getSerializer().serialize()));
+                .forEach(extension -> appendBytes(extension.getSerializer(null).serialize()));
     }
 
     @Override

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -143,8 +144,10 @@ public class KeyExchangeInitMessageParserTest {
             String expectedLanguagesSToC,
             byte expectedFirstKeyExchangePacketFollows,
             int expectedReserved) {
-        KeyExchangeInitMessageParser parser = new KeyExchangeInitMessageParser(providedBytes);
-        KeyExchangeInitMessage msg = parser.parse();
+        KeyExchangeInitMessageParser parser =
+                new KeyExchangeInitMessageParser(new ByteArrayInputStream(providedBytes));
+        KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
+        parser.parse(msg);
 
         assertArrayEquals(expectedCookie, msg.getCookie().getValue());
         assertEquals(

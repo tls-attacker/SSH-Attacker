@@ -7,27 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 
 public abstract class SshMessageHandler<T extends SshMessage<T>> extends ProtocolMessageHandler<T> {
 
-    protected SshMessageHandler(SshContext context) {
-        super(context);
+    protected SshMessageHandler(SshContext sshContext) {
+        super(sshContext);
     }
-
-    protected SshMessageHandler(SshContext context, T message) {
-        super(context, message);
-    }
-
-    @Override
-    public abstract SshMessageParser<T> getParser(byte[] array);
-
-    @Override
-    public abstract SshMessageParser<T> getParser(byte[] array, int startPosition);
-
-    @Override
-    public abstract SshMessagePreparator<T> getPreparator();
-
-    @Override
-    public abstract SshMessageSerializer<T> getSerializer();
 }

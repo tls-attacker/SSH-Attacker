@@ -8,11 +8,15 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.AbstractExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.AbstractExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.AbstractExtensionSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public abstract class AbstractExtension<E extends AbstractExtension<E>>
@@ -61,4 +65,10 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>>
     }
 
     public abstract AbstractExtensionHandler<E> getHandler(SshContext context);
+
+    public abstract AbstractExtensionPreparator<E> getPreparator(SshContext sshContext);
+
+    public abstract AbstractExtensionSerializer<E> getSerializer(SshContext sshContext);
+
+    public abstract AbstractExtensionParser<E> getParser(SshContext context, InputStream stream);
 }

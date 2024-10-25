@@ -28,7 +28,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
 
     @Override
     public void prepareMessageSpecificContents() {
-        HashMap<Integer, Channel> channelMap = chooser.getContext().getChannels();
+        HashMap<Integer, Channel> channelMap = chooser.getContext().getSshContext().getChannels();
         ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
 
         int channelId;
@@ -39,7 +39,10 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         }
         getObject().setSenderChannelId(channelId);
         Channel channel =
-                chooser.getContext().getChannels().get(getObject().getSenderChannelId().getValue());
+                chooser.getContext()
+                        .getSshContext()
+                        .getChannels()
+                        .get(getObject().getSenderChannelId().getValue());
         if (channel != null) {
             LOGGER.warn(
                     "Channel with id {} is already exists, reusing the existing channel object.",

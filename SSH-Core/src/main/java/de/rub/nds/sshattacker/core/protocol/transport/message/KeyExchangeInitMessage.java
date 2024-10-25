@@ -13,10 +13,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +50,11 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     private ModifiableString languagesServerToClient;
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
+
+    public KeyExchangeInitMessage() {
+        super();
+        setMessageIdConstant(MessageIdConstant.SSH_MSG_KEXINIT);
+    }
 
     public ModifiableByteArray getCookie() {
         return cookie;
@@ -856,7 +865,27 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     @Override
-    public KeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new KeyExchangeInitMessageHandler(context, this);
+    public KeyExchangeInitMessageHandler getHandler(SshContext sshContext) {
+        return new KeyExchangeInitMessageHandler(sshContext);
+    }
+
+    @Override
+    public KeyExchangeInitMessageParser getParser(SshContext context, InputStream stream) {
+        return new KeyExchangeInitMessageParser(stream);
+    }
+
+    @Override
+    public KeyExchangeInitMessagePreparator getPreparator(SshContext sshContext) {
+        return new KeyExchangeInitMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public KeyExchangeInitMessageSerializer getSerializer(SshContext sshContext) {
+        return new KeyExchangeInitMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "KEX_INIT";
     }
 }

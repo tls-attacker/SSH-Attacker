@@ -13,9 +13,13 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMes
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.math.BigInteger;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** A holder class to store all required values for exchange hash computation. */
 public final class ExchangeHashInputHolder {
+
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     // region General exchange hash fields
     private VersionExchangeMessage clientVersion;
@@ -79,6 +83,7 @@ public final class ExchangeHashInputHolder {
 
     public void setClientKeyExchangeInit(KeyExchangeInitMessage clientKeyExchangeInit) {
         this.clientKeyExchangeInit = clientKeyExchangeInit;
+        LOGGER.info("Client_Coookie in holder is: {}", this.clientKeyExchangeInit.getCookie());
     }
 
     public Optional<KeyExchangeInitMessage> getServerKeyExchangeInit() {
@@ -87,6 +92,7 @@ public final class ExchangeHashInputHolder {
 
     public void setServerKeyExchangeInit(KeyExchangeInitMessage serverKeyExchangeInit) {
         this.serverKeyExchangeInit = serverKeyExchangeInit;
+        LOGGER.info("Server_Coookie in holder is: {}", this.serverKeyExchangeInit.getCookie());
     }
 
     public Optional<SshPublicKey<?, ?>> getServerHostKey() {

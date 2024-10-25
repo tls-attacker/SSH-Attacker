@@ -11,28 +11,24 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
-
-    public ChannelExtendedDataMessageParser(byte[] array) {
-        super(array);
+    public ChannelExtendedDataMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelExtendedDataMessage message) {
+        parseProtocolMessageContents(message);
     }
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Override
-    public ChannelExtendedDataMessage createMessage() {
-        return new ChannelExtendedDataMessage();
-    }
-
-    private void parseDataTypeCode() {
+    private void parseDataTypeCode(ChannelExtendedDataMessage message) {
         message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Data type code: {}", message.getDataTypeCode().getValue());
         LOGGER.debug(
@@ -40,7 +36,7 @@ public class ChannelExtendedDataMessageParser
                 ExtendedChannelDataType.fromDataTypeCode(message.getDataTypeCode().getValue()));
     }
 
-    private void parseData() {
+    private void parseData(ChannelExtendedDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));
@@ -48,9 +44,9 @@ public class ChannelExtendedDataMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseDataTypeCode();
-        parseData();
+    protected void parseMessageSpecificContents(ChannelExtendedDataMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseDataTypeCode(message);
+        parseData(message);
     }
 }

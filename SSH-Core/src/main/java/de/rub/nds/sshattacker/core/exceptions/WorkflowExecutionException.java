@@ -22,7 +22,7 @@ public class WorkflowExecutionException extends RuntimeException {
         super(message, cause);
     }
 
-    public WorkflowExecutionException(Throwable cause) {
-        super(cause);
+    public WorkflowExecutionException(Throwable throwable) {
+        super(throwable);
     }
 }

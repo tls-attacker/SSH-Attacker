@@ -9,10 +9,14 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoResponseMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthInfoResponseMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthInfoResponseMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthInfoResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.InputStream;
 
 public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponseMessage> {
 
@@ -43,6 +47,26 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
 
     @Override
     public UserAuthInfoResponseMessageHandler getHandler(SshContext context) {
-        return new UserAuthInfoResponseMessageHandler(context, this);
+        return new UserAuthInfoResponseMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthInfoResponseMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthInfoResponseMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthInfoResponseMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthInfoResponseMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthInfoResponseMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthInfoResponseMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "AUTH_INFO_RESPONSE";
     }
 }

@@ -8,15 +8,20 @@
 package de.rub.nds.sshattacker.core.constants;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.state.Context;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public enum MessageIdConstant {
+
     /*
      * Sources:
      *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-1
      */
     // [ RFC 4253 ]
+    VERSION_EXCHANGE_MESSAGE((byte) 200),
+    ASCII_MESSAGE((byte) 201),
     SSH_MSG_DISCONNECT((byte) 1),
     SSH_MSG_IGNORE((byte) 2),
     SSH_MSG_UNIMPLEMENTED((byte) 3),
@@ -145,6 +150,8 @@ public enum MessageIdConstant {
 
     public static final Map<Byte, List<MessageIdConstant>> map;
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     static {
         Map<Byte, List<MessageIdConstant>> mutableMap = new TreeMap<>();
         for (MessageIdConstant constant : values()) {
@@ -177,9 +184,10 @@ public enum MessageIdConstant {
         }
     }
 
-    public static MessageIdConstant fromId(byte id, SshContext context) {
+    public static MessageIdConstant fromId(byte id, Context context) {
         List<MessageIdConstant> idList = map.get(id);
         if (idList == null) {
+            LOGGER.warn("Unknonw Message-ID: {}", id);
             throw new ParserException("Unable to parse message with unknown id");
         }
         if (id >= (byte) 30 && id <= (byte) 49) {

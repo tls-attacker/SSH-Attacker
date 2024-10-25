@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,27 +18,23 @@ public class ChannelWindowAdjustMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelWindowAdjustMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelWindowAdjustMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelWindowAdjustMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelWindowAdjustMessage createMessage() {
-        return new ChannelWindowAdjustMessage();
+    public void parse(ChannelWindowAdjustMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseBytesToAdd() {
+    private void parseBytesToAdd(ChannelWindowAdjustMessage message) {
         message.setBytesToAdd(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Bytes to add: {}", message.getBytesToAdd().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseBytesToAdd();
+    protected void parseMessageSpecificContents(ChannelWindowAdjustMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseBytesToAdd(message);
     }
 }

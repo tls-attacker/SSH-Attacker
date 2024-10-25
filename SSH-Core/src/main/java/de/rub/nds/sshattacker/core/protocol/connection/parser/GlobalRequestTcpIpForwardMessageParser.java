@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,15 +19,16 @@ public class GlobalRequestTcpIpForwardMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestTcpIpForwardMessageParser(byte[] array) {
-        super(array);
+    public GlobalRequestTcpIpForwardMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public GlobalRequestTcpIpForwardMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(GlobalRequestTcpIpForwardMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    private void parseIPAddressToBind() {
+    private void parseIPAddressToBind(GlobalRequestTcpIpForwardMessage message) {
         message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "IP address to bind length: {}", message.getIpAddressToBindLength().getValue());
@@ -36,20 +38,15 @@ public class GlobalRequestTcpIpForwardMessageParser
         LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
     }
 
-    private void parsePortToBind() {
+    private void parsePortToBind(GlobalRequestTcpIpForwardMessage message) {
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
     }
 
     @Override
-    public GlobalRequestTcpIpForwardMessage createMessage() {
-        return new GlobalRequestTcpIpForwardMessage();
-    }
-
-    @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseIPAddressToBind();
-        parsePortToBind();
+    protected void parseMessageSpecificContents(GlobalRequestTcpIpForwardMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseIPAddressToBind(message);
+        parsePortToBind(message);
     }
 }

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,8 +39,10 @@ public class ChannelEofMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelEofMessageParser parser = new ChannelEofMessageParser(providedBytes);
-        ChannelEofMessage msg = parser.parse();
+        ChannelEofMessageParser parser =
+                new ChannelEofMessageParser(new ByteArrayInputStream(providedBytes));
+        ChannelEofMessage msg = new ChannelEofMessage();
+        parser.parse(msg);
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_EOF.getId(), msg.getMessageId().getValue());
         assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());

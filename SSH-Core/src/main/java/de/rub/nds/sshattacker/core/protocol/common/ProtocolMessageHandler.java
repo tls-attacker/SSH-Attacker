@@ -7,37 +7,26 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> implements Handler<T> {
+public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
+        implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected final SshContext context;
+    protected final SshContext sshContext;
 
-    protected final T message;
+    // protected final MessageT message;
 
-    protected ProtocolMessageHandler(SshContext context) {
-        this(context, null);
+    public ProtocolMessageHandler(SshContext sshContext) {
+        this.sshContext = sshContext;
     }
 
-    protected ProtocolMessageHandler(SshContext context, T message) {
-        super();
-        this.context = context;
-        this.message = message;
-    }
+    // Kann von den detaillierten Handlern überschrieben werden.
+    public void adjustContextAfterSerialize(MessageT message) {}
 
-    @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array);
-
-    @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array, int startPosition);
-
-    @Override
-    public abstract ProtocolMessagePreparator<T> getPreparator();
-
-    @Override
-    public abstract ProtocolMessageSerializer<T> getSerializer();
+    public void adjustContextAfterMessageSent(MessageT messageT) {}
 }

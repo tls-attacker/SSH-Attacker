@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,25 +23,16 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyExchangeInitMessageParser(byte[] array) {
-        super(array);
+    public KeyExchangeInitMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public KeyExchangeInitMessage createMessage() {
-        return new KeyExchangeInitMessage();
-    }
-
-    private void parseCookie() {
+    private void parseCookie(KeyExchangeInitMessage message) {
         message.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));
         LOGGER.debug("Cookie: {}", message.getCookie());
     }
 
-    private void parseKeyExchangeAlgorithms() {
+    private void parseKeyExchangeAlgorithms(KeyExchangeInitMessage message) {
         message.setKeyExchangeAlgorithmsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -55,7 +47,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getKeyExchangeAlgorithms().getValue()));
     }
 
-    private void parseServerHostKeyAlgorithms() {
+    private void parseServerHostKeyAlgorithms(KeyExchangeInitMessage message) {
         message.setServerHostKeyAlgorithmsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -70,7 +62,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getServerHostKeyAlgorithms().getValue()));
     }
 
-    private void parseEncryptionAlgorithmsClientToServer() {
+    private void parseEncryptionAlgorithmsClientToServer(KeyExchangeInitMessage message) {
         message.setEncryptionAlgorithmsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -85,7 +77,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getEncryptionAlgorithmsClientToServer().getValue()));
     }
 
-    private void parseEncryptionAlgorithmsServerToClient() {
+    private void parseEncryptionAlgorithmsServerToClient(KeyExchangeInitMessage message) {
         message.setEncryptionAlgorithmsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -100,7 +92,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getEncryptionAlgorithmsServerToClient().getValue()));
     }
 
-    private void parseMacAlgorithmsClientToServer() {
+    private void parseMacAlgorithmsClientToServer(KeyExchangeInitMessage message) {
         message.setMacAlgorithmsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -115,7 +107,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getMacAlgorithmsClientToServer().getValue()));
     }
 
-    private void parseMacAlgorithmsServerToClient() {
+    private void parseMacAlgorithmsServerToClient(KeyExchangeInitMessage message) {
         message.setMacAlgorithmsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -130,7 +122,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getMacAlgorithmsServerToClient().getValue()));
     }
 
-    private void parseCompressionMethodsClientToServer() {
+    private void parseCompressionMethodsClientToServer(KeyExchangeInitMessage message) {
         message.setCompressionMethodsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -145,7 +137,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getCompressionMethodsClientToServer().getValue()));
     }
 
-    private void parseCompressionMethodsServerToClient() {
+    private void parseCompressionMethodsServerToClient(KeyExchangeInitMessage message) {
         message.setCompressionMethodsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -160,7 +152,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getCompressionMethodsServerToClient().getValue()));
     }
 
-    private void parseLanguagesClientToServer() {
+    private void parseLanguagesClientToServer(KeyExchangeInitMessage message) {
         message.setLanguagesClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -175,7 +167,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getLanguagesClientToServer().getValue()));
     }
 
-    private void parseLanguagesServerToClient() {
+    private void parseLanguagesServerToClient(KeyExchangeInitMessage message) {
         message.setLanguagesServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -190,32 +182,37 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 backslashEscapeString(message.getLanguagesServerToClient().getValue()));
     }
 
-    private void parseFirstKeyExchangePacketFollows() {
+    private void parseFirstKeyExchangePacketFollows(KeyExchangeInitMessage message) {
         message.setFirstKeyExchangePacketFollows(parseByteField(1));
         LOGGER.debug(
                 "First key exchange packet follows: {}",
                 Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
     }
 
-    private void parseReserved() {
+    private void parseReserved(KeyExchangeInitMessage message) {
         message.setReserved(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reserved: {}", message.getReserved().getValue());
     }
 
     @Override
-    public void parseMessageSpecificContents() {
-        parseCookie();
-        parseKeyExchangeAlgorithms();
-        parseServerHostKeyAlgorithms();
-        parseEncryptionAlgorithmsClientToServer();
-        parseEncryptionAlgorithmsServerToClient();
-        parseMacAlgorithmsClientToServer();
-        parseMacAlgorithmsServerToClient();
-        parseCompressionMethodsClientToServer();
-        parseCompressionMethodsServerToClient();
-        parseLanguagesClientToServer();
-        parseLanguagesServerToClient();
-        parseFirstKeyExchangePacketFollows();
-        parseReserved();
+    public void parseMessageSpecificContents(KeyExchangeInitMessage message) {
+        parseCookie(message);
+        parseKeyExchangeAlgorithms(message);
+        parseServerHostKeyAlgorithms(message);
+        parseEncryptionAlgorithmsClientToServer(message);
+        parseEncryptionAlgorithmsServerToClient(message);
+        parseMacAlgorithmsClientToServer(message);
+        parseMacAlgorithmsServerToClient(message);
+        parseCompressionMethodsClientToServer(message);
+        parseCompressionMethodsServerToClient(message);
+        parseLanguagesClientToServer(message);
+        parseLanguagesServerToClient(message);
+        parseFirstKeyExchangePacketFollows(message);
+        parseReserved(message);
+    }
+
+    @Override
+    public void parse(KeyExchangeInitMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

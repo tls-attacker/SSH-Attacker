@@ -12,11 +12,12 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +44,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption / decryption. */
     private final AbstractCipher mainCipher;
 
-    public PacketChaCha20Poly1305Cipher(SshContext context, KeySet keySet, CipherMode mode) {
+    public PacketChaCha20Poly1305Cipher(
+            SshContext context, AbstractKeySet keySet, CipherMode mode) {
         super(context, keySet, EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM, null, mode);
         headerCipher =
                 CipherFactory.getCipher(
@@ -68,9 +70,20 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     }
 
     @Override
+    public void encrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support CHACHA20 Cipher");
+        throw new RuntimeException();
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support GCM Cipher");
+        throw new RuntimeException();
+    }
+
+    @Override
     protected void encrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
-            LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
         PacketCryptoComputations computations = packet.getComputations();
@@ -181,7 +194,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
                         .collect(Collectors.toSet()));
 
         DecryptionParser parser =
-                new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
+                new DecryptionParser(computations.getPlainPacketBytes().getValue() /*, 0*/);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setCompressedPayload(
                 parser.parseByteArrayField(

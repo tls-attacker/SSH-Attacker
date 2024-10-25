@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -63,8 +64,9 @@ public class ChannelOpenConfirmationMessageParserTest {
             int expectedInitialWindowSize,
             int expectedMaximumPacketSize) {
         ChannelOpenConfirmationMessageParser parser =
-                new ChannelOpenConfirmationMessageParser(providedBytes);
-        ChannelOpenConfirmationMessage msg = parser.parse();
+                new ChannelOpenConfirmationMessageParser(new ByteArrayInputStream(providedBytes));
+        ChannelOpenConfirmationMessage msg = new ChannelOpenConfirmationMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION.getId(),

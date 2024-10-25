@@ -9,9 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.Extension;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,62 +23,61 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtensionInfoMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ExtensionInfoMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ExtensionInfoMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ExtensionInfoMessage createMessage() {
-        return new ExtensionInfoMessage();
+    public void parse(ExtensionInfoMessage message) {
+        parseMessageSpecificContents(message);
     }
 
-    private void parseExtensionCount() {
+    private void parseExtensionCount(ExtensionInfoMessage message) {
         message.setExtensionCount(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Extension count: {}", message.getExtensionCount().getValue());
     }
 
-    private void parseExtensions() {
-        for (int extensionIndex = 0, extensionStartPointer = getPointer();
+    private void parseExtensions(ExtensionInfoMessage message) {
+
+        // Commenting just for debugging
+        for (int extensionIndex = 0;
                 extensionIndex < message.getExtensionCount().getValue();
-                extensionIndex++, extensionStartPointer = getPointer()) {
+                extensionIndex++) {
             // Parse extension name to determine the parser to use
             int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
             Extension extension =
                     Extension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
-            AbstractExtensionParser<?> extensionParser;
             switch (extension) {
                 case SERVER_SIG_ALGS:
-                    extensionParser =
-                            new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
+                    ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();
+                    serverSigAlgsExtension.getParser(new SshContext(), getStream());
+                    message.addExtension(serverSigAlgsExtension);
                     break;
                 case DELAY_COMPRESSION:
-                    extensionParser =
-                            new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
+                    DelayCompressionExtension delayCompressionExtension =
+                            new DelayCompressionExtension();
+                    delayCompressionExtension.getParser(new SshContext(), getStream());
                     break;
                 case PING_OPENSSH_COM:
-                    extensionParser = new PingExtensionParser(getArray(), extensionStartPointer);
+                    PingExtension pingExtension = new PingExtension();
+                    pingExtension.getParser(new SshContext(), getStream());
                     break;
                 default:
                     LOGGER.debug(
                             "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
                             extension,
                             extensionIndex);
-                    extensionParser = new UnknownExtensionParser(getArray(), extensionStartPointer);
+                    UnknownExtension unknownExtension = new UnknownExtension();
+                    unknownExtension.getParser(new SshContext(), getStream());
                     break;
             }
-            message.addExtension(extensionParser.parse());
-            setPointer(extensionParser.getPointer());
         }
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseExtensionCount();
-        parseExtensions();
+    protected void parseMessageSpecificContents(ExtensionInfoMessage message) {
+        parseExtensionCount(message);
+        parseExtensions(message);
     }
 }

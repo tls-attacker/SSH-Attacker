@@ -11,8 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestPtyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestPtyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestPtyMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage> {
@@ -167,6 +171,26 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
 
     @Override
     public ChannelRequestPtyMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestPtyMessageHandler(context, this);
+        return new ChannelRequestPtyMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestPtyMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestPtyMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestPtyMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestPtyMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestPtyMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestPtyMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_PTY";
     }
 }

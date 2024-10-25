@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExchangeReplyMessage> {
 
@@ -21,46 +18,24 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
         super(context);
     }
 
-    public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+    public void adjustContext(DhKeyExchangeReplyMessage message) {
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         updateContextWithRemotePublicKey(message);
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        KeyExchangeUtil.computeSharedSecret(sshContext, sshContext.getChooser().getDhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     private void updateContextWithRemotePublicKey(DhKeyExchangeReplyMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getDhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setDhServerPublicKey(message.getEphemeralPublicKey().getValue());
-    }
-
-    @Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array) {
-        return new DhKeyExchangeReplyMessageParser(array);
-    }
-
-    @Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
-        return new DhKeyExchangeReplyMessageParser(array, startPosition);
-    }
-
-    @Override
-    public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator() {
-        return new DhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer() {
-        return new DhKeyExchangeReplyMessageSerializer(message);
     }
 }

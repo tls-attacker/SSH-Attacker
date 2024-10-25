@@ -9,8 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
 
@@ -57,6 +61,26 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     @Override
     public ChannelOpenConfirmationMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenConfirmationMessageHandler(context, this);
+        return new ChannelOpenConfirmationMessageHandler(context);
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelOpenConfirmationMessageParser(stream);
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessagePreparator getPreparator(SshContext context) {
+        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessageSerializer getSerializer(SshContext context) {
+        return new ChannelOpenConfirmationMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_OPEN_CONFIRMATION";
     }
 }

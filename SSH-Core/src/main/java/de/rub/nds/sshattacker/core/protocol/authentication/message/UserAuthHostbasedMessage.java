@@ -13,10 +13,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostbasedMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthHostbasedMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthHostbasedMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHostbasedMessage>
@@ -263,6 +267,26 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     @Override
     public UserAuthHostbasedMessageHandler getHandler(SshContext context) {
-        return new UserAuthHostbasedMessageHandler(context, this);
+        return new UserAuthHostbasedMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthHostbasedMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthHostbasedMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthHostbasedMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthHostbasedMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthHostbasedMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthHostbasedMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "AUTH_HOST";
     }
 }

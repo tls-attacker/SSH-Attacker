@@ -10,10 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthInfoRequestMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthInfoRequestMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthInfoRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {
@@ -171,6 +175,26 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
 
     @Override
     public UserAuthInfoRequestMessageHandler getHandler(SshContext context) {
-        return new UserAuthInfoRequestMessageHandler(context, this);
+        return new UserAuthInfoRequestMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthInfoRequestMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthInfoRequestMessageParser(stream);
+    }
+
+    @Override
+    public UserAuthInfoRequestMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthInfoRequestMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthInfoRequestMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthInfoRequestMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTH_REQUEST";
     }
 }

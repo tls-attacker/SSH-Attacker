@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,15 +23,11 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected GlobalRequestMessageParser(byte[] array) {
-        super(array);
+    public GlobalRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    protected GlobalRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    private void parseRequestName() {
+    private void parseRequestName(T message) {
         message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
         message.setRequestName(
@@ -40,14 +37,14 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
                 "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
     }
 
-    private void parseWantReply() {
+    private void parseWantReply(T message) {
         message.setWantReply(parseByteField(1));
         LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseRequestName();
-        parseWantReply();
+    protected void parseMessageSpecificContents(T message) {
+        parseRequestName(message);
+        parseWantReply(message);
     }
 }

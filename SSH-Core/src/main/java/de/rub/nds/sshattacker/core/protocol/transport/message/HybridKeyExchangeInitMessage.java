@@ -10,10 +10,15 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeInitMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeInitMessageSerializer;
+import java.io.InputStream;
 
 public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
 
@@ -111,6 +116,30 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     @Override
     public SshMessageHandler<HybridKeyExchangeInitMessage> getHandler(SshContext context) {
-        return new HybridKeyExchangeInitMessageHandler(context, this);
+        return new HybridKeyExchangeInitMessageHandler(context);
+    }
+
+    @Override
+    public HybridKeyExchangeInitMessageParser getParser(SshContext context, InputStream stream) {
+        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
+        return new HybridKeyExchangeInitMessageParser(context, stream);
+    }
+
+    @Override
+    public HybridKeyExchangeInitMessagePreperator getPreparator(SshContext context) {
+        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
+        return new HybridKeyExchangeInitMessagePreperator(
+                context.getChooser(), this, kex.getCombiner());
+    }
+
+    @Override
+    public HybridKeyExchangeInitMessageSerializer getSerializer(SshContext context) {
+        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
+        return new HybridKeyExchangeInitMessageSerializer(this, kex.getCombiner());
+    }
+
+    @Override
+    public String toShortString() {
+        return "HYB_KEY_EXCHANGE";
     }
 }

@@ -29,19 +29,19 @@ public class ContextContainer {
 
     private final Set<String> knownAliases = new HashSet<>();
 
-    private final Map<String, SshContext> sshContexts = new HashMap<>();
+    private final Map<String, Context> contexts = new HashMap<>();
 
     /**
      * An inbound SSH context is a context bound to an incoming connection. I.e. it represents a
      * connection that we accepted from a connecting client.
      */
-    private final List<SshContext> inboundSshContexts = new ArrayList<>();
+    private final List<Context> inboundSshContexts = new ArrayList<>();
 
     /**
      * An outbound SSH context is a context bound to an outgoing connection. I.e. it represents a
      * connection established by us to a remote server.
      */
-    private final List<SshContext> outboundSshContexts = new ArrayList<>();
+    private final List<Context> outboundSshContexts = new ArrayList<>();
 
     /**
      * Get the only defined SSH context.
@@ -51,15 +51,15 @@ public class ContextContainer {
      * @return the only known SSH context
      * @throws ConfigurationException if there is more than one SSH context in the container
      */
-    public SshContext getSshContext() {
-        if (sshContexts.isEmpty()) {
+    public Context getContext() {
+        if (contexts.isEmpty()) {
             throw new ConfigurationException("No context defined.");
         }
-        if (sshContexts.size() > 1) {
+        if (contexts.size() > 1) {
             throw new ConfigurationException(
                     "getSshContext requires an alias if multiple contexts are defined");
         }
-        return sshContexts.entrySet().iterator().next().getValue();
+        return contexts.entrySet().iterator().next().getValue();
     }
 
     /**
@@ -69,15 +69,15 @@ public class ContextContainer {
      * @return the context with the given connection end alias
      * @throws ConfigurationException if there is no SSH context with the given alias
      */
-    public SshContext getSshContext(String alias) {
-        SshContext ctx = sshContexts.get(alias);
+    public Context getSshContext(String alias) {
+        Context ctx = contexts.get(alias);
         if (ctx == null) {
             throw new ConfigurationException("No context defined with alias '" + alias + "'.");
         }
         return ctx;
     }
 
-    public void addSshContext(SshContext context) {
+    public void addContext(Context context) {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
@@ -88,7 +88,7 @@ public class ContextContainer {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        sshContexts.put(alias, context);
+        contexts.put(alias, context);
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
@@ -100,15 +100,15 @@ public class ContextContainer {
         }
     }
 
-    public List<SshContext> getAllContexts() {
-        return new ArrayList<>(sshContexts.values());
+    public List<Context> getAllContexts() {
+        return new ArrayList<>(contexts.values());
     }
 
-    public List<SshContext> getInboundSshContexts() {
+    public List<Context> getInboundContexts() {
         return inboundSshContexts;
     }
 
-    public List<SshContext> getOutboundSshContexts() {
+    public List<Context> getOutboundContexts() {
         return outboundSshContexts;
     }
 
@@ -125,11 +125,11 @@ public class ContextContainer {
     }
 
     public boolean isEmpty() {
-        return sshContexts.isEmpty();
+        return contexts.isEmpty();
     }
 
     public void clear() {
-        sshContexts.clear();
+        contexts.clear();
         knownAliases.clear();
         inboundSshContexts.clear();
         outboundSshContexts.clear();
@@ -137,10 +137,10 @@ public class ContextContainer {
 
     public void removeSshContext(String alias) {
         if (containsAlias(alias)) {
-            SshContext removeMe = sshContexts.get(alias);
+            Context removeMe = contexts.get(alias);
             inboundSshContexts.remove(removeMe);
             outboundSshContexts.remove(removeMe);
-            sshContexts.remove(alias);
+            contexts.remove(alias);
             knownAliases.remove(alias);
         } else {
             LOGGER.debug("No context with alias {} found, nothing to remove", alias);
@@ -153,21 +153,21 @@ public class ContextContainer {
      * <p>The SshContext can only be replaced if the connection of both the new and the old
      * SshContext equal.
      *
-     * @param newSshContext the new SshContext, not null
+     * @param newContext the new SshContext, not null
      * @throws ConfigurationException if the connections of new and old SshContext differ
      */
-    public void replaceSshContext(SshContext newSshContext) {
-        String alias = newSshContext.getConnection().getAlias();
+    public void replaceContext(Context newContext) {
+        String alias = newContext.getConnection().getAlias();
         if (!containsAlias(alias)) {
             throw new ConfigurationException("No SshContext to replace for alias " + alias);
         }
-        SshContext replaceMe = sshContexts.get(alias);
-        if (!replaceMe.getConnection().equals(newSshContext.getConnection())) {
+        Context replaceMe = contexts.get(alias);
+        if (!replaceMe.getConnection().equals(newContext.getConnection())) {
             throw new ContextHandlingException(
                     "Cannot replace SshContext because the new SshContext"
                             + " defines another connection.");
         }
         removeSshContext(alias);
-        addSshContext(newSshContext);
+        addContext(newContext);
     }
 }

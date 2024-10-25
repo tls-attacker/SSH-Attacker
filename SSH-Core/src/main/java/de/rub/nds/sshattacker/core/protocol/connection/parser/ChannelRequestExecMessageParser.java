@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,20 +18,16 @@ public class ChannelRequestExecMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExecMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ChannelRequestExecMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelRequestExecMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ChannelRequestExecMessage createMessage() {
-        return new ChannelRequestExecMessage();
+    public void parse(ChannelRequestExecMessage message) {
+        parseProtocolMessageContents(message);
     }
 
-    public void parseCommand() {
+    public void parseCommand(ChannelRequestExecMessage message) {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         message.setCommand(parseByteString(message.getCommandLength().getValue()));
@@ -38,8 +35,8 @@ public class ChannelRequestExecMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseCommand();
+    protected void parseMessageSpecificContents(ChannelRequestExecMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseCommand(message);
     }
 }

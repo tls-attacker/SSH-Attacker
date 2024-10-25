@@ -9,17 +9,13 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.*;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.BinaryPacket;
-import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import jakarta.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
@@ -31,12 +27,12 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElement(name = "from")
-    protected String receiveFromAlias;
+    protected String receiveFromAlias = null;
 
     @XmlElement(name = "to")
-    protected String forwardToAlias;
+    protected String forwardToAlias = null;
 
-    @XmlTransient protected Boolean executedAsPlanned;
+    @XmlTransient protected Boolean executedAsPlanned = null;
 
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
@@ -48,27 +44,30 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
 
     @XmlAttribute(name = "onConnection")
-    protected String forwardedConnectionAlias;
+    protected String forwardedConnectionAlias = null;
 
     @XmlTransient private byte[] receivedBytes;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements({
-        @XmlElement(type = BinaryPacket.class, name = "BinaryPacket"),
-        @XmlElement(type = BlobPacket.class, name = "BlobPacket")
-    })
-    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
+    // equvialent to recived records
+    protected List<AbstractPacket<?>> receivedPackets;
+
+    protected List<AbstractPacket<?>> sendPackets;
 
     public ForwardMessagesAction() {
-        super();
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
     }
 
-    /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    /*    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
+        this(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
+    }*/
+
+    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
-        super();
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
+        /*        this.receiveMessageHelper = receiveMessageHelper;
+        this.sendMessageHelper = new SendMessageHelper();*/
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
@@ -78,6 +77,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
@@ -108,76 +109,115 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
             throw new WorkflowExecutionException("Action already executed!");
         }
         assertAliasesSetProperly();
+
         SshContext receiveFromCtx = state.getSshContext(receiveFromAlias);
-        initLoggingSide(receiveFromCtx);
         SshContext forwardToCtx = state.getSshContext(forwardToAlias);
+
+        initLoggingSide(receiveFromCtx);
+
         receiveMessages(receiveFromCtx);
-        forwardMessages(forwardToCtx);
-        handleReceivedMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
+        forwardMessages(forwardToCtx);
     }
 
     protected void receiveMessages(SshContext receiveFromCtx) {
         LOGGER.debug("Receiving Messages...");
-        try {
-            receivedBytes = ReceiveMessageHelper.receiveBytes(receiveFromCtx);
+
+        LayerStack layerStack = receiveFromCtx.getLayerStack();
+
+        LayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.SSHV2, messages);
+
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(layerStack, messageConfiguration);
+        LayerStackProcessingResult processingResult;
+        processingResult = layerStack.receiveData(layerConfigurationList);
+
+        receivedMessages =
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.SSHV2)
+                                .getUsedContainers());
+        receivedPackets =
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.PACKET_LAYER)
+                                .getUsedContainers());
+
+        String expected = getReadableString(receivedMessages);
+        LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
+        String received = getReadableString(receivedMessages);
+        LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
+
+        executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
+
+        /*        try {
+            receivedBytes = receiveMessageHelper.receiveBytes(receiveFromCtx);
         } catch (IOException e) {
             LOGGER.warn(
                     "Received an IOException while fetching data from socket: {}",
                     e.getLocalizedMessage());
             LOGGER.debug(e);
             receiveFromCtx.setReceivedTransportHandlerException(true);
-        }
+        }*/
     }
 
     protected void forwardMessages(SshContext forwardToCtx) {
+
         LOGGER.info(
                 "Forwarding messages ({}): {}",
                 forwardToAlias,
                 getReadableString(receivedMessages));
         try {
-            TransportHandler transportHandler = forwardToCtx.getTransportHandler();
-            transportHandler.sendData(receivedBytes);
-            if (messages.get(0).getClass() != VersionExchangeMessage.class) {
-                forwardToCtx.incrementWriteSequenceNumber();
-            }
+            LayerStack layerStack = forwardToCtx.getLayerStack();
+            LayerConfiguration messageConfiguration =
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHV2, receivedMessages);
+            LayerConfiguration packetConfiguration =
+                    new SpecificSendLayerConfiguration(
+                            ImplementedLayers.PACKET_LAYER, receivedPackets);
+
+            List<LayerConfiguration> layerConfigurationList =
+                    sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
+            LayerStackProcessingResult processingResult =
+                    layerStack.sendData(layerConfigurationList);
+
+            sendMessages =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.SSHV2)
+                                    .getUsedContainers());
+            sendPackets =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.PACKET_LAYER)
+                                    .getUsedContainers());
+
+            executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
+
             setExecuted(true);
+
         } catch (IOException e) {
             LOGGER.debug(e);
-            executedAsPlanned = false;
-            setExecuted(false);
+            throw new RuntimeException(e);
         }
     }
 
-    protected void handleReceivedMessages(SshContext ctx) {
-        MessageActionResult handleReceived =
-                ReceiveMessageHelper.handleReceivedBytes(ctx, receivedBytes);
-        receivedMessages = handleReceived.getMessageList();
-        receivedPackets = handleReceived.getPacketList();
-        String expected = getReadableString(messages);
-        LOGGER.debug("Receive Expected ({}): {}", receiveFromAlias, expected);
-        String received = getReadableString(receivedMessages);
-        LOGGER.info("Received Messages ({}): {}", receiveFromAlias, received);
-
-        executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
-    }
-
     /**
-     * Apply the contents of the messages to the given TLS context.
+     * Apply the contents of the messages to the given SSH context.
      *
      * @param ctx SSH context
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
-        for (ProtocolMessage<?> msg : receivedMessages) {
-            LOGGER.debug("Applying {} to forward context {}", msg.toCompactString(), ctx);
-            ProtocolMessageHandler<?> h = msg.getHandler(ctx);
-            h.adjustContext();
+        for (ProtocolMessage msg : receivedMessages) {
+            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
+            ProtocolMessageHandler h = msg.getHandler(ctx);
+            h.adjustContext(msg);
         }
         changeSshContextHandling(ctx);
     }
 
-    private static void changeSshContextHandling(SshContext ctx) {
+    private void changeSshContextHandling(SshContext ctx) {
         ctx.setHandleAsClient(!ctx.isHandleAsClient());
     }
 
@@ -191,7 +231,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    protected static boolean checkMessageListsEquals(
+    protected boolean checkMessageListsEquals(
             List<ProtocolMessage<?>> expectedMessages, List<ProtocolMessage<?>> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
@@ -201,7 +241,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             expectedEmpty = false;
         }
-        if (actualEmpty && expectedEmpty) {
+        if (actualEmpty == expectedEmpty) {
             return true;
         }
         if (actualEmpty != expectedEmpty) {
@@ -238,17 +278,17 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return null;
+    }
+
+    @Override
     public List<ProtocolMessage<?>> getSendMessages() {
         return sendMessages;
     }
 
     public List<ProtocolMessage<?>> getMessages() {
         return messages;
-    }
-
-    @Override
-    public List<AbstractPacket> getReceivedPackets() {
-        return receivedPackets;
     }
 
     public void setMessages(List<ProtocolMessage<?>> messages) {
@@ -307,11 +347,11 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         }
     }
 
-    public static String getReadableString(List<ProtocolMessage<?>> messages) {
+    public String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public static String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
+    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();

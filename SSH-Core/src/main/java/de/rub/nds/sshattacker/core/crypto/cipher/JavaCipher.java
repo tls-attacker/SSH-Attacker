@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmFamily;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -20,8 +21,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class JavaCipher extends AbstractCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final EncryptionAlgorithm algorithm;
     private final byte[] key;
@@ -67,6 +72,8 @@ class JavaCipher extends AbstractCipher {
 
     @Override
     public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+        LOGGER.debug("JAVA Cipher, key is: ");
+        LOGGER.debug(ArrayConverter.bytesToHexString(key));
         IvParameterSpec encryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
@@ -147,6 +154,14 @@ class JavaCipher extends AbstractCipher {
             cipher = Cipher.getInstance(algorithm.getJavaName());
             String keySpecAlgorithm =
                     EncryptionAlgorithmFamily.getFamilyForAlgorithm(algorithm).getJavaName();
+
+            LOGGER.debug(
+                    "Decrypting with following data: cipher {},KeySpec {}, IV {}, key {}, ciphertext {}",
+                    algorithm.getJavaName(),
+                    keySpecAlgorithm,
+                    ArrayConverter.bytesToHexString(decryptIv.getIV()),
+                    ArrayConverter.bytesToHexString(key),
+                    ArrayConverter.bytesToHexString(encryptedData));
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             return cipher.doFinal(encryptedData);
         } catch (IllegalStateException

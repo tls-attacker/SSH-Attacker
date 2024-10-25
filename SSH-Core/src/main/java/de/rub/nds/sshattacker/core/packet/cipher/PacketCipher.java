@@ -7,22 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class PacketCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /** The SSH context this packet cipher is used in. */
     protected final SshContext context;
 
     /** The key set used by the cipher. */
-    protected final KeySet keySet;
+    protected final AbstractKeySet keySet;
 
     /** The encryption algorithm to use. */
     protected final EncryptionAlgorithm encryptionAlgorithm;
@@ -35,7 +43,7 @@ public abstract class PacketCipher {
 
     protected PacketCipher(
             SshContext context,
-            KeySet keySet,
+            AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
@@ -62,6 +70,14 @@ public abstract class PacketCipher {
         }
     }
 
+    public final void process(BinaryPacketSSHv1 packet) throws CryptoException {
+        if (mode == CipherMode.ENCRYPT) {
+            encrypt(packet);
+        } else {
+            decrypt(packet);
+        }
+    }
+
     /**
      * Encrypts or decrypts the provided packet using this PacketCipher instance (the actual
      * operation performed depends on the mode provided to the constructor).
@@ -79,9 +95,13 @@ public abstract class PacketCipher {
 
     protected abstract void encrypt(BinaryPacket packet) throws CryptoException;
 
+    protected abstract void encrypt(BinaryPacketSSHv1 packet) throws CryptoException;
+
     protected abstract void encrypt(BlobPacket packet) throws CryptoException;
 
     protected abstract void decrypt(BinaryPacket packet) throws CryptoException;
+
+    protected abstract void decrypt(BinaryPacketSSHv1 packet) throws CryptoException;
 
     protected abstract void decrypt(BlobPacket packet) throws CryptoException;
 
@@ -93,7 +113,7 @@ public abstract class PacketCipher {
         return macAlgorithm;
     }
 
-    public KeySet getKeySet() {
+    public AbstractKeySet getKeySet() {
         return keySet;
     }
 
@@ -109,15 +129,22 @@ public abstract class PacketCipher {
         return context.getConnection().getLocalConnectionEndType();
     }
 
-    protected static int calculatePacketLength(BinaryPacket packet) {
+    protected int calculatePacketLength(BinaryPacket packet) {
         return BinaryPacketConstants.PADDING_FIELD_LENGTH
                 + packet.getCompressedPayload().getValue().length
                 + packet.getPaddingLength().getValue();
     }
 
-    protected static byte[] calculatePadding(int paddingLength) {
+    protected byte[] calculatePadding(int paddingLength) {
         // For now, we use zero bytes as padding
         return new byte[paddingLength];
+    }
+
+    protected byte calculatePaddingLength(BinaryPacketSSHv1 packet) {
+        int lenght = packet.getLength().getValue();
+        int padding_lenght = 8 - (lenght % 8);
+
+        return (byte) padding_lenght;
     }
 
     protected byte calculatePaddingLength(BinaryPacket packet) {
@@ -144,21 +171,31 @@ public abstract class PacketCipher {
         return (byte) paddingLength;
     }
 
-    protected static boolean isPaddingValid(byte[] padding) {
+    protected boolean isPaddingValid(byte[] padding) {
         // Any padding shorter than 4 bytes and longer than 255 bytes is invalid by specification
         return padding.length >= 4 && padding.length <= 255;
     }
 
     protected static class DecryptionParser extends Parser<Object> {
 
-        public DecryptionParser(byte[] array, int startPosition) {
-            super(array, startPosition);
+        public DecryptionParser(byte[] array) {
+            super(new ByteArrayInputStream(array));
+        }
+
+        public DecryptionParser(byte[] array, int offset) {
+            super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length)));
+
+            byte[] new_array = Arrays.copyOfRange(array, offset, array.length);
+            LOGGER.debug(
+                    "[bro] New Bytarray with lenght {} :  {}",
+                    new_array.length,
+                    ArrayConverter.bytesToHexString(new_array));
+            // super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length-1)));
         }
 
         @Override
-        public Object parse() {
-            throw new UnsupportedOperationException(
-                    "Tried to call parse() on DecryptionParser which is not supported. Call single field parse methods directly instead.");
+        public void parse(Object t) {
+            throw new UnsupportedOperationException();
         }
 
         @Override

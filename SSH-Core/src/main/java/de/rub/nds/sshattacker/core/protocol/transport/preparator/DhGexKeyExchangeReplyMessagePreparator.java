@@ -24,13 +24,15 @@ public class DhGexKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext().getSshContext(), getObject());
         prepareEphemeralPublicKey();
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getDhGexKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeSharedSecret(
+                chooser.getContext().getSshContext(), chooser.getDhGexKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext().getSshContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(
+                chooser.getContext().getSshContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext().getSshContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext().getSshContext());
     }
 
     private void prepareEphemeralPublicKey() {
@@ -40,6 +42,7 @@ public class DhGexKeyExchangeReplyMessagePreparator
                 .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
         // Update exchange hash with local public key
         chooser.getContext()
+                .getSshContext()
                 .getExchangeHashInputHolder()
                 .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
     }

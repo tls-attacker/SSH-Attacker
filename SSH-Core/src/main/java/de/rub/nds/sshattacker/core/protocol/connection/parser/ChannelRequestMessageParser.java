@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,15 +20,11 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ChannelRequestMessageParser(byte[] array) {
-        super(array);
+    public ChannelRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    protected ChannelRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    private void parseRequestType() {
+    private void parseRequestType(T message) {
         message.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request type length: {}", message.getRequestTypeLength().getValue());
         message.setRequestType(
@@ -36,16 +33,16 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
         LOGGER.debug("Request type: {}", message.getRequestType().getValue());
     }
 
-    private void parseWantReply() {
+    private void parseWantReply(T message) {
         message.setWantReply(parseByteField(1));
         LOGGER.debug(
                 "Reply wanted: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseRequestType();
-        parseWantReply();
+    protected void parseMessageSpecificContents(T message) {
+        super.parseMessageSpecificContents(message);
+        parseRequestType(message);
+        parseWantReply(message);
     }
 }

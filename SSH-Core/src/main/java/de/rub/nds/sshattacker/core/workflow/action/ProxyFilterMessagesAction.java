@@ -8,16 +8,21 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.LayerStack;
+import de.rub.nds.sshattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.sshattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,10 +36,15 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
 
     public ProxyFilterMessagesAction() {
-        super();
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
     }
 
-    /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    /*    public ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
+        super(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
+    }*/
+
+    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
         super(receiveFromAlias, forwardToAlias);
     }
@@ -62,25 +72,60 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         initLoggingSide(receiveFromCtx);
 
         receiveMessages(receiveFromCtx);
-        handleReceivedMessages(receiveFromCtx);
+        // - affected - handleReceivedMessages(receiveFromCtx);
         filterMessages(receiveFromCtx, forwardToCtx);
-        forwardMessages(forwardToCtx);
         applyMessages(forwardToCtx);
+        forwardMessages(forwardToCtx);
     }
 
     @Override
     protected void forwardMessages(SshContext forwardToCtx) {
         LOGGER.info(
-                "Forwarding messages ({}): {}",
-                forwardToAlias,
-                getReadableString(receivedMessages));
-        MessageActionResult result =
-                SendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
+                "Forwarding messages ("
+                        + forwardToAlias
+                        + "): "
+                        + getReadableString(filteredMessages));
+
+        try {
+            LayerStack layerStack = forwardToCtx.getLayerStack();
+            LayerConfiguration messageConfiguration =
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHV2, filteredMessages);
+            LayerConfiguration packetConfiguration =
+                    new SpecificSendLayerConfiguration(
+                            ImplementedLayers.PACKET_LAYER, receivedPackets);
+
+            List<LayerConfiguration> layerConfigurationList =
+                    sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
+            LayerStackProcessingResult processingResult =
+                    layerStack.sendData(layerConfigurationList);
+
+            sendMessages =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.SSHV2)
+                                    .getUsedContainers());
+            sendPackets =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.PACKET_LAYER)
+                                    .getUsedContainers());
+
+            executedAsPlanned = checkMessageListsEquals(sendMessages, filteredMessages);
+
+            setExecuted(true);
+
+        } catch (IOException e) {
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        }
+
+        /*MessageActionResult result =
+                sendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
         sendMessages = result.getMessageList();
 
         if (executedAsPlanned) {
             executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
-        }
+        }*/
         setExecuted(true);
     }
 
@@ -96,7 +141,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         }
     }
 
-    public static UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
+    public UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
         UserAuthPubkeyMessage newPubkeyMessage = new UserAuthPubkeyMessage();
         UserAuthPubkeyMessagePreparator forwardContextPreparator =
                 new UserAuthPubkeyMessagePreparator(forwardToCtx.getChooser(), newPubkeyMessage);
@@ -104,7 +149,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         return newPubkeyMessage;
     }
 
-    public static UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
+    public UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
         UserAuthHostbasedMessage newHostbasedMessage = new UserAuthHostbasedMessage();
         UserAuthHostbasedMessagePreparator forwardContextPreparator =
                 new UserAuthHostbasedMessagePreparator(

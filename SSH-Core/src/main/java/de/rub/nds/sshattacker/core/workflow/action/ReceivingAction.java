@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ReceivingAction {
 
-    List<AbstractPacket> getReceivedPackets();
-
     List<ProtocolMessage<?>> getReceivedMessages();
+
+    List<AbstractPacket> getReceivedPackets();
 }

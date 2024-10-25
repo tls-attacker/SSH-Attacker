@@ -23,38 +23,45 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
 
     protected Channel channel;
 
-    protected ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
+    public ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
         super(chooser, message, messageId);
     }
 
     @Override
     public final void prepareMessageSpecificContents() {
-        prepareChannel();
-        prepareChannelMessageSpecificContents();
+        this.prepareChannel();
+        this.prepareChannelMessageSpecificContents();
     }
 
     private void prepareChannel() {
-        Optional<Integer> configSenderChannelId =
+        final Optional<Integer> configSenderChannelId =
                 Optional.ofNullable(getObject().getConfigSenderChannelId());
         channel =
                 configSenderChannelId
                         .flatMap(
                                 senderChannelId ->
                                         Optional.ofNullable(
-                                                chooser.getContext()
+                                                this.chooser
+                                                        .getContext()
+                                                        .getSshContext()
                                                         .getChannels()
                                                         .get(senderChannelId)))
                         .or(
                                 () ->
-                                        chooser.getContext()
+                                        this.chooser
+                                                .getContext()
+                                                .getSshContext()
                                                 .getChannelManager()
                                                 .guessChannelByReceivedMessages())
                         .orElseGet(
                                 () -> {
                                     LOGGER.warn(
                                             "About to prepare channel message, but no corresponding was channel found or guessed. Creating a new one from defaults.");
-                                    Integer remoteChannelId = configSenderChannelId.orElse(0);
-                                    return chooser.getContext()
+                                    final Integer remoteChannelId =
+                                            configSenderChannelId.orElse(Integer.valueOf(0));
+                                    return this.chooser
+                                            .getContext()
+                                            .getSshContext()
                                             .getChannelManager()
                                             .createNewChannelFromDefaults(remoteChannelId);
                                 });

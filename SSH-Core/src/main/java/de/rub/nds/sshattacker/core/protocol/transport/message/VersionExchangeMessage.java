@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
+import java.io.InputStream;
 
 public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
 
@@ -64,12 +68,32 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     @Override
-    public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context, this);
+    public VersionExchangeMessageHandler getHandler(SshContext sshContext) {
+        return new VersionExchangeMessageHandler(sshContext);
     }
 
     @Override
     public String toCompactString() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public VersionExchangeMessageParser getParser(SshContext context, InputStream stream) {
+        return new VersionExchangeMessageParser(stream);
+    }
+
+    @Override
+    public VersionExchangeMessagePreparator getPreparator(SshContext sshContext) {
+        return new VersionExchangeMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public VersionExchangeMessageSerializer getSerializer(SshContext sshContext) {
+        return new VersionExchangeMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "VERSION_EXCHANGE";
     }
 }

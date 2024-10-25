@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,20 +21,11 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessageParser(byte[] array) {
-        super(array);
+    public EcdhKeyExchangeReplyMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessage createMessage() {
-        return new EcdhKeyExchangeReplyMessage();
-    }
-
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(EcdhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -42,7 +34,7 @@ public class EcdhKeyExchangeReplyMessageParser
                 ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey(EcdhKeyExchangeReplyMessage message) {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Ephemeral public key (server) length: {}",
@@ -54,7 +46,7 @@ public class EcdhKeyExchangeReplyMessageParser
                 ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
     }
 
-    private void parseSignature() {
+    private void parseSignature(EcdhKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -64,9 +56,14 @@ public class EcdhKeyExchangeReplyMessageParser
     }
 
     @Override
-    public void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseEphemeralPublicKey();
-        parseSignature();
+    public void parseMessageSpecificContents(EcdhKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseEphemeralPublicKey(message);
+        parseSignature(message);
+    }
+
+    @Override
+    public void parse(EcdhKeyExchangeReplyMessage message) {
+        parseProtocolMessageContents(message);
     }
 }

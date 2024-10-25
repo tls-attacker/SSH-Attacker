@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +21,8 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
 
     @Override
     public void prepareMessageSpecificContents() {
-        if (chooser.getContext().isClient()) {
+        SshContext sshContext = chooser.getContext().getSshContext();
+        if (sshContext.isClient()) {
             getObject().setCookie(chooser.getClientCookie());
             getObject()
                     .setKeyExchangeAlgorithms(
@@ -61,7 +63,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getClientFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getClientReserved());
 
-            chooser.getContext().getExchangeHashInputHolder().setClientKeyExchangeInit(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setClientKeyExchangeInit(getObject());
         } else {
             getObject().setCookie(chooser.getServerCookie());
             getObject()
@@ -103,7 +108,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getServerFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getServerReserved());
 
-            chooser.getContext().getExchangeHashInputHolder().setServerKeyExchangeInit(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setServerKeyExchangeInit(getObject());
         }
     }
 }

@@ -51,7 +51,7 @@ public class UserAuthHostbasedMessagePreparator
     public byte[] prepareSignatureInput() {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
-                        chooser.getContext().getSessionID().orElse(new byte[] {})),
+                        chooser.getContext().getSshContext().getSessionID().orElse(new byte[] {})),
                 new byte[] {getObject().getMessageId().getValue()},
                 Converter.stringToLengthPrefixedBinaryString(getObject().getUserName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(

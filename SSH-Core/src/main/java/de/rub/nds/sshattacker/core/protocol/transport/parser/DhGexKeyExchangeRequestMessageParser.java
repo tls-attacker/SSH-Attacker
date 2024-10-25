@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,39 +19,35 @@ public class DhGexKeyExchangeRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeRequestMessageParser(byte[] array) {
-        super(array);
+    public DhGexKeyExchangeRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public DhGexKeyExchangeRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    public DhGexKeyExchangeRequestMessage createMessage() {
-        return new DhGexKeyExchangeRequestMessage();
-    }
-
-    public void parseMinimalGroupSize() {
-        message.setMinimalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+    public void parseMinimalGroupSize(DhGexKeyExchangeRequestMessage message) {
+        message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));
         LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 
-    public void parsePreferredGroupSize() {
+    public void parsePreferredGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Preferred DH group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
-    public void parseMaximalGroupSize() {
+    public void parseMaximalGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setMaximalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximal DH group size: {} bits", message.getMaximalGroupSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseMinimalGroupSize();
-        parsePreferredGroupSize();
-        parseMaximalGroupSize();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeRequestMessage message) {
+        parseMinimalGroupSize(message);
+        parsePreferredGroupSize(message);
+        parseMaximalGroupSize(message);
+    }
+
+    @Override
+    public void parse(DhGexKeyExchangeRequestMessage message) {
+        parseProtocolMessageContents(message);
     }
 }
