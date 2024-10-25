@@ -116,9 +116,7 @@ public class CyclicParserSerializerTest {
                     || ChannelOpenMessage.class.isAssignableFrom(messageClass)) {
                 Channel defaultChannel =
                         context.getConfig().getChannelDefaults().newChannelFromDefaults();
-                context.getChannelManager()
-                        .getChannels()
-                        .put(defaultChannel.getRemoteChannelId().getValue(), defaultChannel);
+                context.getChannelManager().addChannel(defaultChannel);
                 defaultChannel.setOpen(true);
             }
             // Prepare the message given the fresh context

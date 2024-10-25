@@ -23,10 +23,15 @@ public class GlobalRequestSuccessMessageSerializer
     }
 
     private void serializeResponseSpecificData() {
-        LOGGER.debug(
-                "Response specific data blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getResponseSpecificData().getValue()));
-        appendBytes(message.getResponseSpecificData().getValue());
+        if (message.getResponseSpecificData() != null) {
+            LOGGER.debug(
+                    "Response specific data blob: {}",
+                    ArrayConverter.bytesToRawHexString(
+                            message.getResponseSpecificData().getValue()));
+            appendBytes(message.getResponseSpecificData().getValue());
+        } else {
+            LOGGER.debug("No response specific data blob set");
+        }
     }
 
     @Override
