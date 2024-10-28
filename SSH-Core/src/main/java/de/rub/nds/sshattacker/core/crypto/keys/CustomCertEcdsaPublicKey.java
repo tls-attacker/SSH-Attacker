@@ -7,34 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
-import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
-import java.security.AlgorithmParameters;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.InvalidParameterSpecException;
 import java.util.Map;
 
 /** A serializable ECDSA public key used in ECDSA certificates (SSH-ECDSA-CERT). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPublicKey {
-
-    // Fields for ECDSA specific parameters
-    private Point publicKey; // Public key as Point
-    private NamedEcGroup group;
-    private BigInteger x;
-    private BigInteger y;
-    private String curveName;
+public class CustomCertEcdsaPublicKey extends CustomEcPublicKey {
 
     // New field for serial number in ECDSA certificates
     private long serial;
@@ -60,42 +41,16 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
         super();
     }
 
-    public CustomCertEcdsaPublicKey(ECPublicKey publicKey) {
-        super();
-        this.x = publicKey.getW().getAffineX();
-        this.y = publicKey.getW().getAffineY();
-        this.curveName =
-                publicKey
-                        .getParams()
-                        .getCurve()
-                        .toString(); // Simplified, should be set based on curve name
+    public CustomCertEcdsaPublicKey(Point publicKey, NamedEcGroup group) {
+        super(publicKey, group);
     }
 
-    public CustomCertEcdsaPublicKey(
-            BigInteger x, BigInteger y, String curveName, NamedEcGroup group) {
-        super();
-        this.x = x;
-        this.y = y;
-        this.curveName = curveName;
-        this.group = group;
+    public CustomCertEcdsaPublicKey(ECPublicKey publicKey) throws CryptoException {
+        super(publicKey);
     }
 
-    // Getter for the public key point (W)
-    @Override
-    public ECPoint getW() {
-        return new ECPoint(x, y);
-    }
-
-    // Setter for the public key as a Point object
-    public void setPublicKey(Point w) {
-        this.publicKey = w;
-        this.x = w.getFieldX().getData();
-        this.y = w.getFieldY().getData();
-    }
-
-    // Getter for the public key as a Point (getWAsPoint)
-    public Point getWAsPoint() {
-        return publicKey;
+    public CustomCertEcdsaPublicKey(BigInteger x, BigInteger y, NamedEcGroup group) {
+        super(x, y, group);
     }
 
     public void setCertFormat(String certformat) {
@@ -104,24 +59,6 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
 
     public String getCertFormat() {
         return certformat;
-    }
-
-    // Getter und setter for the curve name
-    public String getCurveName() {
-        return curveName;
-    }
-
-    public void setCurveName(String curveName) {
-        this.curveName = curveName;
-    }
-
-    // Getter and setter for NamedEcGroup
-    public NamedEcGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(NamedEcGroup group) {
-        this.group = group;
     }
 
     // Getter and setter for serial number
@@ -228,29 +165,5 @@ public class CustomCertEcdsaPublicKey extends CustomPublicKey implements ECPubli
 
     public void setExtensions(Map<String, String> extensions) {
         this.extensions = extensions;
-    }
-
-    // Return the ECDSA algorithm name
-    @Override
-    public String getAlgorithm() {
-        return "EC";
-    }
-
-    // Encode public key
-    @Override
-    public byte[] getEncoded() {
-        return PointFormatter.formatToByteArray(group, publicKey, EcPointFormat.UNCOMPRESSED);
-    }
-
-    // Implement the getParams method from ECPublicKey
-    @Override
-    public ECParameterSpec getParams() {
-        try {
-            AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(new ECGenParameterSpec(group.getJavaName()));
-            return parameters.getParameterSpec(ECParameterSpec.class);
-        } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
-        }
     }
 }

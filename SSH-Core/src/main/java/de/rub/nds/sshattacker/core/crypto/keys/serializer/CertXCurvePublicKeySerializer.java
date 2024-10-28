@@ -74,7 +74,7 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         }
 
         // 3. Public Key (Corresponds to "pk" in the Ed25519 format)
-        byte[] publicKeyBytes = publicKey.getPublicKey();
+        byte[] publicKeyBytes = publicKey.getCoordinate();
         if (publicKeyBytes != null) {
             appendInt(publicKeyBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
             appendBytes(publicKeyBytes);

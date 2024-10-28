@@ -76,7 +76,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(publicKeyAlgorithm);
 
             // Public Key (as ASN.1 OCTET STRING)
-            topLevelVector.add(new DEROctetString(publicKey.getPublicKey()));
+            topLevelVector.add(new DEROctetString(publicKey.getCoordinate()));
 
             // Extensions (ASN.1 encoded as Extensions sequence)
             Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());

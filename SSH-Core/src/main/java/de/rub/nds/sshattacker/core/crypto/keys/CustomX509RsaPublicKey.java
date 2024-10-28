@@ -7,21 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /** A serializable RSA public key used in X.509 certificates (X509-SSH-RSA). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomX509RsaPublicKey extends CustomPublicKey implements RSAPublicKey {
-
-    // Public key modulus and exponent (standard for RSA)
-    private BigInteger modulus;
-    private BigInteger publicExponent;
+public class CustomX509RsaPublicKey extends CustomRsaPublicKey {
 
     // X.509-specific fields
     private String issuer; // Issuer Distinguished Name
@@ -62,25 +53,6 @@ public class CustomX509RsaPublicKey extends CustomPublicKey implements RSAPublic
         this.modulus = modulus;
         this.publicExponent = publicExponent;
         this.signature = signature;
-    }
-
-    // Getters and setters for RSA public key fields
-    @Override
-    public BigInteger getModulus() {
-        return modulus;
-    }
-
-    public void setModulus(BigInteger modulus) {
-        this.modulus = modulus;
-    }
-
-    @Override
-    public BigInteger getPublicExponent() {
-        return publicExponent;
-    }
-
-    public void setPublicExponent(BigInteger publicExponent) {
-        this.publicExponent = publicExponent;
     }
 
     // Getter and setter for serial number
@@ -181,10 +153,5 @@ public class CustomX509RsaPublicKey extends CustomPublicKey implements RSAPublic
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return "RSA";
     }
 }

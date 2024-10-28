@@ -7,23 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
-import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPublicKey;
 import java.util.Map;
 
 /** A serializable DSA public key used in DSA certificates (SSH-DSA-CERT). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
-
-    private BigInteger p;
-    private BigInteger q;
-    private BigInteger g;
-    private BigInteger y;
+public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
 
     // New field for serial number in DSA certificates
     private long serial;
@@ -50,52 +39,11 @@ public class CustomCertDsaPublicKey extends CustomPublicKey implements DSAPublic
     }
 
     public CustomCertDsaPublicKey(DSAPublicKey publicKey) {
-        super();
-        p = publicKey.getParams().getP();
-        q = publicKey.getParams().getQ();
-        g = publicKey.getParams().getG();
-        y = publicKey.getY();
+        super(publicKey);
     }
 
     public CustomCertDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y) {
-        super();
-        this.p = p;
-        this.q = q;
-        this.g = g;
-        this.y = y;
-    }
-
-    @Override
-    public BigInteger getY() {
-        return y;
-    }
-
-    public void setY(BigInteger y) {
-        this.y = y;
-    }
-
-    public BigInteger getP() {
-        return p;
-    }
-
-    public void setP(BigInteger p) {
-        this.p = p;
-    }
-
-    public BigInteger getQ() {
-        return q;
-    }
-
-    public void setQ(BigInteger q) {
-        this.q = q;
-    }
-
-    public BigInteger getG() {
-        return g;
-    }
-
-    public void setG(BigInteger g) {
-        this.g = g;
+        super(p, q, g, y);
     }
 
     public long getSerial() {
@@ -202,32 +150,5 @@ public class CustomCertDsaPublicKey extends CustomPublicKey implements DSAPublic
 
     public void setExtensions(Map<String, String> extensions) {
         this.extensions = extensions;
-    }
-
-    // Return the DSA algorithm name
-    @Override
-    public String getAlgorithm() {
-        return "DSA";
-    }
-
-    // Implement the getParams method from DSAPublicKey
-    @Override
-    public DSAParams getParams() {
-        return new DSAParams() {
-            @Override
-            public BigInteger getP() {
-                return p;
-            }
-
-            @Override
-            public BigInteger getQ() {
-                return q;
-            }
-
-            @Override
-            public BigInteger getG() {
-                return g;
-            }
-        };
     }
 }

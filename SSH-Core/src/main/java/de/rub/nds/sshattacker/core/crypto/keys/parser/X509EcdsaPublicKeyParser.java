@@ -94,9 +94,8 @@ public class X509EcdsaPublicKeyParser
                         new CustomX509EcdsaPublicKey(
                                 ecPublicKey.getW().getAffineX(),
                                 ecPublicKey.getW().getAffineY(),
-                                signature,
-                                curveName, // Add curve name here
-                                group);
+                                group,
+                                signature);
 
                 // Set parsed values to the CustomX509EcdsaPublicKey object
                 customX509EcdsaPublicKey.setVersion(cert.getVersion());
@@ -107,7 +106,6 @@ public class X509EcdsaPublicKeyParser
                 customX509EcdsaPublicKey.setValidAfter(cert.getNotBefore().getTime());
                 customX509EcdsaPublicKey.setValidBefore(cert.getNotAfter().getTime());
                 customX509EcdsaPublicKey.setPublicKeyAlgorithm(publicKey.getAlgorithm());
-                customX509EcdsaPublicKey.setCurveName(curveName); // Add curve name to the object
 
                 // Log parsed elements including the curve name
                 LOGGER.debug("Parsed Version: V{}", cert.getVersion());

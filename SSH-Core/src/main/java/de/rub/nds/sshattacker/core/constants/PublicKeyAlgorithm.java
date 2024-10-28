@@ -188,7 +188,11 @@ public enum PublicKeyAlgorithm {
             SignatureEncoding.ECDSA_SHA2_BRAINPOOL_P512R1,
             "SHA512withECDSA"),
     // [ RFC 6187 ]
-    X509V3_SSH_DSS("x509v3-ssh-dss", PublicKeyFormat.X509V3_SSH_DSS),
+    X509V3_SSH_DSS(
+            "x509v3-ssh-dss",
+            PublicKeyFormat.X509V3_SSH_DSS,
+            SignatureEncoding.SSH_DSS,
+            "SHA1WithDSA"),
     X509V3_SSH_RSA(
             "x509v3-ssh-rsa",
             PublicKeyFormat.X509V3_SSH_RSA,

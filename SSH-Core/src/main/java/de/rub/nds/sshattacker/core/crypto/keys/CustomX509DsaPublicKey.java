@@ -7,24 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
-import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPublicKey;
 import java.util.Map;
 
 /** A serializable DSA public key used in X.509 certificates (X509-SSH-DSA). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomX509DsaPublicKey extends CustomPublicKey implements DSAPublicKey {
-
-    // DSA-specific fields
-    private BigInteger p;
-    private BigInteger q;
-    private BigInteger g;
-    private BigInteger y;
+public class CustomX509DsaPublicKey extends CustomDsaPublicKey {
 
     // X.509-specific fields
     private String issuer; // Issuer Distinguished Name
@@ -48,62 +36,20 @@ public class CustomX509DsaPublicKey extends CustomPublicKey implements DSAPublic
     }
 
     public CustomX509DsaPublicKey(DSAPublicKey publicKey, byte[] signature) {
-        super();
+        super(publicKey);
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
-        this.p = publicKey.getParams().getP();
-        this.q = publicKey.getParams().getQ();
-        this.g = publicKey.getParams().getG();
-        this.y = publicKey.getY();
         this.signature = signature;
     }
 
     public CustomX509DsaPublicKey(
             BigInteger p, BigInteger q, BigInteger g, BigInteger y, byte[] signature) {
-        super();
+        super(p, q, g, y);
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
-        this.p = p;
-        this.q = q;
-        this.g = g;
-        this.y = y;
         this.signature = signature;
-    }
-
-    // Getters and setters for DSA public key fields
-    @Override
-    public BigInteger getY() {
-        return y;
-    }
-
-    public void setY(BigInteger y) {
-        this.y = y;
-    }
-
-    public BigInteger getP() {
-        return p;
-    }
-
-    public void setP(BigInteger p) {
-        this.p = p;
-    }
-
-    public BigInteger getQ() {
-        return q;
-    }
-
-    public void setQ(BigInteger q) {
-        this.q = q;
-    }
-
-    public BigInteger getG() {
-        return g;
-    }
-
-    public void setG(BigInteger g) {
-        this.g = g;
     }
 
     // Getter and setter for serial number
@@ -204,32 +150,5 @@ public class CustomX509DsaPublicKey extends CustomPublicKey implements DSAPublic
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
-    }
-
-    // Return the DSA algorithm name
-    @Override
-    public String getAlgorithm() {
-        return "DSA";
-    }
-
-    // Implement the getParams method from DSAPublicKey
-    @Override
-    public DSAParams getParams() {
-        return new DSAParams() {
-            @Override
-            public BigInteger getP() {
-                return p;
-            }
-
-            @Override
-            public BigInteger getQ() {
-                return q;
-            }
-
-            @Override
-            public BigInteger getG() {
-                return g;
-            }
-        };
     }
 }

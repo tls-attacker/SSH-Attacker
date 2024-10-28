@@ -8,27 +8,10 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
-import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
 /** A serializable ED25519/ED448 X.509 public key used in certificates (X509-SSH-Ed25519). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomX509XCurvePublicKey extends CustomPublicKey {
-
-    private NamedEcGroup group; // Named group (Ed25519 or Ed448)
-    private byte[] publicKey; // Public key bytes
+public class CustomX509XCurvePublicKey extends XCurveEcPublicKey {
 
     // X.509-specific fields
     private String issuer; // Issuer Distinguished Name
@@ -51,32 +34,12 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
         super();
     }
 
-    public CustomX509XCurvePublicKey(byte[] publicKey, NamedEcGroup group, byte[] signature) {
-        super();
+    public CustomX509XCurvePublicKey(byte[] coordinate, NamedEcGroup group, byte[] signature) {
+        super(coordinate, group);
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
-        this.publicKey = publicKey;
-        this.group = group;
         this.signature = signature;
-    }
-
-    // Getter and setter for public key
-    public byte[] getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(byte[] publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    // Getter and setter for group
-    public NamedEcGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(NamedEcGroup group) {
-        this.group = group;
     }
 
     // Getter and setter for serial number
@@ -177,36 +140,5 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
-    }
-
-    // Method to convert the public key to a PublicKey object (EdDSA key)
-    public PublicKey toEdDsaKey() {
-        try {
-            KeyFactory keyFactory;
-            SubjectPublicKeyInfo publicKeyInfo;
-            if (group == NamedEcGroup.CURVE25519) {
-                keyFactory = KeyFactory.getInstance("Ed25519");
-                publicKeyInfo =
-                        new SubjectPublicKeyInfo(
-                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
-                                publicKey);
-            } else if (group == NamedEcGroup.CURVE448) {
-                keyFactory = KeyFactory.getInstance("Ed448");
-                publicKeyInfo =
-                        new SubjectPublicKeyInfo(
-                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed448), publicKey);
-            } else {
-                throw new UnsupportedOperationException("Unsupported group: " + group);
-            }
-            X509EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(publicKeyInfo.getEncoded());
-            return keyFactory.generatePublic(encodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
-            throw new RuntimeException("Failed to convert certificate public key to EdDSA key", e);
-        }
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return "EdDSA";
     }
 }

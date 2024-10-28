@@ -8,31 +8,14 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.sshattacker.core.crypto.ec.Point;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
-import java.security.AlgorithmParameters;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.InvalidParameterSpecException;
 import java.util.Map;
 
 /** A serializable ECDSA public key used in X.509 certificates (X509-SSH-ECDSA). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPublicKey {
-
-    // ECDSA-specific fields
-    private BigInteger x;
-    private BigInteger y;
-    private String curveName;
-
-    // New field for the named EC group
-    private NamedEcGroup group;
+public class CustomX509EcdsaPublicKey extends CustomEcPublicKey {
 
     // X.509-specific fields
     private String issuer; // Issuer Distinguished Name
@@ -55,75 +38,30 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
         super();
     }
 
-    public CustomX509EcdsaPublicKey(
-            ECPublicKey publicKey, byte[] signature, String curveName, NamedEcGroup group) {
-        super();
+    public CustomX509EcdsaPublicKey(Point publicKey, NamedEcGroup group, byte[] signature) {
+        super(publicKey, group);
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
-        this.x = publicKey.getW().getAffineX();
-        this.y = publicKey.getW().getAffineY();
-        this.curveName = curveName;
         this.signature = signature;
-        this.group = group; // Set the group
     }
 
-    public CustomX509EcdsaPublicKey(
-            BigInteger x, BigInteger y, byte[] signature, String curveName, NamedEcGroup group) {
-        super();
+    public CustomX509EcdsaPublicKey(ECPublicKey publicKey, byte[] signature)
+            throws CryptoException {
+        super(publicKey);
         if (signature == null || signature.length == 0) {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
-        this.x = x;
-        this.y = y;
         this.signature = signature;
-        this.curveName = curveName;
-        this.group = group; // Set the group
     }
 
-    // Getter for the public key point (W)
-    @Override
-    public ECPoint getW() {
-        return new ECPoint(x, y);
-    }
-
-    // Setter for the public key point
-    public void setPublicKey(ECPoint w) {
-        this.x = w.getAffineX();
-        this.y = w.getAffineY();
-    }
-
-    // Getters and setters for ECDSA public key fields
-    public BigInteger getX() {
-        return x;
-    }
-
-    public void setX(BigInteger x) {
-        this.x = x;
-    }
-
-    public BigInteger getY() {
-        return y;
-    }
-
-    public void setY(BigInteger y) {
-        this.y = y;
-    }
-
-    public String getCurveName() {
-        return curveName;
-    }
-
-    public void setCurveName(String curveName) {
-        this.curveName = curveName;
-    }
-
-    public NamedEcGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(NamedEcGroup group) {
-        this.group = group;
+    public CustomX509EcdsaPublicKey(
+            BigInteger x, BigInteger y, NamedEcGroup group, byte[] signature) {
+        super(x, y, group);
+        if (signature == null || signature.length == 0) {
+            throw new IllegalArgumentException("Signature cannot be null or empty");
+        }
+        this.signature = signature;
     }
 
     // Getter and setter for serial number
@@ -224,26 +162,5 @@ public class CustomX509EcdsaPublicKey extends CustomPublicKey implements ECPubli
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
-    }
-
-    // Return the ECDSA algorithm name
-    @Override
-    public String getAlgorithm() {
-        return "EC";
-    }
-
-    // Implement the getParams method from ECPublicKey
-    @Override
-    public ECParameterSpec getParams() {
-        try {
-            AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(
-                    new ECGenParameterSpec(
-                            group.getJavaName())); // Use the group to retrieve the curve name
-            return parameters.getParameterSpec(ECParameterSpec.class);
-        } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new UnsupportedOperationException(
-                    "Fehler beim Generieren von ECParameterSpec", ex);
-        }
     }
 }

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509EcdsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.math.BigInteger;
@@ -93,13 +94,13 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
 
             // Curve Name (as ASN.1 Object Identifier for the specific curve, e.g., NIST P-256)
             ASN1ObjectIdentifier curveOid =
-                    new ASN1ObjectIdentifier(getCurveOid(publicKey.getCurveName()));
+                    new ASN1ObjectIdentifier(getCurveOid(publicKey.getGroup()));
             topLevelVector.add(curveOid);
 
             // Public Key (as ASN.1 SEQUENCE for ECPoint)
             ASN1EncodableVector publicKeyVector = new ASN1EncodableVector();
-            publicKeyVector.add(new ASN1Integer(publicKey.getX()));
-            publicKeyVector.add(new ASN1Integer(publicKey.getY()));
+            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineX()));
+            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineY()));
             ASN1Sequence publicKeySequence = new DERSequence(publicKeyVector);
             topLevelVector.add(new DERBitString(publicKeySequence));
 
@@ -228,44 +229,17 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
     }
 
     /** Utility method to map curve names to their corresponding OIDs. */
-    private String getCurveOid(String curveName) {
-        curveName =
-                curveName.toLowerCase().trim(); // Convert the name to lowercase and trim whitespace
-        switch (curveName) {
-            case "secp256r1":
-            case "nistp256":
+    private String getCurveOid(NamedEcGroup curve) {
+        switch (curve) {
+            case SECP256R1:
                 return "1.2.840.10045.3.1.7";
-            case "secp384r1":
-            case "nistp384":
+            case SECP384R1:
                 return "1.3.132.0.34";
-            case "secp521r1":
-            case "nistp521":
+            case SECP521R1:
                 return "1.3.132.0.35";
                 // Additional curves from RFC 5656
-            case "secp192r1":
-            case "nistp192":
-                return "1.2.840.10045.3.1.1";
-            case "secp224r1":
-            case "nistp224":
-                return "1.3.132.0.33";
-            case "sect409r1":
-            case "nistb409":
-                return "1.3.132.0.37";
-            case "sect571r1":
-            case "nistb571":
-                return "1.3.132.0.39";
             default:
-                // If the curve name combines multiple identifiers, split and search them
-                if (curveName.contains("/")) {
-                    String[] parts = curveName.split("/");
-                    for (String part : parts) {
-                        String oid = getCurveOid(part.trim());
-                        if (oid != null) {
-                            return oid;
-                        }
-                    }
-                }
-                throw new IllegalArgumentException("Unsupported curve: " + curveName);
+                return curve.getIdentifier();
         }
     }
 }

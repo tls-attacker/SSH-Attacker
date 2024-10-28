@@ -67,14 +67,13 @@ public class CertEcdsaPublicKeyParser
         String curveIdentifier = parseByteString(curveIdentifierLength, StandardCharsets.US_ASCII);
         NamedEcGroup group = NamedEcGroup.fromIdentifier(curveIdentifier);
         publicKey.setGroup(group);
-        publicKey.setCurveName(group.getIdentifier());
         LOGGER.debug("Parsed curve: {}", curveIdentifier);
 
         // Public Key
         int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         Point publicKeyPoint =
                 PointFormatter.formatFromByteArray(group, parseByteArrayField(publicKeyLength));
-        publicKey.setPublicKey(publicKeyPoint);
+        publicKey.setW(publicKeyPoint);
         LOGGER.debug("Parsed publicKey: {}", publicKeyPoint);
 
         // Serial

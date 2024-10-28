@@ -69,7 +69,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed publicKeyLength: {}", publicKeyLength);
         byte[] publicKeyBytes = parseByteArrayField(publicKeyLength);
         LOGGER.debug("Parsed publicKey: {}", Arrays.toString(publicKeyBytes));
-        publicKey.setPublicKey(publicKeyBytes); // Setze Public Key
+        publicKey.setCoordinate(publicKeyBytes); // Setze Public Key
 
         // 4. Serial (uint64)
         long serial = parseBigIntField(DataFormatConstants.UINT64_SIZE).longValue();

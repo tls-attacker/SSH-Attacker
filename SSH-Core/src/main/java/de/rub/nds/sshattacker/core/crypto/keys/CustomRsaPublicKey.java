@@ -18,8 +18,8 @@ import java.security.interfaces.RSAPublicKey;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
 
-    private BigInteger modulus;
-    private BigInteger publicExponent;
+    protected BigInteger modulus;
+    protected BigInteger publicExponent;
 
     public CustomRsaPublicKey() {
         super();

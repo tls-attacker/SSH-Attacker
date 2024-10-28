@@ -8,27 +8,10 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
-import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
 /** A serializable ED25519/ED448 certificate public key used in certificates (SSH-ED25519-CERT). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertXCurvePublicKey extends CustomPublicKey {
-
-    private NamedEcGroup group;
-    private byte[] publicKey;
+public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
 
     // New fields for certificate-specific information
     private long serial;
@@ -49,34 +32,8 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
         super();
     }
 
-    public CustomCertXCurvePublicKey(byte[] publicKey, NamedEcGroup group) {
-        super();
-        this.publicKey = publicKey;
-        this.group = group;
-    }
-
-    // Implementing the getAlgorithm() method as required by the Key interface
-    @Override
-    public String getAlgorithm() {
-        return "ED25519";
-    }
-
-    // Getter and setter for public key
-    public byte[] getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(byte[] publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    // Getter and setter for group
-    public NamedEcGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(NamedEcGroup group) {
-        this.group = group;
+    public CustomCertXCurvePublicKey(byte[] coordinate, NamedEcGroup group) {
+        super(coordinate, group);
     }
 
     // Getter and setter for serial number
@@ -193,30 +150,5 @@ public class CustomCertXCurvePublicKey extends CustomPublicKey {
 
     public void setExtensions(Map<String, String> extensions) {
         this.extensions = extensions;
-    }
-
-    public PublicKey toEdDsaKey() {
-        try {
-            KeyFactory keyFactory;
-            SubjectPublicKeyInfo publicKeyInfo;
-            if (group == NamedEcGroup.CURVE25519) {
-                keyFactory = KeyFactory.getInstance("Ed25519");
-                publicKeyInfo =
-                        new SubjectPublicKeyInfo(
-                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519),
-                                publicKey);
-            } else if (group == NamedEcGroup.CURVE448) {
-                keyFactory = KeyFactory.getInstance("Ed448");
-                publicKeyInfo =
-                        new SubjectPublicKeyInfo(
-                                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed448), publicKey);
-            } else {
-                throw new UnsupportedOperationException("Unsupported group: " + group);
-            }
-            X509EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(publicKeyInfo.getEncoded());
-            return keyFactory.generatePublic(encodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
-            throw new RuntimeException("Failed to convert certificate public key to EdDSA key", e);
-        }
     }
 }

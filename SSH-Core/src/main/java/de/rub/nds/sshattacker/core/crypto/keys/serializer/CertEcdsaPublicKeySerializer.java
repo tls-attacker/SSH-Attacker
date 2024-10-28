@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertEcdsaPublicKey;
@@ -38,7 +39,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
     protected void serializeBytes() {
         // Add debugging information before serialization
         LOGGER.debug("Starting serialization of CertEcdsaPublicKey.");
-        LOGGER.debug("Curve Name: {}", publicKey.getCurveName());
+        LOGGER.debug("Curve Name: {}", publicKey.getGroup().getJavaName());
         LOGGER.debug("Public Key: {}", publicKey.getWAsPoint());
         LOGGER.debug("Nonce: {}", publicKey.getNonce());
         LOGGER.debug("Signature Key: {}", publicKey.getSignatureKey());
@@ -64,9 +65,9 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
          */
 
         // Format identifier (ecdsa-sha2-nistp*-cert-v01@openssh.com)
-        String curveName = publicKey.getCurveName();
-        switch (curveName) {
-            case "nistp256":
+        NamedEcGroup curve = publicKey.getGroup();
+        switch (curve) {
+            case SECP256R1:
                 appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
                                 .toString()
@@ -77,7 +78,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
                 break;
-            case "nistp384":
+            case SECP384R1:
                 appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM
                                 .toString()
@@ -88,7 +89,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
                 break;
-            case "nistp521":
+            case SECP521R1:
                 appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM
                                 .toString()
@@ -100,7 +101,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         StandardCharsets.US_ASCII);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported curve: " + curveName);
+                throw new IllegalArgumentException("Unsupported curve: " + curve);
         }
         // Nonce
         byte[] nonce = publicKey.getNonce();
@@ -110,9 +111,9 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
         // Curve name
         // String curveName = publicKey.getCurveName();
         appendInt(
-                curveName.getBytes(StandardCharsets.US_ASCII).length,
+                curve.getIdentifier().getBytes(StandardCharsets.US_ASCII).length,
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(curveName, StandardCharsets.US_ASCII);
+        appendString(curve.getIdentifier(), StandardCharsets.US_ASCII);
 
         // Public Key (Q)
         byte[] encodedQ =

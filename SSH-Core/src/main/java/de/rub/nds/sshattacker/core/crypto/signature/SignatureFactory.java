@@ -77,19 +77,13 @@ public final class SignatureFactory {
             PublicKeyAlgorithm algorithm, PublicKey publicKey) {
         if (algorithm.getSignatureEncoding() == SignatureEncoding.SSH_DSS) {
             return new UnpackedDsaJavaSignature(algorithm, publicKey);
-        } else if (algorithm.getName().startsWith("ecdsa-sha2-")) {
+        } else if (algorithm.getName().startsWith("ecdsa-sha2-")
+            || algorithm.getName().startsWith("x509v3-ecdsa-sha2-")) {
             return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
-        } else if (algorithm.getName().startsWith("ssh-rsa-cert-")) {
-            return new JavaSignature(algorithm, publicKey);
-        } else if (algorithm.getName().startsWith("ssh-dss-cert-")) {
-            return new JavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
             // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
             if (publicKey instanceof XCurveEcPublicKey) {
                 publicKey = ((XCurveEcPublicKey) publicKey).toEdDsaKey();
-            }
-            if (publicKey instanceof CustomCertXCurvePublicKey) {
-                publicKey = ((CustomCertXCurvePublicKey) publicKey).toEdDsaKey();
             }
             return new JavaSignature(algorithm, publicKey);
         }

@@ -7,20 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /** A serializable RSA public key used in RSA certificates (SSH-RSA-CERT). */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
-
-    private BigInteger modulus;
-    private BigInteger publicExponent;
+public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
 
     // New field for serial number in RSA certificates
     private long serial;
@@ -47,33 +39,11 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
     }
 
     public CustomCertRsaPublicKey(RSAPublicKey publicKey) {
-        super();
-        modulus = publicKey.getModulus();
-        publicExponent = publicKey.getPublicExponent();
+        super(publicKey);
     }
 
     public CustomCertRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
-        super();
-        this.modulus = modulus;
-        this.publicExponent = publicExponent;
-    }
-
-    @Override
-    public BigInteger getModulus() {
-        return modulus;
-    }
-
-    public void setModulus(BigInteger modulus) {
-        this.modulus = modulus;
-    }
-
-    @Override
-    public BigInteger getPublicExponent() {
-        return publicExponent;
-    }
-
-    public void setPublicExponent(BigInteger publicExponent) {
-        this.publicExponent = publicExponent;
+        super(publicExponent, modulus);
     }
 
     public void setCertFormat(String certformat) {
@@ -178,10 +148,5 @@ public class CustomCertRsaPublicKey extends CustomPublicKey implements RSAPublic
 
     public void setCriticalOptions(Map<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return "RSA";
     }
 }
