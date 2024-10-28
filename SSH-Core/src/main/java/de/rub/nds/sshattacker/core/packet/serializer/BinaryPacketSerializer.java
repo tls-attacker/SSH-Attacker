@@ -58,6 +58,9 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
 
         binaryPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.trace(
+                "Complete payload bytes: {}",
+                ArrayConverter.bytesToHexString(binaryPacket.getPayload().getValue()));
+        LOGGER.trace(
                 "Complete packet bytes: {}",
                 ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
     }

@@ -18,7 +18,6 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final BinaryPacket binaryPacket;
     private final AbstractPacketEncryptor encryptor;
     private final PacketCompressor compressor;
 
@@ -28,7 +27,6 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
             AbstractPacketEncryptor encryptor,
             PacketCompressor compressor) {
         super(chooser, binaryPacket);
-        this.binaryPacket = binaryPacket;
         this.encryptor = encryptor;
         this.compressor = compressor;
     }
@@ -36,10 +34,10 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
     @Override
     public void prepare() {
         LOGGER.debug("Preparing binary packet computations");
-        binaryPacket.prepareComputations();
+        getObject().prepareComputations();
         LOGGER.debug("Compressing binary packet");
-        compressor.compress(binaryPacket);
+        compressor.compress(getObject());
         LOGGER.debug("Encrypting binary packet");
-        encryptor.encrypt(binaryPacket);
+        encryptor.encrypt(getObject());
     }
 }
