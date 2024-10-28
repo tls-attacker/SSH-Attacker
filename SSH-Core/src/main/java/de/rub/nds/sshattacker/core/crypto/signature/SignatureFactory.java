@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
@@ -78,7 +77,7 @@ public final class SignatureFactory {
         if (algorithm.getSignatureEncoding() == SignatureEncoding.SSH_DSS) {
             return new UnpackedDsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getName().startsWith("ecdsa-sha2-")
-            || algorithm.getName().startsWith("x509v3-ecdsa-sha2-")) {
+                || algorithm.getName().startsWith("x509v3-ecdsa-sha2-")) {
             return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
             // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
