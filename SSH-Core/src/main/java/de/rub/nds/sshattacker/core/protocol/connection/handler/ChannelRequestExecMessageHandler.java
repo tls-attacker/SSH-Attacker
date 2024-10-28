@@ -15,7 +15,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequest
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage> {
+public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage>
+        implements MessageSentHandler {
 
     public ChannelRequestExecMessageHandler(SshContext context) {
         super(context);
@@ -27,9 +28,15 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
 
     @Override
     public void adjustContext() {
-        // TODO: Handle ChannelRequestExecMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(message);
         }
     }
 

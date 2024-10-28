@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.exceptions.ChannelManagerException;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -35,9 +35,6 @@ public class ChannelManager {
 
     private final List<ChannelOpenConfirmationMessage> pendingChannelOpenConfirmations =
             new LinkedList<>();
-
-    // Received channel requests that want a reply
-    private final List<ChannelMessage<?>> channelRequestResponseQueue = new LinkedList<>();
 
     public ChannelManager(SshContext context) {
         super();
@@ -80,7 +77,7 @@ public class ChannelManager {
         }
         // Create a new ChannelOpenConfirmationMessage, that is not a reply to a ChannelOpenMessage
         ChannelOpenConfirmationMessage fresh = new ChannelOpenConfirmationMessage();
-        guessChannelByReceivedMessages()
+        getChannelByReceivedRequestThatWantReply()
                 .ifPresentOrElse(
                         channel -> {
                             fresh.setSenderChannelId(channel.getLocalChannelId());
@@ -91,9 +88,8 @@ public class ChannelManager {
                                     "Failed to guess channel, setting sender and receiver channel IDs to 0!");
                             fresh.setSenderChannelId(0);
                             fresh.setRecipientChannelId(0);
+                            createNewChannelFromDefaults(0, 0);
                         });
-        createNewChannelFromDefaults(
-                fresh.getSenderChannelId().getValue(), fresh.getRecipientChannelId().getValue());
         return fresh;
     }
 
@@ -223,20 +219,57 @@ public class ChannelManager {
         return createPrendingChannel(findUnusedChannelId());
     }
 
-    public Optional<Channel> guessChannelByReceivedMessages() {
-        if (!channelRequestResponseQueue.isEmpty()) {
-            ChannelMessage<?> message = channelRequestResponseQueue.remove(0);
-            Optional.ofNullable(channelsByLocalId.get(message.getRecipientChannelId().getValue()));
+    /**
+     * Remove the "first" request received on any channel, that wants a reply, and return it or
+     * return none if there are no more requests in the queue.
+     *
+     * @return ChannelRequestMessage
+     */
+    public ChannelRequestMessage<?> removeFirstReceivedRequestThatWantReply() {
+        for (Channel channel : channelsByLocalId.values()) {
+            ChannelRequestMessage<?> firstRequest =
+                    channel.removeFirstReceivedRequestThatWantReply();
+            if (firstRequest != null) {
+                return firstRequest;
+            }
         }
-        return channelsByLocalId.values().stream().findFirst();
+        return null;
     }
 
-    public void addToChannelRequestResponseQueue(ChannelMessage<?> message) {
-        if (channelsByLocalId.containsKey(message.getRecipientChannelId().getValue())) {
-            channelRequestResponseQueue.add(message);
+    /**
+     * Return a channel on which a received request wants reply, or return none.
+     *
+     * <p>Also removes the ChannelRequestMessage from the queue
+     *
+     * @return channel
+     */
+    public Optional<Channel> getChannelByReceivedRequestThatWantReply() {
+        ChannelRequestMessage<?> message = removeFirstReceivedRequestThatWantReply();
+        if (message != null) {
+            Optional.ofNullable(channelsByLocalId.get(message.getRecipientChannelId().getValue()));
+        }
+        return Optional.empty();
+    }
+
+    public void addReceivedRequestThatWantsReply(ChannelRequestMessage<?> message) {
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        if (channelsByLocalId.containsKey(recipientChannelId)) {
+            channelsByLocalId.get(recipientChannelId).addReceivedRequestThatWantsReply(message);
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
+                    message.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+        }
+    }
+
+    public void addSentRequestThatWantsReply(ChannelRequestMessage<?> message) {
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        if (channelsByRemoteId.containsKey(recipientChannelId)) {
+            channelsByRemoteId.get(recipientChannelId).addSentRequestsThatWantsReply(message);
+        } else {
+            LOGGER.warn(
+                    "{} sent but no channel with remote id {} found, ignoring it.",
                     message.getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }

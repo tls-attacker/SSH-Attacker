@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelFailureMessagePreparator;
@@ -26,7 +27,22 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
 
     @Override
     public void adjustContext() {
-        // TODO: Handle ChannelFailureMessage
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
+        if (channel != null) {
+            // Remove the failed request from the queue
+            if (channel.removeFirstSentRequestThatWantReply() == null) {
+                LOGGER.warn(
+                        "{} received but no channel request was send before on channel with id {}.",
+                        message.getClass().getSimpleName(),
+                        message.getRecipientChannelId().getValue());
+            }
+        } else {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, ignoring it.",
+                    message.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+        }
     }
 
     @Override

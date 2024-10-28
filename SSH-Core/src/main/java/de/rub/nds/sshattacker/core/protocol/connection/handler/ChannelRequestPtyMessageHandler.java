@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestPtyMessageParser;
@@ -15,7 +16,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequest
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRequestPtyMessage> {
+public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRequestPtyMessage>
+        implements MessageSentHandler {
 
     public ChannelRequestPtyMessageHandler(SshContext context) {
         super(context);
@@ -28,7 +30,14 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
     @Override
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(message);
         }
     }
 

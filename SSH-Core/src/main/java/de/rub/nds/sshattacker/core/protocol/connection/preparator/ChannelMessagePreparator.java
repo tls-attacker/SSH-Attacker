@@ -45,7 +45,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
         // ChannelMessages should only be sent for an opened channel
         channel =
                 Optional.ofNullable(channelManager.getChannelByLocalId(localChannelId))
-                        .or(channelManager::guessChannelByReceivedMessages)
+                        .or(channelManager::getChannelByReceivedRequestThatWantReply)
                         .orElseGet(
                                 () -> {
                                     LOGGER.warn(

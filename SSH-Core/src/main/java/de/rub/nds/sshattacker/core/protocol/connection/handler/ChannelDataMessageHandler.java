@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelDataMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelDataMessagePreparator;
@@ -25,9 +25,7 @@ public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMess
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelDataMessage
-    }
+    public void adjustContext() {}
 
     @Override
     public ChannelDataMessageParser getParser(byte[] array) {

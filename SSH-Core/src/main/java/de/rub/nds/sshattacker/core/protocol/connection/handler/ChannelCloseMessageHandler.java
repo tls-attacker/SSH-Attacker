@@ -61,14 +61,12 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         ChannelManager channelManager = context.getChannelManager();
         Integer recipientChannelId = message.getRecipientChannelId().getValue();
         Channel channel = channelManager.getChannelByRemoteId(recipientChannelId);
-        if (channel != null)
-        {
+        if (channel != null) {
             channel.setCloseMessageSent(true);
             if (!channel.isOpen().getValue()) {
                 channelManager.removeChannelByRemoteId(recipientChannelId);
             }
-        }
-        else {
+        } else {
             LOGGER.warn(
                     "{} sent but no channel with remote id {} found, ignoring request to close the channel.",
                     getClass().getSimpleName(),

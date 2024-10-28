@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
@@ -16,7 +17,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
-        extends SshMessageHandler<ChannelRequestUnknownMessage> {
+        extends SshMessageHandler<ChannelRequestUnknownMessage> implements MessageSentHandler {
 
     public ChannelRequestUnknownMessageHandler(SshContext context) {
         super(context);
@@ -30,7 +31,14 @@ public class ChannelRequestUnknownMessageHandler
     @Override
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(message);
         }
     }
 

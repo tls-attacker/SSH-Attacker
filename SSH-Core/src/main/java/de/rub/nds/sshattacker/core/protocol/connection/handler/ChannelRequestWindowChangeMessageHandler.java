@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWindowChangeMessageParser;
@@ -16,7 +17,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
-        extends SshMessageHandler<ChannelRequestWindowChangeMessage> {
+        extends SshMessageHandler<ChannelRequestWindowChangeMessage> implements MessageSentHandler {
     public ChannelRequestWindowChangeMessageHandler(SshContext context) {
         super(context);
     }
@@ -30,7 +31,15 @@ public class ChannelRequestWindowChangeMessageHandler
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
+            context.getChannelManager().addSentRequestThatWantsReply(message);
         }
     }
 

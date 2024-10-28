@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestXonXoffMessageParser;
@@ -16,7 +17,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestXonXoffMessageHandler
-        extends SshMessageHandler<ChannelRequestXonXoffMessage> {
+        extends SshMessageHandler<ChannelRequestXonXoffMessage> implements MessageSentHandler {
 
     public ChannelRequestXonXoffMessageHandler(SshContext context) {
         super(context);
@@ -31,7 +32,15 @@ public class ChannelRequestXonXoffMessageHandler
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+        }
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            // This should not happen, because WantReply should always be false
+            context.getChannelManager().addSentRequestThatWantsReply(message);
         }
     }
 
