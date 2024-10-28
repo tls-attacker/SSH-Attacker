@@ -88,12 +88,16 @@ public enum PublicKeyFormat {
     X509V3_ECDSA_SHA2_BRAINPOOL_P256R1("x509v3-ecdsa-sha2-1.3.36.3.3.2.8.1.1.7"),
     X509V3_ECDSA_SHA2_BRAINPOOL_P384R1("x509v3-ecdsa-sha2-1.3.36.3.3.2.8.1.1.11"),
     X509V3_ECDSA_SHA2_BRAINPOOL_P512R1("x509v3-ecdsa-sha2-1.3.36.3.3.2.8.1.1.13"),
+    // Without RFC
+    X509V3_SSH_ED25519("x509v3-ssh-ed25519"),
     // [ RFC 8709 ]
     SSH_ED25519("ssh-ed25519"),
     SSH_ED448("ssh-ed448"),
     // Vendor extensions
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM("ssh-rsa-cert-v01@openssh.com"),
+    RSA_SHA2_256_CERT_V01_OPENSSH_COM("rsa-sha2-256-cert-v01@openssh.com"),
+    RSA_SHA2_512_CERT_V01_OPENSSH_COM("rsa-sha2-512-cert-v01@openssh.com"),
     SSH_DSS_CERT_V01_OPENSSH_COM("ssh-dss-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),

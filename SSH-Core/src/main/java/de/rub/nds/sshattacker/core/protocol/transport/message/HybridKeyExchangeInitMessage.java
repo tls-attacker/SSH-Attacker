@@ -22,6 +22,10 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
     private ModifiableInteger encapsulationPublicKeyLength;
     private ModifiableByteArray encapsulationPublicKey;
 
+    // Neue Variable für die Zertifikatsdaten
+    private ModifiableByteArray certificatePublicKeyData;
+    private ModifiableInteger certificatePublicKeyLength;
+
     public ModifiableInteger getAgreementPublicKeyLength() {
         return agreementPublicKeyLength;
     }
@@ -107,6 +111,51 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
         if (adjustLengthField) {
             setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
         }
+    }
+
+    // Getter und Setter für das Zertifikat
+    public ModifiableByteArray getCertificatePublicKeyData() {
+        return certificatePublicKeyData;
+    }
+
+    public void setCertificatePublicKeyData(ModifiableByteArray certificatePublicKeyData) {
+        setCertificatePublicKeyData(certificatePublicKeyData, false);
+    }
+
+    public void setCertificatePublicKeyData(byte[] certificatePublicKeyData) {
+        setCertificatePublicKeyData(certificatePublicKeyData, false);
+    }
+
+    public void setCertificatePublicKeyData(
+            ModifiableByteArray certificatePublicKeyData, boolean adjustLengthField) {
+        this.certificatePublicKeyData = certificatePublicKeyData;
+        if (adjustLengthField) {
+            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
+        }
+    }
+
+    public void setCertificatePublicKeyData(
+            byte[] certificatePublicKeyData, boolean adjustLengthField) {
+        this.certificatePublicKeyData =
+                ModifiableVariableFactory.safelySetValue(
+                        this.certificatePublicKeyData, certificatePublicKeyData);
+        if (adjustLengthField) {
+            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
+        }
+    }
+
+    public ModifiableInteger getCertificatePublicKeyLength() {
+        return certificatePublicKeyLength;
+    }
+
+    public void setCertificatePublicKeyLength(ModifiableInteger certificatePublicKeyLength) {
+        this.certificatePublicKeyLength = certificatePublicKeyLength;
+    }
+
+    public void setCertificatePublicKeyLength(int certificatePublicKeyLength) {
+        this.certificatePublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.certificatePublicKeyLength, certificatePublicKeyLength);
     }
 
     @Override

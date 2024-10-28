@@ -91,6 +91,16 @@
 - `ssh-ed25519`
 - `ssh-ed448`
 - `ssh-rsa-sha{224|256|384|512}@ssh.com`
+- `x509v3-ssh-dss`
+- `x509v3-ssh-rsa`
+- `x509v3-ecdsa-sha2-*` (where * is a secp, sect or Brainpool curves' OID)
+- `x509v3-ssh-ed25519`
+- `ssh-dss-cert-v01@openssh.com`
+- `ssh-rsa-cert-v01@openssh.com`
+- `rsa-sha2-256-cert-v01@openssh.com`
+- `rsa-sha2-512-cert-v01@openssh.com`
+- `ecdsa-sha2-{nistp256|nistp384|nistp521}-cert-v01@openssh.com`
+- `ssh-ed25519-cert-v01@openssh.com`
 
 ---
 

@@ -45,7 +45,9 @@ public enum SignatureEncoding {
     ECDSA_SHA2_BRAINPOOL_P512R1("ecdsa-sha2-1.3.36.3.3.2.8.1.1.13"),
     // [ RFC 8709 ]
     SSH_ED25519("ssh-ed25519"),
-    SSH_ED448("ssh-ed448");
+    SSH_ED448("ssh-ed448"),
+    // Custom for x509v3-rsa2048-sha256
+    RSA2048_SHA256("rsa2048-sha256");
 
     private final String name;
 

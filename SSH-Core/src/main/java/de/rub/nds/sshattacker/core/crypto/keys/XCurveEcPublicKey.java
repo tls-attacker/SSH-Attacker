@@ -32,10 +32,10 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XCurveEcPublicKey extends CustomPublicKey {
 
-    private NamedEcGroup group;
+    protected NamedEcGroup group;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] coordinate;
+    protected byte[] coordinate;
 
     public XCurveEcPublicKey() {
         super();
