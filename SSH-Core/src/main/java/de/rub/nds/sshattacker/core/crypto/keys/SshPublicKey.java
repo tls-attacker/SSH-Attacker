@@ -34,9 +34,14 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         @XmlElement(name = "ecPublicKey", type = CustomEcPublicKey.class),
         @XmlElement(name = "rsaPublicKey", type = CustomRsaPublicKey.class),
         @XmlElement(name = "xCurvePublicKey", type = XCurveEcPublicKey.class),
-        @XmlElement(name = "certDssPublicKey", type = CustomCertDsaPublicKey.class),
+        @XmlElement(name = "certDsaPublicKey", type = CustomCertDsaPublicKey.class),
         @XmlElement(name = "certEcdsaPublicKey", type = CustomCertEcdsaPublicKey.class),
-        @XmlElement(name = "certRsaPublicKey", type = CustomCertRsaPublicKey.class)
+        @XmlElement(name = "certRsaPublicKey", type = CustomCertRsaPublicKey.class),
+        @XmlElement(name = "certXCurvePublicKey", type = CustomCertXCurvePublicKey.class),
+        @XmlElement(name = "x509DsaPublicKey", type = CustomX509DsaPublicKey.class),
+        @XmlElement(name = "x509EcdsaPublicKey", type = CustomX509EcdsaPublicKey.class),
+        @XmlElement(name = "x509RsaPublicKey", type = CustomX509RsaPublicKey.class),
+        @XmlElement(name = "x509XCurvePublicKey", type = CustomX509XCurvePublicKey.class)
     })
     private PUBLIC publicKey;
 
