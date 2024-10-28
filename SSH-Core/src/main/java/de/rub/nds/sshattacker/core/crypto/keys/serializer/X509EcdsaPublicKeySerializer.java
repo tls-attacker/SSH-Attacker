@@ -241,7 +241,7 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             case "secp521r1":
             case "nistp521":
                 return "1.3.132.0.35";
-            // Additional curves from RFC 5656
+                // Additional curves from RFC 5656
             case "secp192r1":
             case "nistp192":
                 return "1.2.840.10045.3.1.1";

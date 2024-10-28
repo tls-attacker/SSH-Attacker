@@ -134,10 +134,10 @@ public class X509EcdsaPublicKeyParser
                 if (extensionsMap != null && !extensionsMap.isEmpty()) {
                     LOGGER.debug("Parsed Certificate Extensions:");
                     for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
-                        LOGGER.debug("Extension OID: {}, Value: {}", entry.getKey(), entry.getValue());
+                        LOGGER.debug(
+                                "Extension OID: {}, Value: {}", entry.getKey(), entry.getValue());
                     }
-                }
-                else {
+                } else {
                     LOGGER.debug("No extensions found in the certificate.");
                 }
 

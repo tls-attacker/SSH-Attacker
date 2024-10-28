@@ -20,6 +20,7 @@ import java.util.Set;
         propOrder = {
             "alias",
             "ip",
+            "ipv6",
             "port",
             "hostname",
             "proxyDataPort",
@@ -27,17 +28,17 @@ import java.util.Set;
             "proxyControlPort",
             "proxyControlHostname",
             "timeout",
-            "firstTimeout",
             "connectionTimeout",
             "transportHandlerType",
-            "sourcePort"
+            "sourcePort",
+            "useIpv6"
         })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "client";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE =
             TransportHandlerType.TCP;
-    public static final Integer DEFAULT_TIMEOUT = 2500;
+    public static final Integer DEFAULT_TIMEOUT = 1000;
     public static final Integer DEFAULT_CONNECTION_TIMEOUT = 8000;
     public static final Integer DEFAULT_FIRST_TIMEOUT = DEFAULT_TIMEOUT;
     public static final String DEFAULT_HOSTNAME = "localhost";
@@ -167,12 +168,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 timeout = DEFAULT_TIMEOUT;
             }
         }
-        if (firstTimeout == null) {
-            firstTimeout = defaultCon.getFirstTimeout();
-            if (firstTimeout == null) {
-                firstTimeout = DEFAULT_FIRST_TIMEOUT;
-            }
-        }
         if (connectionTimeout == null) {
             connectionTimeout = defaultCon.getConnectionTimeout();
             if (connectionTimeout == null) {
@@ -203,6 +198,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                                 + port);
             }
         }
+        if (useIpv6 == null) {
+            useIpv6 = defaultCon.getUseIpv6();
+            if (useIpv6 == null) {
+                useIpv6 = false;
+            }
+        }
     }
 
     public void filter(AliasedConnection defaultCon) {
@@ -216,10 +217,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if (Objects.equals(timeout, defaultCon.getTimeout())
                 || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
-        }
-        if (Objects.equals(firstTimeout, defaultCon.getTimeout())
-                || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
-            firstTimeout = null;
         }
         if (hostname.equals(defaultCon.getHostname())
                 || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
