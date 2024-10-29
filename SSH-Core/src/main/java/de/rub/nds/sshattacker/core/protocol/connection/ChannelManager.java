@@ -139,6 +139,10 @@ public class ChannelManager {
         return pendingChannelsByLocalId.get(localId);
     }
 
+    public int countChannels() {
+        return channelsByLocalId.size();
+    }
+
     public void addPendingChannel(Channel channel) {
         if (channel.getLocalChannelId().getValue() == null) {
             throw new ChannelManagerException(
@@ -157,6 +161,10 @@ public class ChannelManager {
 
     public boolean containsPendingChannelWithLocalId(Integer localId) {
         return pendingChannelsByLocalId.containsKey(localId);
+    }
+
+    public int countPendingChannels() {
+        return pendingChannelsByLocalId.size();
     }
 
     public void confirmPendingChannel(Channel channel) {

@@ -1019,4 +1019,30 @@ public class DefaultChooser extends Chooser {
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
     }
+
+    // region SFTP
+    /**
+     * Retrieves the SFTP client version from context. If no version was received (i.e. out-of-order
+     * workflow or SSH-Attacker is running in client mode), the SFTP client version from config will
+     * be returned.
+     *
+     * @return The SFTP protocol version of the client
+     */
+    @Override
+    public Integer getSftpClientVersion() {
+        return context.getSftpClientVersion().orElse(config.getSftpClientVersion());
+    }
+
+    /**
+     * Retrieves the SFTP server version from context. If no version was received (i.e. out-of-order
+     * workflow or SSH-Attacker is running in server mode), the SFTP server version from config will
+     * be returned.
+     *
+     * @return The SFTP protocol version of the server
+     */
+    @Override
+    public Integer getSftpServerVersion() {
+        return context.getSftpServerVersion().orElse(config.getSftpServerVersion());
+    }
+    // endregion
 }

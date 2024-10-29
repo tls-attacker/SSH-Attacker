@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.data.DataMessageLayer;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
@@ -62,6 +63,9 @@ public class SshContext {
 
     /** A layer to serialize messages */
     private MessageLayer messageLayer = new MessageLayer(this);
+
+    /** A layer to serialize data messages to ChannelDataMessages */
+    private DataMessageLayer dataMessageLayer = new DataMessageLayer(this);
 
     /**
      * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,
@@ -333,6 +337,15 @@ public class SshContext {
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
+    // region SFTP Version Exchange
+    /** SFTP Client protocol version */
+    private Integer sftpClientVersion;
+
+    /** SFTP Server protocol version */
+    private Integer sftpServerVersion;
+
+    // endregion
+
     /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived;
 
@@ -471,6 +484,14 @@ public class SshContext {
 
     public void setMessageLayer(MessageLayer messageLayer) {
         this.messageLayer = messageLayer;
+    }
+
+    public DataMessageLayer getDataMessageLayer() {
+        return dataMessageLayer;
+    }
+
+    public void setDataMessageLayer(DataMessageLayer dataMessageLayer) {
+        this.dataMessageLayer = dataMessageLayer;
     }
 
     // region Getters and Setters for Sequence Numbers
@@ -1199,4 +1220,26 @@ public class SshContext {
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
     }
+
+    // region Getters for SFTP Version Exchange Fields
+    public Optional<Integer> getSftpClientVersion() {
+        return Optional.ofNullable(sftpClientVersion);
+    }
+
+    public Optional<Integer> getSftpServerVersion() {
+        return Optional.ofNullable(sftpServerVersion);
+    }
+
+    // endregion
+    // region Setters for SFTP Version Exchange Fields
+    public void setSftpClientVersion(Integer sftpClientVersion) {
+        this.sftpClientVersion = sftpClientVersion;
+    }
+
+    public void setSftpServerVersion(Integer sftpServerVersion) {
+        this.sftpServerVersion = sftpServerVersion;
+    }
+
+    // endregion
+
 }

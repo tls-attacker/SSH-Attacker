@@ -250,4 +250,11 @@ public abstract class Chooser {
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();
+
+    // region SFTP Version Exchange
+    public abstract Integer getSftpClientVersion();
+
+    public abstract Integer getSftpServerVersion();
+
+    // endregion
 }

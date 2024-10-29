@@ -13,6 +13,8 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -155,6 +157,7 @@ public class WorkflowConfigurationFactory {
         // Connection Protocol Actions
         addChannelOpenActions(workflow);
         addChannelRequestSubsystemActions(workflow);
+        addSftpInitActions(workflow);
         return workflow;
     }
 
@@ -550,6 +553,20 @@ public class WorkflowConfigurationFactory {
                         Set.of(
                                 ReceiveAction.ReceiveOption
                                         .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)));
+    }
+
+    public void addSftpInitActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpInitMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection, ConnectionEndType.SERVER, new SftpVersionMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

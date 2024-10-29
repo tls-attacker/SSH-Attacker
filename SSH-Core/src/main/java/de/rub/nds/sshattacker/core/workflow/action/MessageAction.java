@@ -9,6 +9,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -119,7 +122,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
+        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+        @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
+        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown")
     })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 

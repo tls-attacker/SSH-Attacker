@@ -16,6 +16,7 @@ public enum ChannelType {
      * Sources:
      * - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.html#ssh-parameters-11
      * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
+     * - https://www.ietf.org/archive/id/draft-miller-ssh-agent-11.html for auth-agent-req@openssh.com
      */
     // [ RFC 4254 ]
     SESSION("session"),
@@ -26,7 +27,8 @@ public enum ChannelType {
     // [ OpenSSH ]
     TUN_OPENSSH_COM("tun@openssh.com"),
     DIRECT_STREAMLOCAL_OPENSSH_COM("direct-streamlocal@openssh.com"),
-    FORWARDED_STREAMLOCAL_OPENSSH_COM("forwarded-streamlocal@openssh.com");
+    FORWARDED_STREAMLOCAL_OPENSSH_COM("forwarded-streamlocal@openssh.com"),
+    AUTH_AGENT_OPENSSH_COM("auth-agent@openssh.com");
 
     private final String name;
 

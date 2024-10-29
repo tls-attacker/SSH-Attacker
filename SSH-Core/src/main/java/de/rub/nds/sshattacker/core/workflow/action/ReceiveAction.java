@@ -9,6 +9,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -130,7 +133,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
         @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
         @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
-        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
+        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply"),
+        @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
+        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown")
     })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
@@ -165,6 +171,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      * option has been set.
      */
     @XmlElement protected Boolean ignoreUnexpectedChannelWindowAdjusts;
+
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#IGNORE_CHANNEL_DATA_WRAPPER} option has been
+     * set.
+     */
+    @XmlElement protected Boolean ignoreChannelDataWrapper;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -345,6 +357,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // - the `IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS`
                 //   receive option is set and the actual message is an
                 //   SSH_MSG_CHANNEL_WINDOW_ADJUST.
+                // - the `IGNORE_CHANNEL_DATA_WRAPPER`
+                //   receive option is set and the actual message is an
+                //   SSH_MSG_CHANNEL_DATA.
                 //
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
@@ -362,7 +377,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
                                 && actualMessage instanceof DebugMessage
                         || hasReceiveOption(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)
-                                && actualMessage instanceof ChannelWindowAdjustMessage) {
+                                && actualMessage instanceof ChannelWindowAdjustMessage
+                        || hasReceiveOption(ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER)
+                                && actualMessage instanceof ChannelDataMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }
@@ -441,6 +458,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             case IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS:
                 value = ignoreUnexpectedChannelWindowAdjusts;
                 break;
+            case IGNORE_CHANNEL_DATA_WRAPPER:
+                value = ignoreChannelDataWrapper;
+                break;
         }
 
         return value != null && value;
@@ -474,6 +494,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
         ignoreUnexpectedChannelWindowAdjusts =
                 receiveOptions.contains(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS);
+        ignoreChannelDataWrapper =
+                receiveOptions.contains(ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER);
 
         if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                 && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
@@ -582,7 +604,19 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
          *     section 5.2 "Data Transfer"</a>
          */
-        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS;
+        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS,
+        /**
+         * Ignore unexpected {@code SSH_MSG_CHANNEL_DATA} messages when checking if the reception
+         * action was executed as planned.
+         *
+         * <p>The data of the ChannelDataMessages are parsed into a separate message. It is
+         * therefore practical to ignore the {@code SSH_MSG_CHANNEL_DATA} and only expect the
+         * messages that were transmitted via channel data.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
+         *     section 5.2 "Data Transfer"</a>
+         */
+        IGNORE_CHANNEL_DATA_WRAPPER;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));

@@ -7,16 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
+import de.rub.nds.sshattacker.core.data.DataMessage;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,13 +37,23 @@ public final class SendMessageHelper {
     }
 
     public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
-        MessageLayer messageLayer = context.getMessageLayer();
         try {
-            AbstractPacket packet = messageLayer.serialize(message);
+            ProtocolMessage<?> innerMessage = null;
+            if (message instanceof DataMessage<?>) {
+                // Serialize data message to ChannelDataMessage
+                innerMessage = message;
+                message = context.getDataMessageLayer().serialize((DataMessage<?>) message);
+            }
+
+            AbstractPacket packet = context.getMessageLayer().serialize(message);
             sendPacket(context, packet);
             Handler<?> handler = message.getHandler(context);
             if (handler instanceof MessageSentHandler) {
                 ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+            }
+            if (innerMessage != null) {
+                return new MessageActionResult(
+                        Collections.singletonList(packet), List.of(message, innerMessage));
             }
             return new MessageActionResult(
                     Collections.singletonList(packet), Collections.singletonList(message));

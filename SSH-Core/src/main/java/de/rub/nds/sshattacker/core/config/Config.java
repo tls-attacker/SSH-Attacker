@@ -422,6 +422,15 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region SFTP Version Exchange
+    /** SFTP Client protocol version */
+    private Integer sftpClientVersion;
+
+    /** SFTP Server protocol version */
+    private Integer sftpServerVersion;
+
+    // endregion
+
     // region Workflow settings
     /** The path to load workflow trace from. The workflow trace must be stored in an XML-File. */
     private String workflowInput;
@@ -1086,6 +1095,11 @@ public class Config implements Serializable {
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
+        // endregion
+
+        // region SFTP Version Exchange initialization
+        sftpClientVersion = 3;
+        sftpServerVersion = 3;
         // endregion
     }
 
@@ -1990,4 +2004,25 @@ public class Config implements Serializable {
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
     }
+
+    // region Getters for SFTP Version Exchange
+    public Integer getSftpClientVersion() {
+        return sftpClientVersion;
+    }
+
+    public Integer getSftpServerVersion() {
+        return sftpServerVersion;
+    }
+
+    // endregion
+    // region Setters for SFTP Version Exchange
+    public void setSftpClientVersion(Integer sftpClientVersion) {
+        this.sftpClientVersion = sftpClientVersion;
+    }
+
+    public void setSftpServerVersion(Integer sftpServerVersion) {
+        this.sftpServerVersion = sftpServerVersion;
+    }
+
+    // endregion
 }

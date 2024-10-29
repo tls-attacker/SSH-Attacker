@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.IOException;
@@ -143,6 +144,13 @@ public final class ReceiveMessageHelper {
                 message.getHandler(context).adjustContext();
                 retrievedPackets.add(parsedPacket.get());
                 parsedMessages.add(message);
+
+                if (message instanceof ChannelDataMessage) {
+                    // Parse ChannelDataMessage
+                    ProtocolMessage<?> innerMessage =
+                            context.getDataMessageLayer().parse((ChannelDataMessage) message);
+                    parsedMessages.add(innerMessage);
+                }
             }
             dataPointer += parseResult.getParsedByteCount();
         } while (dataPointer < receivedBytes.length);
