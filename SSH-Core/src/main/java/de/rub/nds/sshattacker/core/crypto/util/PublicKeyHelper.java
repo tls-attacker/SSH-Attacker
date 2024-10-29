@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.util;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
@@ -242,6 +243,10 @@ public final class PublicKeyHelper {
             } else {
                 return PublicKeyFormat.X509V3_SSH_RSA; // Default fallback for other RSA types
             }
+        } else if (publicKey
+                .getAlgorithm()
+                .equalsIgnoreCase(PublicKeyAlgorithm.X509V3_SSH_ED25519.getJavaName())) {
+            return PublicKeyFormat.X509V3_SSH_ED25519;
         } else if (publicKey instanceof ECPublicKey) {
             NamedEcGroup pkGroup =
                     NamedEcGroup.fromEcParameterSpec(((ECPublicKey) publicKey).getParams());
@@ -250,10 +255,6 @@ public final class PublicKeyHelper {
         // Recognize DSS (DSA) keys
         else if (publicKey instanceof DSAPublicKey) {
             return PublicKeyFormat.X509V3_SSH_DSS;
-        }
-        // Recognize ED25519 keys
-        else if (publicKey.getAlgorithm().equalsIgnoreCase("Ed25519")) {
-            return PublicKeyFormat.X509V3_SSH_ED25519;
         }
         // If the public key type is not supported
         else {
