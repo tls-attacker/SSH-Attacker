@@ -73,20 +73,40 @@ public class DataMessageLayer {
         // Parse the packet according to expected data type
         DataPacketLayerParseResult parseResult =
                 packetLayer.parsePacketSoftly(message.getData().getValue(), 0);
+        if (parseResult.getParsedByteCount() < message.getDataLength().getValue()) {
+            LOGGER.warn(
+                    "Data packet did not consume complete channel data. Only parsed {} of {} bytes.",
+                    parseResult.getParsedByteCount(),
+                    message.getDataLength().getValue());
+        }
         Optional<AbstractDataPacket> parsedPacket = parseResult.getParsedPacket();
         if (parsedPacket.isPresent()) {
+            DataMessage<?> resultMessage;
             // Parse and return the message according to expected data type
             switch (dataType) {
                 case SUBSYSTEM_SFTP:
-                    return SftpMessageParser.delegateParsing(parsedPacket.get(), context);
+                    resultMessage = SftpMessageParser.delegateParsing(parsedPacket.get(), context);
+                    break;
                 case SHELL:
-                    return new StringDataMessageParser(parsedPacket.get().getPayload().getValue())
-                            .parse();
+                    resultMessage =
+                            new StringDataMessageParser(parsedPacket.get().getPayload().getValue())
+                                    .parse();
+                    break;
                 default:
                     LOGGER.debug("No parser implemented for ChannelDataType: {}", dataType);
-                    return new UnknownDataMessageParser(parsedPacket.get().getPayload().getValue())
-                            .parse();
+                    resultMessage =
+                            new UnknownDataMessageParser(parsedPacket.get().getPayload().getValue())
+                                    .parse();
             }
+
+            if (resultMessage.getCompleteResultingMessage().getValue().length
+                    < parsedPacket.get().getPayload().getValue().length) {
+                LOGGER.warn(
+                        "Data message did not consume complete data packet. Only parsed {} of {} bytes.",
+                        resultMessage.getCompleteResultingMessage().getValue().length,
+                        parsedPacket.get().getPayload().getValue().length);
+            }
+            return resultMessage;
         }
         return new UnknownDataMessageParser(message.getData().getValue()).parse();
     }
