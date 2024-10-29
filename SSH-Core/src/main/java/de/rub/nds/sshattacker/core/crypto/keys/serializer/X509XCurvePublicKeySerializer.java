@@ -76,7 +76,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(publicKeyAlgorithm);
 
             // Public Key (as ASN.1 OCTET STRING)
-            topLevelVector.add(new DEROctetString(publicKey.getCoordinate()));
+            topLevelVector.add(new DEROctetString(publicKey.getPublicKey()));
 
             // Extensions (ASN.1 encoded as Extensions sequence)
             Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
@@ -144,6 +144,9 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
                     // OID for known extensions
                     if (oidString.equals("SubjectKeyIdentifier")) {
                         oidString = "2.5.29.14";
+                    }
+                    if (oidString.equals("AuthorityKeyIdentifier")) {
+                        oidString = "2.5.29.35";
                     }
 
                     // Test if valid OID

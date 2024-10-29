@@ -222,7 +222,7 @@ public class X509EcdsaPublicKeyParser
                         encodedCertificateBytes,
                         startIndex,
                         encodedCertificateBytes.length - startIndex);
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
         return (X509Certificate) certFactory.generateCertificate(certInputStream);
     }
 

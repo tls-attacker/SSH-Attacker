@@ -9,6 +9,8 @@ package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
@@ -17,17 +19,14 @@ import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.ECParameterSpec;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /** Utility class for public key parsing and serializing */
 public final class PublicKeyHelper {
@@ -183,9 +182,6 @@ public final class PublicKeyHelper {
      * @return The parsed public key
      */
     public static PublicKeyFormat parseX509(byte[] encodedPublicKeyBytes) {
-        // BouncyCastle-Provider laden
-        initializeBouncyCastle();
-
         try {
             // Startpunkt des X.509-Zertifikats finden
             int startIndex = findX509StartIndex(encodedPublicKeyBytes);
@@ -224,16 +220,6 @@ public final class PublicKeyHelper {
         }
     }
 
-    public static void initializeBouncyCastle() {
-        // Überprüfen, ob BouncyCastle bereits als Provider hinzugefügt wurde
-        if (Security.getProvider("BC") == null) {
-            Security.addProvider(new BouncyCastleProvider());
-            System.out.println("BouncyCastle-Provider hinzugefügt.");
-        } else {
-            System.out.println("BouncyCastle-Provider ist bereits registriert.");
-        }
-    }
-
     private static PublicKeyFormat extractKeyFormatFromX509(
             byte[] encodedCertificateBytes, int startIndex) throws Exception {
         // Start parsing the certificate from the specified start index onwards
@@ -257,109 +243,18 @@ public final class PublicKeyHelper {
             } else {
                 return PublicKeyFormat.X509V3_SSH_RSA; // Default fallback for other RSA types
             }
-        }
-        // Recognize elliptic curve keys and determine the exact curve
-        else if (publicKey instanceof ECPublicKey) {
-            ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
-            ECParameterSpec params = ecPublicKey.getParams();
-
-            if (params instanceof org.bouncycastle.jce.spec.ECNamedCurveSpec) {
-                String curveName = ((org.bouncycastle.jce.spec.ECNamedCurveSpec) params).getName();
-
-                switch (curveName) {
-                        // RFC4492
-                        // NIST P-256 / prime256v1 / secp256r1
-                    case "prime256v1":
-                    case "secp256r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256;
-
-                        // NIST P-192 / prime192v1 / secp192r1
-                    case "prime192v1":
-                    case "secp192r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP192R1;
-
-                        // NIST P-224 / secp224r1
-                    case "secp224r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP224R1;
-
-                        // NIST P-384 / secp384r1
-                    case "secp384r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP384;
-
-                        // NIST P-521 / secp521r1
-                    case "secp521r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP521;
-
-                        // NIST K-163 / sect163k1
-                    case "sect163k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163K1;
-
-                        // NIST B-163 / sect163r2
-                    case "sect163r2":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163R2;
-
-                        // NIST K-233 / sect233k1
-                    case "sect233k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233K1;
-
-                        // NIST B-233 / sect233r1
-                    case "sect233r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233R1;
-
-                        // NIST K-283 / sect283k1
-                    case "sect283k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT283K1;
-
-                        // NIST B-283 / sect283r1
-                    case "sect283r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT283R1;
-
-                        // NIST K-409 / sect409k1
-                    case "sect409k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409K1;
-
-                        // NIST B-409 / sect409r1
-                    case "sect409r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409R1;
-
-                        // NIST K-571 / sect571k1
-                    case "sect571k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571K1;
-
-                        // NIST B-571 / sect571r1
-                    case "sect571r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571R1;
-
-                        // Other curves without NIST designation
-                    case "secp160k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP160K1;
-                    case "secp160r1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP160R1;
-                    case "secp160r2":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP160R2;
-                    case "secp192k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP192K1;
-                    case "secp224k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP224K1;
-                    case "secp256k1":
-                        return PublicKeyFormat.X509V3_ECDSA_SHA2_SECP256K1;
-
-                        // Default case for unsupported curves
-                    default:
-                        throw new NotImplementedException(
-                                "Curve " + curveName + " is not supported.");
-                }
-            } else {
-                throw new NotImplementedException("Unsupported EC parameters.");
-            }
+        } else if (publicKey
+                .getAlgorithm()
+                .equalsIgnoreCase(PublicKeyAlgorithm.X509V3_SSH_ED25519.getJavaName())) {
+            return PublicKeyFormat.X509V3_SSH_ED25519;
+        } else if (publicKey instanceof ECPublicKey) {
+            NamedEcGroup pkGroup =
+                    NamedEcGroup.fromEcParameterSpec(((ECPublicKey) publicKey).getParams());
+            return PublicKeyFormat.fromNamedEcGroup(pkGroup, true);
         }
         // Recognize DSS (DSA) keys
         else if (publicKey instanceof DSAPublicKey) {
             return PublicKeyFormat.X509V3_SSH_DSS;
-        }
-        // Recognize ED25519 keys
-        else if (publicKey.getAlgorithm().equalsIgnoreCase("Ed25519")) {
-            return PublicKeyFormat.X509V3_SSH_ED25519;
         }
         // If the public key type is not supported
         else {

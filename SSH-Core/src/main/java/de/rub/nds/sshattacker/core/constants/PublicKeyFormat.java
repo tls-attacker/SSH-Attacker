@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -135,5 +136,81 @@ public enum PublicKeyFormat {
 
     public static PublicKeyFormat fromName(String name) {
         return map.get(name);
+    }
+
+    public static PublicKeyFormat fromNamedEcGroup(NamedEcGroup group, boolean x509Variant) {
+        switch (group) {
+            case SECP160K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP160K1 : ECDSA_SHA2_SECP160K1;
+            case SECP160R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP160R1 : ECDSA_SHA2_SECP160R1;
+            case SECP160R2:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP160R2 : ECDSA_SHA2_SECP160R2;
+            case SECP192K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP192K1 : ECDSA_SHA2_SECP192K1;
+            case SECP192R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP192R1 : ECDSA_SHA2_SECP192R1;
+            case SECP224K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP224K1 : ECDSA_SHA2_SECP224K1;
+            case SECP224R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP224R1 : ECDSA_SHA2_SECP224R1;
+            case SECP256K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECP256K1 : ECDSA_SHA2_SECP256K1;
+            case SECP256R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_NISTP256 : ECDSA_SHA2_NISTP256;
+            case SECP384R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_NISTP384 : ECDSA_SHA2_NISTP384;
+            case SECP521R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_NISTP521 : ECDSA_SHA2_NISTP521;
+            case SECT163K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT163K1 : ECDSA_SHA2_SECT163K1;
+            case SECT163R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT163R1 : ECDSA_SHA2_SECT163R1;
+            case SECT163R2:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT163R2 : ECDSA_SHA2_SECT163R2;
+            case SECT193R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT193R1 : ECDSA_SHA2_SECT193R1;
+            case SECT193R2:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT193R2 : ECDSA_SHA2_SECT193R2;
+            case SECT233K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT233K1 : ECDSA_SHA2_SECT233K1;
+            case SECT233R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT233R1 : ECDSA_SHA2_SECT233R1;
+            case SECT239K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT239K1 : ECDSA_SHA2_SECT239K1;
+            case SECT283K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT283K1 : ECDSA_SHA2_SECT283K1;
+            case SECT283R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT283R1 : ECDSA_SHA2_SECT283R1;
+            case SECT409K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT409K1 : ECDSA_SHA2_SECT409K1;
+            case SECT409R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT409R1 : ECDSA_SHA2_SECT409R1;
+            case SECT571K1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT571K1 : ECDSA_SHA2_SECT571K1;
+            case SECT571R1:
+                return x509Variant ? X509V3_ECDSA_SHA2_SECT571R1 : ECDSA_SHA2_SECT571R1;
+            case BRAINPOOLP256R1:
+                return x509Variant
+                        ? X509V3_ECDSA_SHA2_BRAINPOOL_P256R1
+                        : ECDSA_SHA2_BRAINPOOL_P256R1;
+            case BRAINPOOLP384R1:
+                return x509Variant
+                        ? X509V3_ECDSA_SHA2_BRAINPOOL_P384R1
+                        : ECDSA_SHA2_BRAINPOOL_P384R1;
+            case BRAINPOOLP512R1:
+                return x509Variant
+                        ? X509V3_ECDSA_SHA2_BRAINPOOL_P512R1
+                        : ECDSA_SHA2_BRAINPOOL_P512R1;
+            case CURVE25519:
+                return x509Variant ? X509V3_SSH_ED25519 : SSH_ED25519;
+            case CURVE448:
+                if (x509Variant) {
+                    throw new NotImplementedException(
+                            "X509 variant of CURVE448 is not implemented");
+                }
+                return SSH_ED448;
+        }
+        throw new IllegalArgumentException("Unknown named EC group: " + group);
     }
 }
