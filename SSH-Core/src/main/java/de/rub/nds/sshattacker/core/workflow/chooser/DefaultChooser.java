@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -1044,5 +1045,31 @@ public class DefaultChooser extends Chooser {
     public Integer getSftpServerVersion() {
         return context.getSftpServerVersion().orElse(config.getSftpServerVersion());
     }
+
     // endregion
+
+    // region SFTP Extensions
+    /**
+     * Retrieves the list of client supported SFTP extensions included in the clients SSH_FXP_INIT
+     * packet from context. If no SSH_FXP_INIT packet was received yet or SSH-Attacker is running in
+     * client mode, the extensions from config will be returned instead.
+     *
+     * @return List of client supported SFTP extensions
+     */
+    public List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
+        return context.getSftpClientSupportedExtensions()
+                .orElse(config.getSftpClientSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported SFTP extensions included in the servers
+     * SSH_FXP_VERSION packet from context. If no SSH_FXP_VERSION packet was received yet or
+     * SSH-Attacker is running in server mode, the extensions from config will be returned instead.
+     *
+     * @return List of server supported SFTP extensions
+     */
+    public List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
+        return context.getSftpServerSupportedExtensions()
+                .orElse(config.getSftpServerSupportedExtensions());
+    }
 }

@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.DataMessageLayer;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
@@ -343,6 +344,15 @@ public class SshContext {
 
     /** SFTP Server protocol version */
     private Integer sftpServerVersion;
+
+    // endregion
+
+    // region SFTP Extensions
+    /** List of SFTP extensions supported by the client */
+    public List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+
+    /** List of SFTP extensions supported by the server */
+    public List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion
 
@@ -1240,6 +1250,31 @@ public class SshContext {
         this.sftpServerVersion = sftpServerVersion;
     }
 
+    // endregion
+
+    // region Getters for SFTP Extensions
+
+    // section general SFTP extensions
+    public Optional<List<SftpAbstractExtension<?>>> getSftpClientSupportedExtensions() {
+        return Optional.ofNullable(sftpClientSupportedExtensions);
+    }
+
+    public Optional<List<SftpAbstractExtension<?>>> getSftpServerSupportedExtensions() {
+        return Optional.ofNullable(sftpServerSupportedExtensions);
+    }
+
+    // endregion
+
+    // region Setters for SFTP Extensions
+
+    // section general SFTP extensions
+    public void setSftpClientSupportedExtensions(List<SftpAbstractExtension<?>> extensions) {
+        sftpClientSupportedExtensions = extensions;
+    }
+
+    public void setSftpServerSupportedExtensions(List<SftpAbstractExtension<?>> extensions) {
+        sftpServerSupportedExtensions = extensions;
+    }
     // endregion
 
 }

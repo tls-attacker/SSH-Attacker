@@ -108,6 +108,20 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Parses a number of bytes from the Array and returns them as a long. Throws a ParserException
+     * if the number of bytes cannot be parsed. Moves the pointer accordingly.
+     *
+     * @param length Number of bytes to be parsed
+     * @return An integer representation of the partial byteArray
+     */
+    protected long parseLongField(int length) {
+        if (length == 0) {
+            throw new ParserException("Cannot parse long of size 0");
+        }
+        return ArrayConverter.bytesToLong(parseByteArrayField(length));
+    }
+
+    /**
      * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a
      * ParserException if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *

@@ -7,27 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
 import de.rub.nds.sshattacker.core.data.sftp.handler.SftpVersionMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpVersionMessage extends SftpMessage<SftpVersionMessage> {
-
-    private ModifiableInteger version;
-
-    public ModifiableInteger getVersion() {
-        return version;
-    }
-
-    public void setVersion(ModifiableInteger version) {
-        this.version = version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
-    }
+public class SftpVersionMessage extends SftpHandshakeMessage<SftpVersionMessage> {
 
     @Override
     public SftpVersionMessageHandler getHandler(SshContext context) {

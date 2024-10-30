@@ -9,19 +9,22 @@ package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessagePreparator;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SftpUnknownMessagePreparator extends SftpMessagePreparator<SftpUnknownMessage> {
+public abstract class SftpResponseMessagePreparator<T extends SftpResponseMessage<T>>
+        extends SftpMessagePreparator<T> {
 
-    public SftpUnknownMessagePreparator(Chooser chooser, SftpUnknownMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.UNKNOWN);
+    protected SftpResponseMessagePreparator(
+            Chooser chooser, T message, SftpPacketTypeConstant packetType) {
+        super(chooser, message, packetType);
     }
 
-    @Override
     public void prepareMessageSpecificContents() {
-        if(getObject().getPayload() == null) {
-            getObject().setPayload(new byte[0]);
-        }
+        // TODO: Get valid request ID
+        getObject().setRequestId(0);
+        prepareResponseSpecificContents();
     }
+
+    protected abstract void prepareResponseSpecificContents();
 }

@@ -26,7 +26,9 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
 
     @Override
     public void adjustContext() {
-        // TODO: Handle
+        context.setSftpServerVersion(message.getVersion().getValue());
+        context.setSftpServerSupportedExtensions(message.getExtensions());
+        message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
     }
 
     @Override

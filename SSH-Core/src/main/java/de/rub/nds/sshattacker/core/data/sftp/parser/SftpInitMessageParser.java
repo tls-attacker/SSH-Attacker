@@ -7,15 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
 
-public class SftpInitMessageParser extends SftpMessageParser<SftpInitMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class SftpInitMessageParser extends SftpHandshakeMessageParser<SftpInitMessage> {
 
     public SftpInitMessageParser(byte[] array) {
         super(array);
@@ -28,14 +23,5 @@ public class SftpInitMessageParser extends SftpMessageParser<SftpInitMessage> {
     @Override
     public SftpInitMessage createMessage() {
         return new SftpInitMessage();
-    }
-
-    public void parseMessageSpecificContents() {
-        parseVersion();
-    }
-
-    private void parseVersion() {
-        message.setVersion(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Version: {}", message.getVersion().getValue());
     }
 }

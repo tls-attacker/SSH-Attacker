@@ -14,6 +14,8 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpUnknownExtension;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
@@ -428,6 +430,19 @@ public class Config implements Serializable {
 
     /** SFTP Server protocol version */
     private Integer sftpServerVersion;
+
+    // endregion
+
+    // region SSH Extensions
+    /** List of SFTP extensions supported by the client */
+    @XmlElementWrapper
+    @XmlElements({@XmlElement(type = SftpUnknownExtension.class, name = "SftpUnknownExtension")})
+    private List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+
+    /** List of SFTP extensions supported by the server */
+    @XmlElementWrapper
+    @XmlElements({@XmlElement(type = SftpUnknownExtension.class, name = "SftpUnknownExtension")})
+    private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion
 
@@ -1100,6 +1115,12 @@ public class Config implements Serializable {
         // region SFTP Version Exchange initialization
         sftpClientVersion = 3;
         sftpServerVersion = 3;
+        // endregion
+
+        // region SFTP Extension
+        sftpClientSupportedExtensions = new ArrayList<>();
+        sftpServerSupportedExtensions = new ArrayList<>();
+
         // endregion
     }
 
@@ -2025,4 +2046,30 @@ public class Config implements Serializable {
     }
 
     // endregion
+
+    // region Getters SFTP Extensions
+
+    // section general extensions
+    public List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
+        return sftpClientSupportedExtensions;
+    }
+
+    public List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
+        return sftpServerSupportedExtensions;
+    }
+
+    // endregion
+
+    // region Setters SFTP Extensions
+
+    // section general extensions
+    public void setSftpClientSupportedExtensions(
+            List<SftpAbstractExtension<?>> clientSupportedExtensions) {
+        this.sftpClientSupportedExtensions = clientSupportedExtensions;
+    }
+
+    public void setSftpServerSupportedExtensions(
+            List<SftpAbstractExtension<?>> serverSupportedExtensions) {
+        this.sftpServerSupportedExtensions = serverSupportedExtensions;
+    }
 }

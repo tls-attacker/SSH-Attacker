@@ -7,26 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessageSerializer;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class SftpVersionMessageSerializer extends SftpMessageSerializer<SftpVersionMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class SftpVersionMessageSerializer
+        extends SftpHandshakeMessageSerializer<SftpVersionMessage> {
 
     public SftpVersionMessageSerializer(SftpVersionMessage message) {
         super(message);
-    }
-
-    private void serializeVersion() {
-        LOGGER.debug("Version: {}", message.getVersion().getValue());
-        appendInt(message.getVersion().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    public void serializeMessageSpecificContents() {
-        serializeVersion();
     }
 }

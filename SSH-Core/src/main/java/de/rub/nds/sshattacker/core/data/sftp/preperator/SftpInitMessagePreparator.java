@@ -19,6 +19,20 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
     }
 
     public void prepareMessageSpecificContents() {
-        getObject().setVersion(chooser.getSftpClientVersion());
+        if(getObject().getVersion() == null) {
+            getObject().setVersion(chooser.getSftpClientVersion());
+        }
+        if(getObject().getExtensions().isEmpty()) {
+            getObject().setExtensions(chooser.getSftpClientSupportedExtensions());
+        }
+
+        getObject()
+                .getExtensions()
+                .forEach(
+                        extension ->
+                                extension
+                                        .getHandler(chooser.getContext())
+                                        .getPreparator()
+                                        .prepare());
     }
 }

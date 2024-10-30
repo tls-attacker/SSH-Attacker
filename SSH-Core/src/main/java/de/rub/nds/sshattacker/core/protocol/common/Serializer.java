@@ -58,7 +58,27 @@ public abstract class Serializer<T> {
                     length,
                     length);
         }
-        appendBytes(ArrayConverter.intToBytes(i, length));
+        appendBytes(bytes);
+    }
+
+    /**
+     * Adds a byte[] representation of an long to the final byte[]. If the Long is greater than the
+     * specified length only the lower length bytes are serialized.
+     *
+     * @param l The Long that should be appended
+     * @param length The number of bytes which should be reserved for this Long
+     */
+    protected final void appendLong(long l, int length) {
+        byte[] bytes = ArrayConverter.longToBytes(l, length);
+        long reconvertedLong = ArrayConverter.bytesToLong(bytes);
+        if (reconvertedLong != l) {
+            LOGGER.warn(
+                    "Long \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
+                    l,
+                    length,
+                    length);
+        }
+        appendBytes(bytes);
     }
 
     /**

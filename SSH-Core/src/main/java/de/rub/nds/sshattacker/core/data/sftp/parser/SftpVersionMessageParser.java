@@ -7,15 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class SftpVersionMessageParser extends SftpMessageParser<SftpVersionMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class SftpVersionMessageParser extends SftpHandshakeMessageParser<SftpVersionMessage> {
 
     public SftpVersionMessageParser(byte[] array) {
         super(array);
@@ -28,14 +22,5 @@ public class SftpVersionMessageParser extends SftpMessageParser<SftpVersionMessa
     @Override
     public SftpVersionMessage createMessage() {
         return new SftpVersionMessage();
-    }
-
-    public void parseMessageSpecificContents() {
-        parseVersion();
-    }
-
-    private void parseVersion() {
-        message.setVersion(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Version: {}", message.getVersion().getValue());
     }
 }

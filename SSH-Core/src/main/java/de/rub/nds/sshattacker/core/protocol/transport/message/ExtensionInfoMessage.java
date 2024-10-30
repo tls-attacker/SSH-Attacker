@@ -64,6 +64,10 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     }
 
     public void addExtension(AbstractExtension<?> extension) {
+        addExtension(extension, false);
+    }
+
+    public void addExtension(AbstractExtension<?> extension, boolean adjustLengthField) {
         extensions.add(extension);
     }
 

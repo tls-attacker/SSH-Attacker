@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
@@ -257,4 +258,13 @@ public abstract class Chooser {
     public abstract Integer getSftpServerVersion();
 
     // endregion
+
+    // region SFTP Extensions
+    // section general extensions
+    public abstract List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions();
+
+    public abstract List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions();
+
+    // endregion
+
 }

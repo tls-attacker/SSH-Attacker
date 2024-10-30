@@ -40,10 +40,10 @@ public class PongMessage extends SshMessage<PongMessage> {
     }
 
     public void setData(ModifiableByteArray data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.getValue().length);
-        }
         this.data = data;
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     public void setData(byte[] data) {
@@ -51,10 +51,10 @@ public class PongMessage extends SshMessage<PongMessage> {
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     @Override
