@@ -23,12 +23,11 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         if (getObject().getFlags() == null) {
             getObject()
                     .setFlags(
-                            getFlags(
-                                    SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
-                                    SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID,
-                                    SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS,
-                                    SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME,
-                                    SftpFileAttributeFlag.SSH_FILEXFER_ATTR_EXTENDED));
+                            SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
+                            SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID,
+                            SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS,
+                            SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME,
+                            SftpFileAttributeFlag.SSH_FILEXFER_ATTR_EXTENDED);
         }
         if (getObject().getSize() == null) {
             getObject().setSize(0);
@@ -53,20 +52,12 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         }
 
         getObject()
-            .getExtendedAttributes()
-            .forEach(
-                extendedAttribute ->
-                    extendedAttribute
-                        .getHandler(chooser.getContext())
-                        .getPreparator()
-                        .prepare());
-    }
-
-    public static int getFlags(SftpFileAttributeFlag... attributes) {
-        int result = 0;
-        for (SftpFileAttributeFlag attribute : attributes) {
-            result |= attribute.getValue(); // Use bitwise OR to set each flag
-        }
-        return result;
+                .getExtendedAttributes()
+                .forEach(
+                        extendedAttribute ->
+                                extendedAttribute
+                                        .getHandler(chooser.getContext())
+                                        .getPreparator()
+                                        .prepare());
     }
 }

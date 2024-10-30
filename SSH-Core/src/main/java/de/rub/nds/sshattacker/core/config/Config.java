@@ -2064,12 +2064,12 @@ public class Config implements Serializable {
 
     // section general extensions
     public void setSftpClientSupportedExtensions(
-            List<SftpAbstractExtension<?>> clientSupportedExtensions) {
-        this.sftpClientSupportedExtensions = clientSupportedExtensions;
+            List<SftpAbstractExtension<?>> sftpClientSupportedExtensions) {
+        this.sftpClientSupportedExtensions = sftpClientSupportedExtensions;
     }
 
     public void setSftpServerSupportedExtensions(
-            List<SftpAbstractExtension<?>> serverSupportedExtensions) {
-        this.sftpServerSupportedExtensions = serverSupportedExtensions;
+            List<SftpAbstractExtension<?>> sftpServerSupportedExtensions) {
+        this.sftpServerSupportedExtensions = sftpServerSupportedExtensions;
     }
 }

@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -35,7 +37,7 @@ public abstract class SftpAbstractExtensionSerializer<E extends SftpAbstractExte
     private void serializeExtensionName() {
         LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
         appendInt(extension.getNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Extension name: {}", extension.getName().getValue());
+        LOGGER.debug("Extension name: {}", backslashEscapeString(extension.getName().getValue()));
         appendString(extension.getName().getValue(), StandardCharsets.US_ASCII);
     }
 

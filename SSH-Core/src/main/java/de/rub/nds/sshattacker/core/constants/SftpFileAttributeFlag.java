@@ -28,10 +28,10 @@ public enum SftpFileAttributeFlag {
         return (attributes & attribute.value) != 0;
     }
 
-    public static int getFlags(SftpFileAttributeFlag... attributes) {
+    public static int flagsToInt(SftpFileAttributeFlag... attributeFlags) {
         int result = 0;
-        for (SftpFileAttributeFlag attribute : attributes) {
-            result |= attribute.value; // Use bitwise OR to set each flag
+        for (SftpFileAttributeFlag attributeFlag : attributeFlags) {
+            result |= attributeFlag.value; // Use bitwise OR to set each flag
         }
         return result;
     }

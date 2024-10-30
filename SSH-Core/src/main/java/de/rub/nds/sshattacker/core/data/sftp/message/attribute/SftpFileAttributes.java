@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
+import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.attribute.SftpFileAttributesHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -48,6 +49,10 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setFlags(int flags) {
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
+    }
+
+    public void setFlags(SftpFileAttributeFlag... attributeFlags) {
+        setFlags(SftpFileAttributeFlag.flagsToInt(attributeFlags));
     }
 
     public ModifiableLong getSize() {

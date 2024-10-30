@@ -26,7 +26,9 @@ public class SftpUnknownExtensionSerializer
     protected void serializeExtensionValue() {
         LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
         appendInt(extension.getValueLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("Extension value: {}", ArrayConverter.bytesToHexString(extension.getValue()));
+        LOGGER.debug(
+                "Extension value: {}",
+                ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));
         appendBytes(extension.getValue().getValue());
     }
 }

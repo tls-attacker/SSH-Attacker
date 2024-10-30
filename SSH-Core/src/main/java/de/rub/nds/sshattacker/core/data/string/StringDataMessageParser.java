@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.data.string;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +33,7 @@ public class StringDataMessageParser extends ProtocolMessageParser<StringDataMes
 
     private void parseData() {
         message.setData(parseByteString(getBytesLeft(), StandardCharsets.UTF_8));
-        LOGGER.debug("Data: {}", message.getData().getValue());
+        LOGGER.debug("Data: {}", backslashEscapeString(message.getData().getValue()));
     }
 
     @Override

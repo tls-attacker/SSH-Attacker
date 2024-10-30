@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
@@ -158,6 +159,7 @@ public class WorkflowConfigurationFactory {
         addChannelOpenActions(workflow);
         addChannelRequestSubsystemActions(workflow);
         addSftpInitActions(workflow);
+        addSftpTestActions(workflow);
         return workflow;
     }
 
@@ -563,6 +565,20 @@ public class WorkflowConfigurationFactory {
                 SshActionFactory.withReceiveOptions(
                         SshActionFactory.createMessageAction(
                                 connection, ConnectionEndType.SERVER, new SftpVersionMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+    }
+
+    public void addSftpTestActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestOpenMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection, ConnectionEndType.SERVER, new SftpRequestOpenMessage()),
                         Set.of(
                                 ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
                                 ReceiveAction.ReceiveOption

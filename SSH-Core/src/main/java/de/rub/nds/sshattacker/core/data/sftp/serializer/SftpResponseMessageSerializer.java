@@ -29,8 +29,8 @@ public abstract class SftpResponseMessageSerializer<T extends SftpResponseMessag
 
     public void serializeMessageSpecificContents() {
         serializeRequestId();
-        prepareResponseSpecificContents();
+        serializeResponseSpecificContents();
     }
 
-    protected abstract void prepareResponseSpecificContents();
+    protected abstract void serializeResponseSpecificContents();
 }

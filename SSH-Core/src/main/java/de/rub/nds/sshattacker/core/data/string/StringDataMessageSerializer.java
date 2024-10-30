@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.data.string;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +23,7 @@ public class StringDataMessageSerializer extends ProtocolMessageSerializer<Strin
     }
 
     private void serializeData() {
-        LOGGER.debug("Data: {}", message.getData().getValue());
+        LOGGER.debug("Data: {}", backslashEscapeString(message.getData().getValue()));
         appendString(message.getData().getValue(), StandardCharsets.UTF_8);
     }
 

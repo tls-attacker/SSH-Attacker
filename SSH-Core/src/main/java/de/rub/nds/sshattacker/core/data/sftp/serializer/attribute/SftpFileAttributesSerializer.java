@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.attribute;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
@@ -26,6 +27,8 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
     }
 
     private void serializeFlags() {
+        ArrayConverter.intToBytes(
+                attributes.getFlags().getValue(), DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Flags: {}", attributes.getFlags().getValue());
         appendInt(attributes.getFlags().getValue(), DataFormatConstants.UINT32_SIZE);
     }

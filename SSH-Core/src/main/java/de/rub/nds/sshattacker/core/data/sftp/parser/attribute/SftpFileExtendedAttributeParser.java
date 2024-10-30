@@ -7,6 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.attribute;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileExtendedAttribute;
@@ -34,14 +37,15 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
         LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
         attribute.setType(
                 parseByteString(attribute.getTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Type: {}", attribute.getType().getValue());
+        LOGGER.debug("Type: {}", backslashEscapeString(attribute.getType().getValue()));
     }
 
     private void parseData() {
         attribute.setDataLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
         attribute.setData(parseByteArrayField(attribute.getDataLength().getValue()));
-        LOGGER.debug("Data: {}", attribute.getData());
+        LOGGER.debug(
+                "Data: {}", ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
     }
 
     @Override
