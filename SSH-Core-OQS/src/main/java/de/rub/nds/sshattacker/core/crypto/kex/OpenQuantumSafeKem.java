@@ -83,7 +83,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
             this.encryptedSharedSecret = encryptedSharedSecret;
             LOGGER.info(
                     "SharedSecret Encapsulation = {}",
-                    ArrayConverter.bytesToRawHexString(sharedSecret));
+                    () -> ArrayConverter.bytesToRawHexString(sharedSecret));
         } catch (RuntimeException e) {
             throw new CryptoException(
                     "Unexpected exception occured while decrypting the shared secret: " + e);

@@ -29,7 +29,7 @@ public class EcdhKeyExchangeReplyMessageSerializer
         appendBytes(msg.getHostKeyBytes().getValue());
         LOGGER.debug(
                 "Host key bytes: {}",
-                ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
     }
 
     private void serializeEphemeralPublicKey(EcdhKeyExchangeReplyMessage msg) {

@@ -29,7 +29,8 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
     @Override
     public void adjustContext() {
         LOGGER.debug(
-                "Received text message: {}", backslashEscapeString(message.getText().getValue()));
+                "Received text message: {}",
+                () -> backslashEscapeString(message.getText().getValue()));
     }
 
     @Override

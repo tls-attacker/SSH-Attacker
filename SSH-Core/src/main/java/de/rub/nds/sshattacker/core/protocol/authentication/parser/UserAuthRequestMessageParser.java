@@ -34,7 +34,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         LOGGER.debug("Username length: {}", message.getUserNameLength().getValue());
         message.setUserName(
                 parseByteString(message.getUserNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Username: {}", backslashEscapeString(message.getUserName().getValue()));
+        LOGGER.debug("Username: {}", () -> backslashEscapeString(message.getUserName().getValue()));
     }
 
     private void parseServiceName() {
@@ -43,7 +43,9 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Servicename: {}", backslashEscapeString(message.getServiceName().getValue()));
+        LOGGER.debug(
+                "Servicename: {}",
+                () -> backslashEscapeString(message.getServiceName().getValue()));
     }
 
     private void parseMethodName() {
@@ -52,7 +54,8 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         message.setMethodName(
                 parseByteString(
                         message.getMethodNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Methodname: {}", backslashEscapeString(message.getMethodName().getValue()));
+        LOGGER.debug(
+                "Methodname: {}", () -> backslashEscapeString(message.getMethodName().getValue()));
     }
 
     @Override

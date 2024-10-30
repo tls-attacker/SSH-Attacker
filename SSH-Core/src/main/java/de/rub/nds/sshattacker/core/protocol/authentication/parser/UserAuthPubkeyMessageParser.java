@@ -40,7 +40,8 @@ public class UserAuthPubkeyMessageParser
         LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
         message.setPubkey(parseByteArrayField(message.getPubkeyLength().getValue()));
         LOGGER.debug(
-                "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
+                "Pubkey: {}",
+                () -> ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
     }
 
     private void parsePubkeyAlgName() {
@@ -52,7 +53,7 @@ public class UserAuthPubkeyMessageParser
                         message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
                 "Pubkey algorithm name: {}",
-                backslashEscapeString(message.getPubkeyAlgName().getValue()));
+                () -> backslashEscapeString(message.getPubkeyAlgName().getValue()));
     }
 
     private void parseUseSignature() {
@@ -66,7 +67,7 @@ public class UserAuthPubkeyMessageParser
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         LOGGER.debug(
                 "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
     }
 
     @Override

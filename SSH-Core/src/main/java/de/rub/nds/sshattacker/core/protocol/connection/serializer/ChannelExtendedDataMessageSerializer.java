@@ -34,7 +34,8 @@ public class ChannelExtendedDataMessageSerializer
     private void serializeData() {
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        LOGGER.debug(
+                "Data: {}", () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
         appendBytes(message.getData().getValue());
     }
 

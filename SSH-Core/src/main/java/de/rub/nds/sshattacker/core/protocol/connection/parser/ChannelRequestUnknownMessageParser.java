@@ -33,7 +33,7 @@ public class ChannelRequestUnknownMessageParser
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: {}",
-                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
+                () -> ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
     }
 
     @Override

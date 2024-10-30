@@ -40,7 +40,7 @@ public class UserAuthPubkeyMessageSerializer
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Pubkey algorithm name: {}",
-                backslashEscapeString(message.getPubkeyAlgName().getValue()));
+                () -> backslashEscapeString(message.getPubkeyAlgName().getValue()));
         appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.US_ASCII);
     }
 
@@ -48,7 +48,8 @@ public class UserAuthPubkeyMessageSerializer
         LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
+                "Pubkey: {}",
+                () -> ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
         appendBytes(message.getPubkey().getValue());
     }
 
@@ -57,7 +58,7 @@ public class UserAuthPubkeyMessageSerializer
         appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
         appendBytes(message.getSignature().getValue());
     }
 

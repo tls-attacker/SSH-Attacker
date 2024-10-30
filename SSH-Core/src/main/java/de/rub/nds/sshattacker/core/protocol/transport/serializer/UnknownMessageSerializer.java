@@ -23,7 +23,7 @@ public class UnknownMessageSerializer extends SshMessageSerializer<UnknownMessag
 
     @Override
     public void serializeMessageSpecificContents() {
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(message.getPayload()));
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(message.getPayload()));
         appendBytes(message.getPayload().getValue());
     }
 }

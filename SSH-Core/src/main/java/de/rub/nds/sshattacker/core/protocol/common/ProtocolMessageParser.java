@@ -52,7 +52,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
                 "Complete message bytes parsed: {}",
-                ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                message.getCompleteResultingMessage().getValue()));
     }
 
     public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, SshContext context) {

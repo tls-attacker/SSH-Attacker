@@ -24,7 +24,8 @@ public class ChannelDataMessageSerializer extends ChannelMessageSerializer<Chann
     private void serializeData() {
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: {}", ArrayConverter.bytesToHexString(message.getData().getValue()));
+        LOGGER.debug(
+                "Data: {}", () -> ArrayConverter.bytesToHexString(message.getData().getValue()));
         appendBytes(message.getData().getValue());
     }
 

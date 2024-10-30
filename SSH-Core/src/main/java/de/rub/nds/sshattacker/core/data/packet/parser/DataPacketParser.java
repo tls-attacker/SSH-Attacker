@@ -31,7 +31,7 @@ public class DataPacketParser extends AbstractDataPacketParser<DataPacket> {
 
         LOGGER.trace(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
+                () -> ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
 
         return packet;
     }

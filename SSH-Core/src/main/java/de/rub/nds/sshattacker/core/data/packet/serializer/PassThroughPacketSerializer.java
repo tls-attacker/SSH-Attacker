@@ -31,12 +31,13 @@ public class PassThroughPacketSerializer extends AbstractDataPacketSerializer<Da
         appendBytes(passThroughPacket.getPayload().getValue());
         LOGGER.trace(
                 "Payload: {}",
-                ArrayConverter.bytesToHexString(passThroughPacket.getPayload().getValue()));
+                () -> ArrayConverter.bytesToHexString(passThroughPacket.getPayload().getValue()));
 
         passThroughPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.trace(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(
-                        passThroughPacket.getCompletePacketBytes().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                passThroughPacket.getCompletePacketBytes().getValue()));
     }
 }

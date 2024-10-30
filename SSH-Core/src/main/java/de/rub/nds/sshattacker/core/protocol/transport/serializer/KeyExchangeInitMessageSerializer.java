@@ -38,7 +38,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Key exchange algorithms: {}",
-                backslashEscapeString(message.getKeyExchangeAlgorithms().getValue()));
+                () -> backslashEscapeString(message.getKeyExchangeAlgorithms().getValue()));
         appendString(message.getKeyExchangeAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
@@ -51,7 +51,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Server host key algorithms: {}",
-                backslashEscapeString(message.getServerHostKeyAlgorithms().getValue()));
+                () -> backslashEscapeString(message.getServerHostKeyAlgorithms().getValue()));
         appendString(message.getServerHostKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
@@ -64,7 +64,9 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Encryption algorithms (client to server): {}",
-                backslashEscapeString(message.getEncryptionAlgorithmsClientToServer().getValue()));
+                () ->
+                        backslashEscapeString(
+                                message.getEncryptionAlgorithmsClientToServer().getValue()));
         appendString(
                 message.getEncryptionAlgorithmsClientToServer().getValue(),
                 StandardCharsets.US_ASCII);
@@ -79,7 +81,9 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Encryption algorithms (server to client): {}",
-                backslashEscapeString(message.getEncryptionAlgorithmsServerToClient().getValue()));
+                () ->
+                        backslashEscapeString(
+                                message.getEncryptionAlgorithmsServerToClient().getValue()));
         appendString(
                 message.getEncryptionAlgorithmsServerToClient().getValue(),
                 StandardCharsets.US_ASCII);
@@ -94,7 +98,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "MAC algorithms (client to server): {}",
-                backslashEscapeString(message.getMacAlgorithmsClientToServer().getValue()));
+                () -> backslashEscapeString(message.getMacAlgorithmsClientToServer().getValue()));
         appendString(
                 message.getMacAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
@@ -108,7 +112,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "MAC algorithms (server to client): {}",
-                backslashEscapeString(message.getMacAlgorithmsServerToClient().getValue()));
+                () -> backslashEscapeString(message.getMacAlgorithmsServerToClient().getValue()));
         appendString(
                 message.getMacAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
@@ -122,7 +126,9 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (client to server): {}",
-                backslashEscapeString(message.getCompressionMethodsClientToServer().getValue()));
+                () ->
+                        backslashEscapeString(
+                                message.getCompressionMethodsClientToServer().getValue()));
         appendString(
                 message.getCompressionMethodsClientToServer().getValue(),
                 StandardCharsets.US_ASCII);
@@ -137,7 +143,9 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (server to client): {}",
-                backslashEscapeString(message.getCompressionMethodsServerToClient().getValue()));
+                () ->
+                        backslashEscapeString(
+                                message.getCompressionMethodsServerToClient().getValue()));
         appendString(
                 message.getCompressionMethodsServerToClient().getValue(),
                 StandardCharsets.US_ASCII);
@@ -152,7 +160,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Languages (client to server): {}",
-                backslashEscapeString(message.getLanguagesClientToServer().getValue()));
+                () -> backslashEscapeString(message.getLanguagesClientToServer().getValue()));
         appendString(message.getLanguagesClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
@@ -165,7 +173,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Languages (server to client): {}",
-                backslashEscapeString(message.getLanguagesServerToClient().getValue()));
+                () -> backslashEscapeString(message.getLanguagesServerToClient().getValue()));
         appendString(message.getLanguagesServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 

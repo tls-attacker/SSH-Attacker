@@ -38,14 +38,17 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
         message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
         message.setUserName(parseByteString(message.getUserNameLength().getValue()));
-        LOGGER.debug("User name: {}", backslashEscapeString(message.getUserName().getValue()));
+        LOGGER.debug(
+                "User name: {}", () -> backslashEscapeString(message.getUserName().getValue()));
     }
 
     private void parseInstruction() {
         message.setInstructionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Instruction length: {}", message.getInstructionLength().getValue());
         message.setInstruction(parseByteString(message.getInstructionLength().getValue()));
-        LOGGER.debug("Instruction: {}", backslashEscapeString(message.getInstruction().getValue()));
+        LOGGER.debug(
+                "Instruction: {}",
+                () -> backslashEscapeString(message.getInstruction().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -53,7 +56,8 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
         LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(parseByteString(message.getLanguageTagLength().getValue()));
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     private void parsePromptEntries() {

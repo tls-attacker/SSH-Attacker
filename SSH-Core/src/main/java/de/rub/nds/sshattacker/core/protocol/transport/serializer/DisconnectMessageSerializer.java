@@ -46,7 +46,8 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 

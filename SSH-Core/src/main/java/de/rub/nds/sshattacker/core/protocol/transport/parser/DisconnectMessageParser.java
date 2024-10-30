@@ -51,7 +51,9 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
         message.setDescription(
                 parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
+        LOGGER.debug(
+                "Description: {}",
+                () -> backslashEscapeString(message.getDescription().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -61,7 +63,8 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

@@ -25,7 +25,7 @@ public class GlobalRequestOpenSshHostKeysMessageSerializer
     private void serializeHostKeys() {
         LOGGER.debug(
                 "Host keys blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
         appendBytes(message.getHostKeys().getValue());
     }
 

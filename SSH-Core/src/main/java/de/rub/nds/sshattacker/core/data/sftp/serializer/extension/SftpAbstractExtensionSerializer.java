@@ -37,7 +37,8 @@ public abstract class SftpAbstractExtensionSerializer<E extends SftpAbstractExte
     private void serializeExtensionName() {
         LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
         appendInt(extension.getNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Extension name: {}", backslashEscapeString(extension.getName().getValue()));
+        LOGGER.debug(
+                "Extension name: {}", () -> backslashEscapeString(extension.getName().getValue()));
         appendString(extension.getName().getValue(), StandardCharsets.US_ASCII);
     }
 

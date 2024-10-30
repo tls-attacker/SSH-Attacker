@@ -33,7 +33,7 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
     public void adjustContext() {
         LOGGER.debug(
                 "Received unknown message:\n{}",
-                ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(message.getPayload()));
     }
 
     @Override

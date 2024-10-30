@@ -38,7 +38,7 @@ public class SftpRequestOpenMessageParser extends SftpRequestMessageParser<SftpR
         LOGGER.debug("Filename length: {}", message.getFilenameLength().getValue());
         message.setFilename(
                 parseByteString(message.getFilenameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Filename: {}", backslashEscapeString(message.getFilename().getValue()));
+        LOGGER.debug("Filename: {}", () -> backslashEscapeString(message.getFilename().getValue()));
     }
 
     private void parsePFlags() {

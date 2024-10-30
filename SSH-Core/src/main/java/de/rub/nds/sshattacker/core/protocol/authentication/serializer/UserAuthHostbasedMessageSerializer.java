@@ -42,14 +42,15 @@ public class UserAuthHostbasedMessageSerializer
         appendBytes(message.getHostKeyBytes().getValue());
         LOGGER.debug(
                 "Host key: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void serializeHostName() {
         appendInt(message.getHostNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Host name length: {}", message.getHostNameLength().getValue());
         appendString(message.getHostName().getValue());
-        LOGGER.debug("Host name: {}", backslashEscapeString(message.getHostName().getValue()));
+        LOGGER.debug(
+                "Host name: {}", () -> backslashEscapeString(message.getHostName().getValue()));
     }
 
     private void serializeClientUserName() {
@@ -60,7 +61,7 @@ public class UserAuthHostbasedMessageSerializer
         appendString(message.getClientUserName().getValue(), StandardCharsets.UTF_8);
         LOGGER.debug(
                 "Client user name: {}",
-                backslashEscapeString(message.getClientUserName().getValue()));
+                () -> backslashEscapeString(message.getClientUserName().getValue()));
     }
 
     private void serializeSignature() {
@@ -69,7 +70,7 @@ public class UserAuthHostbasedMessageSerializer
         appendBytes(message.getSignature().getValue());
         LOGGER.debug(
                 "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
     }
 
     @Override

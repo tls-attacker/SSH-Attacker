@@ -62,26 +62,33 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
 
             LOGGER.trace(
                     "Complete packet bytes: {}",
-                    ArrayConverter.bytesToHexString(
-                            binaryPacket.getCompletePacketBytes().getValue()));
+                    () ->
+                            ArrayConverter.bytesToHexString(
+                                    binaryPacket.getCompletePacketBytes().getValue()));
             LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
             if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
                 LOGGER.debug(
                         "Packet bytes: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        binaryPacket.getCiphertext().getValue()));
             } else {
                 LOGGER.debug(
                         "Encrypted packet bytes: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        binaryPacket.getCiphertext().getValue()));
             }
 
             if (activeDecryptCipher.getEncryptionAlgorithm().getMode() == EncryptionMode.GCM) {
                 LOGGER.debug(
                         "Authentication tag: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+                        () -> ArrayConverter.bytesToHexString(binaryPacket.getMac()));
             } else {
                 if (binaryPacket.getMac().getValue().length > 0) {
-                    LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+                    LOGGER.debug(
+                            "MAC: {}",
+                            () -> ArrayConverter.bytesToHexString(binaryPacket.getMac()));
                 } else {
                     LOGGER.debug("MAC: [empty]");
                 }

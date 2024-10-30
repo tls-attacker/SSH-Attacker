@@ -22,7 +22,7 @@ public class UnknownDataMessageSerializer extends ProtocolMessageSerializer<Unkn
 
     @Override
     public final void serializeProtocolMessageContents() {
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(message.getPayload()));
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(message.getPayload()));
         appendBytes(message.getPayload().getValue());
     }
 }

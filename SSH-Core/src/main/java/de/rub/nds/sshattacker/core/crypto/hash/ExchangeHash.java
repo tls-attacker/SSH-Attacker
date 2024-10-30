@@ -148,7 +148,7 @@ public final class ExchangeHash {
 
     private static byte[] compute(KeyExchangeAlgorithm algorithm, byte[] input)
             throws CryptoException {
-        LOGGER.debug("Exchange hash input: {}", ArrayConverter.bytesToRawHexString(input));
+        LOGGER.debug("Exchange hash input: {}", () -> ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
             md = MessageDigest.getInstance(algorithm.getDigest());
@@ -162,7 +162,7 @@ public final class ExchangeHash {
                     e);
         }
         byte[] hash = md.digest(input);
-        LOGGER.info("Computed exchange hash: {}", ArrayConverter.bytesToRawHexString(hash));
+        LOGGER.info("Computed exchange hash: {}", () -> ArrayConverter.bytesToRawHexString(hash));
         return hash;
     }
 

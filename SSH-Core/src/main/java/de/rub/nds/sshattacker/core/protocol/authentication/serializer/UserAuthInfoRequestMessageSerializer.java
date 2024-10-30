@@ -29,7 +29,8 @@ public class UserAuthInfoRequestMessageSerializer
     private void serializeUserName() {
         LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
         appendInt(message.getUserNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("User name: {}", backslashEscapeString(message.getUserName().getValue()));
+        LOGGER.debug(
+                "User name: {}", () -> backslashEscapeString(message.getUserName().getValue()));
         appendString(message.getUserName().getValue());
     }
 
@@ -37,7 +38,9 @@ public class UserAuthInfoRequestMessageSerializer
         LOGGER.debug("Instruction length: {}", message.getInstructionLength().getValue());
         appendInt(
                 message.getInstructionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Instruction: {}", backslashEscapeString(message.getInstruction().getValue()));
+        LOGGER.debug(
+                "Instruction: {}",
+                () -> backslashEscapeString(message.getInstruction().getValue()));
         appendString(message.getInstruction().getValue());
     }
 
@@ -46,7 +49,8 @@ public class UserAuthInfoRequestMessageSerializer
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue());
     }
 

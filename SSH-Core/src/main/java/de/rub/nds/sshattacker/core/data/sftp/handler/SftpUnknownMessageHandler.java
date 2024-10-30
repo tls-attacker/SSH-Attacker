@@ -33,7 +33,7 @@ public class SftpUnknownMessageHandler extends SftpMessageHandler<SftpUnknownMes
     public void adjustContext() {
         LOGGER.debug(
                 "Received unknown message:\n{}",
-                ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(message.getPayload()));
     }
 
     @Override

@@ -31,7 +31,8 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
         appendInt(
                 message.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
+                "Request name: {}",
+                () -> backslashEscapeString(message.getRequestName().getValue()));
         appendString(message.getRequestName().getValue(), StandardCharsets.US_ASCII);
     }
 

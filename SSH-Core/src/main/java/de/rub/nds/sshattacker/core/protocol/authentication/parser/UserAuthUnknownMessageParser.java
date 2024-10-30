@@ -34,7 +34,9 @@ public class UserAuthUnknownMessageParser
         message.setMethodSpecificFields(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Method Specific Fields: {}",
-                ArrayConverter.bytesToHexString(message.getMethodSpecificFields().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                message.getMethodSpecificFields().getValue()));
     }
 
     @Override

@@ -23,7 +23,7 @@ public class SftpUnknownMessageSerializer extends SftpMessageSerializer<SftpUnkn
 
     @Override
     public void serializeMessageSpecificContents() {
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(message.getPayload()));
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(message.getPayload()));
         appendBytes(message.getPayload().getValue());
     }
 }

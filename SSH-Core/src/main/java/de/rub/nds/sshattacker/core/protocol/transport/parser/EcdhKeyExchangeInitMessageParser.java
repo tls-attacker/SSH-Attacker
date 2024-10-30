@@ -40,7 +40,9 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
                 parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug(
                 "Ephemeral public key (client): {}",
-                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getEphemeralPublicKey().getValue()));
     }
 
     @Override

@@ -36,7 +36,8 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
                 parseByteString(
                         message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Channel type: {}", backslashEscapeString(message.getChannelType().getValue()));
+                "Channel type: {}",
+                () -> backslashEscapeString(message.getChannelType().getValue()));
     }
 
     public void parseSenderChannel() {

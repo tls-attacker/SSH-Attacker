@@ -39,7 +39,7 @@ public class EcdhKeyExchangeReplyMessageParser
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
                 "Host key bytes: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseEphemeralPublicKey() {
@@ -51,7 +51,9 @@ public class EcdhKeyExchangeReplyMessageParser
                 parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug(
                 "Ephemeral public key (server): {}",
-                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getEphemeralPublicKey().getValue()));
     }
 
     private void parseSignature() {
@@ -60,7 +62,7 @@ public class EcdhKeyExchangeReplyMessageParser
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         LOGGER.debug(
                 "Signature :{}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
     }
 
     @Override

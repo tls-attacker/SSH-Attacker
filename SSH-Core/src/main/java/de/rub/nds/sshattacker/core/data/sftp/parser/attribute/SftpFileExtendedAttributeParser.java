@@ -37,7 +37,7 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
         LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
         attribute.setType(
                 parseByteString(attribute.getTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Type: {}", backslashEscapeString(attribute.getType().getValue()));
+        LOGGER.debug("Type: {}", () -> backslashEscapeString(attribute.getType().getValue()));
     }
 
     private void parseData() {
@@ -45,7 +45,8 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
         LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
         attribute.setData(parseByteArrayField(attribute.getDataLength().getValue()));
         LOGGER.debug(
-                "Data: {}", ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
+                "Data: {}",
+                () -> ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
     }
 
     @Override

@@ -37,7 +37,8 @@ public class ChannelRequestExitSignalMessageParser
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
-        LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
+        LOGGER.debug(
+                "Signal name: {}", () -> backslashEscapeString(message.getSignalName().getValue()));
     }
 
     public void parseCoreDump() {
@@ -50,7 +51,8 @@ public class ChannelRequestExitSignalMessageParser
         LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         message.setErrorMessage(parseByteString(message.getErrorMessageLength().getValue()));
         LOGGER.debug(
-                "Error message: {}", backslashEscapeString(message.getErrorMessage().getValue()));
+                "Error message: {}",
+                () -> backslashEscapeString(message.getErrorMessage().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -60,7 +62,8 @@ public class ChannelRequestExitSignalMessageParser
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

@@ -30,8 +30,9 @@ public class DhGexKeyExchangeGroupMessageSerializer
         appendBytes(message.getGroupModulus().getValue().toByteArray());
         LOGGER.debug(
                 "Group modulus: {}",
-                ArrayConverter.bytesToRawHexString(
-                        message.getGroupModulus().getValue().toByteArray()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getGroupModulus().getValue().toByteArray()));
     }
 
     private void serializeGroupGenerator() {
@@ -42,8 +43,9 @@ public class DhGexKeyExchangeGroupMessageSerializer
         appendBytes(message.getGroupGenerator().getValue().toByteArray());
         LOGGER.debug(
                 "Group generator: {}",
-                ArrayConverter.bytesToRawHexString(
-                        message.getGroupGenerator().getValue().toByteArray()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getGroupGenerator().getValue().toByteArray()));
     }
 
     @Override

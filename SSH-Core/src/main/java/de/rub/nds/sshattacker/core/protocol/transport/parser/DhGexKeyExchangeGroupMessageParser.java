@@ -38,7 +38,7 @@ public class DhGexKeyExchangeGroupMessageParser
         message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
         LOGGER.debug(
                 "Group modulus: {}",
-                ArrayConverter.bytesToRawHexString(message.getGroupModulus().getByteArray()));
+                () -> ArrayConverter.bytesToRawHexString(message.getGroupModulus().getByteArray()));
     }
 
     private void parseGroupGenerator() {
@@ -47,7 +47,9 @@ public class DhGexKeyExchangeGroupMessageParser
         message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
         LOGGER.debug(
                 "Group generator: {}",
-                ArrayConverter.bytesToRawHexString(message.getGroupGenerator().getByteArray()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getGroupGenerator().getByteArray()));
     }
 
     @Override

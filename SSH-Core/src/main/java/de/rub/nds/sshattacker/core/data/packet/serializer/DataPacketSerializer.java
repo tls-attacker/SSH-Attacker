@@ -33,11 +33,14 @@ public class DataPacketSerializer extends AbstractDataPacketSerializer<DataPacke
 
         appendBytes(dataPacket.getPayload().getValue());
         LOGGER.debug(
-                "Payload: {}", ArrayConverter.bytesToHexString(dataPacket.getPayload().getValue()));
+                "Payload: {}",
+                () -> ArrayConverter.bytesToHexString(dataPacket.getPayload().getValue()));
 
         dataPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.trace(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(dataPacket.getCompletePacketBytes().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                dataPacket.getCompletePacketBytes().getValue()));
     }
 }

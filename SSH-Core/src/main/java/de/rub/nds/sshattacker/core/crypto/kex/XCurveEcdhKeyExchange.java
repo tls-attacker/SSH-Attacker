@@ -121,7 +121,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
                 encodeSharedBytes ? new BigInteger(1, sharedBytes).toByteArray() : sharedBytes;
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     @Override

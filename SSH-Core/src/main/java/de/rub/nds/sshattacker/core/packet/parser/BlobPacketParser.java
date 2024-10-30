@@ -30,7 +30,7 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
         LOGGER.debug(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
+                () -> ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
 
         return packet;
     }

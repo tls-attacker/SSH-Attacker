@@ -44,24 +44,26 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
         appendBytes(binaryPacket.getCiphertext().getValue());
         LOGGER.debug(
                 "Ciphertext: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                () -> ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
         if (!encryptedFields.contains(BinaryPacketField.PADDING)) {
             appendBytes(binaryPacket.getPadding().getValue());
             LOGGER.debug(
                     "Padding: {}",
-                    ArrayConverter.bytesToHexString(binaryPacket.getPadding().getValue()));
+                    () -> ArrayConverter.bytesToHexString(binaryPacket.getPadding().getValue()));
         }
         appendBytes(binaryPacket.getMac().getValue());
         LOGGER.debug(
                 "MAC / Authentication tag: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getMac().getValue()));
+                () -> ArrayConverter.bytesToHexString(binaryPacket.getMac().getValue()));
 
         binaryPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.trace(
                 "Complete payload bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getPayload().getValue()));
+                () -> ArrayConverter.bytesToHexString(binaryPacket.getPayload().getValue()));
         LOGGER.trace(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                binaryPacket.getCompletePacketBytes().getValue()));
     }
 }

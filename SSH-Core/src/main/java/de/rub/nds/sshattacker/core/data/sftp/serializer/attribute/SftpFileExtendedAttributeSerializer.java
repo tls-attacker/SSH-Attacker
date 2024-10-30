@@ -31,7 +31,7 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
     public void serializeType() {
         LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
         appendInt(attribute.getTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Type: {}", backslashEscapeString(attribute.getType().getValue()));
+        LOGGER.debug("Type: {}", () -> backslashEscapeString(attribute.getType().getValue()));
         appendString(attribute.getType().getValue(), StandardCharsets.US_ASCII);
     }
 
@@ -39,7 +39,8 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
         LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
         appendInt(attribute.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Data: {}", ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
+                "Data: {}",
+                () -> ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
         appendBytes(attribute.getData().getValue());
     }
 

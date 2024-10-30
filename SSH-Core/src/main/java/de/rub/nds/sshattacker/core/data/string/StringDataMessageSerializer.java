@@ -23,7 +23,7 @@ public class StringDataMessageSerializer extends ProtocolMessageSerializer<Strin
     }
 
     private void serializeData() {
-        LOGGER.debug("Data: {}", backslashEscapeString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", () -> backslashEscapeString(message.getData().getValue()));
         appendString(message.getData().getValue(), StandardCharsets.UTF_8);
     }
 

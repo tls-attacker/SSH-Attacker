@@ -37,7 +37,8 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
                 parseByteString(
                         message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
+                "Request name: {}",
+                () -> backslashEscapeString(message.getRequestName().getValue()));
     }
 
     private void parseWantReply() {

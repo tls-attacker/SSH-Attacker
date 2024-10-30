@@ -46,18 +46,22 @@ public class HybridKeyExchangeInitMessagePreperator
 
         byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         LOGGER.info(
-                "PubKey Encapsulation = {}", ArrayConverter.bytesToRawHexString(pubKencapsulation));
+                "PubKey Encapsulation = {}",
+                () -> ArrayConverter.bytesToRawHexString(pubKencapsulation));
         LOGGER.info(
                 "PrivKey Encpasulation = {}",
-                ArrayConverter.bytesToRawHexString(
-                        encapsulation.getLocalKeyPair().getPrivateKey().getEncoded()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                encapsulation.getLocalKeyPair().getPrivateKey().getEncoded()));
 
         byte[] pubKagreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
-        LOGGER.info("PubKey Agreement = {}", ArrayConverter.bytesToRawHexString(pubKagreement));
+        LOGGER.info(
+                "PubKey Agreement = {}", () -> ArrayConverter.bytesToRawHexString(pubKagreement));
         LOGGER.info(
                 "PrivKey Agreement = {}",
-                ArrayConverter.bytesToRawHexString(
-                        agreement.getLocalKeyPair().getPrivateKey().getEncoded()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                agreement.getLocalKeyPair().getPrivateKey().getEncoded()));
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

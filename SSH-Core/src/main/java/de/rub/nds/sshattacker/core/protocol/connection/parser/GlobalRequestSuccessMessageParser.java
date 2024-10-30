@@ -30,7 +30,9 @@ public class GlobalRequestSuccessMessageParser
         message.setResponseSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Response specific data blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getResponseSpecificData().getValue()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getResponseSpecificData().getValue()));
     }
 
     @Override

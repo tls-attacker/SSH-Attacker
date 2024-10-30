@@ -30,7 +30,7 @@ public class DhKeyExchangeReplyMessageSerializer
         appendBytes(message.getHostKeyBytes().getValue());
         LOGGER.debug(
                 "Host key: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void serializeEphemeralPublicKey() {

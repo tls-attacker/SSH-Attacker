@@ -29,7 +29,7 @@ public class BlobPacketSerializer extends AbstractPacketSerializer<BlobPacket> {
         appendBytes(packet.getCiphertext().getValue());
         LOGGER.debug(
                 "Ciphertext: {}",
-                ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
+                () -> ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
 
         packet.setCompletePacketBytes(getAlreadySerialized());
     }

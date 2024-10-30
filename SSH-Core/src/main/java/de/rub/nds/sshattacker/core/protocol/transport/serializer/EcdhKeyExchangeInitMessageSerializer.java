@@ -32,7 +32,9 @@ public class EcdhKeyExchangeInitMessageSerializer
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Ephemeral public key (client): {}",
-                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                message.getEphemeralPublicKey().getValue()));
         appendBytes(message.getEphemeralPublicKey().getValue());
     }
 

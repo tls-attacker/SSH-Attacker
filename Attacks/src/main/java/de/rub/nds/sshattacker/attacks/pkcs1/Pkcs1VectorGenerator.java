@@ -167,7 +167,7 @@ public final class Pkcs1VectorGenerator {
         paddedSecret[0] = (byte) 1;
         LOGGER.debug(
                 "Generated a PKCS1 padded message with a wrong first byte: {}",
-                ArrayConverter.bytesToHexString(paddedSecret));
+                () -> ArrayConverter.bytesToHexString(paddedSecret));
         return paddedSecret;
     }
 
@@ -178,7 +178,7 @@ public final class Pkcs1VectorGenerator {
         paddedSecret[1] = (byte) (paddedSecret[1] ^ (byte) 255);
         LOGGER.debug(
                 "Generated a PKCS1 padded message with a wrong second byte: {}",
-                ArrayConverter.bytesToHexString(paddedSecret));
+                () -> ArrayConverter.bytesToHexString(paddedSecret));
         return paddedSecret;
     }
 

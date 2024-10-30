@@ -33,7 +33,7 @@ public class StringDataMessageParser extends ProtocolMessageParser<StringDataMes
 
     private void parseData() {
         message.setData(parseByteString(getBytesLeft(), StandardCharsets.UTF_8));
-        LOGGER.debug("Data: {}", backslashEscapeString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", () -> backslashEscapeString(message.getData().getValue()));
     }
 
     @Override

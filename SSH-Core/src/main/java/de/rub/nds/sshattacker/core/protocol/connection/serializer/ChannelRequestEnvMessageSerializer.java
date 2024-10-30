@@ -29,7 +29,8 @@ public class ChannelRequestEnvMessageSerializer
         appendInt(
                 message.getVariableNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Variable name: {}", backslashEscapeString(message.getVariableName().getValue()));
+                "Variable name: {}",
+                () -> backslashEscapeString(message.getVariableName().getValue()));
         appendString(message.getVariableName().getValue(), StandardCharsets.UTF_8);
     }
 
@@ -39,7 +40,8 @@ public class ChannelRequestEnvMessageSerializer
                 message.getVariableValueLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Variable value: {}", backslashEscapeString(message.getVariableValue().getValue()));
+                "Variable value: {}",
+                () -> backslashEscapeString(message.getVariableValue().getValue()));
         appendString(message.getVariableValue().getValue(), StandardCharsets.UTF_8);
     }
 

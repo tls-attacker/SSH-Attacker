@@ -45,7 +45,8 @@ public abstract class SftpAbstractExtensionParser<E extends SftpAbstractExtensio
         LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
         extension.setName(
                 parseByteString(extension.getNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Extension name: {}", backslashEscapeString(extension.getName().getValue()));
+        LOGGER.debug(
+                "Extension name: {}", () -> backslashEscapeString(extension.getName().getValue()));
     }
 
     protected abstract void parseExtensionValue();

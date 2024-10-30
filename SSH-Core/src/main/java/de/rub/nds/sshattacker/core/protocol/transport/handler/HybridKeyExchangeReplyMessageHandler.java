@@ -57,14 +57,14 @@ public class HybridKeyExchangeReplyMessageHandler
                 .setRemotePublicKey(message.getPublicKey().getValue());
         LOGGER.info(
                 "RemoteKey Agreement = {}",
-                ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
                 .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
         LOGGER.info(
                 "Ciphertext Encapsulation = {}",
-                ArrayConverter.bytesToRawHexString(message.getCombinedKeyShare().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getCombinedKeyShare().getValue()));
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

@@ -42,7 +42,7 @@ public class UserAuthHostbasedMessageParser
         message.setPubKeyAlgorithm(parseByteString(message.getPubKeyAlgorithmLength().getValue()));
         LOGGER.debug(
                 "Public key algorithm: {}",
-                backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
+                () -> backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
     }
 
     private void parseHostKeyBytes() {
@@ -51,14 +51,15 @@ public class UserAuthHostbasedMessageParser
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
                 "Host key bytes: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseHostName() {
         message.setHostNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Host name length: {}", message.getHostNameLength().getValue());
         message.setHostName(parseByteString(message.getHostNameLength().getValue()));
-        LOGGER.debug("Host name: {}", backslashEscapeString(message.getHostName().getValue()));
+        LOGGER.debug(
+                "Host name: {}", () -> backslashEscapeString(message.getHostName().getValue()));
     }
 
     private void parseClientUserName() {
@@ -69,7 +70,7 @@ public class UserAuthHostbasedMessageParser
                         message.getClientUserNameLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug(
                 "Client user name: {}",
-                backslashEscapeString(message.getClientUserName().getValue()));
+                () -> backslashEscapeString(message.getClientUserName().getValue()));
     }
 
     private void parseSignature() {

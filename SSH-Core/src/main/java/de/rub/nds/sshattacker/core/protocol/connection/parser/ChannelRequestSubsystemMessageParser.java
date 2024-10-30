@@ -39,7 +39,8 @@ public class ChannelRequestSubsystemMessageParser
                 parseByteString(
                         message.getSubsystemNameLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug(
-                "Subsystem name: {}", backslashEscapeString(message.getSubsystemName().getValue()));
+                "Subsystem name: {}",
+                () -> backslashEscapeString(message.getSubsystemName().getValue()));
     }
 
     @Override

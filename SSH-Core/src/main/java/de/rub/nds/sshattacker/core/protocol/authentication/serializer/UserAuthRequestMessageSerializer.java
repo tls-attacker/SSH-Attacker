@@ -28,7 +28,8 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     private void serializeUserName() {
         LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
         appendInt(message.getUserNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("User name: {}", backslashEscapeString(message.getUserName().getValue()));
+        LOGGER.debug(
+                "User name: {}", () -> backslashEscapeString(message.getUserName().getValue()));
         appendString(message.getUserName().getValue(), StandardCharsets.UTF_8);
     }
 
@@ -37,14 +38,16 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
         appendInt(
                 message.getServiceNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
+                "Service name: {}",
+                () -> backslashEscapeString(message.getServiceName().getValue()));
         appendString(message.getServiceName().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeMethodName() {
         LOGGER.debug("Method name length: {}", message.getMethodNameLength().getValue());
         appendInt(message.getMethodNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Method name: {}", backslashEscapeString(message.getMethodName().getValue()));
+        LOGGER.debug(
+                "Method name: {}", () -> backslashEscapeString(message.getMethodName().getValue()));
         appendString(message.getMethodName().getValue(), StandardCharsets.US_ASCII);
     }
 

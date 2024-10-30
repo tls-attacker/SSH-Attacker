@@ -33,6 +33,7 @@ public class UnknownDataMessageParser extends ProtocolMessageParser<UnknownDataM
     public void parseProtocolMessageContents() {
         message.setPayload(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "Payload: {}", ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
+                "Payload: {}",
+                () -> ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
     }
 }

@@ -43,7 +43,7 @@ public class ChannelOpenFailureMessageParser
         LOGGER.debug("Reason length: {}", message.getReasonLength());
         message.setReason(
                 parseByteString(message.getReasonLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
+        LOGGER.debug("Reason: {}", () -> backslashEscapeString(message.getReason().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -53,7 +53,8 @@ public class ChannelOpenFailureMessageParser
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

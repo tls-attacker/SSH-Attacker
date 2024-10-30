@@ -40,7 +40,7 @@ public class Manger extends Pkcs1Attack {
         tmp = (MathHelper.intCeilDiv(tmp, 8) - 1) * 8;
         bigB = BigInteger.ONE.shiftLeft(tmp);
         c0 = new BigInteger(1, encryptedMsg);
-        LOGGER.debug("b: {}", ArrayConverter.bytesToHexString(bigB.toByteArray()));
+        LOGGER.debug("b: {}", () -> ArrayConverter.bytesToHexString(bigB.toByteArray()));
     }
 
     /**
@@ -66,7 +66,8 @@ public class Manger extends Pkcs1Attack {
         }
 
         LOGGER.debug(
-                "Ciphertext after step 0: {}", ArrayConverter.bytesToHexString(c0.toByteArray()));
+                "Ciphertext after step 0: {}",
+                () -> ArrayConverter.bytesToHexString(c0.toByteArray()));
 
         LOGGER.debug("Step 1");
         BigInteger f1 = new BigInteger("2");
@@ -124,9 +125,10 @@ public class Manger extends Pkcs1Attack {
         }
 
         if (!interrupted) {
+            BigInteger finalMmin = mmin;
             LOGGER.debug(
                     "Manger's attack solution (before inverse computation, if any): {}",
-                    ArrayConverter.bytesToHexString(mmin.toByteArray()));
+                    () -> ArrayConverter.bytesToHexString(finalMmin.toByteArray()));
 
             if (fx.equals(BigInteger.ONE)) {
                 solution = mmin;
@@ -136,7 +138,7 @@ public class Manger extends Pkcs1Attack {
             }
             LOGGER.debug(
                     "Manger's attack solution (after inverse computation, if any): {}",
-                    ArrayConverter.bytesToHexString(solution.toByteArray()));
+                    () -> ArrayConverter.bytesToHexString(solution.toByteArray()));
         }
     }
 

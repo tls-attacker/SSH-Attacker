@@ -28,7 +28,7 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
         if (text.isEmpty()) {
             LOGGER.debug("Text: [none]");
         } else {
-            LOGGER.debug("Text: {}", backslashEscapeString(text));
+            LOGGER.debug("Text: {}", () -> backslashEscapeString(text));
             appendString(text, StandardCharsets.US_ASCII);
         }
     }

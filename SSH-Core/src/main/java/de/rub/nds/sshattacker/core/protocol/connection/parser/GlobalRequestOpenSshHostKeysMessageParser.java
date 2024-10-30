@@ -29,7 +29,7 @@ public class GlobalRequestOpenSshHostKeysMessageParser
         message.setHostKeys(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Host keys blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
     }
 
     @Override

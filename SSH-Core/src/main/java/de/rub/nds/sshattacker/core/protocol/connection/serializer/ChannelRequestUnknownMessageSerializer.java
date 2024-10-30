@@ -23,7 +23,7 @@ public class ChannelRequestUnknownMessageSerializer
     public void serializeBreakLength() {
         LOGGER.debug(
                 "Type specific data: {}",
-                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
+                () -> ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
         appendBytes(message.getTypeSpecificData().getValue());
     }
 

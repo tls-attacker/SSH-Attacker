@@ -35,7 +35,8 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
+                "Service name: {}",
+                () -> backslashEscapeString(message.getServiceName().getValue()));
     }
 
     @Override

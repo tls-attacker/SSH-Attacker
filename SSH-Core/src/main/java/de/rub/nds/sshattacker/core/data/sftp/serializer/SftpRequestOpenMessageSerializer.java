@@ -27,7 +27,7 @@ public class SftpRequestOpenMessageSerializer
     public void serializeFilename() {
         LOGGER.debug("Filename length: {}", message.getFilenameLength().getValue());
         appendInt(message.getFilenameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Filename: {}", backslashEscapeString(message.getFilename().getValue()));
+        LOGGER.debug("Filename: {}", () -> backslashEscapeString(message.getFilename().getValue()));
         appendString(message.getFilename().getValue(), StandardCharsets.UTF_8);
     }
 

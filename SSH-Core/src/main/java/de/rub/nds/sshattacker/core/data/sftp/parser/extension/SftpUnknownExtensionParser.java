@@ -36,6 +36,6 @@ public class SftpUnknownExtensionParser extends SftpAbstractExtensionParser<Sftp
         extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
         LOGGER.debug(
                 "Extension value: {}",
-                ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));
     }
 }

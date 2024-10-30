@@ -193,7 +193,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                         .toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     public void selectGroup(int preferredGroupSize) {

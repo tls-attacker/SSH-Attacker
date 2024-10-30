@@ -17,7 +17,7 @@ public class LogLevelConverter implements IStringConverter<Level> {
 
     @Override
     public Level convert(String s) {
-        Level level = Level.toLevel(s);
+        Level level = Level.toLevel(s, null);
         if (level == null) {
             throw new ParameterException(
                     "Value "

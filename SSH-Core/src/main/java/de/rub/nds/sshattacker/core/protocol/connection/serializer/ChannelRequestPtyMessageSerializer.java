@@ -62,7 +62,9 @@ public class ChannelRequestPtyMessageSerializer
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Endcoded terminal modes: {}",
-                ArrayConverter.bytesToHexString(message.getEncodedTerminalModes().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                message.getEncodedTerminalModes().getValue()));
         appendBytes(message.getEncodedTerminalModes().getValue());
     }
 

@@ -28,7 +28,8 @@ public class ServiceAcceptMessageSerializer extends SshMessageSerializer<Service
         LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
         appendInt(message.getServiceNameLength().getValue(), DataFormatConstants.UINT32_SIZE);
         LOGGER.debug(
-                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
+                "Service name: {}",
+                () -> backslashEscapeString(message.getServiceName().getValue()));
         appendString(message.getServiceName().getValue(), StandardCharsets.US_ASCII);
     }
 

@@ -90,7 +90,7 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     @Override

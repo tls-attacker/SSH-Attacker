@@ -70,7 +70,9 @@ public class ChannelRequestPtyMessageParser
                 parseByteArrayField(message.getEncodedTerminalModesLength().getValue()));
         LOGGER.debug(
                 "Encoded terminal modes: {}",
-                ArrayConverter.bytesToHexString(message.getEncodedTerminalModes().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                message.getEncodedTerminalModes().getValue()));
     }
 
     @Override

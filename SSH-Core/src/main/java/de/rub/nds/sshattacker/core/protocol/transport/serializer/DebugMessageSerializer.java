@@ -35,7 +35,7 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
     private void serializeMessage() {
         LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         appendInt(message.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
+        LOGGER.debug("Message: {}", () -> backslashEscapeString(message.getMessage().getValue()));
         appendString(message.getMessage().getValue(), StandardCharsets.UTF_8);
     }
 
@@ -44,7 +44,8 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 

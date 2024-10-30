@@ -25,7 +25,7 @@ public class UnknownDataMessageHandler extends ProtocolMessageHandler<UnknownDat
     public void adjustContext() {
         LOGGER.debug(
                 "Received unknown data message:\n{}",
-                ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(message.getPayload()));
     }
 
     @Override

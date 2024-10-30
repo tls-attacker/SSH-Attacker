@@ -46,7 +46,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
+        LOGGER.debug("Message: {}", () -> backslashEscapeString(message.getMessage().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -56,7 +56,8 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+                "Language tag: {}",
+                () -> backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

@@ -34,6 +34,7 @@ public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
     protected void parseMessageSpecificContents() {
         message.setPayload(parseArrayOrTillEnd(-1));
         LOGGER.debug(
-                "Payload: {}", ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
+                "Payload: {}",
+                () -> ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
     }
 }

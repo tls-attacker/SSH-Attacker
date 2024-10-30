@@ -42,7 +42,7 @@ public class SignatureParser extends Parser<RawSignature> {
         signature.setSignatureBytes(parseByteArrayField(signature.getSignatureLength()));
         LOGGER.debug(
                 "Signature bytes: {}",
-                ArrayConverter.bytesToHexString(signature.getSignatureBytes()));
+                () -> ArrayConverter.bytesToHexString(signature.getSignatureBytes()));
         return signature;
     }
 }

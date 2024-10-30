@@ -151,11 +151,12 @@ public class HybridKeyExchange extends KeyExchange {
             sharedSecret = encode(tmpSharedSecret, algorithm.getDigest());
             LOGGER.debug(
                     "Concatenated Shared Secret = {}",
-                    ArrayConverter.bytesToRawHexString(tmpSharedSecret));
+                    () -> ArrayConverter.bytesToRawHexString(tmpSharedSecret));
             LOGGER.debug(
                     "Encoded Shared Secret = {}",
-                    ArrayConverter.bytesToRawHexString(
-                            encode(tmpSharedSecret, algorithm.getDigest())));
+                    () ->
+                            ArrayConverter.bytesToRawHexString(
+                                    encode(tmpSharedSecret, algorithm.getDigest())));
         } catch (Exception e) {
             LOGGER.warn("Could not create the shared secret", e);
         }

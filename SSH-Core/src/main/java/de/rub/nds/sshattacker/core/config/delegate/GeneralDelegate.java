@@ -31,12 +31,12 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
     private boolean debug;
 
-    @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
+    @Parameter(names = "-quiet", description = "No output (sets logLevel to OFF)")
     private boolean quiet;
 
     @Parameter(
             names = "-log_level",
-            description = "Sets explicit log level",
+            description = "Sets explicit log level.",
             converter = LogLevelConverter.class)
     private Level loglevel;
 

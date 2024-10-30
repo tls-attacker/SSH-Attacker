@@ -51,7 +51,7 @@ public class HybridKeyExchangeReplyMessageParser
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
                 "Host key bytes: {}",
-                ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+                () -> ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseHybridKey() {
