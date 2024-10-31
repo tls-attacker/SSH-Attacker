@@ -17,5 +17,5 @@ public class UserAuthSuccessMessageSerializer extends SshMessageSerializer<UserA
     }
 
     @Override
-    public void serializeMessageSpecificContents() {}
+    protected void serializeMessageSpecificContents() {}
 }

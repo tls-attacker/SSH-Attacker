@@ -32,7 +32,7 @@ public class ChannelRequestExecMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeCommand();
     }

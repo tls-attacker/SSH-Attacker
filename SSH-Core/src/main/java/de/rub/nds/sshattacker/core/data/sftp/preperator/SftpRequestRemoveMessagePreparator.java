@@ -18,6 +18,7 @@ public class SftpRequestRemoveMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_REMOVE);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
             getObject().setPath("/etc/passwd", true);

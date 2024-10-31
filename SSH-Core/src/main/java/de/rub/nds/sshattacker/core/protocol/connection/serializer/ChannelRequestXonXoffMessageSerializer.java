@@ -29,7 +29,7 @@ public class ChannelRequestXonXoffMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeClientFlowControl();
     }

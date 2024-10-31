@@ -38,7 +38,7 @@ public class GlobalRequestTcpIpForwardMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeIPAddressToBind();
         serializePortToBind();

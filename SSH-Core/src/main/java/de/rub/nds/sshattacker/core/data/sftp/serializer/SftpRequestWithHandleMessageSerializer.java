@@ -23,7 +23,7 @@ public abstract class SftpRequestWithHandleMessageSerializer<
         super(message);
     }
 
-    public void serializeHandle() {
+    private void serializeHandle() {
         LOGGER.debug("Handle length: {}", message.getHandleLength().getValue());
         appendInt(message.getHandleLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
@@ -32,7 +32,8 @@ public abstract class SftpRequestWithHandleMessageSerializer<
         appendBytes(message.getHandle().getValue());
     }
 
-    public void serializeRequestSpecificContents() {
+    @Override
+    protected void serializeRequestSpecificContents() {
         serializeHandle();
         serializeRequestWithHandleSpecificContents();
     }

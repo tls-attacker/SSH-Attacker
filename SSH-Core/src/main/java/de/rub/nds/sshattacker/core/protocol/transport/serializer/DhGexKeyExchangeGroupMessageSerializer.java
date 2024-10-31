@@ -49,7 +49,7 @@ public class DhGexKeyExchangeGroupMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeGroupModulus();
         serializeGroupGenerator();
     }

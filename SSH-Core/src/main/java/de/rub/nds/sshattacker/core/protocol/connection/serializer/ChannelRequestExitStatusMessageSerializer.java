@@ -21,13 +21,13 @@ public class ChannelRequestExitStatusMessageSerializer
         super(message);
     }
 
-    public void serializeExitStatus() {
+    private void serializeExitStatus() {
         LOGGER.debug("Exit status: {}", message.getExitStatus().getValue());
         appendInt(message.getExitStatus().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeExitStatus();
     }

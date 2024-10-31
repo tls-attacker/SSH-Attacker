@@ -36,7 +36,7 @@ public class GlobalRequestSuccessMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeResponseSpecificData();
     }
 }

@@ -190,7 +190,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeCookie();
         serializeKeyExchangeAlgorithms();
         serializeServerHostKeyAlgorithms();

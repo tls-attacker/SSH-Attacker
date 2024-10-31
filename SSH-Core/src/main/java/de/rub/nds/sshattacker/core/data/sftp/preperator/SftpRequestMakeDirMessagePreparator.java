@@ -19,6 +19,7 @@ public class SftpRequestMakeDirMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_MKDIR);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
             getObject().setPath("/tmp/ssh-attacker/", true);

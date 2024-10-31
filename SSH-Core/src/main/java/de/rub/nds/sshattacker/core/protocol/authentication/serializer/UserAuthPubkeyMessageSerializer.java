@@ -63,7 +63,7 @@ public class UserAuthPubkeyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeUseSignature();
         serializePubkeyAlgName();

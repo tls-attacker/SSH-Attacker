@@ -20,5 +20,5 @@ public class GlobalRequestNoMoreSessionsMessagePreparator
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {}
+    public void prepareGlobalRequestMessageSpecificContents() {}
 }

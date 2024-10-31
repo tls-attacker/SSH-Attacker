@@ -30,7 +30,7 @@ public class HybridKeyExchangeInitMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
 
         int length =
                 message.getAgreementPublicKeyLength().getValue()

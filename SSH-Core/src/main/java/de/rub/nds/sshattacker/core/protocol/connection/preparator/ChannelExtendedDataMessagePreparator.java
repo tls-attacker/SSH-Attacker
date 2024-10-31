@@ -21,7 +21,7 @@ public class ChannelExtendedDataMessagePreparator
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {
+    public void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
         getObject()
                 .setDataTypeCode(

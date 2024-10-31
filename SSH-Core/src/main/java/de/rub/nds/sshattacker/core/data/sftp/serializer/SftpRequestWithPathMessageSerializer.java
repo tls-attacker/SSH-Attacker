@@ -24,14 +24,15 @@ public abstract class SftpRequestWithPathMessageSerializer<T extends SftpRequest
         super(message);
     }
 
-    public void serializePath() {
+    private void serializePath() {
         LOGGER.debug("Path length: {}", message.getPathLength().getValue());
         appendInt(message.getPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Path: {}", () -> backslashEscapeString(message.getPath().getValue()));
         appendString(message.getPath().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeRequestSpecificContents() {
+    @Override
+    protected void serializeRequestSpecificContents() {
         serializePath();
         serializeRequestWithPathSpecificContents();
     }

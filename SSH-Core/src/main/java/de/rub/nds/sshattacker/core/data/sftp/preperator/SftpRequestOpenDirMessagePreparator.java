@@ -18,6 +18,7 @@ public class SftpRequestOpenDirMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_OPENDIR);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
             getObject().setPath("/tmp/", true);

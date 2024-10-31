@@ -37,7 +37,7 @@ public class StringDataMessageParser extends ProtocolMessageParser<StringDataMes
     }
 
     @Override
-    public void parseProtocolMessageContents() {
+    protected void parseProtocolMessageContents() {
         parseData();
     }
 }

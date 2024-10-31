@@ -8,13 +8,9 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenDirMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SftpRequestOpenDirMessageParser
         extends SftpRequestWithPathMessageParser<SftpRequestOpenDirMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public SftpRequestOpenDirMessageParser(byte[] array) {
         super(array);

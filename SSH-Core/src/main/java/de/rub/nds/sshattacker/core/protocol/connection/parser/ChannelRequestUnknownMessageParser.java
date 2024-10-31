@@ -29,7 +29,7 @@ public class ChannelRequestUnknownMessageParser
         return new ChannelRequestUnknownMessage();
     }
 
-    public void parseTypeSpecificData() {
+    private void parseTypeSpecificData() {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: {}",

@@ -22,5 +22,5 @@ public abstract class SftpMessageSerializer<T extends SftpMessage<T>>
         serializeMessageSpecificContents();
     }
 
-    public abstract void serializeMessageSpecificContents();
+    protected abstract void serializeMessageSpecificContents();
 }

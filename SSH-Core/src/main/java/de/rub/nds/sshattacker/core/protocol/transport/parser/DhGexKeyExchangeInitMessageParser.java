@@ -31,7 +31,7 @@ public class DhGexKeyExchangeInitMessageParser
         return new DhGexKeyExchangeInitMessage();
     }
 
-    public void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Ephemeral public key (client) length: {}", message.getEphemeralPublicKeyLength());

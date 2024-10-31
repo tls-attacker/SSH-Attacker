@@ -39,7 +39,7 @@ public class EcdhKeyExchangeInitMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeEphemeralPublicKey();
     }
 }

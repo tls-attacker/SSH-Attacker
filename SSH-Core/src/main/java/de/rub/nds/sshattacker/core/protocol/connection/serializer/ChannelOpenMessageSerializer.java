@@ -47,7 +47,7 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeChannelType();
         serializeSenderChannel();
         serializeWindowSize();

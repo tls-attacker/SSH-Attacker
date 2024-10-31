@@ -29,7 +29,7 @@ public class GlobalRequestUnknownMessageParser
         return new GlobalRequestUnknownMessage();
     }
 
-    public void parseTypeSpecificData() {
+    private void parseTypeSpecificData() {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: {}",

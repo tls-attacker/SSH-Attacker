@@ -22,7 +22,7 @@ public class PingExtensionPreparator extends AbstractExtensionPreparator<PingExt
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    public void prepareExtensionSpecificContents() {
         // Sending ping@openssh.com is not allowed by the client according to OpenSSH specs
         if (chooser.getContext().isClient()) {
             LOGGER.warn(

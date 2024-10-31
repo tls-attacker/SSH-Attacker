@@ -18,6 +18,7 @@ public class SftpRequestRenameMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_RENAME);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
             getObject().setPath("/etc/passwd", true);

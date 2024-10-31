@@ -31,7 +31,8 @@ public abstract class SftpRequestMessageParser<T extends SftpRequestMessage<T>>
         LOGGER.debug("RequestId: {}", message.getRequestId().getValue());
     }
 
-    public void parseMessageSpecificContents() {
+    @Override
+    protected void parseMessageSpecificContents() {
         parseRequestId();
         parseRequestSpecificContents();
     }

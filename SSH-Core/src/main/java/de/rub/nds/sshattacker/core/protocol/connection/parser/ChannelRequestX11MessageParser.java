@@ -32,14 +32,14 @@ public class ChannelRequestX11MessageParser
         return new ChannelRequestX11Message();
     }
 
-    public void parseSingleConnection() {
+    private void parseSingleConnection() {
         message.setSingleConnection(parseByteField(1));
         LOGGER.debug(
                 "Single connection: {}",
                 Converter.byteToBoolean(message.getSingleConnection().getValue()));
     }
 
-    public void parseX11AuthenticationProtocol() {
+    private void parseX11AuthenticationProtocol() {
         message.setX11AuthenticationProtocolLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -54,7 +54,7 @@ public class ChannelRequestX11MessageParser
                 message.getX11AuthenticationProtocol().getValue());
     }
 
-    public void parseX11AuthenticationCookie() {
+    private void parseX11AuthenticationCookie() {
         message.setX11AuthenticationCookieLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
@@ -67,7 +67,7 @@ public class ChannelRequestX11MessageParser
                 "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
     }
 
-    public void parseX11ScreenNumber() {
+    private void parseX11ScreenNumber() {
         message.setX11ScreenNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("X11 screen number: {}", message.getX11ScreenNumber().getValue());
     }

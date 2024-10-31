@@ -37,7 +37,7 @@ public class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeRequestType();
         serializeWantReply();

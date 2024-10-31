@@ -73,7 +73,7 @@ public class UserAuthInfoRequestMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeUserName();
         serializeInstruction();
         serializeLanguageTag();

@@ -20,7 +20,7 @@ public class GlobalRequestUnknownMessageSerializer
         super(message);
     }
 
-    public void serializeBreakLength() {
+    private void serializeBreakLength() {
         LOGGER.debug(
                 "Type specific data: {}",
                 () -> ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
@@ -28,7 +28,7 @@ public class GlobalRequestUnknownMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeBreakLength();
     }

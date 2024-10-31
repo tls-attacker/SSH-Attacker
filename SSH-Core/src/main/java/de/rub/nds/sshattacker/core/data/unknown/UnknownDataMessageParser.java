@@ -30,7 +30,7 @@ public class UnknownDataMessageParser extends ProtocolMessageParser<UnknownDataM
     }
 
     @Override
-    public void parseProtocolMessageContents() {
+    protected void parseProtocolMessageContents() {
         message.setPayload(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Payload: {}",

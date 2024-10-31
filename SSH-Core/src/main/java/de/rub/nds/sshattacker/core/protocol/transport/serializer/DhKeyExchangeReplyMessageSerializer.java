@@ -53,7 +53,7 @@ public class DhKeyExchangeReplyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeHostKeyBytes();
         serializeEphemeralPublicKey();
         serializeSignature();

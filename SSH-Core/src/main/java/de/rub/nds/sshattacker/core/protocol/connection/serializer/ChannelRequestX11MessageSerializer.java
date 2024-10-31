@@ -22,12 +22,12 @@ public class ChannelRequestX11MessageSerializer
         super(message);
     }
 
-    public void serializeSingleConnection() {
+    private void serializeSingleConnection() {
         LOGGER.debug("Single connection: {}", message.getSingleConnection().getValue());
         appendByte(message.getSingleConnection().getValue());
     }
 
-    public void serializeX11AuthenticationProtocol() {
+    private void serializeX11AuthenticationProtocol() {
         LOGGER.debug(
                 "X11 authentication protocol length: {}",
                 message.getX11AuthenticationProtocolLength().getValue());
@@ -40,7 +40,7 @@ public class ChannelRequestX11MessageSerializer
         appendString(message.getX11AuthenticationProtocol().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeX11AuthenticationCookie() {
+    private void serializeX11AuthenticationCookie() {
         LOGGER.debug(
                 "X11 authenticaton cookie length: {}",
                 message.getX11AuthenticationCookieLength().getValue());
@@ -52,13 +52,13 @@ public class ChannelRequestX11MessageSerializer
         appendString(message.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeX11ScreenNumber() {
+    private void serializeX11ScreenNumber() {
         LOGGER.debug("X11 screen number: {}", message.getX11ScreenNumber().getValue());
         appendInt(message.getX11ScreenNumber().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeSingleConnection();
         serializeX11AuthenticationProtocol();

@@ -66,7 +66,7 @@ public class EcdhKeyExchangeReplyMessageParser
     }
 
     @Override
-    public void parseMessageSpecificContents() {
+    protected void parseMessageSpecificContents() {
         parseHostKeyBytes();
         parseEphemeralPublicKey();
         parseSignature();

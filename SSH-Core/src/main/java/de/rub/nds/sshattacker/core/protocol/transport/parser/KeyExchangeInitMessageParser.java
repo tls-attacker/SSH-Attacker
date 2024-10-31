@@ -211,7 +211,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     @Override
-    public void parseMessageSpecificContents() {
+    protected void parseMessageSpecificContents() {
         parseCookie();
         parseKeyExchangeAlgorithms();
         parseServerHostKeyAlgorithms();

@@ -19,5 +19,5 @@ public class ChannelFailureMessagePreparator
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {}
+    public void prepareChannelMessageSpecificContents() {}
 }

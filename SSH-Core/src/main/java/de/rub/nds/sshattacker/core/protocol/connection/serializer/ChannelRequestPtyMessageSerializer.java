@@ -23,7 +23,7 @@ public class ChannelRequestPtyMessageSerializer
         super(message);
     }
 
-    public void serializeTermEnvVariable() {
+    private void serializeTermEnvVariable() {
         LOGGER.debug(
                 "TERM environment variable length: {}", message.getTermEnvVariable().getValue());
         appendInt(
@@ -33,27 +33,27 @@ public class ChannelRequestPtyMessageSerializer
         appendString(message.getTermEnvVariable().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeWidthCharacters() {
+    private void serializeWidthCharacters() {
         LOGGER.debug("Terminal width in characters: {}", message.getWidthCharacters().getValue());
         appendInt(message.getWidthCharacters().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
-    public void serializeHeightRows() {
+    private void serializeHeightRows() {
         LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
         appendInt(message.getHeightRows().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
-    public void serializeWidthPixels() {
+    private void serializeWidthPixels() {
         LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
         appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
-    public void serializeHeightPixels() {
+    private void serializeHeightPixels() {
         LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
         appendInt(message.getHeightPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
-    public void serializeEncodedTerminalModes() {
+    private void serializeEncodedTerminalModes() {
         LOGGER.debug(
                 "Encoded terminal modes length: {}",
                 message.getEncodedTerminalModesLength().getValue());
@@ -69,7 +69,7 @@ public class ChannelRequestPtyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeTermEnvVariable();
         serializeWidthCharacters();

@@ -35,7 +35,7 @@ public class DhKeyExchangeInitMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeEphemeralPublicKey();
     }
 }

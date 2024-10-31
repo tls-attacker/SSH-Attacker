@@ -36,7 +36,8 @@ public abstract class SftpRequestWithPathMessageParser<T extends SftpRequestWith
         LOGGER.debug("Path: {}", () -> backslashEscapeString(message.getPath().getValue()));
     }
 
-    public void parseRequestSpecificContents() {
+    @Override
+    protected void parseRequestSpecificContents() {
         parsePath();
         parseRequestWithPathSpecificContents();
     }

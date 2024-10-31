@@ -20,6 +20,7 @@ public class SftpRequestOpenMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_OPEN);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
             getObject().setPath("/etc/passwd", true);

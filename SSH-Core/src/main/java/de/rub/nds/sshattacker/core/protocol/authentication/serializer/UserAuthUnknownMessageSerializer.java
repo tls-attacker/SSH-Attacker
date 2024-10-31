@@ -31,7 +31,7 @@ public class UserAuthUnknownMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeMethodSpecificFields();
     }

@@ -46,7 +46,7 @@ public class UserAuthPasswordMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeChangePassword();
         serializePassword();

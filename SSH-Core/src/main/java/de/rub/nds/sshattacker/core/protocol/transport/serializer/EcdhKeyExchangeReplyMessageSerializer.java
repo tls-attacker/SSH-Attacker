@@ -51,7 +51,7 @@ public class EcdhKeyExchangeReplyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeHostKeyBytes(message);
         serializeEphemeralPublicKey(message);
         serializeSignature(message);

@@ -62,7 +62,8 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
         }
     }
 
-    public void parseMessageSpecificContents() {
+    @Override
+    protected void parseMessageSpecificContents() {
         parseVersion();
         parseExtensions();
     }

@@ -28,14 +28,14 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
         this.attribute = attribute;
     }
 
-    public void serializeType() {
+    private void serializeType() {
         LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
         appendInt(attribute.getTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Type: {}", () -> backslashEscapeString(attribute.getType().getValue()));
         appendString(attribute.getType().getValue(), StandardCharsets.US_ASCII);
     }
 
-    public void serializeData() {
+    private void serializeData() {
         LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
         appendInt(attribute.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

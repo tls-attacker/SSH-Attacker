@@ -20,7 +20,7 @@ public class GlobalRequestTcpIpForwardMessagePreparator
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
+    public void prepareGlobalRequestMessageSpecificContents() {
         getObject().setWantReply(true);
         getObject().setIpAddressToBind("127.0.0.1", true);
         getObject().setPortToBind(0);

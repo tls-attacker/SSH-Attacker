@@ -20,5 +20,5 @@ public abstract class SshMessageSerializer<T extends SshMessage<T>>
         serializeMessageSpecificContents();
     }
 
-    public abstract void serializeMessageSpecificContents();
+    protected abstract void serializeMessageSpecificContents();
 }

@@ -23,7 +23,7 @@ public class ServerSigAlgsExtensionPreparator
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    public void prepareExtensionSpecificContents() {
         // sending server-sig-algs extension is not allowed when acting as client
         if (chooser.getContext().isClient()) {
             LOGGER.warn(

@@ -22,7 +22,7 @@ public class UnimplementedMessageSerializer extends SshMessageSerializer<Unimple
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeSequenceNumber();
     }
 }

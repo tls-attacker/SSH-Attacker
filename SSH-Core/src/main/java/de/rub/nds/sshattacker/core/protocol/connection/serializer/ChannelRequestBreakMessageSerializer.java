@@ -20,13 +20,13 @@ public class ChannelRequestBreakMessageSerializer
         super(message);
     }
 
-    public void serializeBreakLength() {
+    private void serializeBreakLength() {
         LOGGER.debug("Break length in milliseconds: {}", message.getBreakLength().getValue());
         appendInt(message.getBreakLength().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeBreakLength();
     }

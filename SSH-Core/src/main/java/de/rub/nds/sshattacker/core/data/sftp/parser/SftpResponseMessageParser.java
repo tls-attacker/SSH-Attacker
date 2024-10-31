@@ -9,11 +9,11 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpResponseMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SftpResponseMessageParser<T extends SftpRequestMessage<T>>
+public abstract class SftpResponseMessageParser<T extends SftpResponseMessage<T>>
         extends SftpMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,7 +31,8 @@ public abstract class SftpResponseMessageParser<T extends SftpRequestMessage<T>>
         LOGGER.debug("RequestId: {}", message.getRequestId().getValue());
     }
 
-    public void parseMessageSpecificContents() {
+    @Override
+    protected void parseMessageSpecificContents() {
         parseRequestId();
         parseResponseSpecificContents();
     }

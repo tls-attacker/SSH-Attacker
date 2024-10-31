@@ -19,7 +19,7 @@ public class GlobalRequestUnknownMessagePreparator
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
+    public void prepareGlobalRequestMessageSpecificContents() {
         getObject().setTypeSpecificData(new byte[0]);
     }
 }

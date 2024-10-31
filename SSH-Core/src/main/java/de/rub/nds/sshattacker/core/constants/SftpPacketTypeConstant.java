@@ -34,9 +34,9 @@ public enum SftpPacketTypeConstant {
     SSH_FXP_RMDIR((byte) 15),
     SSH_FXP_REALPATH((byte) 16),
     SSH_FXP_STAT((byte) 17),
-    SSH_FXP_RENAME((byte) 18),
-    SSH_FXP_READLINK((byte) 19),
-    SSH_FXP_SYMLINK((byte) 20),
+    SSH_FXP_RENAME((byte) 18), // First added in version 2
+    SSH_FXP_READLINK((byte) 19), // First added in version 3
+    SSH_FXP_SYMLINK((byte) 20), // First added in version 3
     // 100 - 105 responses from the server to the client
     SSH_FXP_STATUS((byte) 101),
     SSH_FXP_HANDLE((byte) 102),
@@ -44,8 +44,8 @@ public enum SftpPacketTypeConstant {
     SSH_FXP_NAME((byte) 104),
     SSH_FXP_ATTRS((byte) 105),
     // 200 - 201 vendor specific extensions
-    SSH_FXP_EXTENDED((byte) 200),
-    SSH_FXP_EXTENDED_REPLY((byte) 201),
+    SSH_FXP_EXTENDED((byte) 200), // First added in version 3
+    SSH_FXP_EXTENDED_REPLY((byte) 201), // First added in version 3
     // [ Only version 6 ]
     SSH_FXP_LINK((byte) 21),
     SSH_FXP_BLOCK((byte) 22),

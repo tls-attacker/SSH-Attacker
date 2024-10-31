@@ -13,7 +13,8 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 
-public class SftpRequestMakeDirMessage extends SftpRequestWithPathMessage<SftpRequestMakeDirMessage> {
+public class SftpRequestMakeDirMessage
+        extends SftpRequestWithPathMessage<SftpRequestMakeDirMessage> {
 
     private SftpFileAttributes attributes;
 

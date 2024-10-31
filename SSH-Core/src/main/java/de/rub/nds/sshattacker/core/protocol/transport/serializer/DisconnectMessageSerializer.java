@@ -52,7 +52,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeReasonCode();
         serializeDescription();
         serializeLanguageTag();

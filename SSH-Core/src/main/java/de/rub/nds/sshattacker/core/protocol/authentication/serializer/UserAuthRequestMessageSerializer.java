@@ -52,7 +52,7 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeUserName();
         serializeServiceName();
         serializeMethodName();

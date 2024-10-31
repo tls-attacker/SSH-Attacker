@@ -18,7 +18,7 @@ public class ChannelOpenSessionMessagePreperator
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {
+    public void prepareChannelOpenMessageSpecificContents() {
         channel.setChannelType(ChannelType.SESSION);
         getObject().setChannelType(channel.getChannelType(), true);
     }

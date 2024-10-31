@@ -31,7 +31,7 @@ public class IgnoreMessageSerializer extends SshMessageSerializer<IgnoreMessage>
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeData();
     }
 }

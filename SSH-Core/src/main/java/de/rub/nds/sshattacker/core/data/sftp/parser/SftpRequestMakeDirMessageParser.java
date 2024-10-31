@@ -9,13 +9,9 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMakeDirMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SftpRequestMakeDirMessageParser
         extends SftpRequestWithPathMessageParser<SftpRequestMakeDirMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public SftpRequestMakeDirMessageParser(byte[] array) {
         super(array);

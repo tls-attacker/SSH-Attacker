@@ -55,7 +55,7 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
     }
 
     @Override
-    public void parseProtocolMessageContents() {
+    protected void parseProtocolMessageContents() {
         parseVersion();
     }
 }

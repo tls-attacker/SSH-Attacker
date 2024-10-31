@@ -19,14 +19,14 @@ public abstract class SshMessageParser<T extends SshMessage<T>> extends Protocol
         super(array, startPosition);
     }
 
+    private void parseMessageID() {
+        message.setMessageId(parseByteField(SshMessageConstants.MESSAGE_ID_LENGTH));
+    }
+
     @Override
     protected final void parseProtocolMessageContents() {
         parseMessageID();
         parseMessageSpecificContents();
-    }
-
-    private void parseMessageID() {
-        message.setMessageId(parseByteField(SshMessageConstants.MESSAGE_ID_LENGTH));
     }
 
     protected abstract void parseMessageSpecificContents();

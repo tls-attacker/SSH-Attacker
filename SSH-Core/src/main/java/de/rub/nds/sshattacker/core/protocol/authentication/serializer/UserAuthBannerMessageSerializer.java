@@ -42,7 +42,7 @@ public class UserAuthBannerMessageSerializer extends SshMessageSerializer<UserAu
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeMessage();
         serializeLanguageTag();
     }

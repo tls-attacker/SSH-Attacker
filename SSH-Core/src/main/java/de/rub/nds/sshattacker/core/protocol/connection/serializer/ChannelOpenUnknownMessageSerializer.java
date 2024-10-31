@@ -21,7 +21,7 @@ public class ChannelOpenUnknownMessageSerializer
         super(message);
     }
 
-    public void serializeTypeSpecificData() {
+    private void serializeTypeSpecificData() {
         LOGGER.debug(
                 "Type specific data: {}",
                 () -> ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
@@ -29,7 +29,7 @@ public class ChannelOpenUnknownMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeTypeSpecificData();
     }

@@ -44,7 +44,7 @@ public class UserAuthKeyboardInteractiveMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeLanguageTag();
         serializeSubMethods();

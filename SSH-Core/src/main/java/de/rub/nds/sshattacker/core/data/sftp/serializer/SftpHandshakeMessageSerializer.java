@@ -35,7 +35,7 @@ public abstract class SftpHandshakeMessageSerializer<T extends SftpHandshakeMess
                                         extension.getHandler(null).getSerializer().serialize()));
     }
 
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeVersion();
         serializeExtensions();
     }

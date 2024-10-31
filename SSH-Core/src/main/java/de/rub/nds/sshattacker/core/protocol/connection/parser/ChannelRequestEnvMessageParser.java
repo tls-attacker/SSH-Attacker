@@ -32,7 +32,7 @@ public class ChannelRequestEnvMessageParser
         return new ChannelRequestEnvMessage();
     }
 
-    public void parseVariableName() {
+    private void parseVariableName() {
         message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
         message.setVariableName(parseByteString(message.getVariableNameLength().getValue()));
@@ -41,7 +41,7 @@ public class ChannelRequestEnvMessageParser
                 () -> backslashEscapeString(message.getVariableName().getValue()));
     }
 
-    public void parseVariableValue() {
+    private void parseVariableValue() {
         message.setVariableValueLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
         message.setVariableValue(parseByteString(message.getVariableValueLength().getValue()));

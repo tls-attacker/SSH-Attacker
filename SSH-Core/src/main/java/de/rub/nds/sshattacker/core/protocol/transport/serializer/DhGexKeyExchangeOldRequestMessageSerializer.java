@@ -28,7 +28,7 @@ public class DhGexKeyExchangeOldRequestMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializePreferredGroupSize();
     }
 }

@@ -32,7 +32,7 @@ public class ChannelRequestSubsystemMessageParser
         return new ChannelRequestSubsystemMessage();
     }
 
-    public void parseSubsystemName() {
+    private void parseSubsystemName() {
         message.setSubsystemNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
         message.setSubsystemName(

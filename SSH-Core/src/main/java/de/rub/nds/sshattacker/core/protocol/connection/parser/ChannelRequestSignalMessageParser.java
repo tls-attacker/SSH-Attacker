@@ -32,7 +32,7 @@ public class ChannelRequestSignalMessageParser
         return new ChannelRequestSignalMessage();
     }
 
-    public void parseSignalName() {
+    private void parseSignalName() {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));

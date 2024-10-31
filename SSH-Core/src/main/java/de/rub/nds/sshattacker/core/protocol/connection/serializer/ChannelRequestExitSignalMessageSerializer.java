@@ -25,7 +25,7 @@ public class ChannelRequestExitSignalMessageSerializer
         super(message);
     }
 
-    public void serializeSignalName() {
+    private void serializeSignalName() {
         LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
@@ -33,12 +33,12 @@ public class ChannelRequestExitSignalMessageSerializer
         appendString(message.getSignalName().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeCoreDump() {
+    private void serializeCoreDump() {
         LOGGER.debug("Core dumped:{}", message.getCoreDump().getValue());
         appendByte(Converter.booleanToByte(message.getCoreDump().getValue()));
     }
 
-    public void serializeErrorMessage() {
+    private void serializeErrorMessage() {
         LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         appendInt(
                 message.getErrorMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
@@ -59,7 +59,7 @@ public class ChannelRequestExitSignalMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeSignalName();
         serializeCoreDump();

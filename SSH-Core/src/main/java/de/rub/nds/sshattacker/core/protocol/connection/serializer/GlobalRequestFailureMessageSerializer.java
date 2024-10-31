@@ -18,5 +18,5 @@ public class GlobalRequestFailureMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {}
+    protected void serializeMessageSpecificContents() {}
 }

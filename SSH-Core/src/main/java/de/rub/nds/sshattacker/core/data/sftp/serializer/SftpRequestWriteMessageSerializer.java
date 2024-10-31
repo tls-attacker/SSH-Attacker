@@ -27,7 +27,7 @@ public class SftpRequestWriteMessageSerializer
         appendLong(message.getOffset().getValue(), DataFormatConstants.UINT64_SIZE);
     }
 
-    public void serializeData() {
+    private void serializeData() {
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

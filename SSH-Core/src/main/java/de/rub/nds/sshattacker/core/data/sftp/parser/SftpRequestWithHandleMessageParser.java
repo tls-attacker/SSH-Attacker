@@ -35,7 +35,8 @@ public abstract class SftpRequestWithHandleMessageParser<T extends SftpRequestWi
                 () -> ArrayConverter.bytesToRawHexString(message.getHandle().getValue()));
     }
 
-    public void parseRequestSpecificContents() {
+    @Override
+    protected void parseRequestSpecificContents() {
         parseHandle();
         parseRequestWithHandleSpecificContents();
     }

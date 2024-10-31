@@ -24,7 +24,7 @@ public class SftpRequestRenameMessageSerializer
         super(message);
     }
 
-    public void serializeNewPath() {
+    private void serializeNewPath() {
         LOGGER.debug("NewPath length: {}", message.getNewPathLength().getValue());
         appendInt(message.getNewPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("NewPath: {}", () -> backslashEscapeString(message.getNewPath().getValue()));

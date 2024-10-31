@@ -18,6 +18,7 @@ public class SftpRequestReadMessagePreparator
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_READ);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getHandle() == null) {
             // TODO Set valid handler

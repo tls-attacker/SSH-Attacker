@@ -17,5 +17,5 @@ public class NewCompressMessageSerializer extends SshMessageSerializer<NewCompre
     }
 
     @Override
-    public void serializeMessageSpecificContents() {}
+    protected void serializeMessageSpecificContents() {}
 }

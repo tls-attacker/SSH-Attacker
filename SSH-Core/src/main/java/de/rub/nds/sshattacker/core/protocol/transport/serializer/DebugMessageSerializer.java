@@ -50,7 +50,7 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeAlwaysDisplayed();
         serializeMessage();
         serializeLanguageTag();

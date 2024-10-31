@@ -17,5 +17,5 @@ public class NewKeysMessageSerializer extends SshMessageSerializer<NewKeysMessag
     }
 
     @Override
-    public void serializeMessageSpecificContents() {}
+    protected void serializeMessageSpecificContents() {}
 }

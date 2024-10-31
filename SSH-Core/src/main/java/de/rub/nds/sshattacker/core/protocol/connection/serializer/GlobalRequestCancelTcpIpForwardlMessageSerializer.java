@@ -39,7 +39,7 @@ public class GlobalRequestCancelTcpIpForwardlMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeIPAddressToBind();
         serializePortToBind();

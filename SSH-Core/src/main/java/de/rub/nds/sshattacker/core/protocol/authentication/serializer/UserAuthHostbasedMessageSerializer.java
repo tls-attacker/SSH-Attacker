@@ -74,7 +74,7 @@ public class UserAuthHostbasedMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializePubKeyAlgorithm();
         serializeHostKeyBytes();

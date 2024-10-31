@@ -45,7 +45,7 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializePossibleAuthenticationMethods();
         serializePartialSuccess();
     }

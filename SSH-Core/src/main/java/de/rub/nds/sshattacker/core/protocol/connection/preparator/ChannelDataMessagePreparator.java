@@ -18,7 +18,7 @@ public class ChannelDataMessagePreparator extends ChannelMessagePreparator<Chann
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {
+    public void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
         getObject().setData(new byte[100], true);
     }

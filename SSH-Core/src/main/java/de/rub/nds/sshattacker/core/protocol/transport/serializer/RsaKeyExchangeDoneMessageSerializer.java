@@ -30,7 +30,7 @@ public class RsaKeyExchangeDoneMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeSignature();
     }
 }

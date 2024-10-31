@@ -22,7 +22,7 @@ public class RsaKeyExchangePubkeyMessageSerializer
         super(message);
     }
 
-    public void serializeHostKeyBytes() {
+    private void serializeHostKeyBytes() {
         LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         appendInt(
                 message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
@@ -30,7 +30,7 @@ public class RsaKeyExchangePubkeyMessageSerializer
         appendBytes(message.getHostKeyBytes().getValue());
     }
 
-    public void serializeTransientPublicKey() {
+    private void serializeTransientPublicKey() {
         LOGGER.debug("Transient public key length: {}", message.getTransientPublicKeyBytesLength());
         appendInt(
                 message.getTransientPublicKeyBytesLength().getValue(),
@@ -40,7 +40,7 @@ public class RsaKeyExchangePubkeyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeHostKeyBytes();
         serializeTransientPublicKey();
     }

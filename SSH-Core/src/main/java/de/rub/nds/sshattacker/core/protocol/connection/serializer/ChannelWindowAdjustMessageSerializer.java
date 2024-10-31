@@ -27,7 +27,7 @@ public class ChannelWindowAdjustMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeBytesToAdd();
     }

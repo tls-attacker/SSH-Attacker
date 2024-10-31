@@ -23,7 +23,7 @@ public class PingMessageSerializer extends SshMessageSerializer<PingMessage> {
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

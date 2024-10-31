@@ -33,7 +33,7 @@ public class ChannelRequestExitSignalMessageParser
         return new ChannelRequestExitSignalMessage();
     }
 
-    public void parseSignalName() {
+    private void parseSignalName() {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
@@ -41,12 +41,12 @@ public class ChannelRequestExitSignalMessageParser
                 "Signal name: {}", () -> backslashEscapeString(message.getSignalName().getValue()));
     }
 
-    public void parseCoreDump() {
+    private void parseCoreDump() {
         message.setCoreDump(false);
         LOGGER.debug("Core dumped: {}", message.getCoreDump().getValue());
     }
 
-    public void parseErrorMessage() {
+    private void parseErrorMessage() {
         message.setErrorMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         message.setErrorMessage(parseByteString(message.getErrorMessageLength().getValue()));

@@ -30,7 +30,7 @@ public class GlobalRequestOpenSshHostKeysMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeHostKeys();
     }

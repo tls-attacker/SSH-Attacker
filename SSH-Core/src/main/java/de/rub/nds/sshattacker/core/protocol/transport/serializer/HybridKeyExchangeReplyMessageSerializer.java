@@ -30,7 +30,7 @@ public class HybridKeyExchangeReplyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeHostKeyBytes();
         serializeHybridKey();
         serializeSignature();

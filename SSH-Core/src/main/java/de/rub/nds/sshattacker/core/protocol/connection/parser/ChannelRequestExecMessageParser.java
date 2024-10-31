@@ -30,7 +30,7 @@ public class ChannelRequestExecMessageParser
         return new ChannelRequestExecMessage();
     }
 
-    public void parseCommand() {
+    private void parseCommand() {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         message.setCommand(parseByteString(message.getCommandLength().getValue()));

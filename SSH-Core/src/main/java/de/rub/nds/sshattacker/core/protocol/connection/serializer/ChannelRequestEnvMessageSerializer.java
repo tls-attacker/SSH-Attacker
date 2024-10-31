@@ -24,7 +24,7 @@ public class ChannelRequestEnvMessageSerializer
         super(message);
     }
 
-    public void serializeVariableName() {
+    private void serializeVariableName() {
         LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
         appendInt(
                 message.getVariableNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
@@ -34,7 +34,7 @@ public class ChannelRequestEnvMessageSerializer
         appendString(message.getVariableName().getValue(), StandardCharsets.UTF_8);
     }
 
-    public void serializeVariableValue() {
+    private void serializeVariableValue() {
         LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
         appendInt(
                 message.getVariableValueLength().getValue(),
@@ -46,7 +46,7 @@ public class ChannelRequestEnvMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeVariableName();
         serializeVariableValue();

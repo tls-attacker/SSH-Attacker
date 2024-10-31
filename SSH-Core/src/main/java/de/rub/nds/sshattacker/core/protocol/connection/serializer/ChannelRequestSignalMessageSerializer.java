@@ -24,7 +24,7 @@ public class ChannelRequestSignalMessageSerializer
         super(message);
     }
 
-    public void serializeSignalName() {
+    private void serializeSignalName() {
         LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
@@ -33,7 +33,7 @@ public class ChannelRequestSignalMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeSignalName();
     }

@@ -40,7 +40,7 @@ public class ChannelExtendedDataMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeDataTypeCode();
         serializeData();

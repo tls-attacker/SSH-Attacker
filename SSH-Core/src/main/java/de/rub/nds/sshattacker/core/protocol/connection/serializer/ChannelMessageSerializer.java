@@ -27,7 +27,7 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeRecipientChannel();
     }
 }

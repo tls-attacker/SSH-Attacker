@@ -29,7 +29,7 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
         super(array, startPosition);
     }
 
-    public void parseChannelType() {
+    private void parseChannelType() {
         message.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Channel type length: {}", message.getChannelTypeLength().getValue());
         message.setChannelType(
@@ -40,17 +40,17 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
                 () -> backslashEscapeString(message.getChannelType().getValue()));
     }
 
-    public void parseSenderChannel() {
+    private void parseSenderChannel() {
         message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
     }
 
-    public void parseWindowSize() {
+    private void parseWindowSize() {
         message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
     }
 
-    public void parsePacketSize() {
+    private void parsePacketSize() {
         message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
     }

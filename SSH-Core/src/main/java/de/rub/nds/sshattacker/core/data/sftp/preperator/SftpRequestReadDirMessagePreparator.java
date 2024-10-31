@@ -15,9 +15,10 @@ public class SftpRequestReadDirMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestReadDirMessage> {
 
     public SftpRequestReadDirMessagePreparator(Chooser chooser, SftpRequestReadDirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_WRITE);
+        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_READDIR);
     }
 
+    @Override
     public void prepareRequestSpecificContents() {
         if (getObject().getHandle() == null) {
             // TODO Set valid handler

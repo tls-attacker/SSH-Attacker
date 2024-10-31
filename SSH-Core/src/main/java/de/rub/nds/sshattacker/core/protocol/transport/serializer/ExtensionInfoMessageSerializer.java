@@ -35,7 +35,7 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeExtensionCount();
         serializeExtensions();
     }

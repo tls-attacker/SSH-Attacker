@@ -20,7 +20,7 @@ public class DelayCompressionExtensionPreparator
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    public void prepareExtensionSpecificContents() {
         if (chooser.getContext().isClient()) {
             getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()

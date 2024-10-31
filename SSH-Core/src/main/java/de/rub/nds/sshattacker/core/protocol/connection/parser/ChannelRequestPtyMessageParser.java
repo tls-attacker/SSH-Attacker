@@ -31,7 +31,7 @@ public class ChannelRequestPtyMessageParser
         return new ChannelRequestPtyMessage();
     }
 
-    public void parseTermEnvVariable() {
+    private void parseTermEnvVariable() {
         message.setTermEnvVariableLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "TERM environment variable length: {}",
@@ -40,27 +40,27 @@ public class ChannelRequestPtyMessageParser
         LOGGER.debug("TERM environment variable: {}", message.getTermEnvVariable().getValue());
     }
 
-    public void parseWidthCharacters() {
+    private void parseWidthCharacters() {
         message.setWidthCharacters(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal width in characters: {}", message.getWidthCharacters().getValue());
     }
 
-    public void parseHeightRows() {
+    private void parseHeightRows() {
         message.setHeightRows(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
     }
 
-    public void parseWidthPixels() {
+    private void parseWidthPixels() {
         message.setWidthPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
     }
 
-    public void parseHeightPixels() {
+    private void parseHeightPixels() {
         message.setHeightPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
     }
 
-    public void parseEncodedTerminalModes() {
+    private void parseEncodedTerminalModes() {
         message.setEncodedTerminalModesLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(

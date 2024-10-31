@@ -30,7 +30,7 @@ public class ChannelDataMessageSerializer extends ChannelMessageSerializer<Chann
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         super.serializeMessageSpecificContents();
         serializeData();
     }

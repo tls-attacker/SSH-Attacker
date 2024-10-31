@@ -18,7 +18,7 @@ public class SftpUnknownExtensionPreparator
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    public void prepareExtensionSpecificContents() {
         if (getObject().getName() == null) {
             getObject().setName("hello-from@ssh-attacker", true);
         }

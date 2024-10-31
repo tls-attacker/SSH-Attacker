@@ -27,7 +27,8 @@ public abstract class SftpRequestMessageSerializer<T extends SftpRequestMessage<
         appendInt(message.getRequestId().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
-    public void serializeMessageSpecificContents() {
+    @Override
+    protected void serializeMessageSpecificContents() {
         serializeRequestId();
         serializeRequestSpecificContents();
     }

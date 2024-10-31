@@ -42,7 +42,7 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
+    protected void serializeMessageSpecificContents() {
         serializeRequestName();
         serializeWantReply();
     }
