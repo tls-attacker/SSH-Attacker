@@ -9,60 +9,19 @@ package de.rub.nds.sshattacker.core.data.sftp.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SftpFileOpenFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestOpenMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class SftpRequestOpenMessage extends SftpRequestMessage<SftpRequestOpenMessage> {
+public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpRequestOpenMessage> {
 
-    private ModifiableInteger filenameLength;
-    private ModifiableString filename;
+    // path is the filename
+
     private ModifiableInteger pFlags;
     private SftpFileAttributes attributes;
-
-    public ModifiableInteger getFilenameLength() {
-        return filenameLength;
-    }
-
-    public void setFilenameLength(ModifiableInteger filenameLength) {
-        this.filenameLength = filenameLength;
-    }
-
-    public void setFilenameLength(int filenameLength) {
-        this.filenameLength =
-                ModifiableVariableFactory.safelySetValue(this.filenameLength, filenameLength);
-    }
-
-    public ModifiableString getFilename() {
-        return filename;
-    }
-
-    public void setFilename(ModifiableString filename) {
-        setFilename(filename, false);
-    }
-
-    public void setFilename(String filename) {
-        setFilename(filename, false);
-    }
-
-    public void setFilename(ModifiableString filename, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setFilenameLength(filename.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-        this.filename = filename;
-    }
-
-    public void setFilename(String filename, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setFilenameLength(filename.getBytes(StandardCharsets.UTF_8).length);
-        }
-        this.filename = ModifiableVariableFactory.safelySetValue(this.filename, filename);
-    }
 
     public ModifiableInteger getPFlags() {
         return pFlags;

@@ -7,28 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
-import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
-
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenMessage;
-import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SftpRequestOpenMessageSerializer
-        extends SftpRequestMessageSerializer<SftpRequestOpenMessage> {
+        extends SftpRequestWithPathMessageSerializer<SftpRequestOpenMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SftpRequestOpenMessageSerializer(SftpRequestOpenMessage message) {
         super(message);
-    }
-
-    public void serializeFilename() {
-        LOGGER.debug("Filename length: {}", message.getFilenameLength().getValue());
-        appendInt(message.getFilenameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Filename: {}", () -> backslashEscapeString(message.getFilename().getValue()));
-        appendString(message.getFilename().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializePFlags() {
@@ -41,8 +31,7 @@ public class SftpRequestOpenMessageSerializer
     }
 
     @Override
-    public void serializeRequestSpecificContents() {
-        serializeFilename();
+    protected void serializeRequestWithPathSpecificContents() {
         serializePFlags();
         serializeAttributes();
     }

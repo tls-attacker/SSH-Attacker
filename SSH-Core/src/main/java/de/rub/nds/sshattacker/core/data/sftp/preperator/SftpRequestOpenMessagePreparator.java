@@ -21,12 +21,13 @@ public class SftpRequestOpenMessagePreparator
     }
 
     public void prepareRequestSpecificContents() {
-        if (getObject().getFilename() == null) {
-            getObject().setFilename("/etc/passwd", true);
+        if (getObject().getPath() == null) {
+            getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getFilenameLength() == null) {
-            getObject().setFilenameLength(getObject().getFilename().getValue().length());
+        if (getObject().getPathLength() == null) {
+            getObject().setPathLength(getObject().getPath().getValue().length());
         }
+
         if (getObject().getPFlags() == null) {
             getObject().setPFlags(SftpFileOpenFlag.SSH_FXF_READ);
         }

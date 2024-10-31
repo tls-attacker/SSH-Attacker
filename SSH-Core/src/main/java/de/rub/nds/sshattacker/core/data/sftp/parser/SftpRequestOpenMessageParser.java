@@ -7,16 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
-
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
-import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpRequestOpenMessageParser extends SftpRequestMessageParser<SftpRequestOpenMessage> {
+public class SftpRequestOpenMessageParser
+        extends SftpRequestWithPathMessageParser<SftpRequestOpenMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,14 +31,6 @@ public class SftpRequestOpenMessageParser extends SftpRequestMessageParser<SftpR
         return new SftpRequestOpenMessage();
     }
 
-    private void parseFilename() {
-        message.setFilenameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Filename length: {}", message.getFilenameLength().getValue());
-        message.setFilename(
-                parseByteString(message.getFilenameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Filename: {}", () -> backslashEscapeString(message.getFilename().getValue()));
-    }
-
     private void parsePFlags() {
         message.setPFlags(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("PFlags: {}", message.getPFlags().getValue());
@@ -54,8 +44,7 @@ public class SftpRequestOpenMessageParser extends SftpRequestMessageParser<SftpR
     }
 
     @Override
-    protected void parseRequestSpecificContents() {
-        parseFilename();
+    protected void parseRequestWithPathSpecificContents() {
         parsePFlags();
         parseAttributes();
     }
