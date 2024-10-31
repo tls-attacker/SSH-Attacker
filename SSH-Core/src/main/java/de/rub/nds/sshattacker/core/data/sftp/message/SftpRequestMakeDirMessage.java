@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
-import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestMkdirMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestMakeDirMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 
-public class SftpRequestMkdirMessage extends SftpRequestWithPathMessage<SftpRequestMkdirMessage> {
+public class SftpRequestMakeDirMessage extends SftpRequestWithPathMessage<SftpRequestMakeDirMessage> {
 
     private SftpFileAttributes attributes;
 
@@ -26,8 +26,8 @@ public class SftpRequestMkdirMessage extends SftpRequestWithPathMessage<SftpRequ
     }
 
     @Override
-    public SftpRequestMkdirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestMkdirMessageHandler(context, this);
+    public SftpRequestMakeDirMessageHandler getHandler(SshContext context) {
+        return new SftpRequestMakeDirMessageHandler(context, this);
     }
 
     @Override

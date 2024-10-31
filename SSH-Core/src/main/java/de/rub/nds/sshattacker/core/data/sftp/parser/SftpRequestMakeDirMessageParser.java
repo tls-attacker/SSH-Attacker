@@ -7,27 +7,27 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMkdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMakeDirMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpRequestMkdirMessageParser
-        extends SftpRequestWithPathMessageParser<SftpRequestMkdirMessage> {
+public class SftpRequestMakeDirMessageParser
+        extends SftpRequestWithPathMessageParser<SftpRequestMakeDirMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestMkdirMessageParser(byte[] array) {
+    public SftpRequestMakeDirMessageParser(byte[] array) {
         super(array);
     }
 
-    public SftpRequestMkdirMessageParser(byte[] array, int startPosition) {
+    public SftpRequestMakeDirMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SftpRequestMkdirMessage createMessage() {
-        return new SftpRequestMkdirMessage();
+    public SftpRequestMakeDirMessage createMessage() {
+        return new SftpRequestMakeDirMessage();
     }
 
     private void parseAttributes() {

@@ -7,16 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
-import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestOpendirMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestOpenDirMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestOpendirMessage
-        extends SftpRequestWithPathMessage<SftpRequestOpendirMessage> {
-
-    // path is the
+public class SftpRequestOpenDirMessage
+        extends SftpRequestWithPathMessage<SftpRequestOpenDirMessage> {
 
     @Override
-    public SftpRequestOpendirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestOpendirMessageHandler(context, this);
+    public SftpRequestOpenDirMessageHandler getHandler(SshContext context) {
+        return new SftpRequestOpenDirMessageHandler(context, this);
     }
 }

@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMkdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMakeDirMessage;
 
-public class SftpRequestMkdirMessageSerializer
-        extends SftpRequestWithPathMessageSerializer<SftpRequestMkdirMessage> {
+public class SftpRequestMakeDirMessageSerializer
+        extends SftpRequestWithPathMessageSerializer<SftpRequestMakeDirMessage> {
 
-    public SftpRequestMkdirMessageSerializer(SftpRequestMkdirMessage message) {
+    public SftpRequestMakeDirMessageSerializer(SftpRequestMakeDirMessage message) {
         super(message);
     }
 

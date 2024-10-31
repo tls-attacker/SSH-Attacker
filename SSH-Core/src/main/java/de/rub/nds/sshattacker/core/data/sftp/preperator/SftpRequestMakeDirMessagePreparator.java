@@ -8,14 +8,14 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMkdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestMakeDirMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SftpRequestMkdirMessagePreparator
-        extends SftpRequestMessagePreparator<SftpRequestMkdirMessage> {
+public class SftpRequestMakeDirMessagePreparator
+        extends SftpRequestMessagePreparator<SftpRequestMakeDirMessage> {
 
-    public SftpRequestMkdirMessagePreparator(Chooser chooser, SftpRequestMkdirMessage message) {
+    public SftpRequestMakeDirMessagePreparator(Chooser chooser, SftpRequestMakeDirMessage message) {
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_MKDIR);
     }
 

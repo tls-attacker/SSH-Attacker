@@ -7,30 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpendirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenDirMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpRequestOpendirMessageParser
-        extends SftpRequestWithPathMessageParser<SftpRequestOpendirMessage> {
+public class SftpRequestOpenDirMessageParser
+        extends SftpRequestWithPathMessageParser<SftpRequestOpenDirMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestOpendirMessageParser(byte[] array) {
+    public SftpRequestOpenDirMessageParser(byte[] array) {
         super(array);
     }
 
-    public SftpRequestOpendirMessageParser(byte[] array, int startPosition) {
+    public SftpRequestOpenDirMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SftpRequestOpendirMessage createMessage() {
-        return new SftpRequestOpendirMessage();
+    public SftpRequestOpenDirMessage createMessage() {
+        return new SftpRequestOpenDirMessage();
     }
 
     @Override
     protected void parseRequestWithPathSpecificContents() {
-        // TODO parserSftpRequestOpendirMessage();
+        // TODO parserSftpRequestOpenDirMessage();
     }
 }

@@ -11,16 +11,16 @@ import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestRmdirMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpRequestRmdirMessageParser
+public class SftpRequestRemoveDirMessageParser
         extends SftpRequestWithPathMessageParser<SftpRequestRmdirMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestRmdirMessageParser(byte[] array) {
+    public SftpRequestRemoveDirMessageParser(byte[] array) {
         super(array);
     }
 
-    public SftpRequestRmdirMessageParser(byte[] array, int startPosition) {
+    public SftpRequestRemoveDirMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 

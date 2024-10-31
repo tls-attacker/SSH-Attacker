@@ -8,20 +8,19 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessagePreparator;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestRmdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenDirMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SftpRequestRmdirMessagePreparator
-        extends SftpMessagePreparator<SftpRequestRmdirMessage> {
+public class SftpRequestOpenDirMessagePreparator
+        extends SftpRequestMessagePreparator<SftpRequestOpenDirMessage> {
 
-    public SftpRequestRmdirMessagePreparator(Chooser chooser, SftpRequestRmdirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_RMDIR);
+    public SftpRequestOpenDirMessagePreparator(Chooser chooser, SftpRequestOpenDirMessage message) {
+        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_OPENDIR);
     }
 
-    public void prepareMessageSpecificContents() {
+    public void prepareRequestSpecificContents() {
         if (getObject().getPath() == null) {
-            getObject().setPath("/tmp/ssh-attacker", true);
+            getObject().setPath("/tmp/", true);
         }
         if (getObject().getPathLength() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
