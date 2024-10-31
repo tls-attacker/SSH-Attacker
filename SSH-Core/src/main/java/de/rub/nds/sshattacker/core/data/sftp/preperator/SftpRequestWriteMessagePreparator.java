@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestWriteMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestWriteMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SfptRequestWriteMessagePreparator
-        extends SftpRequestMessagePreparator<SfptRequestWriteMessage> {
+public class SftpRequestWriteMessagePreparator
+        extends SftpRequestMessagePreparator<SftpRequestWriteMessage> {
 
-    public SfptRequestWriteMessagePreparator(Chooser chooser, SfptRequestWriteMessage message) {
+    public SftpRequestWriteMessagePreparator(Chooser chooser, SftpRequestWriteMessage message) {
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_WRITE);
     }
 

@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestRenameMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestRenameMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestRenameMessageSerializer
-        extends SftpRequestWithPathMessageSerializer<SfptRequestRenameMessage> {
+public class SftpRequestRenameMessageSerializer
+        extends SftpRequestWithPathMessageSerializer<SftpRequestRenameMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestRenameMessageSerializer(SfptRequestRenameMessage message) {
+    public SftpRequestRenameMessageSerializer(SftpRequestRenameMessage message) {
         super(message);
     }
 

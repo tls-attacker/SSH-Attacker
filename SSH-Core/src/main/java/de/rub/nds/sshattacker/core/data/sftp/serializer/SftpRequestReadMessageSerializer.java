@@ -8,16 +8,16 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestReadMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestReadMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestReadMessageSerializer
-        extends SftpRequestWithHandleMessageSerializer<SfptRequestReadMessage> {
+public class SftpRequestReadMessageSerializer
+        extends SftpRequestWithHandleMessageSerializer<SftpRequestReadMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestReadMessageSerializer(SfptRequestReadMessage message) {
+    public SftpRequestReadMessageSerializer(SftpRequestReadMessage message) {
         super(message);
     }
 

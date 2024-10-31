@@ -9,16 +9,16 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestWriteMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestWriteMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestWriteMessageSerializer
-        extends SftpRequestWithHandleMessageSerializer<SfptRequestWriteMessage> {
+public class SftpRequestWriteMessageSerializer
+        extends SftpRequestWithHandleMessageSerializer<SftpRequestWriteMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestWriteMessageSerializer(SfptRequestWriteMessage message) {
+    public SftpRequestWriteMessageSerializer(SftpRequestWriteMessage message) {
         super(message);
     }
 

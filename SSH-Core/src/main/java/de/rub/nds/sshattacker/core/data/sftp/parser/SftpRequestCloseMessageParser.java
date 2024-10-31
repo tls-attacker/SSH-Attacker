@@ -7,22 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestCloseMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestCloseMessage;
 
-public class SfptRequestCloseMessageParser
-        extends SftpRequestWithHandleMessageParser<SfptRequestCloseMessage> {
+public class SftpRequestCloseMessageParser
+        extends SftpRequestWithHandleMessageParser<SftpRequestCloseMessage> {
 
-    public SfptRequestCloseMessageParser(byte[] array) {
+    public SftpRequestCloseMessageParser(byte[] array) {
         super(array);
     }
 
-    public SfptRequestCloseMessageParser(byte[] array, int startPosition) {
+    public SftpRequestCloseMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SfptRequestCloseMessage createMessage() {
-        return new SfptRequestCloseMessage();
+    public SftpRequestCloseMessage createMessage() {
+        return new SftpRequestCloseMessage();
     }
 
     @Override

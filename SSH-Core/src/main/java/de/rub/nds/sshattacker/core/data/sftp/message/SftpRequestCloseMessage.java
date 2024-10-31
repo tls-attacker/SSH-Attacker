@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
-import de.rub.nds.sshattacker.core.data.sftp.handler.SfptRequestCloseMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestCloseMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SfptRequestCloseMessage extends SftpRequestWithHandleMessage<SfptRequestCloseMessage> {
+public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRequestCloseMessage> {
 
     @Override
-    public SfptRequestCloseMessageHandler getHandler(SshContext context) {
-        return new SfptRequestCloseMessageHandler(context, this);
+    public SftpRequestCloseMessageHandler getHandler(SshContext context) {
+        return new SftpRequestCloseMessageHandler(context, this);
     }
 }

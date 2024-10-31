@@ -8,26 +8,26 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestReadMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestReadMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestReadMessageParser
-        extends SftpRequestWithHandleMessageParser<SfptRequestReadMessage> {
+public class SftpRequestReadMessageParser
+        extends SftpRequestWithHandleMessageParser<SftpRequestReadMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestReadMessageParser(byte[] array) {
+    public SftpRequestReadMessageParser(byte[] array) {
         super(array);
     }
 
-    public SfptRequestReadMessageParser(byte[] array, int startPosition) {
+    public SftpRequestReadMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SfptRequestReadMessage createMessage() {
-        return new SfptRequestReadMessage();
+    public SftpRequestReadMessage createMessage() {
+        return new SftpRequestReadMessage();
     }
 
     private void parseOffset() {

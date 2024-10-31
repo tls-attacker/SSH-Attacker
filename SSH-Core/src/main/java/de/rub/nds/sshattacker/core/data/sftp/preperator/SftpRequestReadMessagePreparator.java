@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestReadMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestReadMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SfptRequestReadMessagePreparator
-        extends SftpRequestMessagePreparator<SfptRequestReadMessage> {
+public class SftpRequestReadMessagePreparator
+        extends SftpRequestMessagePreparator<SftpRequestReadMessage> {
 
-    public SfptRequestReadMessagePreparator(Chooser chooser, SfptRequestReadMessage message) {
+    public SftpRequestReadMessagePreparator(Chooser chooser, SftpRequestReadMessage message) {
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_READ);
     }
 

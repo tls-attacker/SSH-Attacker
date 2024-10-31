@@ -7,15 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestRemoveMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestCloseMessage;
 
-public class SfptRequestRemoveMessageSerializer
-        extends SftpRequestWithPathMessageSerializer<SfptRequestRemoveMessage> {
+public class SftpRequestCloseMessageSerializer
+        extends SftpRequestWithHandleMessageSerializer<SftpRequestCloseMessage> {
 
-    public SfptRequestRemoveMessageSerializer(SfptRequestRemoveMessage message) {
+    public SftpRequestCloseMessageSerializer(SftpRequestCloseMessage message) {
         super(message);
     }
 
     @Override
-    protected void serializeRequestWithPathSpecificContents() {}
+    protected void serializeRequestWithHandleSpecificContents() {}
 }

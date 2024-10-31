@@ -10,27 +10,27 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestRenameMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestRenameMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestRenameMessageParser
-        extends SftpRequestWithPathMessageParser<SfptRequestRenameMessage> {
+public class SftpRequestRenameMessageParser
+        extends SftpRequestWithPathMessageParser<SftpRequestRenameMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestRenameMessageParser(byte[] array) {
+    public SftpRequestRenameMessageParser(byte[] array) {
         super(array);
     }
 
-    public SfptRequestRenameMessageParser(byte[] array, int startPosition) {
+    public SftpRequestRenameMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SfptRequestRenameMessage createMessage() {
-        return new SfptRequestRenameMessage();
+    public SftpRequestRenameMessage createMessage() {
+        return new SftpRequestRenameMessage();
     }
 
     private void parseNewPath() {

@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestCloseMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestCloseMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SfptRequestCloseMessagePreparator
-        extends SftpRequestMessagePreparator<SfptRequestCloseMessage> {
+public class SftpRequestCloseMessagePreparator
+        extends SftpRequestMessagePreparator<SftpRequestCloseMessage> {
 
-    public SfptRequestCloseMessagePreparator(Chooser chooser, SfptRequestCloseMessage message) {
+    public SftpRequestCloseMessagePreparator(Chooser chooser, SftpRequestCloseMessage message) {
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_CLOSE);
     }
 

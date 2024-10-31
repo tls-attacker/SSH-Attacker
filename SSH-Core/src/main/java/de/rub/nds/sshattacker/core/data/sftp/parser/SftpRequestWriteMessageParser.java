@@ -10,26 +10,26 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestWriteMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestWriteMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SfptRequestWriteMessageParser
-        extends SftpRequestWithHandleMessageParser<SfptRequestWriteMessage> {
+public class SftpRequestWriteMessageParser
+        extends SftpRequestWithHandleMessageParser<SftpRequestWriteMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SfptRequestWriteMessageParser(byte[] array) {
+    public SftpRequestWriteMessageParser(byte[] array) {
         super(array);
     }
 
-    public SfptRequestWriteMessageParser(byte[] array, int startPosition) {
+    public SftpRequestWriteMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SfptRequestWriteMessage createMessage() {
-        return new SfptRequestWriteMessage();
+    public SftpRequestWriteMessage createMessage() {
+        return new SftpRequestWriteMessage();
     }
 
     private void parseOffset() {

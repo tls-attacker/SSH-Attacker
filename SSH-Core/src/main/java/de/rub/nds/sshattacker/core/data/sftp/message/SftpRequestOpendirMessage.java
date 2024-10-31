@@ -7,15 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
-import de.rub.nds.sshattacker.core.data.sftp.handler.SfptRequestRemoveMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestOpendirMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SfptRequestRemoveMessage extends SftpRequestWithPathMessage<SfptRequestRemoveMessage> {
+public class SftpRequestOpendirMessage
+        extends SftpRequestWithPathMessage<SftpRequestOpendirMessage> {
 
-    // path is the filename
+    // path is the
 
     @Override
-    public SfptRequestRemoveMessageHandler getHandler(SshContext context) {
-        return new SfptRequestRemoveMessageHandler(context, this);
+    public SftpRequestOpendirMessageHandler getHandler(SshContext context) {
+        return new SftpRequestOpendirMessageHandler(context, this);
     }
 }

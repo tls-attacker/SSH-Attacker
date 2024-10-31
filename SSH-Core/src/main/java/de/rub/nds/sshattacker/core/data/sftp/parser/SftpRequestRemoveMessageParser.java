@@ -7,22 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.SfptRequestRemoveMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestRemoveMessage;
 
-public class SfptRequestRemoveMessageParser
-        extends SftpRequestWithPathMessageParser<SfptRequestRemoveMessage> {
+public class SftpRequestRemoveMessageParser
+        extends SftpRequestWithPathMessageParser<SftpRequestRemoveMessage> {
 
-    public SfptRequestRemoveMessageParser(byte[] array) {
+    public SftpRequestRemoveMessageParser(byte[] array) {
         super(array);
     }
 
-    public SfptRequestRemoveMessageParser(byte[] array, int startPosition) {
+    public SftpRequestRemoveMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SfptRequestRemoveMessage createMessage() {
-        return new SfptRequestRemoveMessage();
+    public SftpRequestRemoveMessage createMessage() {
+        return new SftpRequestRemoveMessage();
     }
 
     @Override

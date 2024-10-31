@@ -11,10 +11,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
-import de.rub.nds.sshattacker.core.data.sftp.handler.SfptRequestWriteMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestWriteMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SfptRequestWriteMessage extends SftpRequestWithHandleMessage<SfptRequestWriteMessage> {
+public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRequestWriteMessage> {
 
     private ModifiableLong offset;
     private ModifiableInteger dataLength;
@@ -71,7 +71,7 @@ public class SfptRequestWriteMessage extends SftpRequestWithHandleMessage<SfptRe
     }
 
     @Override
-    public SfptRequestWriteMessageHandler getHandler(SshContext context) {
-        return new SfptRequestWriteMessageHandler(context, this);
+    public SftpRequestWriteMessageHandler getHandler(SshContext context) {
+        return new SftpRequestWriteMessageHandler(context, this);
     }
 }
