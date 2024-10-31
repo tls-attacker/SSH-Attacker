@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.SftpFileOpenFlag;
@@ -21,7 +22,8 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
     // path is the filename
 
     private ModifiableInteger pFlags;
-    private SftpFileAttributes attributes;
+
+    @HoldsModifiableVariable private SftpFileAttributes attributes;
 
     public ModifiableInteger getPFlags() {
         return pFlags;

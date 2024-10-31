@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestOpenMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpResponseHandleMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
@@ -578,7 +579,9 @@ public class WorkflowConfigurationFactory {
                         connection, ConnectionEndType.CLIENT, new SftpRequestOpenMessage()),
                 SshActionFactory.withReceiveOptions(
                         SshActionFactory.createMessageAction(
-                                connection, ConnectionEndType.SERVER, new SftpRequestOpenMessage()),
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new SftpResponseHandleMessage()),
                         Set.of(
                                 ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
                                 ReceiveAction.ReceiveOption

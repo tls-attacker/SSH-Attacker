@@ -9,21 +9,26 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestWithHandleMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpResponseHandleMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class SftpRequestWithHandleMessageParser<T extends SftpRequestWithHandleMessage<T>>
-        extends SftpRequestMessageParser<T> {
+public class SftpResponseHandleMessageParser
+        extends SftpResponseMessageParser<SftpResponseHandleMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SftpRequestWithHandleMessageParser(byte[] array) {
+    public SftpResponseHandleMessageParser(byte[] array) {
         super(array);
     }
 
-    protected SftpRequestWithHandleMessageParser(byte[] array, int startPosition) {
+    public SftpResponseHandleMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }
+
+    @Override
+    public SftpResponseHandleMessage createMessage() {
+        return new SftpResponseHandleMessage();
     }
 
     private void parseHandle() {
@@ -36,10 +41,7 @@ public abstract class SftpRequestWithHandleMessageParser<T extends SftpRequestWi
     }
 
     @Override
-    protected void parseRequestSpecificContents() {
+    protected void parseResponseSpecificContents() {
         parseHandle();
-        parseRequestWithHandleSpecificContents();
     }
-
-    protected abstract void parseRequestWithHandleSpecificContents();
 }

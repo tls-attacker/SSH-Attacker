@@ -10,9 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
-import de.rub.nds.sshattacker.core.data.sftp.parser.SftpInitMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.parser.SftpUnknownMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.parser.SftpVersionMessageParser;
+import de.rub.nds.sshattacker.core.data.sftp.parser.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -52,6 +50,52 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                     return new SftpInitMessageParser(raw).parse();
                 case SSH_FXP_VERSION:
                     return new SftpVersionMessageParser(raw).parse();
+                case SSH_FXP_OPEN:
+                    return new SftpRequestOpenMessageParser(raw).parse();
+                case SSH_FXP_CLOSE:
+                    return new SftpRequestCloseMessageParser(raw).parse();
+                case SSH_FXP_READ:
+                    return new SftpRequestReadMessageParser(raw).parse();
+                case SSH_FXP_WRITE:
+                    return new SftpRequestWriteMessageParser(raw).parse();
+                case SSH_FXP_LSTAT:
+                    return new SftpRequestLinkStatMessageParser(raw).parse();
+                case SSH_FXP_FSTAT:
+                    return new SftpRequestFileStatMessageParser(raw).parse();
+                case SSH_FXP_SETSTAT:
+                    return new SftpRequestSetStatMessageParser(raw).parse();
+                case SSH_FXP_FSETSTAT:
+                    return new SftpRequestFileSetStatMessageParser(raw).parse();
+                case SSH_FXP_OPENDIR:
+                    return new SftpRequestOpenDirMessageParser(raw).parse();
+                case SSH_FXP_READDIR:
+                    return new SftpRequestReadDirMessageParser(raw).parse();
+                case SSH_FXP_REMOVE:
+                    return new SftpRequestRemoveMessageParser(raw).parse();
+                case SSH_FXP_MKDIR:
+                    return new SftpRequestMakeDirMessageParser(raw).parse();
+                case SSH_FXP_RMDIR:
+                    return new SftpRequestRemoveDirMessageParser(raw).parse();
+                case SSH_FXP_REALPATH:
+                    return new SftpRequestRealPathMessageParser(raw).parse();
+                case SSH_FXP_STAT:
+                    return new SftpRequestStatMessageParser(raw).parse();
+                case SSH_FXP_RENAME:
+                    return new SftpRequestRenameMessageParser(raw).parse();
+                case SSH_FXP_READLINK:
+                    return new SftpRequestReadLinkMessageParser(raw).parse();
+                case SSH_FXP_SYMLINK:
+                    return new SftpRequestSymbolicLinkMessageParser(raw).parse();
+                case SSH_FXP_STATUS:
+                    return new SftpResponseStatusMessageParser(raw).parse();
+                case SSH_FXP_HANDLE:
+                    return new SftpResponseHandleMessageParser(raw).parse();
+                case SSH_FXP_DATA:
+                    return new SftpResponseDataMessageParser(raw).parse();
+                case SSH_FXP_NAME:
+                    return new SftpResponseNameMessageParser(raw).parse();
+                case SSH_FXP_ATTRS:
+                    return new SftpResponseAttributesMessageParser(raw).parse();
                 default:
                     LOGGER.debug(
                             "Received unimplemented SFTP Message {} ({})",

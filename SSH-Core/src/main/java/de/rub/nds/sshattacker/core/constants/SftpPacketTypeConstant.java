@@ -14,7 +14,6 @@ public enum SftpPacketTypeConstant {
      * Sources:
      *  - https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-02
      */
-    // [ Up to version 5 ]
     // 1 - 2 protocol initialization
     SSH_FXP_INIT((byte) 1),
     SSH_FXP_VERSION((byte) 2),

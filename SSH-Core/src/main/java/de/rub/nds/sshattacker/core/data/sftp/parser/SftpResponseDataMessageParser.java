@@ -9,31 +9,26 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.SftpRequestWriteMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpResponseDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpRequestWriteMessageParser
-        extends SftpRequestWithHandleMessageParser<SftpRequestWriteMessage> {
+public class SftpResponseDataMessageParser
+        extends SftpResponseMessageParser<SftpResponseDataMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestWriteMessageParser(byte[] array) {
+    public SftpResponseDataMessageParser(byte[] array) {
         super(array);
     }
 
-    public SftpRequestWriteMessageParser(byte[] array, int startPosition) {
+    public SftpResponseDataMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public SftpRequestWriteMessage createMessage() {
-        return new SftpRequestWriteMessage();
-    }
-
-    private void parseOffset() {
-        message.setOffset(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Offset: {}", message.getOffset().getValue());
+    public SftpResponseDataMessage createMessage() {
+        return new SftpResponseDataMessage();
     }
 
     private void parseData() {
@@ -45,8 +40,7 @@ public class SftpRequestWriteMessageParser
     }
 
     @Override
-    protected void parseRequestWithHandleSpecificContents() {
-        parseOffset();
+    protected void parseResponseSpecificContents() {
         parseData();
     }
 }

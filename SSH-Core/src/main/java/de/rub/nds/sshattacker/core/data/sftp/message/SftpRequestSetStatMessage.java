@@ -8,14 +8,14 @@
 package de.rub.nds.sshattacker.core.data.sftp.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestMakeDirMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.SftpRequestSetStatMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 
-public class SftpRequestMakeDirMessage
-        extends SftpRequestWithPathMessage<SftpRequestMakeDirMessage> {
+public class SftpRequestSetStatMessage
+        extends SftpRequestWithPathMessage<SftpRequestSetStatMessage> {
 
     @HoldsModifiableVariable private SftpFileAttributes attributes;
 
@@ -28,8 +28,8 @@ public class SftpRequestMakeDirMessage
     }
 
     @Override
-    public SftpRequestMakeDirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestMakeDirMessageHandler(context, this);
+    public SftpRequestSetStatMessageHandler getHandler(SshContext context) {
+        return new SftpRequestSetStatMessageHandler(context, this);
     }
 
     @Override
