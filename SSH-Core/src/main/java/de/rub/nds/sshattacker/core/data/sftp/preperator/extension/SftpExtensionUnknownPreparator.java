@@ -7,20 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.extension;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpUnknownExtension;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SftpUnknownExtensionPreparator
-        extends SftpAbstractExtensionPreparator<SftpUnknownExtension> {
+public class SftpExtensionUnknownPreparator
+        extends SftpAbstractExtensionPreparator<SftpExtensionUnknown> {
 
-    public SftpUnknownExtensionPreparator(Chooser chooser, SftpUnknownExtension extension) {
+    public SftpExtensionUnknownPreparator(Chooser chooser, SftpExtensionUnknown extension) {
         super(chooser, extension);
     }
 
     @Override
     public void prepareExtensionSpecificContents() {
         if (getObject().getName() == null) {
-            getObject().setName("hello-from@ssh-attacker", true);
+            getObject().setName("hello-from@ssh-attacker.de", true);
         }
         if (getObject().getNameLength() == null) {
             getObject().setNameLength(getObject().getName().getValue().length());

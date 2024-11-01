@@ -34,6 +34,10 @@ public enum SftpExtension {
     // SFTP
     VENDOR_ID("vendor-id"),
     CHECK_FILE("check-file"),
+    CHECK_FILE_HANDLE(
+            "check-file-handle"), // only as request name - available if check-file was announced
+    CHECK_FILE_NAME(
+            "check-file-name"), // only as request name - available if check-file was announced
     SPACE_AVAILABLE("space-available"),
     HOME_DIRECTORY("home-directory"),
     COPY_FILE("copy-file"),
@@ -43,6 +47,7 @@ public enum SftpExtension {
     // Vendor extensions
     POSIX_RENAME_OPENSSH_COM("posix-rename@openssh.com"),
     STAT_VFS_OPENSSH_COM("statvfs@openssh.com"),
+    F_STAT_VFS_OPENSSH_COM("fstatvfs@openssh.com"),
     HARDLINK_OPENSSH_COM("hardlink@openssh.com"),
     FSYNC_OPENSSH_COM("fsync@openssh.com"),
     L_SET_STAT("lsetstat@openssh.com"),

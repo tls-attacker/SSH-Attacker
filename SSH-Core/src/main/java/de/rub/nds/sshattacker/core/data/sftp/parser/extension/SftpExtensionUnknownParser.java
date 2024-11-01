@@ -9,25 +9,20 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpUnknownExtension;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpUnknownExtensionParser extends SftpAbstractExtensionParser<SftpUnknownExtension> {
+public class SftpExtensionUnknownParser extends SftpAbstractExtensionParser<SftpExtensionUnknown> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpUnknownExtensionParser(byte[] array) {
-        super(array);
+    public SftpExtensionUnknownParser(byte[] array) {
+        super(SftpExtensionUnknown::new, array);
     }
 
-    public SftpUnknownExtensionParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }
-
-    @Override
-    protected SftpUnknownExtension createExtension() {
-        return new SftpUnknownExtension();
+    public SftpExtensionUnknownParser(byte[] array, int startPosition) {
+        super(SftpExtensionUnknown::new, array, startPosition);
     }
 
     @Override

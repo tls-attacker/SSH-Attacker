@@ -9,16 +9,16 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpUnknownExtension;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpUnknownExtensionSerializer
-        extends SftpAbstractExtensionSerializer<SftpUnknownExtension> {
+public class SftpExtensionUnknownSerializer
+        extends SftpAbstractExtensionSerializer<SftpExtensionUnknown> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpUnknownExtensionSerializer(SftpUnknownExtension extension) {
+    public SftpExtensionUnknownSerializer(SftpExtensionUnknown extension) {
         super(extension);
     }
 

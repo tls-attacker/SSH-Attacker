@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.extension;
 
+import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,12 +15,28 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public abstract class SftpAbstractExtensionPreparator<E extends SftpAbstractExtension<E>>
         extends Preparator<E> {
 
+    private final String extensionName;
+
     protected SftpAbstractExtensionPreparator(Chooser chooser, E extension) {
         super(chooser, extension);
+        extensionName = null;
+    }
+
+    protected SftpAbstractExtensionPreparator(
+            Chooser chooser, E extension, SftpExtension extensionName) {
+        this(chooser, extension, extensionName.getName());
+    }
+
+    protected SftpAbstractExtensionPreparator(Chooser chooser, E extension, String extensionName) {
+        super(chooser, extension);
+        this.extensionName = extensionName;
     }
 
     @Override
     public void prepare() {
+        if (extensionName != null) {
+            getObject().setName(extensionName);
+        }
         prepareExtensionSpecificContents();
     }
 

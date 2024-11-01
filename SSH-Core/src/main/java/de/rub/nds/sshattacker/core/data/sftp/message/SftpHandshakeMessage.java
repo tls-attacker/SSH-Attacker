@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpUnknownExtension;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -27,7 +27,7 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements({@XmlElement(type = SftpUnknownExtension.class, name = "SftpUnknownExtension")})
+    @XmlElements({@XmlElement(type = SftpExtensionUnknown.class, name = "SftpUnknownExtension")})
     private List<SftpAbstractExtension<?>> extensions = new ArrayList<>();
 
     public ModifiableInteger getVersion() {

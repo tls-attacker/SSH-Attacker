@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,17 +22,18 @@ public abstract class SftpAbstractExtensionParser<E extends SftpAbstractExtensio
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final E extension = createExtension();
+    protected final E extension;
 
-    protected SftpAbstractExtensionParser(byte[] array) {
+    protected SftpAbstractExtensionParser(Supplier<E> extensionFactory, byte[] array) {
         super(array);
+        extension = extensionFactory.get();
     }
 
-    protected SftpAbstractExtensionParser(byte[] array, int startPosition) {
+    protected SftpAbstractExtensionParser(
+            Supplier<E> extensionFactory, byte[] array, int startPosition) {
         super(array, startPosition);
+        extension = extensionFactory.get();
     }
-
-    protected abstract E createExtension();
 
     @Override
     public final E parse() {

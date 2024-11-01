@@ -21,7 +21,7 @@ public class SftpFileExtendedAttributePreparator extends Preparator<SftpFileExte
     @Override
     public final void prepare() {
         if (getObject().getType() == null) {
-            getObject().setType("hello-from@ssh-attacker", true);
+            getObject().setType("hello-from@ssh-attacker.de", true);
         }
         if (getObject().getTypeLength() == null) {
             getObject().setTypeLength(getObject().getType().getValue().length());

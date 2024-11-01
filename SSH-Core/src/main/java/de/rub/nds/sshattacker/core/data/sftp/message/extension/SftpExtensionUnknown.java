@@ -10,10 +10,10 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpUnknownExtensionHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionUnknownHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpUnknownExtension extends SftpAbstractExtension<SftpUnknownExtension> {
+public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnknown> {
 
     private ModifiableInteger valueLength;
 
@@ -58,7 +58,7 @@ public class SftpUnknownExtension extends SftpAbstractExtension<SftpUnknownExten
     }
 
     @Override
-    public SftpUnknownExtensionHandler getHandler(SshContext context) {
-        return new SftpUnknownExtensionHandler(context, this);
+    public SftpExtensionUnknownHandler getHandler(SshContext context) {
+        return new SftpExtensionUnknownHandler(context, this);
     }
 }
