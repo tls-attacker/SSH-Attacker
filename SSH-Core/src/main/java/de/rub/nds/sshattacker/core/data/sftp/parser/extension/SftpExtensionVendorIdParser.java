@@ -28,6 +28,11 @@ public class SftpExtensionVendorIdParser
         super(SftpExtensionVendorId::new, array, startPosition);
     }
 
+    private void parseVendorStructureLength() {
+        extension.setVendorStructureLength(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("VendorStructureLength: {}", extension.getVendorStructureLength().getValue());
+    }
+
     private void parseVendorName() {
         extension.setVendorNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("VendorName length: {}", extension.getVendorNameLength().getValue());
@@ -68,6 +73,7 @@ public class SftpExtensionVendorIdParser
 
     @Override
     protected void parseExtensionValue() {
+        parseVendorStructureLength();
         parseVendorName();
         parseProductName();
         parseProductVersion();

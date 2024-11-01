@@ -11,6 +11,8 @@ import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
 import de.rub.nds.sshattacker.core.data.sftp.parser.*;
+import de.rub.nds.sshattacker.core.data.sftp.parser.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.parser.response.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;

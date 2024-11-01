@@ -49,7 +49,7 @@ public enum SftpExtension {
     STAT_VFS_OPENSSH_COM("statvfs@openssh.com"),
     F_STAT_VFS_OPENSSH_COM("fstatvfs@openssh.com"),
     HARDLINK_OPENSSH_COM("hardlink@openssh.com"),
-    FSYNC_OPENSSH_COM("fsync@openssh.com"),
+    F_SYNC_OPENSSH_COM("fsync@openssh.com"),
     L_SET_STAT("lsetstat@openssh.com"),
     LIMITS("limits@openssh.com"),
     EXPAND_PATH("expand-path@openssh.com"),

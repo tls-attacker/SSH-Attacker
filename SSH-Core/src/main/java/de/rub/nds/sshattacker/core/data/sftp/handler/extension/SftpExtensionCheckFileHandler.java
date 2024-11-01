@@ -35,7 +35,6 @@ public class SftpExtensionCheckFileHandler
         return new SftpExtensionWithVersionParser<>(SftpExtensionCheckFile::new, array);
     }
 
-    @Override
     public SftpExtensionWithVersionParser<SftpExtensionCheckFile> getParser(
             byte[] array, int startPosition) {
         return new SftpExtensionWithVersionParser<>(

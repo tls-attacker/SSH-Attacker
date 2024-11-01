@@ -24,6 +24,11 @@ public class SftpExtensionVendorIdSerializer
         super(extension);
     }
 
+    private void serializeVendorStructureLength() {
+        LOGGER.debug("VendorStructureLength: {}", extension.getVendorStructureLength().getValue());
+        appendInt(extension.getVendorStructureLength().getValue(), DataFormatConstants.UINT32_SIZE);
+    }
+
     private void serializeVendorName() {
         LOGGER.debug("VendorName length: {}", extension.getVendorNameLength().getValue());
         appendInt(
@@ -63,6 +68,7 @@ public class SftpExtensionVendorIdSerializer
 
     @Override
     protected void serializeExtensionValue() {
+        serializeVendorStructureLength();
         serializeVendorName();
         serializeProductName();
         serializeProductVersion();

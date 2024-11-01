@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.extension;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionVendorId;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -46,6 +47,15 @@ public class SftpExtensionVendorIdPreparator
 
         if (getObject().getProductBuildNumber() == null) {
             getObject().setProductBuildNumber(2024);
+        }
+
+        if (getObject().getVendorStructureLength() == null) {
+            getObject()
+                    .setVendorStructureLength(
+                            getObject().getVendorNameLength().getValue()
+                                    + getObject().getProductNameLength().getValue()
+                                    + getObject().getProductVersionLength().getValue()
+                                    + DataFormatConstants.UINT64_SIZE);
         }
     }
 }

@@ -109,7 +109,7 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
                             new SftpExtensionHardlinkHandler(null)
                                     .getParser(getArray(), extensionStartPointer);
                     break;
-                case FSYNC_OPENSSH_COM:
+                case F_SYNC_OPENSSH_COM:
                     extensionParser =
                             new SftpExtensionFileSyncHandler(null)
                                     .getParser(getArray(), extensionStartPointer);

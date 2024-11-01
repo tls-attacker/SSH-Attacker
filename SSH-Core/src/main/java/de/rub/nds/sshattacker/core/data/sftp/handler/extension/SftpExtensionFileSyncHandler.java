@@ -45,7 +45,7 @@ public class SftpExtensionFileSyncHandler
     @Override
     public SftpExtensionWithVersionPreparator<SftpExtensionFileSync> getPreparator() {
         return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.FSYNC_OPENSSH_COM);
+                context.getChooser(), extension, SftpExtension.F_SYNC_OPENSSH_COM);
     }
 
     @Override

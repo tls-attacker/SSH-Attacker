@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVendorId> {
 
+    private ModifiableInteger vendorStructureLength;
     private ModifiableInteger vendorNameLength;
     private ModifiableString vendorName;
     private ModifiableInteger productNameLength;
@@ -24,6 +25,20 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     private ModifiableInteger productVersionLength;
     private ModifiableString productVersion;
     private ModifiableLong productBuildNumber;
+
+    public ModifiableInteger getVendorStructureLength() {
+        return vendorStructureLength;
+    }
+
+    public void setVendorStructureLength(ModifiableInteger vendorStructureLength) {
+        this.vendorStructureLength = vendorStructureLength;
+    }
+
+    public void setVendorStructureLength(int vendorStructureLength) {
+        this.vendorStructureLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.vendorStructureLength, vendorStructureLength);
+    }
 
     public ModifiableInteger getVendorNameLength() {
         return vendorNameLength;
