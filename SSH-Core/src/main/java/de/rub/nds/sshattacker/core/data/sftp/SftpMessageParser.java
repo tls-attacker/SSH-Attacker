@@ -7,10 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp;
 
+import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
+import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.*;
+import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.*;
 import de.rub.nds.sshattacker.core.data.sftp.parser.request.*;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
@@ -98,6 +101,8 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                     return new SftpResponseNameMessageParser(raw).parse();
                 case SSH_FXP_ATTRS:
                     return new SftpResponseAttributesMessageParser(raw).parse();
+                case SSH_FXP_EXTENDED:
+                    return handleExtendedRequestMessageParsing(raw);
                 default:
                     LOGGER.debug(
                             "Received unimplemented SFTP Message {} ({})",
@@ -108,6 +113,56 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
             return new SftpUnknownMessageParser(raw).parse();
+        }
+    }
+
+    public static SftpMessage<?> handleExtendedRequestMessageParsing(byte[] raw) {
+        SftpRequestUnknownMessage message = new SftpRequestUnknownMessageParser(raw).parse();
+        String extendedRequestTypeString = message.getExtendedRequestName().getValue();
+        SftpExtension extendedRequestType = SftpExtension.fromName(extendedRequestTypeString);
+        switch (extendedRequestType) {
+            case VENDOR_ID:
+                return new SftpRequestVendorIdMessageParser(raw).parse();
+            case CHECK_FILE_HANDLE:
+                return new SftpRequestCheckFileHandleMessageParser(raw).parse();
+            case CHECK_FILE_NAME:
+                return new SftpRequestCheckFileNameMessageParser(raw).parse();
+            case SPACE_AVAILABLE:
+                return new SftpRequestSpaceAvailableMessageParser(raw).parse();
+            case HOME_DIRECTORY:
+                return new SftpRequestHomeDirectoryMessageParser(raw).parse();
+            case COPY_FILE:
+                return new SftpRequestCopyFileMessageParser(raw).parse();
+            case COPY_DATA:
+                return new SftpRequestCopyDataMessageParser(raw).parse();
+            case GET_TEMP_FOLDER:
+                return new SftpRequestGetTempFolderMessageParser(raw).parse();
+            case MAKE_TEMP_FOLDER:
+                return new SftpRequestMakeTempFolderMessageParser(raw).parse();
+                // vendor specific
+            case POSIX_RENAME_OPENSSH_COM:
+                return new SftpRequestPosixRenameMessageParser(raw).parse();
+            case STAT_VFS_OPENSSH_COM:
+                return new SftpRequestStatVfsMessageParser(raw).parse();
+            case F_STAT_VFS_OPENSSH_COM:
+                return new SftpRequestFileStatVfsMessageParser(raw).parse();
+            case HARDLINK_OPENSSH_COM:
+                return new SftpRequestHardlinkMessageParser(raw).parse();
+            case F_SYNC_OPENSSH_COM:
+                return new SftpRequestFileSyncMessageParser(raw).parse();
+            case L_SET_STAT:
+                return new SftpRequestLinkSetStatMessageParser(raw).parse();
+            case LIMITS:
+                return new SftpRequestLimitsMessageParser(raw).parse();
+            case EXPAND_PATH:
+                return new SftpRequestExpandPathMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID:
+                return new SftpRequestUsersGroupsByIdMessageParser(raw).parse();
+            default:
+                LOGGER.debug(
+                        "Received unimplemented extended request message type: {}",
+                        extendedRequestTypeString);
+                return message;
         }
     }
 }
