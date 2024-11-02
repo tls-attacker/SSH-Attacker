@@ -28,19 +28,21 @@ public class SftpResponseNameEntrySerializer extends Serializer<SftpResponseName
     }
 
     private void serializeFilename() {
-        LOGGER.debug("Filename length: {}", nameEntry.getFilenameLength().getValue());
-        appendInt(nameEntry.getFilenameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Filename: {}", () -> backslashEscapeString(nameEntry.getFilename().getValue()));
-        appendString(nameEntry.getFilename().getValue(), StandardCharsets.UTF_8);
+        Integer filenameLength = nameEntry.getFilenameLength().getValue();
+        LOGGER.debug("Filename length: {}", filenameLength);
+        appendInt(filenameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String filename = nameEntry.getFilename().getValue();
+        LOGGER.debug("Filename: {}", () -> backslashEscapeString(filename));
+        appendString(filename, StandardCharsets.UTF_8);
     }
 
     private void serializeLongName() {
-        LOGGER.debug("LongName length: {}", nameEntry.getLongNameLength().getValue());
-        appendInt(nameEntry.getLongNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "LongName: {}", () -> backslashEscapeString(nameEntry.getLongName().getValue()));
-        appendString(nameEntry.getLongName().getValue(), StandardCharsets.UTF_8);
+        Integer longNameLength = nameEntry.getLongNameLength().getValue();
+        LOGGER.debug("LongName length: {}", longNameLength);
+        appendInt(longNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String longName = nameEntry.getLongName().getValue();
+        LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
+        appendString(longName, StandardCharsets.UTF_8);
     }
 
     private void serializeAttributes() {

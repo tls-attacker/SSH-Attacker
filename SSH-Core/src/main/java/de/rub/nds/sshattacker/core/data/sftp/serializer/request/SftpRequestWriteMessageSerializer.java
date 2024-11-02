@@ -23,16 +23,18 @@ public class SftpRequestWriteMessageSerializer
     }
 
     private void serializeOffset() {
-        LOGGER.debug("Offset: {}", message.getOffset().getValue());
-        appendLong(message.getOffset().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long offset = message.getOffset().getValue();
+        LOGGER.debug("Offset: {}", offset);
+        appendLong(offset, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Data: {}", () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
-        appendBytes(message.getData().getValue());
+        Integer dataLength = message.getDataLength().getValue();
+        LOGGER.debug("Data length: {}", dataLength);
+        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = message.getData().getValue();
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
+        appendBytes(data);
     }
 
     @Override

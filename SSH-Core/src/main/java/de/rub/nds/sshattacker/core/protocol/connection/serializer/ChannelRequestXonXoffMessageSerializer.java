@@ -22,10 +22,10 @@ public class ChannelRequestXonXoffMessageSerializer
     }
 
     private void serializeClientFlowControl() {
+        Byte clientFlowControl = message.getClientFlowControl().getValue();
         LOGGER.debug(
-                "Client can do flow control: {}",
-                Converter.byteToBoolean(message.getClientFlowControl().getValue()));
-        appendByte(message.getClientFlowControl().getValue());
+                "Client can do flow control: {}", () -> Converter.byteToBoolean(clientFlowControl));
+        appendByte(clientFlowControl);
     }
 
     @Override

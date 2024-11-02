@@ -22,8 +22,9 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
     }
 
     private void serializeRecipientChannel() {
-        LOGGER.debug("Recipient channel id: {}", message.getRecipientChannelId().getValue());
-        appendInt(message.getRecipientChannelId().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        LOGGER.debug("Recipient channel id: {}", recipientChannelId);
+        appendInt(recipientChannelId, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

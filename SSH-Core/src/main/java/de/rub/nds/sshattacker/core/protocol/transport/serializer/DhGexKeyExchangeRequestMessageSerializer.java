@@ -23,18 +23,21 @@ public class DhGexKeyExchangeRequestMessageSerializer
     }
 
     private void serializeMinimalGroupSize() {
-        LOGGER.debug("Minimal group size: {}", message.getMinimalGroupSize().getValue());
-        appendInt(message.getMinimalGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer minimalGroupSize = message.getMinimalGroupSize().getValue();
+        LOGGER.debug("Minimal group size: {}", minimalGroupSize);
+        appendInt(minimalGroupSize, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePreferredGroupSize() {
-        LOGGER.debug("Preferred group size: {}", message.getPreferredGroupSize().getValue());
-        appendInt(message.getPreferredGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer preferredGroupSize = message.getPreferredGroupSize().getValue();
+        LOGGER.debug("Preferred group size: {}", preferredGroupSize);
+        appendInt(preferredGroupSize, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeMaximalGroupSize() {
-        LOGGER.debug("Maximal group size: {}", message.getMaximalGroupSize().getValue());
-        appendInt(message.getMaximalGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer maximalGroupSize = message.getMaximalGroupSize().getValue();
+        LOGGER.debug("Maximal group size: {}", maximalGroupSize);
+        appendInt(maximalGroupSize, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

@@ -37,14 +37,13 @@ public class HybridKeyExchangeReplyMessageSerializer
     }
 
     private void serializeHostKeyBytes() {
-        appendInt(
-                message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
+        Integer hostKeyBytesLength = message.getHostKeyBytesLength().getValue();
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        appendBytes(message.getHostKeyBytes().getValue());
-        LOGGER.debug(
-                "Host key bytes: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+        byte[] hostKeyBytes = message.getHostKeyBytes().getValue();
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
+        appendBytes(hostKeyBytes);
     }
 
     private void serializeHybridKey() {
@@ -78,8 +77,9 @@ public class HybridKeyExchangeReplyMessageSerializer
     }
 
     private void serializeSignature() {
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
+        Integer signatureLength = message.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(message.getSignature().getValue());
         LOGGER.debug("Signature: {}", message.getSignature());
     }

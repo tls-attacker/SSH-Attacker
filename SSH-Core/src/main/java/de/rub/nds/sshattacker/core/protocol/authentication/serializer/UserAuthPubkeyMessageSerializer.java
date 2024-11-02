@@ -27,39 +27,36 @@ public class UserAuthPubkeyMessageSerializer
     }
 
     private void serializeUseSignature() {
-        LOGGER.debug(
-                "Use Signature: {}", Converter.byteToBoolean(message.getUseSignature().getValue()));
-        appendByte(message.getUseSignature().getValue());
+        Byte useSignature = message.getUseSignature().getValue();
+        LOGGER.debug("Use Signature: {}", () -> Converter.byteToBoolean(useSignature));
+        appendByte(useSignature);
     }
 
     private void serializePubkeyAlgName() {
-        LOGGER.debug(
-                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
-        appendInt(
-                message.getPubkeyAlgNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Pubkey algorithm name: {}",
-                () -> backslashEscapeString(message.getPubkeyAlgName().getValue()));
-        appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.US_ASCII);
+        Integer pubkeyAlgNameLength = message.getPubkeyAlgNameLength().getValue();
+        LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
+        appendInt(pubkeyAlgNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String pubkeyAlgName = message.getPubkeyAlgName().getValue();
+        LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
+        appendString(pubkeyAlgName, StandardCharsets.US_ASCII);
     }
 
     private void serializePubkey() {
-        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
-        appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Pubkey: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
-        appendBytes(message.getPubkey().getValue());
+        Integer pubkeyLength = message.getPubkeyLength().getValue();
+        LOGGER.debug("Pubkey length: {}", pubkeyLength);
+        appendInt(pubkeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] pubkey = message.getPubkey().getValue();
+        LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
+        appendBytes(pubkey);
     }
 
     private void serializeSignature() {
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Signature: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
-        appendBytes(message.getSignature().getValue());
+        Integer signatureLength = message.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] signature = message.getSignature().getValue();
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
+        appendBytes(signature);
     }
 
     @Override

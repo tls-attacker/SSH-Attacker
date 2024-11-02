@@ -25,37 +25,36 @@ public class SftpRequestVendorIdMessageSerializer
     }
 
     private void serializeVendorName() {
-        LOGGER.debug("VendorName length: {}", message.getVendorNameLength().getValue());
-        appendInt(message.getVendorNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "VendorName: {}", () -> backslashEscapeString(message.getVendorName().getValue()));
-        appendString(message.getVendorName().getValue(), StandardCharsets.UTF_8);
+        Integer vendorNameLength = message.getVendorNameLength().getValue();
+        LOGGER.debug("VendorName length: {}", vendorNameLength);
+        appendInt(vendorNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String vendorName = message.getVendorName().getValue();
+        LOGGER.debug("VendorName: {}", () -> backslashEscapeString(vendorName));
+        appendString(vendorName, StandardCharsets.UTF_8);
     }
 
     private void serializeProductName() {
-        LOGGER.debug("ProductName length: {}", message.getProductNameLength().getValue());
-        appendInt(
-                message.getProductNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ProductName: {}",
-                () -> backslashEscapeString(message.getProductName().getValue()));
-        appendString(message.getProductName().getValue(), StandardCharsets.UTF_8);
+        Integer productNameLength = message.getProductNameLength().getValue();
+        LOGGER.debug("ProductName length: {}", productNameLength);
+        appendInt(productNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productName = message.getProductName().getValue();
+        LOGGER.debug("ProductName: {}", () -> backslashEscapeString(productName));
+        appendString(productName, StandardCharsets.UTF_8);
     }
 
     private void serializeProductVersion() {
-        LOGGER.debug("ProductVersion length: {}", message.getProductVersionLength().getValue());
-        appendInt(
-                message.getProductVersionLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ProductVersion: {}",
-                () -> backslashEscapeString(message.getProductVersion().getValue()));
-        appendString(message.getProductVersion().getValue(), StandardCharsets.UTF_8);
+        Integer productVersionLength = message.getProductVersionLength().getValue();
+        LOGGER.debug("ProductVersion length: {}", productVersionLength);
+        appendInt(productVersionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productVersion = message.getProductVersion().getValue();
+        LOGGER.debug("ProductVersion: {}", () -> backslashEscapeString(productVersion));
+        appendString(productVersion, StandardCharsets.UTF_8);
     }
 
     private void serializeProductBuildNumber() {
-        LOGGER.debug("ProductBuildNumber: {}", message.getProductBuildNumber().getValue());
-        appendLong(message.getProductBuildNumber().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long productBuildNumber = message.getProductBuildNumber().getValue();
+        LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
+        appendLong(productBuildNumber, DataFormatConstants.UINT64_SIZE);
     }
 
     @Override

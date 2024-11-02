@@ -34,21 +34,20 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
     }
 
     private void serializeDescription() {
-        LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
-        appendInt(
-                message.getDescriptionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer descriptionLength = message.getDescriptionLength().getValue();
+        LOGGER.debug("Description length: {}", descriptionLength);
+        appendInt(descriptionLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Description: {}", message.getDescription().getValue());
         appendString(message.getDescription().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        Integer languageTagLength = message.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = message.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override

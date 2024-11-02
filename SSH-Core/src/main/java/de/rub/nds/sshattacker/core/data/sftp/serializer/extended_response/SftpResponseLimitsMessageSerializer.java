@@ -24,16 +24,20 @@ public class SftpResponseLimitsMessageSerializer
 
     @Override
     protected void serializeResponseSpecificContents() {
-        LOGGER.debug("MaximumPacketLength: {}", message.getMaximumPacketLength().getValue());
-        appendLong(message.getMaximumPacketLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long maximumPacketLength = message.getMaximumPacketLength().getValue();
+        LOGGER.debug("MaximumPacketLength: {}", maximumPacketLength);
+        appendLong(maximumPacketLength, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("MaximumReadLength: {}", message.getMaximumReadLength().getValue());
-        appendLong(message.getMaximumReadLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long maximumReadLength = message.getMaximumReadLength().getValue();
+        LOGGER.debug("MaximumReadLength: {}", maximumReadLength);
+        appendLong(maximumReadLength, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("MaximumWriteLength: {}", message.getMaximumWriteLength().getValue());
-        appendLong(message.getMaximumWriteLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long maximumWriteLength = message.getMaximumWriteLength().getValue();
+        LOGGER.debug("MaximumWriteLength: {}", maximumWriteLength);
+        appendLong(maximumWriteLength, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("MaximumOpenHandles: {}", message.getMaximumOpenHandles().getValue());
-        appendLong(message.getMaximumOpenHandles().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long maximumOpenHandles = message.getMaximumOpenHandles().getValue();
+        LOGGER.debug("MaximumOpenHandles: {}", maximumOpenHandles);
+        appendLong(maximumOpenHandles, DataFormatConstants.UINT64_SIZE);
     }
 }

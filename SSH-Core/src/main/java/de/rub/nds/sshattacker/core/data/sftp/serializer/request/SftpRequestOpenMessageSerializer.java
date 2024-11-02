@@ -22,8 +22,9 @@ public class SftpRequestOpenMessageSerializer
     }
 
     private void serializePFlags() {
-        LOGGER.debug("PFlags: {}", message.getPFlags().getValue());
-        appendInt(message.getPFlags().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer pFlags = message.getPFlags().getValue();
+        LOGGER.debug("PFlags: {}", pFlags);
+        appendInt(pFlags, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeAttributes() {

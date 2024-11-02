@@ -26,16 +26,12 @@ public abstract class SftpRequestExtendedMessageSerializer<T extends SftpRequest
     }
 
     private void serializeExtendedRequestName() {
-        LOGGER.debug(
-                "ExtendedRequestName length: {}",
-                message.getExtendedRequestNameLength().getValue());
-        appendInt(
-                message.getExtendedRequestNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ExtendedRequestName: {}",
-                () -> backslashEscapeString(message.getExtendedRequestName().getValue()));
-        appendString(message.getExtendedRequestName().getValue(), StandardCharsets.US_ASCII);
+        Integer extendedRequestNameLength = message.getExtendedRequestNameLength().getValue();
+        LOGGER.debug("ExtendedRequestName length: {}", extendedRequestNameLength);
+        appendInt(extendedRequestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String extendedRequestName = message.getExtendedRequestName().getValue();
+        LOGGER.debug("ExtendedRequestName: {}", () -> backslashEscapeString(extendedRequestName));
+        appendString(extendedRequestName, StandardCharsets.US_ASCII);
     }
 
     @Override

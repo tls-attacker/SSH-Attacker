@@ -24,18 +24,14 @@ public class EcdhKeyExchangeInitMessageSerializer
     }
 
     private void serializeEphemeralPublicKey() {
-        LOGGER.debug(
-                "Ephemeral public key (client) length: {}",
-                message.getEphemeralPublicKeyLength().getValue());
-        appendInt(
-                message.getEphemeralPublicKeyLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer ephemeralPublicKeyLength = message.getEphemeralPublicKeyLength().getValue();
+        LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
+        appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] ephemeralPublicKey = message.getEphemeralPublicKey().getValue();
         LOGGER.debug(
                 "Ephemeral public key (client): {}",
-                () ->
-                        ArrayConverter.bytesToRawHexString(
-                                message.getEphemeralPublicKey().getValue()));
-        appendBytes(message.getEphemeralPublicKey().getValue());
+                () -> ArrayConverter.bytesToRawHexString(ephemeralPublicKey));
+        appendBytes(ephemeralPublicKey);
     }
 
     @Override

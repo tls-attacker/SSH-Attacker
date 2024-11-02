@@ -23,8 +23,9 @@ public class RsaKeyExchangeDoneMessageSerializer
     }
 
     private void serializeSignature() {
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer signatureLength = message.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Signature: {}", message.getSignature());
         appendBytes(message.getSignature().getValue());
     }

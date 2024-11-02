@@ -23,8 +23,9 @@ public class DhGexKeyExchangeOldRequestMessageSerializer
     }
 
     private void serializePreferredGroupSize() {
-        LOGGER.debug("Preferred group size: {}", message.getPreferredGroupSize().getValue());
-        appendInt(message.getPreferredGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer preferredGroupSize = message.getPreferredGroupSize().getValue();
+        LOGGER.debug("Preferred group size: {}", preferredGroupSize);
+        appendInt(preferredGroupSize, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

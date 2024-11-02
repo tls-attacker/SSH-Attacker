@@ -22,8 +22,9 @@ public class SftpResponseNameMessageSerializer
     }
 
     private void serializeNameEntries() {
-        LOGGER.debug("CountNameEntries: {}", message.getCountNameEntries().getValue());
-        appendInt(message.getCountNameEntries().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer countNameEntries = message.getCountNameEntries().getValue();
+        LOGGER.debug("CountNameEntries: {}", countNameEntries);
+        appendInt(countNameEntries, DataFormatConstants.UINT32_SIZE);
 
         message.getNameEntries()
                 .forEach(

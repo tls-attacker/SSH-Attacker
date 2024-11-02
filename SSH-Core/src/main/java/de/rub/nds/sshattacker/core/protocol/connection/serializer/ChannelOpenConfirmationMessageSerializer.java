@@ -22,13 +22,15 @@ public class ChannelOpenConfirmationMessageSerializer
     }
 
     private void serializeSenderChannel() {
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
-        appendInt(message.getSenderChannelId().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer senderChannelId = message.getSenderChannelId().getValue();
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
+        appendInt(senderChannelId, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeWindowSize() {
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
-        appendInt(message.getWindowSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer windowSize = message.getWindowSize().getValue();
+        LOGGER.debug("Initial window size: {}", windowSize);
+        appendInt(windowSize, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePacketSize() {

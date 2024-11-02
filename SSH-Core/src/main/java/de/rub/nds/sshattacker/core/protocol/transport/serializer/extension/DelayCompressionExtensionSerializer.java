@@ -30,21 +30,18 @@ public class DelayCompressionExtensionSerializer
     }
 
     private void serializeCompressionMethodsLength() {
-        LOGGER.debug(
-                "Compression methods length: {}",
-                extension.getCompressionMethodsLength().getValue());
-        appendInt(
-                extension.getCompressionMethodsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer compressionMethodsLength = extension.getCompressionMethodsLength().getValue();
+        LOGGER.debug("Compression methods length: {}", compressionMethodsLength);
+        appendInt(compressionMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     private void serializeCompressionMethodsClientToServer() {
+        Integer compressionMethodsClientToServerLength =
+                extension.getCompressionMethodsClientToServerLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
-                extension.getCompressionMethodsClientToServerLength().getValue());
-        appendInt(
-                extension.getCompressionMethodsClientToServerLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                compressionMethodsClientToServerLength);
+        appendInt(compressionMethodsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (client to server): {}",
                 extension.getCompressionMethodsClientToServer().getValue());
@@ -54,12 +51,12 @@ public class DelayCompressionExtensionSerializer
     }
 
     private void serializeCompressionMethodsServerToClient() {
+        Integer compressionMethodsServerToClientLength =
+                extension.getCompressionMethodsServerToClientLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
-                extension.getCompressionMethodsServerToClientLength().getValue());
-        appendInt(
-                extension.getCompressionMethodsServerToClientLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                compressionMethodsServerToClientLength);
+        appendInt(compressionMethodsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (server to client): {}",
                 extension.getCompressionMethodsServerToClient().getValue());

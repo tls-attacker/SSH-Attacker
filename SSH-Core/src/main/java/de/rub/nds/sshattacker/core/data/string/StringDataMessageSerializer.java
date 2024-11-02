@@ -23,8 +23,9 @@ public class StringDataMessageSerializer extends ProtocolMessageSerializer<Strin
     }
 
     private void serializeData() {
-        LOGGER.debug("Data: {}", () -> backslashEscapeString(message.getData().getValue()));
-        appendString(message.getData().getValue(), StandardCharsets.UTF_8);
+        String data = message.getData().getValue();
+        LOGGER.debug("Data: {}", () -> backslashEscapeString(data));
+        appendString(data, StandardCharsets.UTF_8);
     }
 
     @Override

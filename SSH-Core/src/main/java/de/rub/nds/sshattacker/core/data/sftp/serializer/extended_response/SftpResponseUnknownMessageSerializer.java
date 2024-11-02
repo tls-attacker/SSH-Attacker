@@ -24,11 +24,10 @@ public class SftpResponseUnknownMessageSerializer
 
     @Override
     protected void serializeResponseSpecificContents() {
+        byte[] responseSpecificData = message.getResponseSpecificData().getValue();
         LOGGER.debug(
                 "ResponseSpecificData: {}",
-                () ->
-                        ArrayConverter.bytesToRawHexString(
-                                message.getResponseSpecificData().getValue()));
-        appendBytes(message.getResponseSpecificData().getValue());
+                () -> ArrayConverter.bytesToRawHexString(responseSpecificData));
+        appendBytes(responseSpecificData);
     }
 }

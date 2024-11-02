@@ -26,29 +26,30 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     }
 
     private void serializeUserName() {
-        LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
-        appendInt(message.getUserNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "User name: {}", () -> backslashEscapeString(message.getUserName().getValue()));
-        appendString(message.getUserName().getValue(), StandardCharsets.UTF_8);
+        Integer userNameLength = message.getUserNameLength().getValue();
+        LOGGER.debug("User name length: {}", userNameLength);
+        appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String userName = message.getUserName().getValue();
+        LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
+        appendString(userName, StandardCharsets.UTF_8);
     }
 
     private void serializeServiceName() {
-        LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
-        appendInt(
-                message.getServiceNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Service name: {}",
-                () -> backslashEscapeString(message.getServiceName().getValue()));
-        appendString(message.getServiceName().getValue(), StandardCharsets.US_ASCII);
+        Integer serviceNameLength = message.getServiceNameLength().getValue();
+        LOGGER.debug("Service name length: {}", serviceNameLength);
+        appendInt(serviceNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String serviceName = message.getServiceName().getValue();
+        LOGGER.debug("Service name: {}", () -> backslashEscapeString(serviceName));
+        appendString(serviceName, StandardCharsets.US_ASCII);
     }
 
     private void serializeMethodName() {
-        LOGGER.debug("Method name length: {}", message.getMethodNameLength().getValue());
-        appendInt(message.getMethodNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Method name: {}", () -> backslashEscapeString(message.getMethodName().getValue()));
-        appendString(message.getMethodName().getValue(), StandardCharsets.US_ASCII);
+        Integer methodNameLength = message.getMethodNameLength().getValue();
+        LOGGER.debug("Method name length: {}", methodNameLength);
+        appendInt(methodNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String methodName = message.getMethodName().getValue();
+        LOGGER.debug("Method name: {}", () -> backslashEscapeString(methodName));
+        appendString(methodName, StandardCharsets.US_ASCII);
     }
 
     @Override

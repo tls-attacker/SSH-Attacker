@@ -25,45 +25,42 @@ public class SftpExtensionVendorIdSerializer
     }
 
     private void serializeVendorStructureLength() {
-        LOGGER.debug("VendorStructureLength: {}", extension.getVendorStructureLength().getValue());
-        appendInt(extension.getVendorStructureLength().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer vendorStructureLength = extension.getVendorStructureLength().getValue();
+        LOGGER.debug("VendorStructureLength: {}", vendorStructureLength);
+        appendInt(vendorStructureLength, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeVendorName() {
-        LOGGER.debug("VendorName length: {}", extension.getVendorNameLength().getValue());
-        appendInt(
-                extension.getVendorNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "VendorName: {}",
-                () -> backslashEscapeString(extension.getVendorName().getValue()));
-        appendString(extension.getVendorName().getValue(), StandardCharsets.UTF_8);
+        Integer vendorNameLength = extension.getVendorNameLength().getValue();
+        LOGGER.debug("VendorName length: {}", vendorNameLength);
+        appendInt(vendorNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String vendorName = extension.getVendorName().getValue();
+        LOGGER.debug("VendorName: {}", () -> backslashEscapeString(vendorName));
+        appendString(vendorName, StandardCharsets.UTF_8);
     }
 
     private void serializeProductName() {
-        LOGGER.debug("ProductName length: {}", extension.getProductNameLength().getValue());
-        appendInt(
-                extension.getProductNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ProductName: {}",
-                () -> backslashEscapeString(extension.getProductName().getValue()));
-        appendString(extension.getProductName().getValue(), StandardCharsets.UTF_8);
+        Integer productNameLength = extension.getProductNameLength().getValue();
+        LOGGER.debug("ProductName length: {}", productNameLength);
+        appendInt(productNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productName = extension.getProductName().getValue();
+        LOGGER.debug("ProductName: {}", () -> backslashEscapeString(productName));
+        appendString(productName, StandardCharsets.UTF_8);
     }
 
     private void serializeProductVersion() {
-        LOGGER.debug("ProductVersion length: {}", extension.getProductVersionLength().getValue());
-        appendInt(
-                extension.getProductVersionLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ProductVersion: {}",
-                () -> backslashEscapeString(extension.getProductVersion().getValue()));
-        appendString(extension.getProductVersion().getValue(), StandardCharsets.UTF_8);
+        Integer productVersionLength = extension.getProductVersionLength().getValue();
+        LOGGER.debug("ProductVersion length: {}", productVersionLength);
+        appendInt(productVersionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productVersion = extension.getProductVersion().getValue();
+        LOGGER.debug("ProductVersion: {}", () -> backslashEscapeString(productVersion));
+        appendString(productVersion, StandardCharsets.UTF_8);
     }
 
     private void serializeProductBuildNumber() {
-        LOGGER.debug("ProductBuildNumber: {}", extension.getProductBuildNumber().getValue());
-        appendLong(extension.getProductBuildNumber().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long productBuildNumber = extension.getProductBuildNumber().getValue();
+        LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
+        appendLong(productBuildNumber, DataFormatConstants.UINT64_SIZE);
     }
 
     @Override

@@ -26,21 +26,19 @@ public class SftpRequestCopyFileMessageSerializer
     }
 
     private void serializeDestinationPath() {
-        LOGGER.debug("DestinationPath length: {}", message.getDestinationPathLength().getValue());
-        appendInt(
-                message.getDestinationPathLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "DestinationPath: {}",
-                () -> backslashEscapeString(message.getDestinationPath().getValue()));
-        appendString(message.getDestinationPath().getValue(), StandardCharsets.UTF_8);
+        Integer destinationPathLength = message.getDestinationPathLength().getValue();
+        LOGGER.debug("DestinationPath length: {}", destinationPathLength);
+        appendInt(destinationPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String destinationPath = message.getDestinationPath().getValue();
+        LOGGER.debug("DestinationPath: {}", () -> backslashEscapeString(destinationPath));
+        appendString(destinationPath, StandardCharsets.UTF_8);
     }
 
     private void serializeOverwriteDestination() {
+        Byte overwriteDestination = message.getOverwriteDestination().getValue();
         LOGGER.debug(
-                "OverwriteDestination: {}",
-                Converter.byteToBoolean(message.getOverwriteDestination().getValue()));
-        appendByte(message.getOverwriteDestination().getValue());
+                "OverwriteDestination: {}", () -> Converter.byteToBoolean(overwriteDestination));
+        appendByte(overwriteDestination);
     }
 
     @Override

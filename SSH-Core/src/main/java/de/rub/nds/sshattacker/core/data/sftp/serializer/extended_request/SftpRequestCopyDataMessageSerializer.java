@@ -23,29 +23,30 @@ public class SftpRequestCopyDataMessageSerializer
     }
 
     private void serializeReadFromOffset() {
-        LOGGER.debug("ReadFromOffset: {}", message.getReadFromOffset().getValue());
-        appendLong(message.getReadFromOffset().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long readFromOffset = message.getReadFromOffset().getValue();
+        LOGGER.debug("ReadFromOffset: {}", readFromOffset);
+        appendLong(readFromOffset, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeReadDataLength() {
-        LOGGER.debug("ReadDataLength: {}", message.getReadDataLength().getValue());
-        appendLong(message.getReadDataLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long readDataLength = message.getReadDataLength().getValue();
+        LOGGER.debug("ReadDataLength: {}", readDataLength);
+        appendLong(readDataLength, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeWriteToHandle() {
-        LOGGER.debug("WriteToHandle length: {}", message.getWriteToHandleLength().getValue());
-        appendInt(
-                message.getWriteToHandleLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "WriteToHandle: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getWriteToHandle().getValue()));
-        appendBytes(message.getWriteToHandle().getValue());
+        Integer writeToHandleLength = message.getWriteToHandleLength().getValue();
+        LOGGER.debug("WriteToHandle length: {}", writeToHandleLength);
+        appendInt(writeToHandleLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] writeToHandle = message.getWriteToHandle().getValue();
+        LOGGER.debug("WriteToHandle: {}", () -> ArrayConverter.bytesToRawHexString(writeToHandle));
+        appendBytes(writeToHandle);
     }
 
     private void serializeWriteToOffset() {
-        LOGGER.debug("WriteToOffset: {}", message.getWriteToOffset().getValue());
-        appendLong(message.getWriteToOffset().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long writeToOffset = message.getWriteToOffset().getValue();
+        LOGGER.debug("WriteToOffset: {}", writeToOffset);
+        appendLong(writeToOffset, DataFormatConstants.UINT64_SIZE);
     }
 
     @Override

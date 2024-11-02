@@ -24,23 +24,24 @@ public class SftpResponseSpaceAvailableMessageSerializer
 
     @Override
     protected void serializeResponseSpecificContents() {
-        LOGGER.debug("BytesOnDevice: {}", message.getBytesOnDevice().getValue());
-        appendLong(message.getBytesOnDevice().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long bytesOnDevice = message.getBytesOnDevice().getValue();
+        LOGGER.debug("BytesOnDevice: {}", bytesOnDevice);
+        appendLong(bytesOnDevice, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("UnusedBytesOnDevice: {}", message.getUnusedBytesOnDevice().getValue());
-        appendLong(message.getUnusedBytesOnDevice().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long unusedBytesOnDevice = message.getUnusedBytesOnDevice().getValue();
+        LOGGER.debug("UnusedBytesOnDevice: {}", unusedBytesOnDevice);
+        appendLong(unusedBytesOnDevice, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("BytesAvailableToUser: {}", message.getBytesAvailableToUser().getValue());
-        appendLong(message.getBytesAvailableToUser().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long bytesAvailableToUser = message.getBytesAvailableToUser().getValue();
+        LOGGER.debug("BytesAvailableToUser: {}", bytesAvailableToUser);
+        appendLong(bytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug(
-                "UnusedBytesAvailableToUser: {}",
-                message.getUnusedBytesAvailableToUser().getValue());
-        appendLong(
-                message.getUnusedBytesAvailableToUser().getValue(),
-                DataFormatConstants.UINT64_SIZE);
+        Long unusedBytesAvailableToUser = message.getUnusedBytesAvailableToUser().getValue();
+        LOGGER.debug("UnusedBytesAvailableToUser: {}", unusedBytesAvailableToUser);
+        appendLong(unusedBytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("BytesPerAllocationUnit: {}", message.getBytesPerAllocationUnit().getValue());
-        appendInt(message.getBytesPerAllocationUnit().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer bytesPerAllocationUnit = message.getBytesPerAllocationUnit().getValue();
+        LOGGER.debug("BytesPerAllocationUnit: {}", bytesPerAllocationUnit);
+        appendInt(bytesPerAllocationUnit, DataFormatConstants.UINT32_SIZE);
     }
 }

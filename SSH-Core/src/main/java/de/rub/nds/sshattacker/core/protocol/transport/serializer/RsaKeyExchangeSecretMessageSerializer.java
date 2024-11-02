@@ -24,10 +24,9 @@ public class RsaKeyExchangeSecretMessageSerializer
     }
 
     private void serializeEncryptedSecret() {
-        LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
-        appendInt(
-                message.getEncryptedSecretLength().getValue(),
-                DataFormatConstants.MPINT_SIZE_LENGTH);
+        Integer encryptedSecretLength = message.getEncryptedSecretLength().getValue();
+        LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
+        appendInt(encryptedSecretLength, DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
                 "Encrypted secret: {}", Arrays.toString(message.getEncryptedSecret().getValue()));
         appendBytes(message.getEncryptedSecret().getValue());

@@ -25,10 +25,12 @@ public class SftpRequestPosixRenameMessageSerializer
     }
 
     private void serializeNewPath() {
-        LOGGER.debug("NewPath length: {}", message.getNewPathLength().getValue());
-        appendInt(message.getNewPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("NewPath: {}", () -> backslashEscapeString(message.getNewPath().getValue()));
-        appendString(message.getNewPath().getValue(), StandardCharsets.UTF_8);
+        Integer newPathLength = message.getNewPathLength().getValue();
+        LOGGER.debug("NewPath length: {}", newPathLength);
+        appendInt(newPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String newPath = message.getNewPath().getValue();
+        LOGGER.debug("NewPath: {}", () -> backslashEscapeString(newPath));
+        appendString(newPath, StandardCharsets.UTF_8);
     }
 
     @Override

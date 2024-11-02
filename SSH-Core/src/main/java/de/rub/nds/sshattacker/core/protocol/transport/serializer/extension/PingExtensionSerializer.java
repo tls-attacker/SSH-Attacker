@@ -28,8 +28,9 @@ public class PingExtensionSerializer extends AbstractExtensionSerializer<PingExt
     }
 
     private void serializeVersionLength() {
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
-        appendInt(extension.getVersionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer versionLength = extension.getVersionLength().getValue();
+        LOGGER.debug("Version length: {}", versionLength);
+        appendInt(versionLength, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     private void serializeVersion() {

@@ -25,10 +25,12 @@ public abstract class SftpRequestWithPathMessageSerializer<T extends SftpRequest
     }
 
     private void serializePath() {
-        LOGGER.debug("Path length: {}", message.getPathLength().getValue());
-        appendInt(message.getPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Path: {}", () -> backslashEscapeString(message.getPath().getValue()));
-        appendString(message.getPath().getValue(), StandardCharsets.UTF_8);
+        Integer pathLength = message.getPathLength().getValue();
+        LOGGER.debug("Path length: {}", pathLength);
+        appendInt(pathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String path = message.getPath().getValue();
+        LOGGER.debug("Path: {}", () -> backslashEscapeString(path));
+        appendString(path, StandardCharsets.UTF_8);
     }
 
     @Override

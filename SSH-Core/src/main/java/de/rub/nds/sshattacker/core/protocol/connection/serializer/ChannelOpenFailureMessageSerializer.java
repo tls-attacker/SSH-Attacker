@@ -25,25 +25,27 @@ public class ChannelOpenFailureMessageSerializer
     }
 
     private void serializeReasonCode() {
-        LOGGER.debug("Reason code: {}", message.getReasonCode().getValue());
-        appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer reasonCode = message.getReasonCode().getValue();
+        LOGGER.debug("Reason code: {}", reasonCode);
+        appendInt(reasonCode, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeReason() {
-        LOGGER.debug("Reason length: {}", message.getReasonLength().getValue());
-        appendInt(message.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Reason: {}", () -> backslashEscapeString(message.getReason().getValue()));
-        appendString(message.getReason().getValue(), StandardCharsets.UTF_8);
+        Integer reasonLength = message.getReasonLength().getValue();
+        LOGGER.debug("Reason length: {}", reasonLength);
+        appendInt(reasonLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String reason = message.getReason().getValue();
+        LOGGER.debug("Reason: {}", () -> backslashEscapeString(reason));
+        appendString(reason, StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        Integer languageTagLength = message.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = message.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override

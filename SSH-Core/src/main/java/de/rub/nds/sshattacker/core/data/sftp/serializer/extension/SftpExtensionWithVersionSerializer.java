@@ -25,10 +25,12 @@ public class SftpExtensionWithVersionSerializer<T extends SftpExtensionWithVersi
     }
 
     private void serializeVersion() {
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
-        appendInt(extension.getVersionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Version: {}", () -> backslashEscapeString(extension.getVersion().getValue()));
-        appendString(extension.getVersion().getValue(), StandardCharsets.US_ASCII);
+        Integer versionLength = extension.getVersionLength().getValue();
+        LOGGER.debug("Version length: {}", versionLength);
+        appendInt(versionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String version = extension.getVersion().getValue();
+        LOGGER.debug("Version: {}", () -> backslashEscapeString(version));
+        appendString(version, StandardCharsets.US_ASCII);
     }
 
     @Override

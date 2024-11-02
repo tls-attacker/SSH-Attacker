@@ -25,29 +25,30 @@ public class SftpRequestCheckFileHandleMessageSerializer
     }
 
     private void serializeHashAlgorithms() {
-        LOGGER.debug("HashAlgorithms length: {}", message.getHashAlgorithmsLength().getValue());
-        appendInt(
-                message.getHashAlgorithmsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "HashAlgorithms: {}",
-                () -> backslashEscapeString(message.getHashAlgorithms().getValue()));
-        appendString(message.getHashAlgorithms().getValue(), StandardCharsets.US_ASCII);
+        Integer hashAlgorithmsLength = message.getHashAlgorithmsLength().getValue();
+        LOGGER.debug("HashAlgorithms length: {}", hashAlgorithmsLength);
+        appendInt(hashAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String hashAlgorithms = message.getHashAlgorithms().getValue();
+        LOGGER.debug("HashAlgorithms: {}", () -> backslashEscapeString(hashAlgorithms));
+        appendString(hashAlgorithms, StandardCharsets.US_ASCII);
     }
 
     private void serializeStartOffset() {
-        LOGGER.debug("StartOffset: {}", message.getStartOffset().getValue());
-        appendLong(message.getStartOffset().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long startOffset = message.getStartOffset().getValue();
+        LOGGER.debug("StartOffset: {}", startOffset);
+        appendLong(startOffset, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeLength() {
-        LOGGER.debug("Length: {}", message.getLength().getValue());
-        appendLong(message.getLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long length = message.getLength().getValue();
+        LOGGER.debug("Length: {}", length);
+        appendLong(length, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeBlockSize() {
-        LOGGER.debug("BlockSize: {}", message.getBlockSize().getValue());
-        appendInt(message.getBlockSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer blockSize = message.getBlockSize().getValue();
+        LOGGER.debug("BlockSize: {}", blockSize);
+        appendInt(blockSize, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

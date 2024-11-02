@@ -25,24 +25,21 @@ public class ChannelRequestEnvMessageSerializer
     }
 
     private void serializeVariableName() {
-        LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
-        appendInt(
-                message.getVariableNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Variable name: {}",
-                () -> backslashEscapeString(message.getVariableName().getValue()));
-        appendString(message.getVariableName().getValue(), StandardCharsets.UTF_8);
+        Integer variableNameLength = message.getVariableNameLength().getValue();
+        LOGGER.debug("Variable name length: {}", variableNameLength);
+        appendInt(variableNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String variableName = message.getVariableName().getValue();
+        LOGGER.debug("Variable name: {}", () -> backslashEscapeString(variableName));
+        appendString(variableName, StandardCharsets.UTF_8);
     }
 
     private void serializeVariableValue() {
-        LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
-        appendInt(
-                message.getVariableValueLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Variable value: {}",
-                () -> backslashEscapeString(message.getVariableValue().getValue()));
-        appendString(message.getVariableValue().getValue(), StandardCharsets.UTF_8);
+        Integer variableValueLength = message.getVariableValueLength().getValue();
+        LOGGER.debug("Variable value length: {}", variableValueLength);
+        appendInt(variableValueLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String variableValue = message.getVariableValue().getValue();
+        LOGGER.debug("Variable value: {}", () -> backslashEscapeString(variableValue));
+        appendString(variableValue, StandardCharsets.UTF_8);
     }
 
     @Override

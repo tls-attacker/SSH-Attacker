@@ -33,8 +33,9 @@ public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>
     }
 
     private void serializeExtensionName() {
-        LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
-        appendInt(extension.getNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer nameLength = extension.getNameLength().getValue();
+        LOGGER.debug("Extension name length: {}", nameLength);
+        appendInt(nameLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Extension name: {}", extension.getName().getValue());
         appendString(extension.getName().getValue(), StandardCharsets.US_ASCII);
     }

@@ -23,8 +23,9 @@ public abstract class SftpResponseMessageSerializer<T extends SftpResponseMessag
     }
 
     private void serializeRequestId() {
-        LOGGER.debug("RequestId: {}", message.getRequestId().getValue());
-        appendInt(message.getRequestId().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer requestId = message.getRequestId().getValue();
+        LOGGER.debug("RequestId: {}", requestId);
+        appendInt(requestId, DataFormatConstants.UINT32_SIZE);
     }
 
     protected void serializeMessageSpecificContents() {

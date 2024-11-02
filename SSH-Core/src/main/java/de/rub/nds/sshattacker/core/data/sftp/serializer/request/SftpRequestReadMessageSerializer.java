@@ -22,13 +22,15 @@ public class SftpRequestReadMessageSerializer
     }
 
     private void serializeOffset() {
-        LOGGER.debug("Offset: {}", message.getOffset().getValue());
-        appendLong(message.getOffset().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long offset = message.getOffset().getValue();
+        LOGGER.debug("Offset: {}", offset);
+        appendLong(offset, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeLength() {
-        LOGGER.debug("Length: {}", message.getLength().getValue());
-        appendInt(message.getLength().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer length = message.getLength().getValue();
+        LOGGER.debug("Length: {}", length);
+        appendInt(length, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

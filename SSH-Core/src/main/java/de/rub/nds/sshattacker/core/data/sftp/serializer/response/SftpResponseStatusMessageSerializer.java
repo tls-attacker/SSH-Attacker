@@ -25,28 +25,27 @@ public class SftpResponseStatusMessageSerializer
     }
 
     private void serializeStatusCode() {
-        LOGGER.debug("StatusCode: {}", message.getStatusCode().getValue());
-        appendInt(message.getStatusCode().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer statusCode = message.getStatusCode().getValue();
+        LOGGER.debug("StatusCode: {}", statusCode);
+        appendInt(statusCode, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeErrorMessage() {
-        LOGGER.debug("ErrorMessage length: {}", message.getErrorMessageLength().getValue());
-        appendInt(
-                message.getErrorMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "ErrorMessage: {}",
-                () -> backslashEscapeString(message.getErrorMessage().getValue()));
-        appendString(message.getErrorMessage().getValue(), StandardCharsets.UTF_8);
+        Integer errorMessageLength = message.getErrorMessageLength().getValue();
+        LOGGER.debug("ErrorMessage length: {}", errorMessageLength);
+        appendInt(errorMessageLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String errorMessage = message.getErrorMessage().getValue();
+        LOGGER.debug("ErrorMessage: {}", () -> backslashEscapeString(errorMessage));
+        appendString(errorMessage, StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("LanguageTag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "LanguageTag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        Integer languageTagLength = message.getLanguageTagLength().getValue();
+        LOGGER.debug("LanguageTag length: {}", languageTagLength);
+        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = message.getLanguageTag().getValue();
+        LOGGER.debug("LanguageTag: {}", () -> backslashEscapeString(languageTag));
+        appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override

@@ -22,10 +22,10 @@ public class ChannelOpenUnknownMessageSerializer
     }
 
     private void serializeTypeSpecificData() {
+        byte[] typeSpecificData = message.getTypeSpecificData().getValue();
         LOGGER.debug(
-                "Type specific data: {}",
-                () -> ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
-        appendBytes(message.getTypeSpecificData().getValue());
+                "Type specific data: {}", () -> ArrayConverter.bytesToHexString(typeSpecificData));
+        appendBytes(typeSpecificData);
     }
 
     @Override

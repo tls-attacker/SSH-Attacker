@@ -27,21 +27,18 @@ public class SftpResponseCheckFileMessageSerializer
     }
 
     private void serializeUsedHashAlgorithm() {
-        LOGGER.debug(
-                "UsedHashAlgorithm length: {}", message.getUsedHashAlgorithmLength().getValue());
-        appendInt(
-                message.getUsedHashAlgorithmLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "UsedHashAlgorithm: {}",
-                () -> backslashEscapeString(message.getUsedHashAlgorithm().getValue()));
-        appendString(message.getUsedHashAlgorithm().getValue(), StandardCharsets.US_ASCII);
+        Integer usedHashAlgorithmLength = message.getUsedHashAlgorithmLength().getValue();
+        LOGGER.debug("UsedHashAlgorithm length: {}", usedHashAlgorithmLength);
+        appendInt(usedHashAlgorithmLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String usedHashAlgorithm = message.getUsedHashAlgorithm().getValue();
+        LOGGER.debug("UsedHashAlgorithm: {}", () -> backslashEscapeString(usedHashAlgorithm));
+        appendString(usedHashAlgorithm, StandardCharsets.US_ASCII);
     }
 
     private void serializeHash() {
-        LOGGER.debug(
-                "Hash: {}", () -> ArrayConverter.bytesToRawHexString(message.getHash().getValue()));
-        appendBytes(message.getHash().getValue());
+        byte[] hash = message.getHash().getValue();
+        LOGGER.debug("Hash: {}", () -> ArrayConverter.bytesToRawHexString(hash));
+        appendBytes(hash);
     }
 
     @Override

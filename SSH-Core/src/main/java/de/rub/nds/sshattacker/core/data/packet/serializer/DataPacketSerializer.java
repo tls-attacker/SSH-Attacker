@@ -28,13 +28,13 @@ public class DataPacketSerializer extends AbstractDataPacketSerializer<DataPacke
     protected void serializeBytes() {
         LOGGER.debug("Serializing DataPacket to bytes:");
 
-        appendInt(dataPacket.getLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Packet length: {}", dataPacket.getLength().getValue());
+        Integer length = dataPacket.getLength().getValue();
+        LOGGER.debug("Packet length: {}", length);
+        appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        appendBytes(dataPacket.getPayload().getValue());
-        LOGGER.debug(
-                "Payload: {}",
-                () -> ArrayConverter.bytesToHexString(dataPacket.getPayload().getValue()));
+        byte[] payload = dataPacket.getPayload().getValue();
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));
+        appendBytes(payload);
 
         dataPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.trace(

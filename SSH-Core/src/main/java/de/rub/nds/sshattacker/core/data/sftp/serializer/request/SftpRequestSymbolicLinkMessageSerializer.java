@@ -25,11 +25,12 @@ public class SftpRequestSymbolicLinkMessageSerializer
     }
 
     private void serializeTargetPath() {
-        LOGGER.debug("TargetPath length: {}", message.getTargetPathLength().getValue());
-        appendInt(message.getTargetPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "TargetPath: {}", () -> backslashEscapeString(message.getTargetPath().getValue()));
-        appendString(message.getTargetPath().getValue(), StandardCharsets.UTF_8);
+        Integer targetPathLength = message.getTargetPathLength().getValue();
+        LOGGER.debug("TargetPath length: {}", targetPathLength);
+        appendInt(targetPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String targetPath = message.getTargetPath().getValue();
+        LOGGER.debug("TargetPath: {}", () -> backslashEscapeString(targetPath));
+        appendString(targetPath, StandardCharsets.UTF_8);
     }
 
     @Override

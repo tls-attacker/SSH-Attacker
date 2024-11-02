@@ -24,11 +24,11 @@ public class SftpExtensionUnknownSerializer
 
     @Override
     protected void serializeExtensionValue() {
-        LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
-        appendInt(extension.getValueLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug(
-                "Extension value: {}",
-                () -> ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));
-        appendBytes(extension.getValue().getValue());
+        Integer valueLength = extension.getValueLength().getValue();
+        LOGGER.debug("Extension value length: {}", valueLength);
+        appendInt(valueLength, DataFormatConstants.UINT32_SIZE);
+        byte[] value = extension.getValue().getValue();
+        LOGGER.debug("Extension value: {}", () -> ArrayConverter.bytesToRawHexString(value));
+        appendBytes(value);
     }
 }

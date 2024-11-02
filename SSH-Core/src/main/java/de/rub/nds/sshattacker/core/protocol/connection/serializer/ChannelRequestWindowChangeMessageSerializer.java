@@ -21,23 +21,27 @@ public class ChannelRequestWindowChangeMessageSerializer
     }
 
     private void serializeWidthColums() {
-        LOGGER.debug("Terminal width in colums: {}", message.getWidthPixels().getValue());
-        appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer widthPixels = message.getWidthPixels().getValue();
+        LOGGER.debug("Terminal width in colums: {}", widthPixels);
+        appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeHeightRows() {
-        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
-        appendInt(message.getHeightRows().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer heightRows = message.getHeightRows().getValue();
+        LOGGER.debug("Terminal height in rows: {}", heightRows);
+        appendInt(heightRows, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeWidthPixels() {
-        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
-        appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer widthPixels = message.getWidthPixels().getValue();
+        LOGGER.debug("Terminal width in pixels: {}", widthPixels);
+        appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeHeightPixels() {
-        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
-        appendInt(message.getHeightPixels().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer heightPixels = message.getHeightPixels().getValue();
+        LOGGER.debug("Terminal height in pixels: {}", heightPixels);
+        appendInt(heightPixels, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

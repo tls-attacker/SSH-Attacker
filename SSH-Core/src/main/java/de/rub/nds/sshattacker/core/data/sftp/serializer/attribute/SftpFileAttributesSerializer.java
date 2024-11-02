@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.attribute;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
@@ -27,39 +26,45 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
     }
 
     private void serializeFlags() {
-        ArrayConverter.intToBytes(
-                attributes.getFlags().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("Flags: {}", attributes.getFlags().getValue());
-        appendInt(attributes.getFlags().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer flags = attributes.getFlags().getValue();
+        LOGGER.debug("Flags: {}", flags);
+        appendInt(flags, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeSize() {
-        LOGGER.debug("Size: {}", attributes.getSize().getValue());
-        appendLong(attributes.getSize().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long size = attributes.getSize().getValue();
+        LOGGER.debug("Size: {}", size);
+        appendLong(size, DataFormatConstants.UINT64_SIZE);
     }
 
     private void serializeUIdGId() {
-        LOGGER.debug("UId: {}", attributes.getUId().getValue());
-        appendInt(attributes.getUId().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("GId: {}", attributes.getGId().getValue());
-        appendInt(attributes.getGId().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer uId = attributes.getUId().getValue();
+        LOGGER.debug("UId: {}", uId);
+        appendInt(uId, DataFormatConstants.UINT32_SIZE);
+        Integer gId = attributes.getGId().getValue();
+        LOGGER.debug("GId: {}", gId);
+        appendInt(gId, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePermissions() {
-        LOGGER.debug("Permissions: {}", attributes.getPermissions().getValue());
-        appendInt(attributes.getPermissions().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer permissions = attributes.getPermissions().getValue();
+        LOGGER.debug("Permissions: {}", permissions);
+        appendInt(permissions, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeAcModTime() {
-        LOGGER.debug("ATime: {}", attributes.getATime().getValue());
-        appendInt(attributes.getATime().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("MTime: {}", attributes.getMTime().getValue());
-        appendInt(attributes.getMTime().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer aTime = attributes.getATime().getValue();
+        LOGGER.debug("ATime: {}", aTime);
+        appendInt(aTime, DataFormatConstants.UINT32_SIZE);
+        Integer mTime = attributes.getMTime().getValue();
+        LOGGER.debug("MTime: {}", mTime);
+        appendInt(mTime, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeExtendedAttributes() {
-        LOGGER.debug("ExtendedCount: {}", attributes.getExtendedCount().getValue());
-        appendInt(attributes.getExtendedCount().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer extendedCount = attributes.getExtendedCount().getValue();
+        LOGGER.debug("ExtendedCount: {}", extendedCount);
+        appendInt(extendedCount, DataFormatConstants.UINT32_SIZE);
 
         attributes
                 .getExtendedAttributes()

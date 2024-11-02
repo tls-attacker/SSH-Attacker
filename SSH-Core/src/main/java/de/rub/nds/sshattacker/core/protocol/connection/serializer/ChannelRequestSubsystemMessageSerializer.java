@@ -25,14 +25,12 @@ public class ChannelRequestSubsystemMessageSerializer
     }
 
     private void serializeSubsystemName() {
-        LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
-        appendInt(
-                message.getSubsystemNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Subsytem name: {}",
-                () -> backslashEscapeString(message.getSubsystemName().getValue()));
-        appendString(message.getSubsystemName().getValue(), StandardCharsets.UTF_8);
+        Integer subsystemNameLength = message.getSubsystemNameLength().getValue();
+        LOGGER.debug("Subsystem name length: {}", subsystemNameLength);
+        appendInt(subsystemNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String subsystemName = message.getSubsystemName().getValue();
+        LOGGER.debug("Subsytem name: {}", () -> backslashEscapeString(subsystemName));
+        appendString(subsystemName, StandardCharsets.UTF_8);
     }
 
     @Override

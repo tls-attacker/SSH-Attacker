@@ -24,26 +24,29 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
     }
 
     private void serializeChannelType() {
-        LOGGER.debug("Channel type length: {}", message.getChannelTypeLength().getValue());
-        appendInt(
-                message.getChannelTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer channelTypeLength = message.getChannelTypeLength().getValue();
+        LOGGER.debug("Channel type length: {}", channelTypeLength);
+        appendInt(channelTypeLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Channel type: {}", message.getChannelType().getValue());
         appendString(message.getChannelType().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeSenderChannel() {
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
-        appendInt(message.getSenderChannelId().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer senderChannelId = message.getSenderChannelId().getValue();
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
+        appendInt(senderChannelId, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeWindowSize() {
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
-        appendInt(message.getWindowSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer windowSize = message.getWindowSize().getValue();
+        LOGGER.debug("Initial window size: {}", windowSize);
+        appendInt(windowSize, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePacketSize() {
-        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
-        appendInt(message.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer packetSize = message.getPacketSize().getValue();
+        LOGGER.debug("Maximum packet size: {}", packetSize);
+        appendInt(packetSize, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

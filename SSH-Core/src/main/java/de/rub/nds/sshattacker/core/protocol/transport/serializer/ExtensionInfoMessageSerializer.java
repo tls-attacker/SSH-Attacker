@@ -22,8 +22,9 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
     }
 
     private void serializeExtensionCount() {
-        appendInt(message.getExtensionCount().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("Extension count: {}", message.getExtensionCount().getValue());
+        Integer extensionCount = message.getExtensionCount().getValue();
+        LOGGER.debug("Extension count: {}", extensionCount);
+        appendInt(extensionCount, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeExtensions() {

@@ -23,12 +23,12 @@ public class SftpResponseHandleMessageSerializer
     }
 
     private void serializeHandle() {
-        LOGGER.debug("Handle length: {}", message.getHandleLength().getValue());
-        appendInt(message.getHandleLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Handle: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getHandle().getValue()));
-        appendBytes(message.getHandle().getValue());
+        Integer handleLength = message.getHandleLength().getValue();
+        LOGGER.debug("Handle length: {}", handleLength);
+        appendInt(handleLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] handle = message.getHandle().getValue();
+        LOGGER.debug("Handle: {}", () -> ArrayConverter.bytesToRawHexString(handle));
+        appendBytes(handle);
     }
 
     @Override

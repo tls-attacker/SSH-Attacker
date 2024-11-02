@@ -26,11 +26,12 @@ public class ChannelRequestExitSignalMessageSerializer
     }
 
     private void serializeSignalName() {
-        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
-        appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Signal name: {}", () -> backslashEscapeString(message.getSignalName().getValue()));
-        appendString(message.getSignalName().getValue(), StandardCharsets.UTF_8);
+        Integer signalNameLength = message.getSignalNameLength().getValue();
+        LOGGER.debug("Signal name length: {}", signalNameLength);
+        appendInt(signalNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String signalName = message.getSignalName().getValue();
+        LOGGER.debug("Signal name: {}", () -> backslashEscapeString(signalName));
+        appendString(signalName, StandardCharsets.UTF_8);
     }
 
     private void serializeCoreDump() {
@@ -39,23 +40,21 @@ public class ChannelRequestExitSignalMessageSerializer
     }
 
     private void serializeErrorMessage() {
-        LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
-        appendInt(
-                message.getErrorMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Error message: {}",
-                () -> backslashEscapeString(message.getErrorMessage().getValue()));
-        appendString(message.getErrorMessage().getValue(), StandardCharsets.UTF_8);
+        Integer errorMessageLength = message.getErrorMessageLength().getValue();
+        LOGGER.debug("Error message length: {}", errorMessageLength);
+        appendInt(errorMessageLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String errorMessage = message.getErrorMessage().getValue();
+        LOGGER.debug("Error message: {}", () -> backslashEscapeString(errorMessage));
+        appendString(errorMessage, StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        Integer languageTagLength = message.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = message.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override

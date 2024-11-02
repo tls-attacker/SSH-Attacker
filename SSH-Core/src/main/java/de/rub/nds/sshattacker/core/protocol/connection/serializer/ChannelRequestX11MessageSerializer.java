@@ -28,12 +28,10 @@ public class ChannelRequestX11MessageSerializer
     }
 
     private void serializeX11AuthenticationProtocol() {
-        LOGGER.debug(
-                "X11 authentication protocol length: {}",
-                message.getX11AuthenticationProtocolLength().getValue());
-        appendInt(
-                message.getX11AuthenticationProtocolLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer x11AuthenticationProtocolLength =
+                message.getX11AuthenticationProtocolLength().getValue();
+        LOGGER.debug("X11 authentication protocol length: {}", x11AuthenticationProtocolLength);
+        appendInt(x11AuthenticationProtocolLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "X11 authentication protocol: {}",
                 message.getX11AuthenticationProtocol().getValue());
@@ -41,20 +39,19 @@ public class ChannelRequestX11MessageSerializer
     }
 
     private void serializeX11AuthenticationCookie() {
-        LOGGER.debug(
-                "X11 authenticaton cookie length: {}",
-                message.getX11AuthenticationCookieLength().getValue());
-        appendInt(
-                message.getX11AuthenticationCookieLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer x11AuthenticationCookieLength =
+                message.getX11AuthenticationCookieLength().getValue();
+        LOGGER.debug("X11 authenticaton cookie length: {}", x11AuthenticationCookieLength);
+        appendInt(x11AuthenticationCookieLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
         appendString(message.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeX11ScreenNumber() {
-        LOGGER.debug("X11 screen number: {}", message.getX11ScreenNumber().getValue());
-        appendInt(message.getX11ScreenNumber().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer x11ScreenNumber = message.getX11ScreenNumber().getValue();
+        LOGGER.debug("X11 screen number: {}", x11ScreenNumber);
+        appendInt(x11ScreenNumber, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

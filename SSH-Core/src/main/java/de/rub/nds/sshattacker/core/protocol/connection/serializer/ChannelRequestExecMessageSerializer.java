@@ -25,10 +25,12 @@ public class ChannelRequestExecMessageSerializer
     }
 
     private void serializeCommand() {
-        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
-        appendInt(message.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Command: {}", () -> backslashEscapeString(message.getCommand().getValue()));
-        appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);
+        Integer commandLength = message.getCommandLength().getValue();
+        LOGGER.debug("Command length: {}", commandLength);
+        appendInt(commandLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String command = message.getCommand().getValue();
+        LOGGER.debug("Command: {}", () -> backslashEscapeString(command));
+        appendString(command, StandardCharsets.UTF_8);
     }
 
     @Override

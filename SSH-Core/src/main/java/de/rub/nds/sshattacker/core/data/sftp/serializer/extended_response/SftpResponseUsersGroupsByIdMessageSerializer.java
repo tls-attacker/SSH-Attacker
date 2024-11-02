@@ -28,8 +28,9 @@ public class SftpResponseUsersGroupsByIdMessageSerializer
     }
 
     private void serializeUserNames() {
-        LOGGER.debug("UserNames length: {}", message.getUserNamesLength().getValue());
-        appendInt(message.getUserNamesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer userNamesLength = message.getUserNamesLength().getValue();
+        LOGGER.debug("UserNames length: {}", userNamesLength);
+        appendInt(userNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
         for (ModifiableString userName : message.getUserNames()) {
             LOGGER.debug("UserName length: {}", userName.getValue().length());
             appendInt(userName.getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
@@ -39,8 +40,9 @@ public class SftpResponseUsersGroupsByIdMessageSerializer
     }
 
     private void serializeGroupNames() {
-        LOGGER.debug("GroupNames length: {}", message.getGroupNamesLength().getValue());
-        appendInt(message.getGroupNamesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer groupNamesLength = message.getGroupNamesLength().getValue();
+        LOGGER.debug("GroupNames length: {}", groupNamesLength);
+        appendInt(groupNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
         for (ModifiableString userName : message.getGroupNames()) {
             LOGGER.debug("GroupName length: {}", userName.getValue().length());
             appendInt(userName.getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);

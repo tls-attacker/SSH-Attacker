@@ -23,8 +23,9 @@ public class UnknownExtensionSerializer extends AbstractExtensionSerializer<Unkn
 
     @Override
     protected void serializeExtensionValue() {
-        LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
-        appendInt(extension.getValueLength().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer valueLength = extension.getValueLength().getValue();
+        LOGGER.debug("Extension value length: {}", valueLength);
+        appendInt(valueLength, DataFormatConstants.UINT32_SIZE);
         LOGGER.debug(
                 "Extension value: {}", () -> ArrayConverter.bytesToHexString(extension.getValue()));
         appendBytes(extension.getValue().getValue());

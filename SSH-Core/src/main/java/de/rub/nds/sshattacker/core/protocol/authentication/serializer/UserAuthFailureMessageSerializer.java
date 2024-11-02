@@ -24,12 +24,11 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
     }
 
     private void serializePossibleAuthenticationMethods() {
+        Integer possibleAuthenticationMethodsLength =
+                message.getPossibleAuthenticationMethodsLength().getValue();
         LOGGER.debug(
-                "Possible authentication methods length: {}",
-                message.getPossibleAuthenticationMethodsLength().getValue());
-        appendInt(
-                message.getPossibleAuthenticationMethodsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                "Possible authentication methods length: {}", possibleAuthenticationMethodsLength);
+        appendInt(possibleAuthenticationMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Possible authentication methods: {}",
                 message.getPossibleAuthenticationMethods().getValue());
@@ -38,10 +37,9 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
     }
 
     private void serializePartialSuccess() {
-        LOGGER.debug(
-                "Partial success: {}",
-                Converter.byteToBoolean(message.getPartialSuccess().getValue()));
-        appendByte(message.getPartialSuccess().getValue());
+        Byte partialSuccess = message.getPartialSuccess().getValue();
+        LOGGER.debug("Partial success: {}", () -> Converter.byteToBoolean(partialSuccess));
+        appendByte(partialSuccess);
     }
 
     @Override

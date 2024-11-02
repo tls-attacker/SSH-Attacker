@@ -23,11 +23,10 @@ public class SftpRequestUnknownMessageSerializer
 
     @Override
     protected void serializeRequestExtendedSpecificContents() {
+        byte[] requestSpecificData = message.getRequestSpecificData().getValue();
         LOGGER.debug(
                 "RequestSpecificData: {}",
-                () ->
-                        ArrayConverter.bytesToRawHexString(
-                                message.getRequestSpecificData().getValue()));
-        appendBytes(message.getRequestSpecificData().getValue());
+                () -> ArrayConverter.bytesToRawHexString(requestSpecificData));
+        appendBytes(requestSpecificData);
     }
 }

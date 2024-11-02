@@ -27,18 +27,18 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
     }
 
     private void serializeRequestName() {
-        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
-        appendInt(
-                message.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Request name: {}",
-                () -> backslashEscapeString(message.getRequestName().getValue()));
-        appendString(message.getRequestName().getValue(), StandardCharsets.US_ASCII);
+        Integer requestNameLength = message.getRequestNameLength().getValue();
+        LOGGER.debug("Request name length: {}", requestNameLength);
+        appendInt(requestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String requestName = message.getRequestName().getValue();
+        LOGGER.debug("Request name: {}", () -> backslashEscapeString(requestName));
+        appendString(requestName, StandardCharsets.US_ASCII);
     }
 
     private void serializeWantReply() {
-        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
-        appendByte(message.getWantReply().getValue());
+        Byte wantReply = message.getWantReply().getValue();
+        LOGGER.debug("Want reply: {}", () -> Converter.byteToBoolean(wantReply));
+        appendByte(wantReply);
     }
 
     @Override

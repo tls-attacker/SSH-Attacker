@@ -23,8 +23,9 @@ public abstract class SftpHandshakeMessageSerializer<T extends SftpHandshakeMess
     }
 
     private void serializeVersion() {
-        LOGGER.debug("Version: {}", message.getVersion().getValue());
-        appendInt(message.getVersion().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer version = message.getVersion().getValue();
+        LOGGER.debug("Version: {}", version);
+        appendInt(version, DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeExtensions() {

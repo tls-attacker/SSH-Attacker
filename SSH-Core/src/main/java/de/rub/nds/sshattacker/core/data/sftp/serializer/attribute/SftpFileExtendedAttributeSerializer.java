@@ -29,19 +29,21 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
     }
 
     private void serializeType() {
-        LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
-        appendInt(attribute.getTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Type: {}", () -> backslashEscapeString(attribute.getType().getValue()));
-        appendString(attribute.getType().getValue(), StandardCharsets.US_ASCII);
+        Integer typeLength = attribute.getTypeLength().getValue();
+        LOGGER.debug("Type length: {}", typeLength);
+        appendInt(typeLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String type = attribute.getType().getValue();
+        LOGGER.debug("Type: {}", () -> backslashEscapeString(type));
+        appendString(type, StandardCharsets.US_ASCII);
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
-        appendInt(attribute.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Data: {}",
-                () -> ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
-        appendBytes(attribute.getData().getValue());
+        Integer dataLength = attribute.getDataLength().getValue();
+        LOGGER.debug("Data length: {}", dataLength);
+        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = attribute.getData().getValue();
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
+        appendBytes(data);
     }
 
     @Override

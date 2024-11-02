@@ -23,9 +23,9 @@ public class RsaKeyExchangePubkeyMessageSerializer
     }
 
     private void serializeHostKeyBytes() {
-        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
-        appendInt(
-                message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer hostKeyBytesLength = message.getHostKeyBytesLength().getValue();
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Host key bytes: {}", message.getHostKeyBytes());
         appendBytes(message.getHostKeyBytes().getValue());
     }

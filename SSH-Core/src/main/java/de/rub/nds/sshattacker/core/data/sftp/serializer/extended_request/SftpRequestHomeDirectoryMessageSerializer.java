@@ -25,10 +25,12 @@ public class SftpRequestHomeDirectoryMessageSerializer
     }
 
     private void serializeUsername() {
-        LOGGER.debug("Username length: {}", message.getUsernameLength().getValue());
-        appendInt(message.getUsernameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Username: {}", () -> backslashEscapeString(message.getUsername().getValue()));
-        appendString(message.getUsername().getValue(), StandardCharsets.UTF_8);
+        Integer usernameLength = message.getUsernameLength().getValue();
+        LOGGER.debug("Username length: {}", usernameLength);
+        appendInt(usernameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String username = message.getUsername().getValue();
+        LOGGER.debug("Username: {}", () -> backslashEscapeString(username));
+        appendString(username, StandardCharsets.UTF_8);
     }
 
     @Override

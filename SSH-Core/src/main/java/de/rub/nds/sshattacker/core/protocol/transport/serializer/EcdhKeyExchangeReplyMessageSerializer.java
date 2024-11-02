@@ -24,28 +24,26 @@ public class EcdhKeyExchangeReplyMessageSerializer
     }
 
     private void serializeHostKeyBytes(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: {}", msg.getHostKeyBytesLength().getValue());
-        appendBytes(msg.getHostKeyBytes().getValue());
-        LOGGER.debug(
-                "Host key bytes: {}",
-                () -> ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
+        Integer hostKeyBytesLength = msg.getHostKeyBytesLength().getValue();
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] hostKeyBytes = msg.getHostKeyBytes().getValue();
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
+        appendBytes(hostKeyBytes);
     }
 
     private void serializeEphemeralPublicKey(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(
-                msg.getEphemeralPublicKeyLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Ephemeral public key (server) length: {}",
-                msg.getEphemeralPublicKeyLength().getValue());
+        Integer ephemeralPublicKeyLength = msg.getEphemeralPublicKeyLength().getValue();
+        LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
+        appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(msg.getEphemeralPublicKey().getValue());
         LOGGER.debug("Ephemeral public key (server): {}", msg.getEphemeralPublicKey());
     }
 
     private void serializeSignature(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(msg.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: {}", msg.getSignatureLength().getValue());
+        Integer signatureLength = msg.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(msg.getSignature().getValue());
         LOGGER.debug("Signature: {}", msg.getSignature());
     }

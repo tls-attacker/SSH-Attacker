@@ -23,11 +23,12 @@ public class IgnoreMessageSerializer extends SshMessageSerializer<IgnoreMessage>
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Data: {}", () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
-        appendBytes(message.getData().getValue());
+        Integer dataLength = message.getDataLength().getValue();
+        LOGGER.debug("Data length: {}", dataLength);
+        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = message.getData().getValue();
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
+        appendBytes(data);
     }
 
     @Override

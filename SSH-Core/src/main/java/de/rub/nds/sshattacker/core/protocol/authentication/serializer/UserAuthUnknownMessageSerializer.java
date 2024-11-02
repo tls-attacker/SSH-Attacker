@@ -22,12 +22,11 @@ public class UserAuthUnknownMessageSerializer
     }
 
     private void serializeMethodSpecificFields() {
+        byte[] methodSpecificFields = message.getMethodSpecificFields().getValue();
         LOGGER.debug(
                 "Method Specific Fields: {}",
-                () ->
-                        ArrayConverter.bytesToHexString(
-                                message.getMethodSpecificFields().getValue()));
-        appendBytes(message.getMethodSpecificFields().getValue());
+                () -> ArrayConverter.bytesToHexString(methodSpecificFields));
+        appendBytes(methodSpecificFields);
     }
 
     @Override

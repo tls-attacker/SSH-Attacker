@@ -24,37 +24,48 @@ public class SftpResponseStatVfsMessageSerializer
 
     @Override
     protected void serializeResponseSpecificContents() {
-        LOGGER.debug("BlockSize: {}", message.getBlockSize().getValue());
-        appendLong(message.getBlockSize().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long blockSize = message.getBlockSize().getValue();
+        LOGGER.debug("BlockSize: {}", blockSize);
+        appendLong(blockSize, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FundamentalBlockSize: {}", message.getFundamentalBlockSize().getValue());
-        appendLong(message.getFundamentalBlockSize().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long fundamentalBlockSize = message.getFundamentalBlockSize().getValue();
+        LOGGER.debug("FundamentalBlockSize: {}", fundamentalBlockSize);
+        appendLong(fundamentalBlockSize, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("CountBlocks: {}", message.getCountBlocks().getValue());
-        appendLong(message.getCountBlocks().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long countBlocks = message.getCountBlocks().getValue();
+        LOGGER.debug("CountBlocks: {}", countBlocks);
+        appendLong(countBlocks, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FreeBlocks: {}", message.getFreeBlocks().getValue());
-        appendLong(message.getFreeBlocks().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long freeBlocks = message.getFreeBlocks().getValue();
+        LOGGER.debug("FreeBlocks: {}", freeBlocks);
+        appendLong(freeBlocks, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FreeBlocksNonRoot: {}", message.getFreeBlocksNonRoot().getValue());
-        appendLong(message.getFreeBlocksNonRoot().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long freeBlocksNonRoot = message.getFreeBlocksNonRoot().getValue();
+        LOGGER.debug("FreeBlocksNonRoot: {}", freeBlocksNonRoot);
+        appendLong(freeBlocksNonRoot, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FileInodes: {}", message.getFileInodes().getValue());
-        appendLong(message.getFileInodes().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long fileInodes = message.getFileInodes().getValue();
+        LOGGER.debug("FileInodes: {}", fileInodes);
+        appendLong(fileInodes, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FreeInodes: {}", message.getFreeInodes().getValue());
-        appendLong(message.getFreeInodes().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long freeInodes = message.getFreeInodes().getValue();
+        LOGGER.debug("FreeInodes: {}", freeInodes);
+        appendLong(freeInodes, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("FreeInodesNonRoot: {}", message.getFreeInodesNonRoot().getValue());
-        appendLong(message.getFreeInodesNonRoot().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long freeInodesNonRoot = message.getFreeInodesNonRoot().getValue();
+        LOGGER.debug("FreeInodesNonRoot: {}", freeInodesNonRoot);
+        appendLong(freeInodesNonRoot, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("SystemId: {}", message.getSystemId().getValue());
-        appendLong(message.getSystemId().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long systemId = message.getSystemId().getValue();
+        LOGGER.debug("SystemId: {}", systemId);
+        appendLong(systemId, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("Flags: {}", message.getFlags().getValue());
-        appendLong(message.getFlags().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long flags = message.getFlags().getValue();
+        LOGGER.debug("Flags: {}", flags);
+        appendLong(flags, DataFormatConstants.UINT64_SIZE);
 
-        LOGGER.debug("MaximumFilenameLength: {}", message.getMaximumFilenameLength().getValue());
-        appendLong(message.getMaximumFilenameLength().getValue(), DataFormatConstants.UINT64_SIZE);
+        Long maximumFilenameLength = message.getMaximumFilenameLength().getValue();
+        LOGGER.debug("MaximumFilenameLength: {}", maximumFilenameLength);
+        appendLong(maximumFilenameLength, DataFormatConstants.UINT64_SIZE);
     }
 }

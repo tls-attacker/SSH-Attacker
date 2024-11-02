@@ -24,9 +24,9 @@ public class DhGexKeyExchangeGroupMessageSerializer
     }
 
     private void serializeGroupModulus() {
-        appendInt(
-                message.getGroupModulusLength().getValue(), DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Group modulus length: {}", message.getGroupModulusLength().getValue());
+        Integer groupModulusLength = message.getGroupModulusLength().getValue();
+        LOGGER.debug("Group modulus length: {}", groupModulusLength);
+        appendInt(groupModulusLength, DataFormatConstants.MPINT_SIZE_LENGTH);
         appendBytes(message.getGroupModulus().getValue().toByteArray());
         LOGGER.debug(
                 "Group modulus: {}",
@@ -36,10 +36,9 @@ public class DhGexKeyExchangeGroupMessageSerializer
     }
 
     private void serializeGroupGenerator() {
-        appendInt(
-                message.getGroupGeneratorLength().getValue(),
-                DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Group generator length: {}", message.getGroupGeneratorLength().getValue());
+        Integer groupGeneratorLength = message.getGroupGeneratorLength().getValue();
+        LOGGER.debug("Group generator length: {}", groupGeneratorLength);
+        appendInt(groupGeneratorLength, DataFormatConstants.MPINT_SIZE_LENGTH);
         appendBytes(message.getGroupGenerator().getValue().toByteArray());
         LOGGER.debug(
                 "Group generator: {}",

@@ -24,16 +24,17 @@ public class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
     }
 
     private void serializeRequestType() {
-        LOGGER.debug("Request type length: {}", message.getRequestTypeLength().getValue());
-        appendInt(
-                message.getRequestTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer requestTypeLength = message.getRequestTypeLength().getValue();
+        LOGGER.debug("Request type length: {}", requestTypeLength);
+        appendInt(requestTypeLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Request type: {}", message.getRequestType().getValue());
         appendString(message.getRequestType().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeWantReply() {
-        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
-        appendByte(message.getWantReply().getValue());
+        Byte wantReply = message.getWantReply().getValue();
+        LOGGER.debug("Want reply: {}", () -> Converter.byteToBoolean(wantReply));
+        appendByte(wantReply);
     }
 
     @Override

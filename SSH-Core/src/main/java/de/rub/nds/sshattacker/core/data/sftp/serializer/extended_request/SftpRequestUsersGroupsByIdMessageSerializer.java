@@ -22,8 +22,9 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
     }
 
     private void serializeUserIdsLength() {
-        LOGGER.debug("UserIdsLength: {}", message.getUserIdsLength().getValue());
-        appendInt(message.getUserIdsLength().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer userIdsLength = message.getUserIdsLength().getValue();
+        LOGGER.debug("UserIdsLength: {}", userIdsLength);
+        appendInt(userIdsLength, DataFormatConstants.UINT32_SIZE);
 
         for (int i = 0; i < message.getUserIds().size(); i++) {
             LOGGER.debug("UserId[{}]: {}", i, message.getUserIdsLength().getValue());
@@ -32,8 +33,9 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
     }
 
     private void serializeGroupIdsLength() {
-        LOGGER.debug("GroupIdsLength: {}", message.getGroupIdsLength().getValue());
-        appendInt(message.getGroupIdsLength().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer groupIdsLength = message.getGroupIdsLength().getValue();
+        LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
+        appendInt(groupIdsLength, DataFormatConstants.UINT32_SIZE);
 
         for (int i = 0; i < message.getGroupIds().size(); i++) {
             LOGGER.debug("GroupId[{}]: {}", i, message.getGroupIdsLength().getValue());

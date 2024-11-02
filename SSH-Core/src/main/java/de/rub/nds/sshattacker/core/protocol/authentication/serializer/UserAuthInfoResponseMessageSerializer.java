@@ -24,8 +24,9 @@ public class UserAuthInfoResponseMessageSerializer
     }
 
     private void serializeResponse() {
-        LOGGER.debug("Number of response entries: {}", message.getResponseEntryCount().getValue());
-        appendInt(message.getResponseEntryCount().getValue(), DataFormatConstants.UINT32_SIZE);
+        Integer responseEntryCount = message.getResponseEntryCount().getValue();
+        LOGGER.debug("Number of response entries: {}", responseEntryCount);
+        appendInt(responseEntryCount, DataFormatConstants.UINT32_SIZE);
 
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
             AuthenticationResponse.ResponseEntry entry = message.getResponse().get(i);
