@@ -33,16 +33,20 @@ public class SftpResponseLimitsMessageParser
 
     @Override
     protected void parseResponseSpecificContents() {
-        message.setMaximumPacketLength(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("MaximumPacketLength: {}", message.getMaximumPacketLength().getValue());
+        long maximumPacketLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setMaximumPacketLength(maximumPacketLength);
+        LOGGER.debug("MaximumPacketLength: {}", maximumPacketLength);
 
-        message.setMaximumReadLength(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("MaximumReadLength: {}", message.getMaximumReadLength().getValue());
+        long maximumReadLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setMaximumReadLength(maximumReadLength);
+        LOGGER.debug("MaximumReadLength: {}", maximumReadLength);
 
-        message.setMaximumWriteLength(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("MaximumWriteLength: {}", message.getMaximumWriteLength().getValue());
+        long maximumWriteLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setMaximumWriteLength(maximumWriteLength);
+        LOGGER.debug("MaximumWriteLength: {}", maximumWriteLength);
 
-        message.setMaximumOpenHandles(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("MaximumOpenHandles: {}", message.getMaximumOpenHandles().getValue());
+        long maximumOpenHandles = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setMaximumOpenHandles(maximumOpenHandles);
+        LOGGER.debug("MaximumOpenHandles: {}", maximumOpenHandles);
     }
 }

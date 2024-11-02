@@ -35,8 +35,9 @@ public class SftpResponseUsersGroupsByIdMessageParser
     }
 
     private void parseUserNames() {
-        message.setUserNamesLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("UserNames length: {}", message.getUserNamesLength().getValue());
+        int userNamesLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setUserNamesLength(userNamesLength);
+        LOGGER.debug("UserNames length: {}", userNamesLength);
         int oldPointer = getPointer();
         int bytesToRead = message.getUserNamesLength().getValue();
         while (getPointer() - oldPointer < bytesToRead) {
@@ -49,8 +50,9 @@ public class SftpResponseUsersGroupsByIdMessageParser
     }
 
     private void parseGroupNames() {
-        message.setGroupNamesLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("GroupNames length: {}", message.getGroupNamesLength().getValue());
+        int groupNamesLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setGroupNamesLength(groupNamesLength);
+        LOGGER.debug("GroupNames length: {}", groupNamesLength);
         int oldPointer = getPointer();
         int bytesToRead = message.getGroupNamesLength().getValue();
         while (getPointer() - oldPointer < bytesToRead) {

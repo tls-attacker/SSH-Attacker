@@ -33,8 +33,9 @@ public class UserAuthInfoResponseMessageParser
     }
 
     private void parseResponseEntries() {
-        message.setResponseEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Number of response entries: {}", message.getResponseEntryCount().getValue());
+        int responseEntryCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setResponseEntryCount(responseEntryCount);
+        LOGGER.debug("Number of response entries: {}", responseEntryCount);
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
             AuthenticationResponse.ResponseEntry entry = new AuthenticationResponse.ResponseEntry();
             entry.setResponseLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

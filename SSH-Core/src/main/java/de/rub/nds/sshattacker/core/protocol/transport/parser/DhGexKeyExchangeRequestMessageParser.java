@@ -32,19 +32,21 @@ public class DhGexKeyExchangeRequestMessageParser
     }
 
     private void parseMinimalGroupSize() {
-        message.setMinimalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
+        int minimalGroupSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setMinimalGroupSize(minimalGroupSize);
+        LOGGER.debug("Minimal DH group size: {} bits", minimalGroupSize);
     }
 
     private void parsePreferredGroupSize() {
-        message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug(
-                "Preferred DH group size: {} bits", message.getPreferredGroupSize().getValue());
+        int preferredGroupSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPreferredGroupSize(preferredGroupSize);
+        LOGGER.debug("Preferred DH group size: {} bits", preferredGroupSize);
     }
 
     private void parseMaximalGroupSize() {
-        message.setMaximalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximal DH group size: {} bits", message.getMaximalGroupSize().getValue());
+        int maximalGroupSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setMaximalGroupSize(maximalGroupSize);
+        LOGGER.debug("Maximal DH group size: {} bits", maximalGroupSize);
     }
 
     @Override

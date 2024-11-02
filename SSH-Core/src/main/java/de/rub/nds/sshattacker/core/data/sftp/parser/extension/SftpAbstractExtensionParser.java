@@ -43,12 +43,12 @@ public abstract class SftpAbstractExtensionParser<E extends SftpAbstractExtensio
     }
 
     protected void parseExtensionName() {
-        extension.setNameLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
-        extension.setName(
-                parseByteString(extension.getNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Extension name: {}", () -> backslashEscapeString(extension.getName().getValue()));
+        int nameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        extension.setNameLength(nameLength);
+        LOGGER.debug("Extension name length: {}", nameLength);
+        String name = parseByteString(nameLength, StandardCharsets.US_ASCII);
+        extension.setName(name);
+        LOGGER.debug("Extension name: {}", () -> backslashEscapeString(name));
     }
 
     protected abstract void parseExtensionValue();

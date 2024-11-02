@@ -34,8 +34,9 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
     }
 
     private void parseExtensionCount() {
-        message.setExtensionCount(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Extension count: {}", message.getExtensionCount().getValue());
+        int extensionCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setExtensionCount(extensionCount);
+        LOGGER.debug("Extension count: {}", extensionCount);
     }
 
     private void parseExtensions() {

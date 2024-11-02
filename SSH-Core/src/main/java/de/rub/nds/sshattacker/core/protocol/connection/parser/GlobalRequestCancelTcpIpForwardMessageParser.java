@@ -27,18 +27,18 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
     }
 
     private void parseIPAddressToBind() {
-        message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "IP address to bind length: {}", message.getIpAddressToBindLength().getValue());
-        message.setIpAddressToBind(
-                parseByteString(
-                        message.getIpAddressToBindLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
+        int ipAddressToBindLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setIpAddressToBindLength(ipAddressToBindLength);
+        LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
+        String ipAddressToBind = parseByteString(ipAddressToBindLength, StandardCharsets.US_ASCII);
+        message.setIpAddressToBind(ipAddressToBind);
+        LOGGER.debug("IP address to bind: {}", ipAddressToBind);
     }
 
     private void parsePortToBind() {
-        message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
+        int portToBind = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setPortToBind(portToBind);
+        LOGGER.debug("Port to bind: {}", portToBind);
     }
 
     @Override

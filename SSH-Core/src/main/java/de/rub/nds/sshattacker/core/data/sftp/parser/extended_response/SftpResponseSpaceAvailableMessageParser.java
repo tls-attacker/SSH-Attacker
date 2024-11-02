@@ -33,21 +33,24 @@ public class SftpResponseSpaceAvailableMessageParser
 
     @Override
     protected void parseResponseSpecificContents() {
-        message.setBytesOnDevice(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("BytesOnDevice: {}", message.getBytesOnDevice().getValue());
+        long bytesOnDevice = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setBytesOnDevice(bytesOnDevice);
+        LOGGER.debug("BytesOnDevice: {}", bytesOnDevice);
 
-        message.setUnusedBytesOnDevice(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("UnusedBytesOnDevice: {}", message.getUnusedBytesOnDevice().getValue());
+        long unusedBytesOnDevice = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setUnusedBytesOnDevice(unusedBytesOnDevice);
+        LOGGER.debug("UnusedBytesOnDevice: {}", unusedBytesOnDevice);
 
-        message.setBytesAvailableToUser(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("BytesAvailableToUser: {}", message.getBytesAvailableToUser().getValue());
+        long bytesAvailableToUser = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setBytesAvailableToUser(bytesAvailableToUser);
+        LOGGER.debug("BytesAvailableToUser: {}", bytesAvailableToUser);
 
-        message.setUnusedBytesAvailableToUser(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug(
-                "UnusedBytesAvailableToUser: {}",
-                message.getUnusedBytesAvailableToUser().getValue());
+        long unusedBytesAvailableToUser = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setUnusedBytesAvailableToUser(unusedBytesAvailableToUser);
+        LOGGER.debug("UnusedBytesAvailableToUser: {}", unusedBytesAvailableToUser);
 
-        message.setBytesPerAllocationUnit(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("BytesPerAllocationUnit: {}", message.getBytesPerAllocationUnit().getValue());
+        int bytesPerAllocationUnit = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setBytesPerAllocationUnit(bytesPerAllocationUnit);
+        LOGGER.debug("BytesPerAllocationUnit: {}", bytesPerAllocationUnit);
     }
 }

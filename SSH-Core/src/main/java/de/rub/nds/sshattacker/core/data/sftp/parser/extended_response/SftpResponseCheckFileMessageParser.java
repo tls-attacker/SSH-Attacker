@@ -36,22 +36,19 @@ public class SftpResponseCheckFileMessageParser
     }
 
     private void parseUsedHashAlgorithm() {
-        message.setUsedHashAlgorithmLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "UsedHashAlgorithm length: {}", message.getUsedHashAlgorithmLength().getValue());
-        message.setUsedHashAlgorithm(
-                parseByteString(
-                        message.getUsedHashAlgorithmLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "UsedHashAlgorithm: {}",
-                () -> backslashEscapeString(message.getUsedHashAlgorithm().getValue()));
+        int usedHashAlgorithmLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setUsedHashAlgorithmLength(usedHashAlgorithmLength);
+        LOGGER.debug("UsedHashAlgorithm length: {}", usedHashAlgorithmLength);
+        String usedHashAlgorithm =
+                parseByteString(usedHashAlgorithmLength, StandardCharsets.US_ASCII);
+        message.setUsedHashAlgorithm(usedHashAlgorithm);
+        LOGGER.debug("UsedHashAlgorithm: {}", () -> backslashEscapeString(usedHashAlgorithm));
     }
 
     private void parseHash() {
-        message.setHash(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "Hash: {}", () -> ArrayConverter.bytesToRawHexString(message.getHash().getValue()));
+        byte[] hash = parseByteArrayField(getBytesLeft());
+        message.setHash(hash);
+        LOGGER.debug("Hash: {}", () -> ArrayConverter.bytesToRawHexString(hash));
     }
 
     @Override

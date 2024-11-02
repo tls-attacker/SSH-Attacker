@@ -35,34 +35,36 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parseUserName() {
-        message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
-        message.setUserName(parseByteString(message.getUserNameLength().getValue()));
-        LOGGER.debug(
-                "User name: {}", () -> backslashEscapeString(message.getUserName().getValue()));
+        int userNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setUserNameLength(userNameLength);
+        LOGGER.debug("User name length: {}", userNameLength);
+        String userName = parseByteString(userNameLength);
+        message.setUserName(userName);
+        LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
     }
 
     private void parseInstruction() {
-        message.setInstructionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Instruction length: {}", message.getInstructionLength().getValue());
-        message.setInstruction(parseByteString(message.getInstructionLength().getValue()));
-        LOGGER.debug(
-                "Instruction: {}",
-                () -> backslashEscapeString(message.getInstruction().getValue()));
+        int instructionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setInstructionLength(instructionLength);
+        LOGGER.debug("Instruction length: {}", instructionLength);
+        String instruction = parseByteString(instructionLength);
+        message.setInstruction(instruction);
+        LOGGER.debug("Instruction: {}", () -> backslashEscapeString(instruction));
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        message.setLanguageTag(parseByteString(message.getLanguageTagLength().getValue()));
-        LOGGER.debug(
-                "Language tag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
+        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setLanguageTagLength(languageTagLength);
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        String languageTag = parseByteString(languageTagLength);
+        message.setLanguageTag(languageTag);
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
     }
 
     private void parsePromptEntries() {
-        message.setPromptEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Number of prompt entries: {}", message.getPromptEntryCount().getValue());
+        int promptEntryCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPromptEntryCount(promptEntryCount);
+        LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
 
         for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
             AuthenticationPrompt.PromptEntry entry = new AuthenticationPrompt.PromptEntry();
@@ -73,11 +75,9 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
                     "Prompt entry [{}]: {}",
                     i,
                     backslashEscapeString(entry.getPrompt().getValue()));
-            entry.setEcho(parseByteField(1));
-            LOGGER.debug(
-                    "Prompt entry [{}] wants echo:{}",
-                    i,
-                    Converter.byteToBoolean(entry.getEcho().getValue()));
+            byte echo = parseByteField(1);
+            entry.setEcho(echo);
+            LOGGER.debug("Prompt entry [{}] wants echo:{}", i, Converter.byteToBoolean(echo));
 
             message.getPrompt().add(entry);
         }

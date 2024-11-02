@@ -31,8 +31,9 @@ public class SftpResponseNameMessageParser
     }
 
     private void parseNameEntries() {
-        message.setCountNameEntries(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("CountNameEntries: {}", message.getCountNameEntries().getValue());
+        int countNameEntries = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setCountNameEntries(countNameEntries);
+        LOGGER.debug("CountNameEntries: {}", countNameEntries);
 
         for (int nameEntryIndex = 0, nameEntryStartPointer = getPointer();
                 nameEntryIndex < message.getCountNameEntries().getValue();

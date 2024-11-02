@@ -30,37 +30,45 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     }
 
     private void parseFlags() {
-        attributes.setFlags(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Flags: {}", attributes.getFlags().getValue());
+        int flags = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setFlags(flags);
+        LOGGER.debug("Flags: {}", flags);
     }
 
     private void parseSize() {
-        attributes.setSize(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Size: {}", attributes.getSize().getValue());
+        long size = parseLongField(DataFormatConstants.UINT64_SIZE);
+        attributes.setSize(size);
+        LOGGER.debug("Size: {}", size);
     }
 
     private void parseUIdGId() {
-        attributes.setUId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("UId: {}", attributes.getUId().getValue());
-        attributes.setGId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("GId: {}", attributes.getGId().getValue());
+        int uId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setUId(uId);
+        LOGGER.debug("UId: {}", uId);
+        int gId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setGId(gId);
+        LOGGER.debug("GId: {}", gId);
     }
 
     private void parsePermissions() {
-        attributes.setPermissions(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Permissions: {}", attributes.getPermissions().getValue());
+        int permissions = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setPermissions(permissions);
+        LOGGER.debug("Permissions: {}", permissions);
     }
 
     private void parseAcModTime() {
-        attributes.setATime(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("ATime: {}", attributes.getATime().getValue());
-        attributes.setMTime(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("MTime: {}", attributes.getMTime().getValue());
+        int aTime = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setATime(aTime);
+        LOGGER.debug("ATime: {}", aTime);
+        int mTime = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setMTime(mTime);
+        LOGGER.debug("MTime: {}", mTime);
     }
 
     private void parseExtendedAttributes() {
-        attributes.setExtendedCount(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("ExtendedCount: {}", attributes.getExtendedCount().getValue());
+        int extendedCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setExtendedCount(extendedCount);
+        LOGGER.debug("ExtendedCount: {}", extendedCount);
 
         for (int extendedAttrIndex = 0, extendedAttrStartPointer = getPointer();
                 extendedAttrIndex < attributes.getExtendedCount().getValue();

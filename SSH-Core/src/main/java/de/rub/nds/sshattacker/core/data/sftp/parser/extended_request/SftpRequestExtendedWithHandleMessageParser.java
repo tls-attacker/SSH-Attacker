@@ -28,12 +28,12 @@ public abstract class SftpRequestExtendedWithHandleMessageParser<
     }
 
     private void parseHandle() {
-        message.setHandleLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Handle length: {}", message.getHandleLength().getValue());
-        message.setHandle(parseByteArrayField(message.getHandleLength().getValue()));
-        LOGGER.debug(
-                "Handle: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getHandle().getValue()));
+        int handleLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setHandleLength(handleLength);
+        LOGGER.debug("Handle length: {}", handleLength);
+        byte[] handle = parseByteArrayField(handleLength);
+        message.setHandle(handle);
+        LOGGER.debug("Handle: {}", () -> ArrayConverter.bytesToRawHexString(handle));
     }
 
     @Override

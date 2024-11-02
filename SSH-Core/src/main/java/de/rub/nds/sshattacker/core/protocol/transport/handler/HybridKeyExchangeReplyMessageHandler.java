@@ -51,20 +51,18 @@ public class HybridKeyExchangeReplyMessageHandler
     }
 
     private void setRemoteValues() {
-        context.getChooser()
-                .getHybridKeyExchange()
-                .getKeyAgreement()
-                .setRemotePublicKey(message.getPublicKey().getValue());
+        byte[] publicKey = message.getPublicKey().getValue();
+        context.getChooser().getHybridKeyExchange().getKeyAgreement().setRemotePublicKey(publicKey);
         LOGGER.info(
-                "RemoteKey Agreement = {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
+                "RemoteKey Agreement = {}", () -> ArrayConverter.bytesToRawHexString(publicKey));
+        byte[] combinedKeyShare = message.getCombinedKeyShare().getValue();
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
-                .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
+                .setEncryptedSharedSecret(combinedKeyShare);
         LOGGER.info(
                 "Ciphertext Encapsulation = {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getCombinedKeyShare().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(combinedKeyShare));
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

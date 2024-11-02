@@ -38,11 +38,12 @@ public abstract class AbstractExtensionParser<E extends AbstractExtension<E>> ex
     }
 
     protected void parseExtensionName() {
-        extension.setNameLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
-        extension.setName(
-                parseByteString(extension.getNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Extension name: {}", extension.getName().getValue());
+        int nameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        extension.setNameLength(nameLength);
+        LOGGER.debug("Extension name length: {}", nameLength);
+        String name = parseByteString(nameLength, StandardCharsets.US_ASCII);
+        extension.setName(name);
+        LOGGER.debug("Extension name: {}", name);
     }
 
     protected abstract void parseExtensionValue();

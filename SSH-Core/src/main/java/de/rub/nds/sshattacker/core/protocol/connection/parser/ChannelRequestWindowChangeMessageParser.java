@@ -31,23 +31,27 @@ public class ChannelRequestWindowChangeMessageParser
     }
 
     private void parseWidthColumns() {
-        message.setWidthColumns(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in colums: {}", message.getWidthColumns().getValue());
+        int widthColumns = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setWidthColumns(widthColumns);
+        LOGGER.debug("Terminal width in colums: {}", widthColumns);
     }
 
     private void parseHeightRows() {
-        message.setHeightRows(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
+        int heightRows = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setHeightRows(heightRows);
+        LOGGER.debug("Terminal height in rows: {}", heightRows);
     }
 
     private void parseWidthPixels() {
-        message.setWidthPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
+        int widthPixels = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setWidthPixels(widthPixels);
+        LOGGER.debug("Terminal width in pixels: {}", widthPixels);
     }
 
     private void parseHeightPixels() {
-        message.setHeightPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
+        int heightPixels = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setHeightPixels(heightPixels);
+        LOGGER.debug("Terminal height in pixels: {}", heightPixels);
     }
 
     @Override

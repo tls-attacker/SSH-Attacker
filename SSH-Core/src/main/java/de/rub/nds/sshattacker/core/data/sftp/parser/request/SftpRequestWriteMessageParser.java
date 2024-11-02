@@ -32,16 +32,18 @@ public class SftpRequestWriteMessageParser
     }
 
     private void parseOffset() {
-        message.setOffset(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Offset: {}", message.getOffset().getValue());
+        long offset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setOffset(offset);
+        LOGGER.debug("Offset: {}", offset);
     }
 
     private void parseData() {
-        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        message.setData(parseByteArrayField(message.getDataLength().getValue()));
-        LOGGER.debug(
-                "Data: {}", () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setDataLength(dataLength);
+        LOGGER.debug("Data length: {}", dataLength);
+        byte[] data = parseByteArrayField(dataLength);
+        message.setData(data);
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
     }
 
     @Override

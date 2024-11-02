@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,23 +34,29 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     private void parseGroupModulus() {
-        message.setGroupModulusLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Group modulus length: {}", message.getGroupModulusLength().getValue());
-        message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
+        int groupModulusLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setGroupModulusLength(groupModulusLength);
+        LOGGER.debug("Group modulus length: {}", groupModulusLength);
+        BigInteger groupModulus = parseBigIntField(groupModulusLength);
+        message.setGroupModulus(groupModulus);
         LOGGER.debug(
                 "Group modulus: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getGroupModulus().getByteArray()));
+                () ->
+                        ArrayConverter.bytesToRawHexString(
+                                ArrayConverter.bigIntegerToByteArray(groupModulus)));
     }
 
     private void parseGroupGenerator() {
-        message.setGroupGeneratorLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Group generator length: {}", message.getGroupGeneratorLength().getValue());
-        message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
+        int groupGeneratorLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setGroupGeneratorLength(groupGeneratorLength);
+        LOGGER.debug("Group generator length: {}", groupGeneratorLength);
+        BigInteger groupGenerator = parseBigIntField(groupGeneratorLength);
+        message.setGroupGenerator(groupGenerator);
         LOGGER.debug(
                 "Group generator: {}",
                 () ->
                         ArrayConverter.bytesToRawHexString(
-                                message.getGroupGenerator().getByteArray()));
+                                ArrayConverter.bigIntegerToByteArray(groupGenerator)));
     }
 
     @Override

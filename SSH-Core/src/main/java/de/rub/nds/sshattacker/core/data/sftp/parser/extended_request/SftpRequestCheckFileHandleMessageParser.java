@@ -34,29 +34,30 @@ public class SftpRequestCheckFileHandleMessageParser
     }
 
     private void parseHashAlgorithms() {
-        message.setHashAlgorithmsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("HashAlgorithms length: {}", message.getHashAlgorithmsLength().getValue());
-        message.setHashAlgorithms(
-                parseByteString(
-                        message.getHashAlgorithmsLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "HashAlgorithms: {}",
-                () -> backslashEscapeString(message.getHashAlgorithms().getValue()));
+        int hashAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setHashAlgorithmsLength(hashAlgorithmsLength);
+        LOGGER.debug("HashAlgorithms length: {}", hashAlgorithmsLength);
+        String hashAlgorithms = parseByteString(hashAlgorithmsLength, StandardCharsets.US_ASCII);
+        message.setHashAlgorithms(hashAlgorithms);
+        LOGGER.debug("HashAlgorithms: {}", () -> backslashEscapeString(hashAlgorithms));
     }
 
     private void parseStartOffset() {
-        message.setStartOffset(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("StartOffset: {}", message.getStartOffset().getValue());
+        long startOffset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setStartOffset(startOffset);
+        LOGGER.debug("StartOffset: {}", startOffset);
     }
 
     private void parseLength() {
-        message.setLength(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Length: {}", message.getLength().getValue());
+        long length = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setLength(length);
+        LOGGER.debug("Length: {}", length);
     }
 
     private void parseBlockSize() {
-        message.setBlockSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("BlockSize: {}", message.getBlockSize().getValue());
+        int blockSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setBlockSize(blockSize);
+        LOGGER.debug("BlockSize: {}", blockSize);
     }
 
     @Override

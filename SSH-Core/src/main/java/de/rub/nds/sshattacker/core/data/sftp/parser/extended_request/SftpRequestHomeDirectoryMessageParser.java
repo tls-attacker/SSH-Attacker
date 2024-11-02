@@ -34,11 +34,12 @@ public class SftpRequestHomeDirectoryMessageParser
     }
 
     private void parseUsername() {
-        message.setUsernameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Username length: {}", message.getUsernameLength().getValue());
-        message.setUsername(
-                parseByteString(message.getUsernameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Username: {}", () -> backslashEscapeString(message.getUsername().getValue()));
+        int usernameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setUsernameLength(usernameLength);
+        LOGGER.debug("Username length: {}", usernameLength);
+        String username = parseByteString(usernameLength, StandardCharsets.UTF_8);
+        message.setUsername(username);
+        LOGGER.debug("Username: {}", () -> backslashEscapeString(username));
     }
 
     @Override

@@ -31,8 +31,9 @@ public class SftpRequestUsersGroupsByIdMessageParser
     }
 
     private void parseUserIds() {
-        message.setUserIdsLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("UserIdsLength: {}", message.getUserIdsLength().getValue());
+        int userIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setUserIdsLength(userIdsLength);
+        LOGGER.debug("UserIdsLength: {}", userIdsLength);
         int userIdsCount = message.getUserIdsLength().getValue() / DataFormatConstants.UINT32_SIZE;
         for (int i = 0; i < userIdsCount; i++) {
             int userId = parseIntField(DataFormatConstants.UINT32_SIZE);
@@ -42,8 +43,9 @@ public class SftpRequestUsersGroupsByIdMessageParser
     }
 
     private void parseGroupIds() {
-        message.setGroupIdsLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("GroupIdsLength: {}", message.getGroupIdsLength().getValue());
+        int groupIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setGroupIdsLength(groupIdsLength);
+        LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
         int groupIdsCount =
                 message.getGroupIdsLength().getValue() / DataFormatConstants.UINT32_SIZE;
         for (int i = 0; i < groupIdsCount; i++) {

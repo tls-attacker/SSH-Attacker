@@ -34,12 +34,12 @@ public class SftpRequestSymbolicLinkMessageParser
     }
 
     private void parseTargetPath() {
-        message.setTargetPathLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("TargetPath length: {}", message.getTargetPathLength().getValue());
-        message.setTargetPath(
-                parseByteString(message.getTargetPathLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "TargetPath: {}", () -> backslashEscapeString(message.getTargetPath().getValue()));
+        int targetPathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setTargetPathLength(targetPathLength);
+        LOGGER.debug("TargetPath length: {}", targetPathLength);
+        String targetPath = parseByteString(targetPathLength, StandardCharsets.UTF_8);
+        message.setTargetPath(targetPath);
+        LOGGER.debug("TargetPath: {}", () -> backslashEscapeString(targetPath));
     }
 
     @Override

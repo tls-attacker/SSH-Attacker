@@ -36,8 +36,9 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
     }
 
     private void parseVersionLength() {
-        extension.setVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
+        int versionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setVersionLength(versionLength);
+        LOGGER.debug("Version length: {}", versionLength);
     }
 
     private void parseVersion() {

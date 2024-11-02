@@ -36,48 +36,48 @@ public class UserAuthHostbasedMessageParser
     }
 
     private void parsePubKeyAlgorithm() {
-        message.setPubKeyAlgorithmLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Public key algorithm length: {}", message.getPubKeyAlgorithmLength().getValue());
-        message.setPubKeyAlgorithm(parseByteString(message.getPubKeyAlgorithmLength().getValue()));
-        LOGGER.debug(
-                "Public key algorithm: {}",
-                () -> backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
+        int pubKeyAlgorithmLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setPubKeyAlgorithmLength(pubKeyAlgorithmLength);
+        LOGGER.debug("Public key algorithm length: {}", pubKeyAlgorithmLength);
+        String pubKeyAlgorithm = parseByteString(pubKeyAlgorithmLength);
+        message.setPubKeyAlgorithm(pubKeyAlgorithm);
+        LOGGER.debug("Public key algorithm: {}", () -> backslashEscapeString(pubKeyAlgorithm));
     }
 
     private void parseHostKeyBytes() {
-        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug(
-                "Host key bytes: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+        int hostKeyBytesLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        message.setHostKeyBytesLength(hostKeyBytesLength);
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
+        message.setHostKeyBytes(hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
     }
 
     private void parseHostName() {
-        message.setHostNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Host name length: {}", message.getHostNameLength().getValue());
-        message.setHostName(parseByteString(message.getHostNameLength().getValue()));
-        LOGGER.debug(
-                "Host name: {}", () -> backslashEscapeString(message.getHostName().getValue()));
+        int hostNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setHostNameLength(hostNameLength);
+        LOGGER.debug("Host name length: {}", hostNameLength);
+        String hostName = parseByteString(hostNameLength);
+        message.setHostName(hostName);
+        LOGGER.debug("Host name: {}", () -> backslashEscapeString(hostName));
     }
 
     private void parseClientUserName() {
-        message.setClientUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Client user name length: {}", message.getClientUserNameLength().getValue());
-        message.setClientUserName(
-                parseByteString(
-                        message.getClientUserNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "Client user name: {}",
-                () -> backslashEscapeString(message.getClientUserName().getValue()));
+        int clientUserNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setClientUserNameLength(clientUserNameLength);
+        LOGGER.debug("Client user name length: {}", clientUserNameLength);
+        String clientUserName = parseByteString(clientUserNameLength, StandardCharsets.UTF_8);
+        message.setClientUserName(clientUserName);
+        LOGGER.debug("Client user name: {}", () -> backslashEscapeString(clientUserName));
     }
 
     private void parseSignature() {
-        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: {}", message.getSignature());
+        int signatureLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature: {}", signature);
     }
 
     @Override

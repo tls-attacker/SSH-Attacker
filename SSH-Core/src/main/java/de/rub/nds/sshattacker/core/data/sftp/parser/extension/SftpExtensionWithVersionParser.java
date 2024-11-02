@@ -31,12 +31,12 @@ public class SftpExtensionWithVersionParser<T extends SftpExtensionWithVersion<T
     }
 
     private void parseVersion() {
-        extension.setVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
-        extension.setVersion(
-                parseByteString(
-                        extension.getVersionLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Version: {}", () -> backslashEscapeString(extension.getVersion().getValue()));
+        int versionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setVersionLength(versionLength);
+        LOGGER.debug("Version length: {}", versionLength);
+        String version = parseByteString(versionLength, StandardCharsets.US_ASCII);
+        extension.setVersion(version);
+        LOGGER.debug("Version: {}", () -> backslashEscapeString(version));
     }
 
     @Override

@@ -34,35 +34,32 @@ public class EcdhKeyExchangeReplyMessageParser
     }
 
     private void parseHostKeyBytes() {
-        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug(
-                "Host key bytes: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+        int hostKeyBytesLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        message.setHostKeyBytesLength(hostKeyBytesLength);
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
+        message.setHostKeyBytes(hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
     }
 
     private void parseEphemeralPublicKey() {
-        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Ephemeral public key (server) length: {}",
-                message.getEphemeralPublicKeyLength().getValue());
-        message.setEphemeralPublicKey(
-                parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
+        int ephemeralPublicKeyLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setEphemeralPublicKeyLength(ephemeralPublicKeyLength);
+        LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
+        byte[] ephemeralPublicKey = parseByteArrayField(ephemeralPublicKeyLength);
+        message.setEphemeralPublicKey(ephemeralPublicKey);
         LOGGER.debug(
                 "Ephemeral public key (server): {}",
-                () ->
-                        ArrayConverter.bytesToRawHexString(
-                                message.getEphemeralPublicKey().getValue()));
+                () -> ArrayConverter.bytesToRawHexString(ephemeralPublicKey));
     }
 
     private void parseSignature() {
-        message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug(
-                "Signature :{}",
-                () -> ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+        int signatureLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature :{}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 
     @Override

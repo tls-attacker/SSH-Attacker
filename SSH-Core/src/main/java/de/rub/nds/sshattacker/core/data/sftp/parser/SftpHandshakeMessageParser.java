@@ -32,8 +32,9 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
     }
 
     private void parseVersion() {
-        message.setVersion(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Version: {}", message.getVersion().getValue());
+        int version = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setVersion(version);
+        LOGGER.debug("Version: {}", version);
     }
 
     private void parseExtensions() {

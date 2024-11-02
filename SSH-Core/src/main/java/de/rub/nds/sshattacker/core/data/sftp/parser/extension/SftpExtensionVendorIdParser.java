@@ -29,46 +29,42 @@ public class SftpExtensionVendorIdParser
     }
 
     private void parseVendorStructureLength() {
-        extension.setVendorStructureLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("VendorStructureLength: {}", extension.getVendorStructureLength().getValue());
+        int vendorStructureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        extension.setVendorStructureLength(vendorStructureLength);
+        LOGGER.debug("VendorStructureLength: {}", vendorStructureLength);
     }
 
     private void parseVendorName() {
-        extension.setVendorNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("VendorName length: {}", extension.getVendorNameLength().getValue());
-        extension.setVendorName(
-                parseByteString(
-                        extension.getVendorNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "VendorName: {}",
-                () -> backslashEscapeString(extension.getVendorName().getValue()));
+        int vendorNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setVendorNameLength(vendorNameLength);
+        LOGGER.debug("VendorName length: {}", vendorNameLength);
+        String vendorName = parseByteString(vendorNameLength, StandardCharsets.UTF_8);
+        extension.setVendorName(vendorName);
+        LOGGER.debug("VendorName: {}", () -> backslashEscapeString(vendorName));
     }
 
     private void parseProductName() {
-        extension.setProductNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("ProductName length: {}", extension.getProductNameLength().getValue());
-        extension.setProductName(
-                parseByteString(
-                        extension.getProductNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "ProductName: {}",
-                () -> backslashEscapeString(extension.getProductName().getValue()));
+        int productNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setProductNameLength(productNameLength);
+        LOGGER.debug("ProductName length: {}", productNameLength);
+        String productName = parseByteString(productNameLength, StandardCharsets.UTF_8);
+        extension.setProductName(productName);
+        LOGGER.debug("ProductName: {}", () -> backslashEscapeString(productName));
     }
 
     private void parseProductVersion() {
-        extension.setProductVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("ProductVersion length: {}", extension.getProductVersionLength().getValue());
-        extension.setProductVersion(
-                parseByteString(
-                        extension.getProductVersionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "ProductVersion: {}",
-                () -> backslashEscapeString(extension.getProductVersion().getValue()));
+        int productVersionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setProductVersionLength(productVersionLength);
+        LOGGER.debug("ProductVersion length: {}", productVersionLength);
+        String productVersion = parseByteString(productVersionLength, StandardCharsets.UTF_8);
+        extension.setProductVersion(productVersion);
+        LOGGER.debug("ProductVersion: {}", () -> backslashEscapeString(productVersion));
     }
 
     private void parseProductBuildNumber() {
-        extension.setProductBuildNumber(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("ProductBuildNumber: {}", extension.getProductBuildNumber().getValue());
+        long productBuildNumber = parseLongField(DataFormatConstants.UINT64_SIZE);
+        extension.setProductBuildNumber(productBuildNumber);
+        LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
     }
 
     @Override

@@ -34,11 +34,12 @@ public class SftpRequestPosixRenameMessageParser
     }
 
     private void parseNewPath() {
-        message.setNewPathLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("NewPath length: {}", message.getNewPathLength().getValue());
-        message.setNewPath(
-                parseByteString(message.getNewPathLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("NewPath: {}", () -> backslashEscapeString(message.getNewPath().getValue()));
+        int newPathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setNewPathLength(newPathLength);
+        LOGGER.debug("NewPath length: {}", newPathLength);
+        String newPath = parseByteString(newPathLength, StandardCharsets.UTF_8);
+        message.setNewPath(newPath);
+        LOGGER.debug("NewPath: {}", () -> backslashEscapeString(newPath));
     }
 
     @Override

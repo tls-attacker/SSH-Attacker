@@ -32,8 +32,9 @@ public class SftpRequestOpenMessageParser
     }
 
     private void parsePFlags() {
-        message.setPFlags(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("PFlags: {}", message.getPFlags().getValue());
+        int pFlags = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPFlags(pFlags);
+        LOGGER.debug("PFlags: {}", pFlags);
     }
 
     private void parseAttributes() {

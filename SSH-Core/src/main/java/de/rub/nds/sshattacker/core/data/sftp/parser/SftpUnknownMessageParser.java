@@ -32,9 +32,8 @@ public class SftpUnknownMessageParser extends SftpMessageParser<SftpUnknownMessa
 
     @Override
     protected void parseMessageSpecificContents() {
-        message.setPayload(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "Payload: {}",
-                () -> ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
+        byte[] payload = parseByteArrayField(getBytesLeft());
+        message.setPayload(payload);
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToRawHexString(payload));
     }
 }

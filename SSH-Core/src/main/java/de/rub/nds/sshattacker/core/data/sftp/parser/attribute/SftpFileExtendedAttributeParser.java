@@ -32,20 +32,21 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
     }
 
     private void parseType() {
-        attribute.setTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Type length: {}", attribute.getTypeLength().getValue());
-        attribute.setType(
-                parseByteString(attribute.getTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Type: {}", () -> backslashEscapeString(attribute.getType().getValue()));
+        int typeLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        attribute.setTypeLength(typeLength);
+        LOGGER.debug("Type length: {}", typeLength);
+        String type = parseByteString(typeLength, StandardCharsets.US_ASCII);
+        attribute.setType(type);
+        LOGGER.debug("Type: {}", () -> backslashEscapeString(type));
     }
 
     private void parseData() {
-        attribute.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: {}", attribute.getDataLength().getValue());
-        attribute.setData(parseByteArrayField(attribute.getDataLength().getValue()));
-        LOGGER.debug(
-                "Data: {}",
-                () -> ArrayConverter.bytesToRawHexString(attribute.getData().getValue()));
+        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        attribute.setDataLength(dataLength);
+        LOGGER.debug("Data length: {}", dataLength);
+        byte[] data = parseByteArrayField(dataLength);
+        attribute.setData(data);
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
     }
 
     @Override

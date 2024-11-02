@@ -34,19 +34,18 @@ public class SftpRequestCopyFileMessageParser
     }
 
     private void parseDestinationPath() {
-        message.setDestinationPathLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("DestinationPath length: {}", message.getDestinationPathLength().getValue());
-        message.setDestinationPath(
-                parseByteString(
-                        message.getDestinationPathLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "DestinationPath: {}",
-                () -> backslashEscapeString(message.getDestinationPath().getValue()));
+        int destinationPathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setDestinationPathLength(destinationPathLength);
+        LOGGER.debug("DestinationPath length: {}", destinationPathLength);
+        String destinationPath = parseByteString(destinationPathLength, StandardCharsets.UTF_8);
+        message.setDestinationPath(destinationPath);
+        LOGGER.debug("DestinationPath: {}", () -> backslashEscapeString(destinationPath));
     }
 
     private void parseOverwriteDestination() {
-        message.setOverwriteDestination(parseByteField(1));
-        LOGGER.debug("OverwriteDestination: {}", message.getOverwriteDestination().getValue());
+        byte overwriteDestination = parseByteField(1);
+        message.setOverwriteDestination(overwriteDestination);
+        LOGGER.debug("OverwriteDestination: {}", overwriteDestination);
     }
 
     @Override

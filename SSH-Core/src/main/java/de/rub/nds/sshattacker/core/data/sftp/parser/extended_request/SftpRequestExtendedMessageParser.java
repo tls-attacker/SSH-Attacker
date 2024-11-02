@@ -30,17 +30,13 @@ public abstract class SftpRequestExtendedMessageParser<T extends SftpRequestExte
     }
 
     private void parseExtendedRequestName() {
-        message.setExtendedRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "ExtendedRequestName length: {}",
-                message.getExtendedRequestNameLength().getValue());
-        message.setExtendedRequestName(
-                parseByteString(
-                        message.getExtendedRequestNameLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "ExtendedRequestName: {}",
-                () -> backslashEscapeString(message.getExtendedRequestName().getValue()));
+        int extendedRequestNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setExtendedRequestNameLength(extendedRequestNameLength);
+        LOGGER.debug("ExtendedRequestName length: {}", extendedRequestNameLength);
+        String extendedRequestName =
+                parseByteString(extendedRequestNameLength, StandardCharsets.US_ASCII);
+        message.setExtendedRequestName(extendedRequestName);
+        LOGGER.debug("ExtendedRequestName: {}", () -> backslashEscapeString(extendedRequestName));
     }
 
     @Override

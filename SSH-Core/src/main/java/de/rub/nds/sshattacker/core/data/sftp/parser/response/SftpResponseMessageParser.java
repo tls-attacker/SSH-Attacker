@@ -27,8 +27,9 @@ public abstract class SftpResponseMessageParser<T extends SftpResponseMessage<T>
     }
 
     private void parseRequestId() {
-        message.setRequestId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("RequestId: {}", message.getRequestId().getValue());
+        int requestId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setRequestId(requestId);
+        LOGGER.debug("RequestId: {}", requestId);
     }
 
     @Override

@@ -31,11 +31,12 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     }
 
     private void parseData() {
-        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        message.setData(parseByteArrayField(message.getDataLength().getValue()));
-        LOGGER.debug(
-                "Data: {}", () -> ArrayConverter.bytesToHexString(message.getData().getValue()));
+        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setDataLength(dataLength);
+        LOGGER.debug("Data length: {}", dataLength);
+        byte[] data = parseByteArrayField(dataLength);
+        message.setData(data);
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToHexString(data));
     }
 
     @Override

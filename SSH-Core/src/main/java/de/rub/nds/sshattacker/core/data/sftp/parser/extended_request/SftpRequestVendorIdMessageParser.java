@@ -34,38 +34,36 @@ public class SftpRequestVendorIdMessageParser
     }
 
     private void parseVendorName() {
-        message.setVendorNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("VendorName length: {}", message.getVendorNameLength().getValue());
-        message.setVendorName(
-                parseByteString(message.getVendorNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "VendorName: {}", () -> backslashEscapeString(message.getVendorName().getValue()));
+        int vendorNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setVendorNameLength(vendorNameLength);
+        LOGGER.debug("VendorName length: {}", vendorNameLength);
+        String vendorName = parseByteString(vendorNameLength, StandardCharsets.UTF_8);
+        message.setVendorName(vendorName);
+        LOGGER.debug("VendorName: {}", () -> backslashEscapeString(vendorName));
     }
 
     private void parseProductName() {
-        message.setProductNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("ProductName length: {}", message.getProductNameLength().getValue());
-        message.setProductName(
-                parseByteString(message.getProductNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "ProductName: {}",
-                () -> backslashEscapeString(message.getProductName().getValue()));
+        int productNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setProductNameLength(productNameLength);
+        LOGGER.debug("ProductName length: {}", productNameLength);
+        String productName = parseByteString(productNameLength, StandardCharsets.UTF_8);
+        message.setProductName(productName);
+        LOGGER.debug("ProductName: {}", () -> backslashEscapeString(productName));
     }
 
     private void parseProductVersion() {
-        message.setProductVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("ProductVersion length: {}", message.getProductVersionLength().getValue());
-        message.setProductVersion(
-                parseByteString(
-                        message.getProductVersionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "ProductVersion: {}",
-                () -> backslashEscapeString(message.getProductVersion().getValue()));
+        int productVersionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setProductVersionLength(productVersionLength);
+        LOGGER.debug("ProductVersion length: {}", productVersionLength);
+        String productVersion = parseByteString(productVersionLength, StandardCharsets.UTF_8);
+        message.setProductVersion(productVersion);
+        LOGGER.debug("ProductVersion: {}", () -> backslashEscapeString(productVersion));
     }
 
     private void parseProductBuildNumber() {
-        message.setProductBuildNumber(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("ProductBuildNumber: {}", message.getProductBuildNumber().getValue());
+        long productBuildNumber = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setProductBuildNumber(productBuildNumber);
+        LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
     }
 
     @Override

@@ -30,11 +30,12 @@ public abstract class SftpRequestExtendedWithPathMessageParser<
     }
 
     private void parsePath() {
-        message.setPathLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Path length: {}", message.getPathLength().getValue());
-        message.setPath(
-                parseByteString(message.getPathLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Path: {}", () -> backslashEscapeString(message.getPath().getValue()));
+        int pathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setPathLength(pathLength);
+        LOGGER.debug("Path length: {}", pathLength);
+        String path = parseByteString(pathLength, StandardCharsets.UTF_8);
+        message.setPath(path);
+        LOGGER.debug("Path: {}", () -> backslashEscapeString(path));
     }
 
     @Override

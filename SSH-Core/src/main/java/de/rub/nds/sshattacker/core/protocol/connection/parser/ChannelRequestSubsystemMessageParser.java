@@ -33,14 +33,12 @@ public class ChannelRequestSubsystemMessageParser
     }
 
     private void parseSubsystemName() {
-        message.setSubsystemNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
-        message.setSubsystemName(
-                parseByteString(
-                        message.getSubsystemNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "Subsystem name: {}",
-                () -> backslashEscapeString(message.getSubsystemName().getValue()));
+        int subsystemNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setSubsystemNameLength(subsystemNameLength);
+        LOGGER.debug("Subsystem name length: {}", subsystemNameLength);
+        String subsystemName = parseByteString(subsystemNameLength, StandardCharsets.UTF_8);
+        message.setSubsystemName(subsystemName);
+        LOGGER.debug("Subsystem name: {}", () -> backslashEscapeString(subsystemName));
     }
 
     @Override

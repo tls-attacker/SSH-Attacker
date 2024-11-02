@@ -31,13 +31,15 @@ public class SftpRequestReadMessageParser
     }
 
     private void parseOffset() {
-        message.setOffset(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Offset: {}", message.getOffset().getValue());
+        long offset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setOffset(offset);
+        LOGGER.debug("Offset: {}", offset);
     }
 
     private void parseLength() {
-        message.setLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Length: {}", message.getLength().getValue());
+        int length = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setLength(length);
+        LOGGER.debug("Length: {}", length);
     }
 
     @Override

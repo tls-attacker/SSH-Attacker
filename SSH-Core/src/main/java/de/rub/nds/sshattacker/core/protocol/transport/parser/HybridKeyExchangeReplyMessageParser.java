@@ -46,12 +46,12 @@ public class HybridKeyExchangeReplyMessageParser
     }
 
     private void parseHostKeyBytes() {
-        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key byte length{}", message.getHostKeyBytesLength());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug(
-                "Host key bytes: {}",
-                () -> ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+        int hostKeyBytesLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        message.setHostKeyBytesLength(hostKeyBytesLength);
+        LOGGER.debug("Host key byte length{}", hostKeyBytesLength);
+        byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
+        message.setHostKeyBytes(hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToHexString(hostKeyBytes));
     }
 
     private void parseHybridKey() {
@@ -78,10 +78,12 @@ public class HybridKeyExchangeReplyMessageParser
     }
 
     private void parseSignature() {
-        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: {}", message.getSignature());
+        int signatureLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature: {}", signature);
     }
 
     @Override

@@ -31,10 +31,12 @@ public class ChannelRequestExecMessageParser
     }
 
     private void parseCommand() {
-        message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
-        message.setCommand(parseByteString(message.getCommandLength().getValue()));
-        LOGGER.debug("Command: {}", message.getCommand().getValue());
+        int commandLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setCommandLength(commandLength);
+        LOGGER.debug("Command length: {}", commandLength);
+        String command = parseByteString(commandLength);
+        message.setCommand(command);
+        LOGGER.debug("Command: {}", command);
     }
 
     @Override

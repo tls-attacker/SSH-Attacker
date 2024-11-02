@@ -32,11 +32,12 @@ public class RsaKeyExchangeSecretMessageParser
     }
 
     private void parseEncryptedSecret() {
-        message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
-        message.setEncryptedSecret(
-                parseByteArrayField(message.getEncryptedSecretLength().getValue()));
-        LOGGER.debug("Encrypted secret: {}", message.getEncryptedSecret());
+        int encryptedSecretLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setEncryptedSecretLength(encryptedSecretLength);
+        LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
+        byte[] encryptedSecret = parseByteArrayField(encryptedSecretLength);
+        message.setEncryptedSecret(encryptedSecret);
+        LOGGER.debug("Encrypted secret: {}", encryptedSecret);
     }
 
     @Override

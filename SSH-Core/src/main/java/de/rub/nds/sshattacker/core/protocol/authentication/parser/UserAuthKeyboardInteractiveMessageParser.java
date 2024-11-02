@@ -34,23 +34,21 @@ public class UserAuthKeyboardInteractiveMessageParser
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        message.setLanguageTag(
-                parseByteString(
-                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Language tag: {}",
-                () -> backslashEscapeString(message.getLanguageTag().getValue()));
+        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setLanguageTagLength(languageTagLength);
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);
+        message.setLanguageTag(languageTag);
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
     }
 
     private void parseSubMethods() {
-        message.setSubMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Sub methods length: {}", message.getSubMethodsLength().getValue());
-        message.setSubMethods(
-                parseByteString(message.getSubMethodsLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "Sub methods: {}", () -> backslashEscapeString(message.getSubMethods().getValue()));
+        int subMethodsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setSubMethodsLength(subMethodsLength);
+        LOGGER.debug("Sub methods length: {}", subMethodsLength);
+        String subMethods = parseByteString(subMethodsLength, StandardCharsets.UTF_8);
+        message.setSubMethods(subMethods);
+        LOGGER.debug("Sub methods: {}", () -> backslashEscapeString(subMethods));
     }
 
     @Override

@@ -32,21 +32,21 @@ public class SftpResponseNameEntryParser extends Parser<SftpResponseNameEntry> {
     }
 
     private void parseFilename() {
-        nameEntry.setFilenameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Filename length: {}", nameEntry.getFilenameLength().getValue());
-        nameEntry.setFilename(
-                parseByteString(nameEntry.getFilenameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "Filename: {}", () -> backslashEscapeString(nameEntry.getFilename().getValue()));
+        int filenameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        nameEntry.setFilenameLength(filenameLength);
+        LOGGER.debug("Filename length: {}", filenameLength);
+        String filename = parseByteString(filenameLength, StandardCharsets.UTF_8);
+        nameEntry.setFilename(filename);
+        LOGGER.debug("Filename: {}", () -> backslashEscapeString(filename));
     }
 
     private void parseLongName() {
-        nameEntry.setLongNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("LongName length: {}", nameEntry.getLongNameLength().getValue());
-        nameEntry.setLongName(
-                parseByteString(nameEntry.getLongNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug(
-                "LongName: {}", () -> backslashEscapeString(nameEntry.getLongName().getValue()));
+        int longNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        nameEntry.setLongNameLength(longNameLength);
+        LOGGER.debug("LongName length: {}", longNameLength);
+        String longName = parseByteString(longNameLength, StandardCharsets.UTF_8);
+        nameEntry.setLongName(longName);
+        LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
     }
 
     private void parseAttributes() {

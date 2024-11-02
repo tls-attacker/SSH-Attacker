@@ -39,40 +39,34 @@ public class DelayCompressionExtensionParser
     }
 
     private void parseCompressionMethodsLength() {
-        extension.setCompressionMethodsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Compression methods length: {}",
-                extension.getCompressionMethodsLength().getValue());
+        int compressionMethodsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setCompressionMethodsLength(compressionMethodsLength);
+        LOGGER.debug("Compression methods length: {}", compressionMethodsLength);
     }
 
     private void parseCompressionMethodsClientToServer() {
-        extension.setCompressionMethodsClientToServerLength(
-                parseIntField(DataFormatConstants.UINT32_SIZE));
+        int compressionMethodsClientToServerLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        extension.setCompressionMethodsClientToServerLength(compressionMethodsClientToServerLength);
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
-                extension.getCompressionMethodsClientToServerLength().getValue());
-        extension.setCompressionMethodsClientToServer(
-                parseByteString(
-                        extension.getCompressionMethodsClientToServerLength().getValue(),
-                        StandardCharsets.US_ASCII));
+                compressionMethodsClientToServerLength);
+        String compressionMethodsClientToServer =
+                parseByteString(compressionMethodsClientToServerLength, StandardCharsets.US_ASCII);
+        extension.setCompressionMethodsClientToServer(compressionMethodsClientToServer);
         LOGGER.debug(
-                "Compression algorithms (client to server): {}",
-                extension.getCompressionMethodsClientToServer().getValue());
+                "Compression algorithms (client to server): {}", compressionMethodsClientToServer);
     }
 
     private void parseCompressionMethodsServerToClient() {
-        extension.setCompressionMethodsServerToClientLength(
-                parseIntField(DataFormatConstants.UINT32_SIZE));
+        int compressionMethodsServerToClientLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        extension.setCompressionMethodsServerToClientLength(compressionMethodsServerToClientLength);
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
-                extension.getCompressionMethodsServerToClientLength().getValue());
-        extension.setCompressionMethodsServerToClient(
-                parseByteString(
-                        extension.getCompressionMethodsServerToClientLength().getValue(),
-                        StandardCharsets.US_ASCII));
+                compressionMethodsServerToClientLength);
+        String compressionMethodsServerToClient =
+                parseByteString(compressionMethodsServerToClientLength, StandardCharsets.US_ASCII);
+        extension.setCompressionMethodsServerToClient(compressionMethodsServerToClient);
         LOGGER.debug(
-                "Compression algorithms (server to client): {}",
-                extension.getCompressionMethodsServerToClient().getValue());
+                "Compression algorithms (server to client): {}", compressionMethodsServerToClient);
     }
 }

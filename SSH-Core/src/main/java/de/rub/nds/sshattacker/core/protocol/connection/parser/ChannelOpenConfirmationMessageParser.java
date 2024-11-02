@@ -31,18 +31,21 @@ public class ChannelOpenConfirmationMessageParser
     }
 
     private void parseSenderChannel() {
-        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
+        int senderChannelId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setSenderChannelId(senderChannelId);
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
     private void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
+        int windowSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setWindowSize(windowSize);
+        LOGGER.debug("Initial window size: {}", windowSize);
     }
 
     private void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
+        int packetSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPacketSize(packetSize);
+        LOGGER.debug("Maximum packet size: {}", packetSize);
     }
 
     @Override

@@ -33,21 +33,21 @@ public class ChannelRequestEnvMessageParser
     }
 
     private void parseVariableName() {
-        message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
-        message.setVariableName(parseByteString(message.getVariableNameLength().getValue()));
-        LOGGER.debug(
-                "Variable name: {}",
-                () -> backslashEscapeString(message.getVariableName().getValue()));
+        int variableNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setVariableNameLength(variableNameLength);
+        LOGGER.debug("Variable name length: {}", variableNameLength);
+        String variableName = parseByteString(variableNameLength);
+        message.setVariableName(variableName);
+        LOGGER.debug("Variable name: {}", () -> backslashEscapeString(variableName));
     }
 
     private void parseVariableValue() {
-        message.setVariableValueLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
-        message.setVariableValue(parseByteString(message.getVariableValueLength().getValue()));
-        LOGGER.debug(
-                "Variable value: {}",
-                () -> backslashEscapeString(message.getVariableValue().getValue()));
+        int variableValueLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setVariableValueLength(variableValueLength);
+        LOGGER.debug("Variable value length: {}", variableValueLength);
+        String variableValue = parseByteString(variableValueLength);
+        message.setVariableValue(variableValue);
+        LOGGER.debug("Variable value: {}", () -> backslashEscapeString(variableValue));
     }
 
     @Override

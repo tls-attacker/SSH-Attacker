@@ -34,23 +34,21 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     }
 
     private void parsePubkey() {
-        message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
-        message.setPubkey(
-                parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey: {}", () -> backslashEscapeString(message.getPubkey().getValue()));
+        int pubkeyLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setPubkeyLength(pubkeyLength);
+        LOGGER.debug("Pubkey length: {}", pubkeyLength);
+        String pubkey = parseByteString(pubkeyLength, StandardCharsets.US_ASCII);
+        message.setPubkey(pubkey);
+        LOGGER.debug("Pubkey: {}", () -> backslashEscapeString(pubkey));
     }
 
     private void parsePubkeyAlgName() {
-        message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
-        message.setPubkeyAlgName(
-                parseByteString(
-                        message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Pubkey algorithm name: {}",
-                () -> backslashEscapeString(message.getPubkeyAlgName().getValue()));
+        int pubkeyAlgNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setPubkeyAlgNameLength(pubkeyAlgNameLength);
+        LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
+        String pubkeyAlgName = parseByteString(pubkeyAlgNameLength, StandardCharsets.US_ASCII);
+        message.setPubkeyAlgName(pubkeyAlgName);
+        LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
     }
 
     @Override

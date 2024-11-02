@@ -30,29 +30,30 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
     }
 
     private void parseChannelType() {
-        message.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Channel type length: {}", message.getChannelTypeLength().getValue());
-        message.setChannelType(
-                parseByteString(
-                        message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Channel type: {}",
-                () -> backslashEscapeString(message.getChannelType().getValue()));
+        int channelTypeLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setChannelTypeLength(channelTypeLength);
+        LOGGER.debug("Channel type length: {}", channelTypeLength);
+        String channelType = parseByteString(channelTypeLength, StandardCharsets.US_ASCII);
+        message.setChannelType(channelType);
+        LOGGER.debug("Channel type: {}", () -> backslashEscapeString(channelType));
     }
 
     private void parseSenderChannel() {
-        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
+        int senderChannelId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setSenderChannelId(senderChannelId);
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
     private void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
+        int windowSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setWindowSize(windowSize);
+        LOGGER.debug("Initial window size: {}", windowSize);
     }
 
     private void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
+        int packetSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPacketSize(packetSize);
+        LOGGER.debug("Maximum packet size: {}", packetSize);
     }
 
     @Override

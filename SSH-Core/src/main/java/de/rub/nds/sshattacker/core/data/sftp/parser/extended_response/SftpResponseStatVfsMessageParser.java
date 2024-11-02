@@ -32,58 +32,69 @@ public class SftpResponseStatVfsMessageParser
     }
 
     private void parseBlockSize() {
-        message.setBlockSize(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("BlockSize: {}", message.getBlockSize().getValue());
+        long blockSize = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setBlockSize(blockSize);
+        LOGGER.debug("BlockSize: {}", blockSize);
     }
 
     private void parseFundamentalBlockSize() {
-        message.setFundamentalBlockSize(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FundamentalBlockSize: {}", message.getFundamentalBlockSize().getValue());
+        long fundamentalBlockSize = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFundamentalBlockSize(fundamentalBlockSize);
+        LOGGER.debug("FundamentalBlockSize: {}", fundamentalBlockSize);
     }
 
     private void parseCountBlocks() {
-        message.setCountBlocks(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("CountBlocks: {}", message.getCountBlocks().getValue());
+        long countBlocks = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setCountBlocks(countBlocks);
+        LOGGER.debug("CountBlocks: {}", countBlocks);
     }
 
     private void parseFreeBlocks() {
-        message.setFreeBlocks(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FreeBlocks: {}", message.getFreeBlocks().getValue());
+        long freeBlocks = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFreeBlocks(freeBlocks);
+        LOGGER.debug("FreeBlocks: {}", freeBlocks);
     }
 
     private void parseFreeBlocksNonRoot() {
-        message.setFreeBlocksNonRoot(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FreeBlocksNonRoot: {}", message.getFreeBlocksNonRoot().getValue());
+        long freeBlocksNonRoot = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFreeBlocksNonRoot(freeBlocksNonRoot);
+        LOGGER.debug("FreeBlocksNonRoot: {}", freeBlocksNonRoot);
     }
 
     private void parseFileInodes() {
-        message.setFileInodes(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FileInodes: {}", message.getFileInodes().getValue());
+        long fileInodes = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFileInodes(fileInodes);
+        LOGGER.debug("FileInodes: {}", fileInodes);
     }
 
     private void parseFreeInodes() {
-        message.setFreeInodes(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FreeInodes: {}", message.getFreeInodes().getValue());
+        long freeInodes = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFreeInodes(freeInodes);
+        LOGGER.debug("FreeInodes: {}", freeInodes);
     }
 
     private void parseFreeInodesNonRoot() {
-        message.setFreeInodesNonRoot(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("FreeInodesNonRoot: {}", message.getFreeInodesNonRoot().getValue());
+        long freeInodesNonRoot = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFreeInodesNonRoot(freeInodesNonRoot);
+        LOGGER.debug("FreeInodesNonRoot: {}", freeInodesNonRoot);
     }
 
     private void parseSystemId() {
-        message.setSystemId(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("SystemId: {}", message.getSystemId().getValue());
+        long systemId = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setSystemId(systemId);
+        LOGGER.debug("SystemId: {}", systemId);
     }
 
     private void parseFlags() {
-        message.setFlags(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("Flags: {}", message.getFlags().getValue());
+        long flags = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setFlags(flags);
+        LOGGER.debug("Flags: {}", flags);
     }
 
     private void parseMaximumFilenameLength() {
-        message.setMaximumFilenameLength(parseLongField(DataFormatConstants.UINT64_SIZE));
-        LOGGER.debug("MaximumFilenameLength: {}", message.getMaximumFilenameLength().getValue());
+        long maximumFilenameLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        message.setMaximumFilenameLength(maximumFilenameLength);
+        LOGGER.debug("MaximumFilenameLength: {}", maximumFilenameLength);
     }
 
     @Override
