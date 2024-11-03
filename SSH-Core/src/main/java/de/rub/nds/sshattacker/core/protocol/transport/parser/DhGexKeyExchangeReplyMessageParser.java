@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
@@ -38,7 +39,7 @@ public class DhGexKeyExchangeReplyMessageParser
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
         byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
         message.setHostKeyBytes(hostKeyBytes);
-        LOGGER.debug("Host key bytes: {}", hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
     }
 
     private void parseEphemeralPublicKey() {
@@ -56,7 +57,7 @@ public class DhGexKeyExchangeReplyMessageParser
         LOGGER.debug("Signature length: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
         message.setSignature(signature);
-        LOGGER.debug("Signature: {}", signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 
     @Override

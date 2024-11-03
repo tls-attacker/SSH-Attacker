@@ -77,7 +77,7 @@ public class UserAuthHostbasedMessageParser
         LOGGER.debug("Signature length: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
         message.setSignature(signature);
-        LOGGER.debug("Signature: {}", signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 
     @Override

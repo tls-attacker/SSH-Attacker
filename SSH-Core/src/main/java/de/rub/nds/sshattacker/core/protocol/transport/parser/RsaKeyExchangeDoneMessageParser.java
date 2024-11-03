@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
@@ -41,6 +42,6 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
         LOGGER.debug("Signature length: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
         message.setSignature(signature);
-        LOGGER.debug("Signature: {}", signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 }
