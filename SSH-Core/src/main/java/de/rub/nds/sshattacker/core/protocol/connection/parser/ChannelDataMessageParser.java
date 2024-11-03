@@ -36,7 +36,7 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);
         message.setData(data);
-        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToHexString(data));
+        LOGGER.trace("Data: {}", () -> ArrayConverter.bytesToHexString(data));
     }
 
     @Override

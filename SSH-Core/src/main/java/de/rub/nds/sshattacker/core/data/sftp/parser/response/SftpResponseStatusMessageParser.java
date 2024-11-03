@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseStatusMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +37,7 @@ public class SftpResponseStatusMessageParser
     private void parseStatusCode() {
         int statusCode = parseIntField(DataFormatConstants.UINT32_SIZE);
         message.setStatusCode(statusCode);
-        LOGGER.debug("StatusCode: {}", statusCode);
+        LOGGER.debug("StatusCode: {}", SftpStatusCode.getNameByCode(statusCode));
     }
 
     private void parseErrorMessage() {

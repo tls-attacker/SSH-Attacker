@@ -14,8 +14,11 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.data.sftp.handler.attribute.SftpFileExtendedAttributeHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.nio.charset.StandardCharsets;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
 
     private ModifiableInteger typeLength;

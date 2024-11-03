@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.*;
+import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.*;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.message.response.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -124,8 +128,76 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
         @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
         @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
-        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
-        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown")
+        @XmlElement(
+                type = SftpRequestCheckFileHandleMessage.class,
+                name = "SftpRequestCheckFileHandle"),
+        @XmlElement(
+                type = SftpRequestCheckFileNameMessage.class,
+                name = "SftpRequestCheckFileName"),
+        @XmlElement(type = SftpRequestCloseMessage.class, name = "SftpRequestClose"),
+        @XmlElement(type = SftpRequestCopyDataMessage.class, name = "SftpRequestCopyData"),
+        @XmlElement(type = SftpRequestCopyFileMessage.class, name = "SftpRequestCopyFile"),
+        @XmlElement(type = SftpRequestExpandPathMessage.class, name = "SftpRequestExpandPath"),
+        @XmlElement(type = SftpRequestFileSetStatMessage.class, name = "SftpRequestFileSetStat"),
+        @XmlElement(type = SftpRequestFileStatMessage.class, name = "SftpRequestFileStat"),
+        @XmlElement(type = SftpRequestFileStatVfsMessage.class, name = "SftpRequestFileStatVfs"),
+        @XmlElement(type = SftpRequestFileSyncMessage.class, name = "SftpRequestFileSync"),
+        @XmlElement(
+                type = SftpRequestGetTempFolderMessage.class,
+                name = "SftpRequestGetTempFolder"),
+        @XmlElement(type = SftpRequestHardlinkMessage.class, name = "SftpRequestHardlink"),
+        @XmlElement(
+                type = SftpRequestHomeDirectoryMessage.class,
+                name = "SftpRequestHomeDirectory"),
+        @XmlElement(type = SftpRequestLimitsMessage.class, name = "SftpRequestLimits"),
+        @XmlElement(type = SftpRequestLinkSetStatMessage.class, name = "SftpRequestLinkSetStat"),
+        @XmlElement(type = SftpRequestLinkStatMessage.class, name = "SftpRequestLinkStat"),
+        @XmlElement(type = SftpRequestMakeDirMessage.class, name = "SftpRequestMakeDir"),
+        @XmlElement(
+                type = SftpRequestMakeTempFolderMessage.class,
+                name = "SftpRequestMakeTempFolder"),
+        @XmlElement(type = SftpRequestOpenDirMessage.class, name = "SftpRequestOpenDir"),
+        @XmlElement(type = SftpRequestOpenMessage.class, name = "SftpRequestOpen"),
+        @XmlElement(type = SftpRequestPosixRenameMessage.class, name = "SftpRequestPosixRename"),
+        @XmlElement(type = SftpRequestReadDirMessage.class, name = "SftpRequestReadDir"),
+        @XmlElement(type = SftpRequestReadLinkMessage.class, name = "SftpRequestReadLink"),
+        @XmlElement(type = SftpRequestReadMessage.class, name = "SftpRequestRead"),
+        @XmlElement(type = SftpRequestRealPathMessage.class, name = "SftpRequestRealPath"),
+        @XmlElement(type = SftpRequestRemoveMessage.class, name = "SftpRequestRemove"),
+        @XmlElement(type = SftpRequestRenameMessage.class, name = "SftpRequestRename"),
+        @XmlElement(type = SftpRequestRmdirMessage.class, name = "SftpRequestRmdir"),
+        @XmlElement(type = SftpRequestSetStatMessage.class, name = "SftpRequestSetStat"),
+        @XmlElement(
+                type = SftpRequestSpaceAvailableMessage.class,
+                name = "SftpRequestSpaceAvailable"),
+        @XmlElement(type = SftpRequestStatMessage.class, name = "SftpRequestStat"),
+        @XmlElement(type = SftpRequestStatVfsMessage.class, name = "SftpRequestStatVfs"),
+        @XmlElement(type = SftpRequestSymbolicLinkMessage.class, name = "SftpRequestSymbolicLink"),
+        @XmlElement(type = SftpRequestUnknownMessage.class, name = "SftpRequestUnknown"),
+        @XmlElement(
+                type = SftpRequestUsersGroupsByIdMessage.class,
+                name = "SftpRequestUsersGroupsById"),
+        @XmlElement(type = SftpRequestVendorIdMessage.class, name = "SftpRequestVendorId"),
+        @XmlElement(type = SftpRequestWithHandleMessage.class, name = "SftpRequestWithHandle"),
+        @XmlElement(type = SftpRequestWithPathMessage.class, name = "SftpRequestWithPath"),
+        @XmlElement(type = SftpRequestWriteMessage.class, name = "SftpRequestWrite"),
+        @XmlElement(type = SftpResponseAttributesMessage.class, name = "SftpResponseAttributes"),
+        @XmlElement(type = SftpResponseCheckFileMessage.class, name = "SftpResponseCheckFile"),
+        @XmlElement(type = SftpResponseDataMessage.class, name = "SftpResponseData"),
+        @XmlElement(type = SftpResponseHandleMessage.class, name = "SftpResponseHandle"),
+        @XmlElement(type = SftpResponseLimitsMessage.class, name = "SftpResponseLimits"),
+        @XmlElement(type = SftpResponseNameMessage.class, name = "SftpResponseName"),
+        @XmlElement(
+                type = SftpResponseSpaceAvailableMessage.class,
+                name = "SftpResponseSpaceAvailable"),
+        @XmlElement(type = SftpResponseStatusMessage.class, name = "SftpResponseStatus"),
+        @XmlElement(type = SftpResponseStatVfsMessage.class, name = "SftpResponseStatVfs"),
+        @XmlElement(type = SftpResponseUnknownMessage.class, name = "SftpResponseUnknown"),
+        @XmlElement(
+                type = SftpResponseUsersGroupsByIdMessage.class,
+                name = "SftpResponseUsersGroupsById"),
+        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion")
     })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 

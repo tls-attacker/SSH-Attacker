@@ -26,7 +26,7 @@ public class ChannelDataMessageSerializer extends ChannelMessageSerializer<Chann
         LOGGER.debug("Data length: {}", dataLength);
         appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
         byte[] data = message.getData().getValue();
-        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToHexString(data));
+        LOGGER.trace("Data: {}", () -> ArrayConverter.bytesToHexString(data));
         appendBytes(data);
     }
 

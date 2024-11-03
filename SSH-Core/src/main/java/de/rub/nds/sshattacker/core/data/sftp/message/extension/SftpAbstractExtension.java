@@ -14,8 +14,11 @@ import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpAbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.nio.charset.StandardCharsets;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SftpAbstractExtension<E extends SftpAbstractExtension<E>>
         extends ModifiableVariableHolder {
 

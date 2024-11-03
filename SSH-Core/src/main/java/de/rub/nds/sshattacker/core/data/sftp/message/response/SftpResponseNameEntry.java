@@ -15,9 +15,12 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseNameEn
 import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SftpResponseNameEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger filenameLength;
