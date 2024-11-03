@@ -43,12 +43,15 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
         for (int extensionIndex = 0, extensionStartPointer = getPointer();
                 extensionIndex < message.getExtensionCount().getValue();
                 extensionIndex++, extensionStartPointer = getPointer()) {
-            // Parse extension name to determine the parser to use
+
+            // Extrahiere den Namen der Erweiterung
             int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
             Extension extension =
                     Extension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
+
             AbstractExtensionParser<?> extensionParser;
+
             switch (extension) {
                 case SERVER_SIG_ALGS:
                     extensionParser =
@@ -61,6 +64,11 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                 case PING_OPENSSH_COM:
                     extensionParser = new PingExtensionParser(getArray(), extensionStartPointer);
                     break;
+                case PUBLICKEY_ALGORITHMS_ROUMENPETROV:
+                    extensionParser =
+                            new PublicKeyAlgorithmsRoumenPetrovExtensionParser(
+                                    getArray(), extensionStartPointer);
+                    break;
                 default:
                     LOGGER.debug(
                             "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
@@ -69,6 +77,8 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                     extensionParser = new UnknownExtensionParser(getArray(), extensionStartPointer);
                     break;
             }
+
+            // Erweiterung hinzufügen
             message.addExtension(extensionParser.parse());
             setPointer(extensionParser.getPointer());
         }

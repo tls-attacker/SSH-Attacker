@@ -21,15 +21,23 @@ import java.security.spec.DSAParameterSpec;
 public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
 
     // Group parameters
-    private BigInteger p;
-    private BigInteger q;
-    private BigInteger g;
+    protected BigInteger p;
+    protected BigInteger q;
+    protected BigInteger g;
 
     // Public key
-    private BigInteger y;
+    protected BigInteger y;
 
     public CustomDsaPublicKey() {
         super();
+    }
+
+    public CustomDsaPublicKey(DSAPublicKey publicKey) {
+        super();
+        p = publicKey.getParams().getP();
+        q = publicKey.getParams().getQ();
+        g = publicKey.getParams().getG();
+        y = publicKey.getY();
     }
 
     public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y) {

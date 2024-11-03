@@ -289,10 +289,14 @@ public class SshContext {
 
     // region SSH Extensions
     /** List of extensions supported by the client */
+    /** List of extensions supported by the client */
     public List<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
     public List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Add this new field for supported public key algorithms */
+    private String supportedPublicKeyAlgorithms;
 
     /** Flag whether client supports SSH Extension Negotiation */
     private boolean clientSupportsExtensionNegotiation;
@@ -1148,6 +1152,14 @@ public class SshContext {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         serverSupportedExtensions = extensions;
+    }
+
+    public void setSupportedPublicKeyAlgorithms(String supportedPublicKeyAlgorithms) {
+        this.supportedPublicKeyAlgorithms = supportedPublicKeyAlgorithms;
+    }
+
+    public String getSupportedPublicKeyAlgorithms() {
+        return supportedPublicKeyAlgorithms;
     }
 
     public void setClientSupportsExtensionNegotiation(boolean support) {

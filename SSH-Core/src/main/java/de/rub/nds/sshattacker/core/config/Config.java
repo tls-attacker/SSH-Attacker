@@ -602,20 +602,20 @@ public class Config implements Serializable {
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
-        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for
+        // We don't support SK (U2F) host keys (yet), only listed for
         // completeness
         clientSupportedHostKeyAlgorithms =
                 Arrays.stream(
                                 new PublicKeyAlgorithm[] {
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
                                     // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
                                     // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,

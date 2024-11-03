@@ -25,6 +25,7 @@ public enum Extension {
     GLOBAL_REQUESTS_OK("global-requests-ok"),
     PUBLICKEY_HOSTBOUND_OPENSSH_COM("publickey-hostbound@openssh.com"),
     PING_OPENSSH_COM("ping@openssh.com"),
+    PUBLICKEY_ALGORITHMS_ROUMENPETROV("publickey-algorithms@roumenpetrov.info"),
     UNKNOWN(null);
 
     private final String name;

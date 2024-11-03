@@ -192,6 +192,15 @@ public final class Converter {
                 input);
     }
 
+    public static byte[] longToBytes(long value, int size) {
+        byte[] result = new byte[size];
+        for (int i = size - 1; i >= 0; i--) {
+            result[i] = (byte) (value & 0xFF);
+            value >>= 8;
+        }
+        return result;
+    }
+
     public static byte booleanToByte(boolean value) {
         return (byte) (value ? 0x01 : 0x00);
     }

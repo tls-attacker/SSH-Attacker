@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.ssh.attacker</groupId>
         <artifactId>ssh-attacker</artifactId>
-        <version>1.3.2-SNAPSHOT</version>
+        <version>1.4.2-SNAPSHOT</version>
     </parent>
     <artifactId>attacks</artifactId>
 
