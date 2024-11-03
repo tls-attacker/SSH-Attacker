@@ -14,7 +14,8 @@ import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestRenam
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestRenameMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestRenameMessageHandler extends SftpMessageHandler<SftpRequestRenameMessage> {
+public class SftpRequestRenameMessageHandler
+        extends SftpRequestMessageHandler<SftpRequestRenameMessage> {
 
     public SftpRequestRenameMessageHandler(SshContext context) {
         super(context);
@@ -22,11 +23,6 @@ public class SftpRequestRenameMessageHandler extends SftpMessageHandler<SftpRequ
 
     public SftpRequestRenameMessageHandler(SshContext context, SftpRequestRenameMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestRenameMessage
     }
 
     @Override

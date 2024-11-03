@@ -21,8 +21,10 @@ public abstract class SftpResponseMessagePreparator<T extends SftpResponseMessag
     }
 
     public void prepareMessageSpecificContents() {
-        // TODO: Get valid request ID
-        getObject().setRequestId(0);
+        // Request identifier should be set by SftpManager in handleRequestMessage()
+        if (getObject().getRequestId() == null) {
+            getObject().setRequestId(chooser.getContext().getSftpManager().getNextRequestId());
+        }
         prepareResponseSpecificContents();
     }
 

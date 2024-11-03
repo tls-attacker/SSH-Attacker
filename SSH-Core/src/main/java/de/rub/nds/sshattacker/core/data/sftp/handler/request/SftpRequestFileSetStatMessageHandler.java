@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestFileS
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestFileSetStatMessageHandler
-        extends SftpMessageHandler<SftpRequestFileSetStatMessage> {
+        extends SftpRequestMessageHandler<SftpRequestFileSetStatMessage> {
 
     public SftpRequestFileSetStatMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestFileSetStatMessageHandler
     public SftpRequestFileSetStatMessageHandler(
             SshContext context, SftpRequestFileSetStatMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestFileSetStatMessage
     }
 
     @Override

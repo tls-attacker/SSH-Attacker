@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.DataMessageLayer;
+import de.rub.nds.sshattacker.core.data.sftp.SftpManager;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
@@ -338,6 +339,12 @@ public class SshContext {
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
+    // region Connection Protocol
+
+    private SftpManager sftpManager;
+
+    // endregion
+
     // region SFTP Version Exchange
     /** SFTP Client protocol version */
     private Integer sftpClientVersion;
@@ -405,6 +412,7 @@ public class SshContext {
         readSequenceNumber = 0;
         handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
         channelManager = new ChannelManager(this);
+        sftpManager = new SftpManager(this);
     }
 
     // endregion
@@ -1230,6 +1238,18 @@ public class SshContext {
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
     }
+
+    // region for Data Managers
+
+    public SftpManager getSftpManager() {
+        return sftpManager;
+    }
+
+    public void setSftpManager(SftpManager sftpManager) {
+        this.sftpManager = sftpManager;
+    }
+
+    // endregion
 
     // region Getters for SFTP Version Exchange Fields
     public Optional<Integer> getSftpClientVersion() {

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestPosixRenameMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestPosixRenameMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestPosixRenameMessagePreparator;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestPosixRenameMessageHandler
-        extends SftpMessageHandler<SftpRequestPosixRenameMessage> {
+        extends SftpRequestMessageHandler<SftpRequestPosixRenameMessage> {
 
     public SftpRequestPosixRenameMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestPosixRenameMessageHandler
     public SftpRequestPosixRenameMessageHandler(
             SshContext context, SftpRequestPosixRenameMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestPosixRenameMessage
     }
 
     @Override

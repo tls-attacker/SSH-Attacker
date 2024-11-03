@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestMakeD
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestMakeDirMessageHandler
-        extends SftpMessageHandler<SftpRequestMakeDirMessage> {
+        extends SftpRequestMessageHandler<SftpRequestMakeDirMessage> {
 
     public SftpRequestMakeDirMessageHandler(SshContext context) {
         super(context);
@@ -23,11 +23,6 @@ public class SftpRequestMakeDirMessageHandler
 
     public SftpRequestMakeDirMessageHandler(SshContext context, SftpRequestMakeDirMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestMakeDirMessage
     }
 
     @Override

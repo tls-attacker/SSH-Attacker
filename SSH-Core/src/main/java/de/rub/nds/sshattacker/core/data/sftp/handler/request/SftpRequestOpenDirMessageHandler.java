@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestOpenD
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestOpenDirMessageHandler
-        extends SftpMessageHandler<SftpRequestOpenDirMessage> {
+        extends SftpRequestMessageHandler<SftpRequestOpenDirMessage> {
 
     public SftpRequestOpenDirMessageHandler(SshContext context) {
         super(context);
@@ -23,11 +23,6 @@ public class SftpRequestOpenDirMessageHandler
 
     public SftpRequestOpenDirMessageHandler(SshContext context, SftpRequestOpenDirMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestOpenDirMessage
     }
 
     @Override

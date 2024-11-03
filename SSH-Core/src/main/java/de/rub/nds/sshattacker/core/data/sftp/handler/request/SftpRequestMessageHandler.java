@@ -1,0 +1,35 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.data.sftp.handler.request;
+
+import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public abstract class SftpRequestMessageHandler<T extends SftpRequestMessage<T>>
+        extends SftpMessageHandler<T> implements MessageSentHandler {
+
+    protected SftpRequestMessageHandler(SshContext context) {
+        super(context);
+    }
+
+    protected SftpRequestMessageHandler(SshContext context, T message) {
+        super(context, message);
+    }
+
+    @Override
+    public void adjustContext() {
+        context.getSftpManager().handleRequestMessage(message);
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        context.getSftpManager().addRequest(message);
+    }
+}

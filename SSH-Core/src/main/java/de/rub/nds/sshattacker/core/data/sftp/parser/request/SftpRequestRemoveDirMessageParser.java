@@ -26,7 +26,5 @@ public class SftpRequestRemoveDirMessageParser
     }
 
     @Override
-    protected void parseRequestWithPathSpecificContents() {
-        // TODO parserSftpRequestRmdirMessage();
-    }
+    protected void parseRequestWithPathSpecificContents() {}
 }

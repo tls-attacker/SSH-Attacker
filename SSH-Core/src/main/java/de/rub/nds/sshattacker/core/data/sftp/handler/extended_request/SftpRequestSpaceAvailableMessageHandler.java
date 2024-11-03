@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestSpaceAvailableMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestSpaceAvailableMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestSpaceAvailableMessagePreparator;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestSpaceAvailableMessageHandler
-        extends SftpMessageHandler<SftpRequestSpaceAvailableMessage> {
+        extends SftpRequestMessageHandler<SftpRequestSpaceAvailableMessage> {
 
     public SftpRequestSpaceAvailableMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestSpaceAvailableMessageHandler
     public SftpRequestSpaceAvailableMessageHandler(
             SshContext context, SftpRequestSpaceAvailableMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestSpaceAvailableMessage
     }
 
     @Override

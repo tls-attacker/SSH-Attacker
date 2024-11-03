@@ -14,7 +14,8 @@ import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestClose
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestCloseMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestCloseMessageHandler extends SftpMessageHandler<SftpRequestCloseMessage> {
+public class SftpRequestCloseMessageHandler
+        extends SftpRequestMessageHandler<SftpRequestCloseMessage> {
 
     public SftpRequestCloseMessageHandler(SshContext context) {
         super(context);
@@ -22,11 +23,6 @@ public class SftpRequestCloseMessageHandler extends SftpMessageHandler<SftpReque
 
     public SftpRequestCloseMessageHandler(SshContext context, SftpRequestCloseMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestCloseMessage
     }
 
     @Override

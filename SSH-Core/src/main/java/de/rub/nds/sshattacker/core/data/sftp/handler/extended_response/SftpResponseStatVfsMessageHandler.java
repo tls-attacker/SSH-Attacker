@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_response;
 
 import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseStatVfsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_response.SftpResponseStatVfsMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_response.SftpResponseStatVfsMessagePreparator;
@@ -15,7 +16,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response.SftpRe
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpResponseStatVfsMessageHandler
-        extends SftpMessageHandler<SftpResponseStatVfsMessage> {
+        extends SftpResponseMessageHandler<SftpResponseStatVfsMessage> {
 
     public SftpResponseStatVfsMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +25,6 @@ public class SftpResponseStatVfsMessageHandler
     public SftpResponseStatVfsMessageHandler(
             SshContext context, SftpResponseStatVfsMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpResponseStatVfsMessage
     }
 
     @Override

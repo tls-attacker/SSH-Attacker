@@ -22,6 +22,42 @@ public final class SshActionFactory {
         super();
     }
 
+    /**
+     * Creates a Message Action with the receive options: IGNORE_CHANNEL_DATA_WRAPPER and
+     * IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS
+     */
+    public static MessageAction createDataMessageAction(
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            ProtocolMessage<?>... dataMessages) {
+        return createDataMessageAction(
+                connection, sendingConnectionEnd, new ArrayList<>(Arrays.asList(dataMessages)));
+    }
+
+    /**
+     * Creates a Message Action with the receive options: IGNORE_CHANNEL_DATA_WRAPPER and
+     * IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS
+     */
+    public static MessageAction createDataMessageAction(
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            List<ProtocolMessage<?>> dataMessages) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(dataMessages);
+        } else {
+            action = new ReceiveAction(dataMessages);
+            ((ReceiveAction) action)
+                    .setReceiveOptions(
+                            Set.of(
+                                    ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
+                                    ReceiveAction.ReceiveOption
+                                            .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
     public static MessageAction createMessageAction(
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,

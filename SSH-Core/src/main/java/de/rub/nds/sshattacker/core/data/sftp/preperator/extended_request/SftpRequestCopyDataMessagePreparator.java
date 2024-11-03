@@ -21,13 +21,7 @@ public class SftpRequestCopyDataMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getHandle() == null) {
-            // TODO Get valid Handle
-            getObject().setHandle(new byte[100], true);
-        }
-        if (getObject().getHandleLength() == null) {
-            getObject().setHandleLength(getObject().getHandle().getValue().length);
-        }
+        getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
         if (getObject().getReadFromOffset() == null) {
             getObject().setReadFromOffset(0);
@@ -37,13 +31,7 @@ public class SftpRequestCopyDataMessagePreparator
             getObject().setReadDataLength(1000000);
         }
 
-        if (getObject().getWriteToHandle() == null) {
-            // TODO Get valid WriteToHandle
-            getObject().setWriteToHandle(new byte[100], true);
-        }
-        if (getObject().getWriteToHandleLength() == null) {
-            getObject().setWriteToHandleLength(getObject().getWriteToHandle().getValue().length);
-        }
+        getObject().setWriteToHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
         if (getObject().getWriteToOffset() == null) {
             getObject().setWriteToOffset(0);

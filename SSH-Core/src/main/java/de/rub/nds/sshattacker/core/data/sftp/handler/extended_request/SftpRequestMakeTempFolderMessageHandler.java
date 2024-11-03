@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestMakeTempFolderMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestMakeTempFolderMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestMakeTempFolderMessagePreparator;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestMakeTempFolderMessageHandler
-        extends SftpMessageHandler<SftpRequestMakeTempFolderMessage> {
+        extends SftpRequestMessageHandler<SftpRequestMakeTempFolderMessage> {
 
     public SftpRequestMakeTempFolderMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestMakeTempFolderMessageHandler
     public SftpRequestMakeTempFolderMessageHandler(
             SshContext context, SftpRequestMakeTempFolderMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestMakeTempFolderMessage
     }
 
     @Override

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestHardlinkMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestHardlinkMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestHardlinkMessagePreparator;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestHardlinkMessageHandler
-        extends SftpMessageHandler<SftpRequestHardlinkMessage> {
+        extends SftpRequestMessageHandler<SftpRequestHardlinkMessage> {
 
     public SftpRequestHardlinkMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestHardlinkMessageHandler
     public SftpRequestHardlinkMessageHandler(
             SshContext context, SftpRequestHardlinkMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestHardlinkMessage
     }
 
     @Override

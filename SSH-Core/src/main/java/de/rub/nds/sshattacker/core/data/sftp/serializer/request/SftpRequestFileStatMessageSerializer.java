@@ -17,7 +17,5 @@ public class SftpRequestFileStatMessageSerializer
     }
 
     @Override
-    protected void serializeRequestWithHandleSpecificContents() {
-        // TODO serializeSftpRequestFileStatMessage();
-    }
+    protected void serializeRequestWithHandleSpecificContents() {}
 }

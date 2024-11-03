@@ -138,6 +138,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
         @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
         @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply"),
+        // SFTP
         @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
         @XmlElement(
                 type = SftpRequestCheckFileHandleMessage.class,

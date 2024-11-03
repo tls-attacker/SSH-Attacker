@@ -23,13 +23,7 @@ public class SftpRequestCheckFileHandleMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getHandle() == null) {
-            // TODO Get valid Handle
-            getObject().setHandle(new byte[100], true);
-        }
-        if (getObject().getHandleLength() == null) {
-            getObject().setHandleLength(getObject().getHandle().getValue().length);
-        }
+        getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
         if (getObject().getHashAlgorithms() == null) {
             getObject().setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);

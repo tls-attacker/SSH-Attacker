@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestRemov
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestRemoveDirMessageHandler
-        extends SftpMessageHandler<SftpRequestRmdirMessage> {
+        extends SftpRequestMessageHandler<SftpRequestRmdirMessage> {
 
     public SftpRequestRemoveDirMessageHandler(SshContext context) {
         super(context);
@@ -23,11 +23,6 @@ public class SftpRequestRemoveDirMessageHandler
 
     public SftpRequestRemoveDirMessageHandler(SshContext context, SftpRequestRmdirMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestRmdirMessage
     }
 
     @Override

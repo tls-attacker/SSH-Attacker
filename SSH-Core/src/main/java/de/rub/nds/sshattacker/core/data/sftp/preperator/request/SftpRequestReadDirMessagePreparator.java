@@ -20,12 +20,6 @@ public class SftpRequestReadDirMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getHandle() == null) {
-            // TODO Set valid handler
-            getObject().setHandle(new byte[100], true);
-        }
-        if (getObject().getHandleLength() == null) {
-            getObject().setHandleLength(getObject().getHandle().getValue().length);
-        }
+        getObject().setHandle(chooser.getContext().getSftpManager().getDirectoryHandle(), true);
     }
 }

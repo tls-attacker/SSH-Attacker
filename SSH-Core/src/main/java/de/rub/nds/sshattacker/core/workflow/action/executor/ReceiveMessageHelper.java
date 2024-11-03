@@ -149,6 +149,7 @@ public final class ReceiveMessageHelper {
                     // Parse ChannelDataMessage
                     ProtocolMessage<?> innerMessage =
                             context.getDataMessageLayer().parse((ChannelDataMessage) message);
+                    innerMessage.getHandler(context).adjustContext();
                     parsedMessages.add(innerMessage);
                 }
             }

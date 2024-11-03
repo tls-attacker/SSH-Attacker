@@ -127,6 +127,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
         @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+        // SFTP
         @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
         @XmlElement(
                 type = SftpRequestCheckFileHandleMessage.class,

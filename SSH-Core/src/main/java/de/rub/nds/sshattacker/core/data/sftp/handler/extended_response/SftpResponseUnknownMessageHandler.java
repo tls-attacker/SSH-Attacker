@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_response;
 
 import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_response.SftpResponseUnknownMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_response.SftpResponseUnknownMessagePreparator;
@@ -15,7 +16,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response.SftpRe
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpResponseUnknownMessageHandler
-        extends SftpMessageHandler<SftpResponseUnknownMessage> {
+        extends SftpResponseMessageHandler<SftpResponseUnknownMessage> {
 
     public SftpResponseUnknownMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +25,6 @@ public class SftpResponseUnknownMessageHandler
     public SftpResponseUnknownMessageHandler(
             SshContext context, SftpResponseUnknownMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpResponseUnknownMessage
     }
 
     @Override

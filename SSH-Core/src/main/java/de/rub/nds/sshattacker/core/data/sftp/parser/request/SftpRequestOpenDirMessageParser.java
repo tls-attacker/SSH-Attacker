@@ -26,7 +26,5 @@ public class SftpRequestOpenDirMessageParser
     }
 
     @Override
-    protected void parseRequestWithPathSpecificContents() {
-        // TODO parserSftpRequestOpenDirMessage();
-    }
+    protected void parseRequestWithPathSpecificContents() {}
 }

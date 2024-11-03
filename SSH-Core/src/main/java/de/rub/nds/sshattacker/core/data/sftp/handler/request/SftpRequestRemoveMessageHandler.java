@@ -14,7 +14,8 @@ import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestRemov
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestRemoveMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestRemoveMessageHandler extends SftpMessageHandler<SftpRequestRemoveMessage> {
+public class SftpRequestRemoveMessageHandler
+        extends SftpRequestMessageHandler<SftpRequestRemoveMessage> {
 
     public SftpRequestRemoveMessageHandler(SshContext context) {
         super(context);
@@ -22,11 +23,6 @@ public class SftpRequestRemoveMessageHandler extends SftpMessageHandler<SftpRequ
 
     public SftpRequestRemoveMessageHandler(SshContext context, SftpRequestRemoveMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestRemoveMessage
     }
 
     @Override

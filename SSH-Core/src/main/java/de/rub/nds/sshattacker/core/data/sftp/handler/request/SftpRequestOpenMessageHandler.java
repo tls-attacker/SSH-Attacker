@@ -14,7 +14,8 @@ import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestOpenM
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestOpenMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestOpenMessageHandler extends SftpMessageHandler<SftpRequestOpenMessage> {
+public class SftpRequestOpenMessageHandler
+        extends SftpRequestMessageHandler<SftpRequestOpenMessage> {
 
     public SftpRequestOpenMessageHandler(SshContext context) {
         super(context);
@@ -22,11 +23,6 @@ public class SftpRequestOpenMessageHandler extends SftpMessageHandler<SftpReques
 
     public SftpRequestOpenMessageHandler(SshContext context, SftpRequestOpenMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestOpenMessage
     }
 
     @Override

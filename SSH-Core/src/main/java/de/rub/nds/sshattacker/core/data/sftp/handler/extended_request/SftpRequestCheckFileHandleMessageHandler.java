@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCheckFileHandleMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestCheckFileHandleMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestCheckFileHandleMessagePreparator;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestCheckFileHandleMessageHandler
-        extends SftpMessageHandler<SftpRequestCheckFileHandleMessage> {
+        extends SftpRequestMessageHandler<SftpRequestCheckFileHandleMessage> {
 
     public SftpRequestCheckFileHandleMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestCheckFileHandleMessageHandler
     public SftpRequestCheckFileHandleMessageHandler(
             SshContext context, SftpRequestCheckFileHandleMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestCheckFileHandleMessage
     }
 
     @Override

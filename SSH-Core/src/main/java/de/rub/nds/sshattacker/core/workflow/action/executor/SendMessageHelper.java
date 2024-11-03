@@ -42,6 +42,10 @@ public final class SendMessageHelper {
             if (message instanceof DataMessage<?>) {
                 // Serialize data message to ChannelDataMessage
                 innerMessage = message;
+                Handler<?> handler = innerMessage.getHandler(context);
+                if (handler instanceof MessageSentHandler) {
+                    ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+                }
                 message = context.getDataMessageLayer().serialize((DataMessage<?>) message);
             }
 

@@ -37,7 +37,7 @@ public class SftpResponseDataMessageParser
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);
         message.setData(data);
-        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToHexString(data));
     }
 
     @Override

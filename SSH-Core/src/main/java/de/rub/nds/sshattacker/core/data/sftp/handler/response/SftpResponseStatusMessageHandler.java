@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseSta
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpResponseStatusMessageHandler
-        extends SftpMessageHandler<SftpResponseStatusMessage> {
+        extends SftpResponseMessageHandler<SftpResponseStatusMessage> {
 
     public SftpResponseStatusMessageHandler(SshContext context) {
         super(context);
@@ -23,11 +23,6 @@ public class SftpResponseStatusMessageHandler
 
     public SftpResponseStatusMessageHandler(SshContext context, SftpResponseStatusMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpResponseStatusMessage
     }
 
     @Override

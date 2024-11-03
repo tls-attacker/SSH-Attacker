@@ -15,10 +15,11 @@ import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestFileStatMessage;
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseDataMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseHandleMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameMessage;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -577,29 +578,30 @@ public class WorkflowConfigurationFactory {
     public void addSftpTestActions(WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
-                SshActionFactory.createMessageAction(
+                SshActionFactory.createDataMessageAction(
                         connection, ConnectionEndType.CLIENT, new SftpRequestOpenMessage()),
-                SshActionFactory.withReceiveOptions(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new SftpResponseHandleMessage()),
-                        Set.of(
-                                ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
-                                ReceiveAction.ReceiveOption
-                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseHandleMessage()));
         workflow.addSshActions(
-                SshActionFactory.createMessageAction(
+                SshActionFactory.createDataMessageAction(
                         connection, ConnectionEndType.CLIENT, new SftpRequestFileStatMessage()),
-                SshActionFactory.withReceiveOptions(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new SftpResponseAttributesMessage()),
-                        Set.of(
-                                ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
-                                ReceiveAction.ReceiveOption
-                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseAttributesMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestReadMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseDataMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestOpenDirMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseHandleMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestReadDirMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseNameMessage()));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestRealP
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestRealPathMessageHandler
-        extends SftpMessageHandler<SftpRequestRealPathMessage> {
+        extends SftpRequestMessageHandler<SftpRequestRealPathMessage> {
 
     public SftpRequestRealPathMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestRealPathMessageHandler
     public SftpRequestRealPathMessageHandler(
             SshContext context, SftpRequestRealPathMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestRealPathMessage
     }
 
     @Override

@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestSymbo
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestSymbolicLinkMessageHandler
-        extends SftpMessageHandler<SftpRequestSymbolicLinkMessage> {
+        extends SftpRequestMessageHandler<SftpRequestSymbolicLinkMessage> {
 
     public SftpRequestSymbolicLinkMessageHandler(SshContext context) {
         super(context);
@@ -24,11 +24,6 @@ public class SftpRequestSymbolicLinkMessageHandler
     public SftpRequestSymbolicLinkMessageHandler(
             SshContext context, SftpRequestSymbolicLinkMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpRequestSymbolicLinkMessage
     }
 
     @Override

@@ -17,7 +17,8 @@ public class StringDataMessagePreparator extends ProtocolMessagePreparator<Strin
     }
 
     public void prepareProtocolMessageContents() {
-        // TODO dummy values for fuzzing
-        getObject().setData("ls /");
+        if (getObject().getData() == null) {
+            getObject().setData("ls /");
+        }
     }
 }

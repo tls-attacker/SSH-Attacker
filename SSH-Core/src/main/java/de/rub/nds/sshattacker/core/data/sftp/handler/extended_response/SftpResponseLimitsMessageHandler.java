@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_response;
 
 import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseLimitsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_response.SftpResponseLimitsMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_response.SftpResponseLimitsMessagePreparator;
@@ -15,7 +16,7 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response.SftpRe
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpResponseLimitsMessageHandler
-        extends SftpMessageHandler<SftpResponseLimitsMessage> {
+        extends SftpResponseMessageHandler<SftpResponseLimitsMessage> {
 
     public SftpResponseLimitsMessageHandler(SshContext context) {
         super(context);
@@ -23,11 +24,6 @@ public class SftpResponseLimitsMessageHandler
 
     public SftpResponseLimitsMessageHandler(SshContext context, SftpResponseLimitsMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void adjustContext() {
-        // TODO: Handle SftpResponseLimitsMessage
     }
 
     @Override

@@ -21,7 +21,7 @@ public class SftpResponseHandleMessagePreparator
     @Override
     public void prepareResponseSpecificContents() {
         if (getObject().getHandle() == null) {
-            // TODO get valid handle
+            // Should be set in SftpManager handleRequestMessage()
             getObject().setHandle(new byte[100], true);
         }
         if (getObject().getHandleLength() == null) {
