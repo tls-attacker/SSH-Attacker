@@ -209,7 +209,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 type = SftpResponseUsersGroupsByIdMessage.class,
                 name = "SftpResponseUsersGroupsById"),
         @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
-        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion")
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
+        // SFTP V4
+        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek")
     })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
