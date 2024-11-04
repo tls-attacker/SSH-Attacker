@@ -27,12 +27,12 @@ public class SftpRequestStatMessageHandler
 
     @Override
     public SftpRequestStatMessageParser getParser(byte[] array) {
-        return new SftpRequestStatMessageParser(array);
+        return new SftpRequestStatMessageParser(array, context.getChooser());
     }
 
     @Override
     public SftpRequestStatMessageParser getParser(byte[] array, int startPosition) {
-        return new SftpRequestStatMessageParser(array, startPosition);
+        return new SftpRequestStatMessageParser(array, startPosition, context.getChooser());
     }
 
     @Override

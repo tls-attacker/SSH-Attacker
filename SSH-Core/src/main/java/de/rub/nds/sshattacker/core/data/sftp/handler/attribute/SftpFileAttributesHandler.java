@@ -35,12 +35,12 @@ public class SftpFileAttributesHandler implements Handler<SftpFileAttributes> {
 
     @Override
     public SftpFileAttributesParser getParser(byte[] array) {
-        return new SftpFileAttributesParser(array);
+        return new SftpFileAttributesParser(array, context.getChooser());
     }
 
     @Override
     public SftpFileAttributesParser getParser(byte[] array, int startPosition) {
-        return new SftpFileAttributesParser(array, startPosition);
+        return new SftpFileAttributesParser(array, startPosition, context.getChooser());
     }
 
     @Override

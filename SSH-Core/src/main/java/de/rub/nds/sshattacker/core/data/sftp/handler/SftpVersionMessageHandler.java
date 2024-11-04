@@ -26,9 +26,17 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
 
     @Override
     public void adjustContext() {
-        context.setSftpServerVersion(message.getVersion().getValue());
+        int receivedServerVersion = message.getVersion().getValue();
+        context.setSftpServerVersion(receivedServerVersion);
         context.setSftpServerSupportedExtensions(message.getExtensions());
         message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
+
+        // Set negotiated SFTP version based on own client version and received server version
+        if (receivedServerVersion < context.getConfig().getSftpClientVersion()) {
+            context.setSftpNegotiatedVersion(receivedServerVersion);
+        } else {
+            context.setSftpNegotiatedVersion(context.getConfig().getSftpClientVersion());
+        }
     }
 
     @Override

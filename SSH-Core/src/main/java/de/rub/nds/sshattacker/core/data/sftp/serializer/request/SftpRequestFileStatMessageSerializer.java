@@ -7,15 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestFileStatMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SftpRequestFileStatMessageSerializer
         extends SftpRequestWithHandleMessageSerializer<SftpRequestFileStatMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SftpRequestFileStatMessageSerializer(SftpRequestFileStatMessage message) {
         super(message);
     }
 
+    private void serializeFlags() {
+        if (message.getFlags() != null) {
+            Integer flags = message.getFlags().getValue();
+            LOGGER.debug("Flags: {}", flags);
+            appendInt(flags, DataFormatConstants.UINT32_SIZE);
+        }
+    }
+
     @Override
-    protected void serializeRequestWithHandleSpecificContents() {}
+    protected void serializeRequestWithHandleSpecificContents() {
+        serializeFlags();
+    }
 }

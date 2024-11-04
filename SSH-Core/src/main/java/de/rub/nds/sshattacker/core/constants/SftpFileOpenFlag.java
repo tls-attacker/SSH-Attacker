@@ -8,12 +8,20 @@
 package de.rub.nds.sshattacker.core.constants;
 
 public enum SftpFileOpenFlag {
+    /*
+     * Sources:
+     *  - https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-02#page-12
+     *  - https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-03#page-15
+     */
+    // [ From version 3 onwards ]
     SSH_FXF_READ(0x00000001),
     SSH_FXF_WRITE(0x00000002),
     SSH_FXF_APPEND(0x00000004),
     SSH_FXF_CREAT(0x00000008),
     SSH_FXF_TRUNC(0x00000010),
-    SSH_FXF_EXCL(0x00000020);
+    SSH_FXF_EXCL(0x00000020),
+    // [ From version 4 onwards ]
+    SSH_FXF_TEXT(0x00000040);
 
     private final int value;
 

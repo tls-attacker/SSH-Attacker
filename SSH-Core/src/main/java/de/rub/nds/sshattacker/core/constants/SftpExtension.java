@@ -30,6 +30,9 @@ public enum SftpExtension {
      *      - 4.9. expand-path@openssh.com
      *      - 4.10. expand-path@openssh.com
      *      - 4.12. users-groups-by-id@openssh.com
+     * - SFTP v4: https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-03
+     *      - 4.3. new-line
+     *      - 6.3. text-seek
      */
     // SFTP
     VENDOR_ID("vendor-id"),
@@ -44,6 +47,9 @@ public enum SftpExtension {
     COPY_DATA("copy-data"),
     GET_TEMP_FOLDER("get-temp-folder"),
     MAKE_TEMP_FOLDER("make-temp-folder"),
+    // SFTP v4
+    TEXT_SEEK("text-seek"),
+    NEWLINE("newline"),
     // Vendor extensions
     POSIX_RENAME_OPENSSH_COM("posix-rename@openssh.com"),
     STAT_VFS_OPENSSH_COM("statvfs@openssh.com"),

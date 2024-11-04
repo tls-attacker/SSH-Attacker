@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameMessage;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,13 +17,16 @@ public class SftpResponseNameMessageParser
         extends SftpResponseMessageParser<SftpResponseNameMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final Chooser chooser;
 
-    public SftpResponseNameMessageParser(byte[] array) {
+    public SftpResponseNameMessageParser(byte[] array, Chooser chooser) {
         super(array);
+        this.chooser = chooser;
     }
 
-    public SftpResponseNameMessageParser(byte[] array, int startPosition) {
+    public SftpResponseNameMessageParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
+        this.chooser = chooser;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class SftpResponseNameMessageParser
                 nameEntryIndex++, nameEntryStartPointer = getPointer()) {
 
             SftpResponseNameEntryParser nameEntryParser =
-                    new SftpResponseNameEntryParser(getArray(), nameEntryStartPointer);
+                    new SftpResponseNameEntryParser(getArray(), nameEntryStartPointer, chooser);
 
             message.addNameEntry(nameEntryParser.parse());
             setPointer(nameEntryParser.getPointer());

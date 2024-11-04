@@ -257,6 +257,8 @@ public abstract class Chooser {
 
     public abstract Integer getSftpServerVersion();
 
+    public abstract Integer getSftpNegotiatedVersion();
+
     // endregion
 
     // region SFTP Extensions

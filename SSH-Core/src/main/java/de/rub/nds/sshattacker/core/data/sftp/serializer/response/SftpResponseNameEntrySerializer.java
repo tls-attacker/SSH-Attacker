@@ -37,12 +37,14 @@ public class SftpResponseNameEntrySerializer extends Serializer<SftpResponseName
     }
 
     private void serializeLongName() {
-        Integer longNameLength = nameEntry.getLongNameLength().getValue();
-        LOGGER.debug("LongName length: {}", longNameLength);
-        appendInt(longNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String longName = nameEntry.getLongName().getValue();
-        LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
-        appendString(longName, StandardCharsets.UTF_8);
+        if (nameEntry.getLongName() != null) {
+            Integer longNameLength = nameEntry.getLongNameLength().getValue();
+            LOGGER.debug("LongName length: {}", longNameLength);
+            appendInt(longNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+            String longName = nameEntry.getLongName().getValue();
+            LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
+            appendString(longName, StandardCharsets.UTF_8);
+        }
     }
 
     private void serializeAttributes() {

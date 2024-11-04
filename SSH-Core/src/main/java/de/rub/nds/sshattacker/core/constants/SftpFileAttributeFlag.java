@@ -8,11 +8,23 @@
 package de.rub.nds.sshattacker.core.constants;
 
 public enum SftpFileAttributeFlag {
+    /*
+     * Sources:
+     *  - https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-02#page-9
+     *  - https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-03#page-9
+     */
     SSH_FILEXFER_ATTR_SIZE(0x00000001),
-    SSH_FILEXFER_ATTR_UIDGID(0x00000002),
+    SSH_FILEXFER_ATTR_UIDGID(0x00000002), // No longer available since version 4
     SSH_FILEXFER_ATTR_PERMISSIONS(0x00000004),
-    SSH_FILEXFER_ATTR_ACMODTIME(0x00000008),
-    SSH_FILEXFER_ATTR_EXTENDED(0x80000000);
+    SSH_FILEXFER_ATTR_ACMODTIME(
+            0x00000008), // Name changed to SSH_FILEXFER_ATTR_ACCESSTIME in version 4
+    SSH_FILEXFER_ATTR_ACCESSTIME(0x00000008),
+    SSH_FILEXFER_ATTR_EXTENDED(0x80000000),
+    // [ From version 4 onwards ]
+    SSH_FILEXFER_ATTR_CREATETIME(0x00000010),
+    SSH_FILEXFER_ATTR_MODIFYTIME(0x00000020),
+    SSH_FILEXFER_ATTR_ACL(0x00000040),
+    SSH_FILEXFER_ATTR_OWNERGROUP(0x00000080);
 
     private final int value;
 

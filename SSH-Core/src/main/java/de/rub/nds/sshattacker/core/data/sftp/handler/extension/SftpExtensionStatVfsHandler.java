@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.handler.extension;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionStatVfs;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extension.SftpExtensionWithVersionParser;
-import de.rub.nds.sshattacker.core.data.sftp.preperator.extension.SftpExtensionWithVersionPreparator;
+import de.rub.nds.sshattacker.core.data.sftp.preperator.extension.SftpExtensionStatVfsPreparator;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.extension.SftpExtensionWithVersionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -43,9 +43,9 @@ public class SftpExtensionStatVfsHandler
     }
 
     @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionStatVfs> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.STAT_VFS_OPENSSH_COM);
+    public SftpExtensionStatVfsPreparator getPreparator() {
+        return new SftpExtensionStatVfsPreparator(
+                context.getChooser(), extension, SftpExtension.F_STAT_VFS_OPENSSH_COM);
     }
 
     @Override

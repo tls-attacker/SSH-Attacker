@@ -9,16 +9,21 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestLinkSetStatMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestLinkSetStatMessageParser
         extends SftpRequestExtendedWithPathMessageParser<SftpRequestLinkSetStatMessage> {
 
-    public SftpRequestLinkSetStatMessageParser(byte[] array) {
+    private final Chooser chooser;
+
+    public SftpRequestLinkSetStatMessageParser(byte[] array, Chooser chooser) {
         super(array);
+        this.chooser = chooser;
     }
 
-    public SftpRequestLinkSetStatMessageParser(byte[] array, int startPosition) {
+    public SftpRequestLinkSetStatMessageParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
+        this.chooser = chooser;
     }
 
     @Override
@@ -28,7 +33,7 @@ public class SftpRequestLinkSetStatMessageParser
 
     private void parseAttributes() {
         SftpFileAttributesParser attributesParser =
-                new SftpFileAttributesParser(getArray(), getPointer());
+                new SftpFileAttributesParser(getArray(), getPointer(), chooser);
         message.setAttributes(attributesParser.parse());
         setPointer(attributesParser.getPointer());
     }

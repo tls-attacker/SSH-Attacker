@@ -7,11 +7,36 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestFileStatMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestFileStatMessage
         extends SftpRequestWithHandleMessage<SftpRequestFileStatMessage> {
+
+    private ModifiableInteger flags;
+
+    public ModifiableInteger getFlags() {
+        return flags;
+    }
+
+    public void setFlags(ModifiableInteger flags) {
+        this.flags = flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
+    }
+
+    public void setFlags(SftpFileAttributeFlag... flags) {
+        setFlags(SftpFileAttributeFlag.flagsToInt(flags));
+    }
+
+    public void clearFlags() {
+        flags = null;
+    }
 
     @Override
     public SftpRequestFileStatMessageHandler getHandler(SshContext context) {

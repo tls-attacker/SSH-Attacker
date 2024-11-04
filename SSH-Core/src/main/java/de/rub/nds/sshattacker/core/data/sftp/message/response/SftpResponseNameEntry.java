@@ -108,6 +108,11 @@ public class SftpResponseNameEntry extends ModifiableVariableHolder {
         this.longName = ModifiableVariableFactory.safelySetValue(this.longName, longName);
     }
 
+    public void clearLongName() {
+        longName = null;
+        longNameLength = null;
+    }
+
     public SftpFileAttributes getAttributes() {
         return attributes;
     }

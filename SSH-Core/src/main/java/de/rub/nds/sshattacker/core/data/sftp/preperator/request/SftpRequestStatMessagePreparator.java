@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.request;
 
+import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestStatMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -25,6 +26,15 @@ public class SftpRequestStatMessagePreparator
         }
         if (getObject().getPathLength() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
+        }
+
+        if (chooser.getSftpNegotiatedVersion() > 3
+                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+            if (getObject().getFlags() == null) {
+                getObject().setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
+            }
+        } else {
+            getObject().clearFlags();
         }
     }
 }

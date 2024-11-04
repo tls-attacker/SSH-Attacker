@@ -14,8 +14,7 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
@@ -431,6 +430,15 @@ public class Config implements Serializable {
     /** SFTP Server protocol version */
     private Integer sftpServerVersion;
 
+    /** SFTP negotiated protocol version */
+    private Integer sftpNegotiatedVersion;
+
+    /**
+     * Whether the protocol messages that are sent should be consistent with the negotiated SFTP
+     * protocol version.
+     */
+    private Boolean respectSftpNegotiatedVersion;
+
     // endregion
 
     // region SSH Extensions
@@ -443,6 +451,12 @@ public class Config implements Serializable {
     @XmlElementWrapper
     @XmlElements({@XmlElement(type = SftpExtensionUnknown.class, name = "SftpUnknownExtension")})
     private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
+
+    // endregion
+
+    // region SSH Attributes Settings
+    /** Whether the attributes in messages should be consistent with the attributes flags. */
+    private Boolean respectSftpAttributesFlags;
 
     // endregion
 
@@ -1113,15 +1127,45 @@ public class Config implements Serializable {
         // endregion
 
         // region SFTP Version Exchange initialization
-        sftpClientVersion = 3;
-        sftpServerVersion = 3;
+        sftpClientVersion = 4;
+        sftpServerVersion = 4;
+        sftpNegotiatedVersion = 1;
+        respectSftpNegotiatedVersion = true;
         // endregion
 
         // region SFTP Extension
         sftpClientSupportedExtensions = new ArrayList<>();
+        addAllSftpExtensions(sftpClientSupportedExtensions);
         sftpServerSupportedExtensions = new ArrayList<>();
-
+        addAllSftpExtensions(sftpServerSupportedExtensions);
         // endregion
+
+        // region SSH Attributes Settings
+        respectSftpAttributesFlags = true;
+        // endregion
+
+    }
+
+    public static void addAllSftpExtensions(List<SftpAbstractExtension<?>> extensions) {
+        extensions.add(new SftpExtensionCheckFile());
+        extensions.add(new SftpExtensionCopyData());
+        extensions.add(new SftpExtensionCopyFile());
+        extensions.add(new SftpExtensionExpandPath());
+        extensions.add(new SftpExtensionFileStatVfs());
+        extensions.add(new SftpExtensionFileSync());
+        extensions.add(new SftpExtensionGetTempFolder());
+        extensions.add(new SftpExtensionHardlink());
+        extensions.add(new SftpExtensionHomeDirectory());
+        extensions.add(new SftpExtensionLimits());
+        extensions.add(new SftpExtensionLinkSetStat());
+        extensions.add(new SftpExtensionMakeTempFolder());
+        extensions.add(new SftpExtensionPosixRename());
+        extensions.add(new SftpExtensionSpaceAvailable());
+        extensions.add(new SftpExtensionStatVfs());
+        extensions.add(new SftpExtensionUsersGroupsById());
+        extensions.add(new SftpExtensionVendorId());
+        extensions.add(new SftpExtensionTextSeek());
+        extensions.add(new SftpExtensionNewline());
     }
 
     // endregion
@@ -2035,6 +2079,14 @@ public class Config implements Serializable {
         return sftpServerVersion;
     }
 
+    public Integer getSftpNegotiatedVersion() {
+        return sftpNegotiatedVersion;
+    }
+
+    public Boolean getRespectSftpNegotiatedVersion() {
+        return respectSftpNegotiatedVersion;
+    }
+
     // endregion
     // region Setters for SFTP Version Exchange
     public void setSftpClientVersion(Integer sftpClientVersion) {
@@ -2043,6 +2095,14 @@ public class Config implements Serializable {
 
     public void setSftpServerVersion(Integer sftpServerVersion) {
         this.sftpServerVersion = sftpServerVersion;
+    }
+
+    public void setSftpNegotiatedVersion(Integer sftpNegotiatedVersion) {
+        this.sftpNegotiatedVersion = sftpNegotiatedVersion;
+    }
+
+    public void setRespectSftpNegotiatedVersion(Boolean respectSftpNegotiatedVersion) {
+        this.respectSftpNegotiatedVersion = respectSftpNegotiatedVersion;
     }
 
     // endregion
@@ -2072,4 +2132,16 @@ public class Config implements Serializable {
             List<SftpAbstractExtension<?>> sftpServerSupportedExtensions) {
         this.sftpServerSupportedExtensions = sftpServerSupportedExtensions;
     }
+
+    // endregion
+
+    // region SSH Attributes Settings
+    public void setRespectSftpAttributesFlags(Boolean respectSftpAttributesFlags) {
+        this.respectSftpAttributesFlags = respectSftpAttributesFlags;
+    }
+
+    public Boolean getRespectSftpAttributesFlags() {
+        return respectSftpAttributesFlags;
+    }
+    // endregion
 }

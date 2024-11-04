@@ -35,12 +35,12 @@ public class SftpResponseNameEntryHandler implements Handler<SftpResponseNameEnt
 
     @Override
     public SftpResponseNameEntryParser getParser(byte[] array) {
-        return new SftpResponseNameEntryParser(array);
+        return new SftpResponseNameEntryParser(array, context.getChooser());
     }
 
     @Override
     public SftpResponseNameEntryParser getParser(byte[] array, int startPosition) {
-        return new SftpResponseNameEntryParser(array, startPosition);
+        return new SftpResponseNameEntryParser(array, startPosition, context.getChooser());
     }
 
     @Override

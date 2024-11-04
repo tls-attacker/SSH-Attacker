@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameEntry;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +24,16 @@ public class SftpResponseNameEntryParser extends Parser<SftpResponseNameEntry> {
 
     private final SftpResponseNameEntry nameEntry = new SftpResponseNameEntry();
 
-    public SftpResponseNameEntryParser(byte[] array) {
+    private final Chooser chooser;
+
+    public SftpResponseNameEntryParser(byte[] array, Chooser chooser) {
         super(array);
+        this.chooser = chooser;
     }
 
-    public SftpResponseNameEntryParser(byte[] array, int startPosition) {
+    public SftpResponseNameEntryParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
+        this.chooser = chooser;
     }
 
     private void parseFilename() {
@@ -41,17 +46,19 @@ public class SftpResponseNameEntryParser extends Parser<SftpResponseNameEntry> {
     }
 
     private void parseLongName() {
-        int longNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-        nameEntry.setLongNameLength(longNameLength);
-        LOGGER.debug("LongName length: {}", longNameLength);
-        String longName = parseByteString(longNameLength, StandardCharsets.UTF_8);
-        nameEntry.setLongName(longName);
-        LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
+        if (chooser.getSftpNegotiatedVersion() <= 3) {
+            int longNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+            nameEntry.setLongNameLength(longNameLength);
+            LOGGER.debug("LongName length: {}", longNameLength);
+            String longName = parseByteString(longNameLength, StandardCharsets.UTF_8);
+            nameEntry.setLongName(longName);
+            LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
+        }
     }
 
     private void parseAttributes() {
         SftpFileAttributesParser attributesParser =
-                new SftpFileAttributesParser(getArray(), getPointer());
+                new SftpFileAttributesParser(getArray(), getPointer(), chooser);
         nameEntry.setAttributes(attributesParser.parse());
         setPointer(attributesParser.getPointer());
     }

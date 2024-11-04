@@ -92,6 +92,7 @@ public class SftpManager {
             - SSH_FXP_RMDIR, SSH_FXP_SETSTAT, SSH_FXP_FSETSTAT, SSH_FXP_SYMLINK
             - vendor-id, copy-file, copy-data
             - posix-rename, hardlink, fsync, lsetstat,
+            - text-seek
              */
             response = new SftpResponseStatusMessage();
             ((SftpResponseStatusMessage) response).setStatusCode(SftpStatusCode.SSH_FX_OK);
@@ -196,7 +197,7 @@ public class SftpManager {
     /**
      * Return a random valid handle for a directory.
      *
-     * <p>If there are no valid handles, return a invalid random handle.
+     * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */
@@ -210,7 +211,7 @@ public class SftpManager {
     /**
      * Return a random valid handle for a file.
      *
-     * <p>If there are no valid handles, return a invalid random handle.
+     * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */
@@ -224,7 +225,7 @@ public class SftpManager {
     /**
      * Return a random valid handle for a file or a directory.
      *
-     * <p>If there are no valid handles, return a invalid random handle.
+     * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */

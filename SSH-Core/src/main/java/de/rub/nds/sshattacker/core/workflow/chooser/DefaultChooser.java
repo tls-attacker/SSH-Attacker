@@ -1046,6 +1046,17 @@ public class DefaultChooser extends Chooser {
         return context.getSftpServerVersion().orElse(config.getSftpServerVersion());
     }
 
+    /**
+     * Retrieves the SFTP negotiated version from context. If no version was received (i.e.
+     * out-of-order workflow), the SFTP negotiated version from config will be returned.
+     *
+     * @return The SFTP negotiated protocol version
+     */
+    @Override
+    public Integer getSftpNegotiatedVersion() {
+        return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
+    }
+
     // endregion
 
     // region SFTP Extensions

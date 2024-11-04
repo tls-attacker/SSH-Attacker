@@ -27,13 +27,20 @@ public class SftpResponseNameEntryPreparator extends Preparator<SftpResponseName
             getObject().setFilenameLength(getObject().getFilename().getValue().length());
         }
 
-        if (getObject().getLongName() == null) {
-            getObject()
-                    .setLongName(
-                            "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd", true);
-        }
-        if (getObject().getLongNameLength() == null) {
-            getObject().setLongNameLength(getObject().getLongName().getValue().length());
+        if (chooser.getSftpNegotiatedVersion() <= 3
+                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+            if (getObject().getLongName() == null) {
+                getObject()
+                        .setLongName(
+                                "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
+                                true);
+            }
+            if (getObject().getLongNameLength() == null) {
+                getObject().setLongNameLength(getObject().getLongName().getValue().length());
+            }
+        } else {
+            // As of version 4 there is no longer a longName field
+            getObject().clearLongName();
         }
 
         if (getObject().getAttributes() == null) {

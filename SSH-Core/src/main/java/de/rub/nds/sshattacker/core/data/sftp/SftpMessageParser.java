@@ -56,7 +56,7 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_VERSION:
                     return new SftpVersionMessageParser(raw).parse();
                 case SSH_FXP_OPEN:
-                    return new SftpRequestOpenMessageParser(raw).parse();
+                    return new SftpRequestOpenMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_CLOSE:
                     return new SftpRequestCloseMessageParser(raw).parse();
                 case SSH_FXP_READ:
@@ -66,11 +66,12 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_LSTAT:
                     return new SftpRequestLinkStatMessageParser(raw).parse();
                 case SSH_FXP_FSTAT:
-                    return new SftpRequestFileStatMessageParser(raw).parse();
+                    return new SftpRequestFileStatMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_SETSTAT:
-                    return new SftpRequestSetStatMessageParser(raw).parse();
+                    return new SftpRequestSetStatMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_FSETSTAT:
-                    return new SftpRequestFileSetStatMessageParser(raw).parse();
+                    return new SftpRequestFileSetStatMessageParser(raw, context.getChooser())
+                            .parse();
                 case SSH_FXP_OPENDIR:
                     return new SftpRequestOpenDirMessageParser(raw).parse();
                 case SSH_FXP_READDIR:
@@ -78,13 +79,13 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_REMOVE:
                     return new SftpRequestRemoveMessageParser(raw).parse();
                 case SSH_FXP_MKDIR:
-                    return new SftpRequestMakeDirMessageParser(raw).parse();
+                    return new SftpRequestMakeDirMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_RMDIR:
                     return new SftpRequestRemoveDirMessageParser(raw).parse();
                 case SSH_FXP_REALPATH:
                     return new SftpRequestRealPathMessageParser(raw).parse();
                 case SSH_FXP_STAT:
-                    return new SftpRequestStatMessageParser(raw).parse();
+                    return new SftpRequestStatMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_RENAME:
                     return new SftpRequestRenameMessageParser(raw).parse();
                 case SSH_FXP_READLINK:
@@ -98,11 +99,12 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_DATA:
                     return new SftpResponseDataMessageParser(raw).parse();
                 case SSH_FXP_NAME:
-                    return new SftpResponseNameMessageParser(raw).parse();
+                    return new SftpResponseNameMessageParser(raw, context.getChooser()).parse();
                 case SSH_FXP_ATTRS:
-                    return new SftpResponseAttributesMessageParser(raw).parse();
+                    return new SftpResponseAttributesMessageParser(raw, context.getChooser())
+                            .parse();
                 case SSH_FXP_EXTENDED:
-                    return handleExtendedRequestMessageParsing(raw);
+                    return handleExtendedRequestMessageParsing(raw, context);
                 default:
                     LOGGER.debug(
                             "Received unimplemented SFTP Message {} ({})",
@@ -116,7 +118,8 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         }
     }
 
-    public static SftpMessage<?> handleExtendedRequestMessageParsing(byte[] raw) {
+    public static SftpMessage<?> handleExtendedRequestMessageParsing(
+            byte[] raw, SshContext context) {
         SftpRequestUnknownMessage message = new SftpRequestUnknownMessageParser(raw).parse();
         String extendedRequestTypeString = message.getExtendedRequestName().getValue();
         SftpExtension extendedRequestType = SftpExtension.fromName(extendedRequestTypeString);
@@ -139,6 +142,9 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 return new SftpRequestGetTempFolderMessageParser(raw).parse();
             case MAKE_TEMP_FOLDER:
                 return new SftpRequestMakeTempFolderMessageParser(raw).parse();
+                // SFTP v4
+            case TEXT_SEEK:
+                return new SftpRequestMakeTempFolderMessageParser(raw).parse();
                 // vendor specific
             case POSIX_RENAME_OPENSSH_COM:
                 return new SftpRequestPosixRenameMessageParser(raw).parse();
@@ -151,7 +157,7 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
             case F_SYNC_OPENSSH_COM:
                 return new SftpRequestFileSyncMessageParser(raw).parse();
             case L_SET_STAT:
-                return new SftpRequestLinkSetStatMessageParser(raw).parse();
+                return new SftpRequestLinkSetStatMessageParser(raw, context.getChooser()).parse();
             case LIMITS:
                 return new SftpRequestLimitsMessageParser(raw).parse();
             case EXPAND_PATH:

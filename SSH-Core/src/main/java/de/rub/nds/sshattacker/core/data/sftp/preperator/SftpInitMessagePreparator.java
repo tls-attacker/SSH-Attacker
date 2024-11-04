@@ -23,7 +23,11 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
             getObject().setVersion(chooser.getSftpClientVersion());
         }
         if (getObject().getExtensions().isEmpty()) {
-            getObject().setExtensions(chooser.getSftpClientSupportedExtensions());
+            if (chooser.getSftpClientVersion() == 3) {
+                // Only Clients with protocol version 3 should send supported extensions,
+                // to stay compatible with servers that use protocol version 1 or 2
+                getObject().setExtensions(chooser.getSftpClientSupportedExtensions());
+            }
         }
 
         getObject()

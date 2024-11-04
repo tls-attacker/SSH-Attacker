@@ -27,12 +27,12 @@ public class SftpRequestMakeDirMessageHandler
 
     @Override
     public SftpRequestMakeDirMessageParser getParser(byte[] array) {
-        return new SftpRequestMakeDirMessageParser(array);
+        return new SftpRequestMakeDirMessageParser(array, context.getChooser());
     }
 
     @Override
     public SftpRequestMakeDirMessageParser getParser(byte[] array, int startPosition) {
-        return new SftpRequestMakeDirMessageParser(array, startPosition);
+        return new SftpRequestMakeDirMessageParser(array, startPosition, context.getChooser());
     }
 
     @Override

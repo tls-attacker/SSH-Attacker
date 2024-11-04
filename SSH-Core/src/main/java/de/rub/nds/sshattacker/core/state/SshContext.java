@@ -356,6 +356,9 @@ public class SshContext {
     /** SFTP Server protocol version */
     private Integer sftpServerVersion;
 
+    /** SFTP negotiated protocol version */
+    private Integer sftpNegotiatedVersion;
+
     // endregion
 
     // region SFTP Extensions
@@ -1272,6 +1275,10 @@ public class SshContext {
         return Optional.ofNullable(sftpServerVersion);
     }
 
+    public Optional<Integer> getSftpNegotiatedVersion() {
+        return Optional.ofNullable(sftpNegotiatedVersion);
+    }
+
     // endregion
     // region Setters for SFTP Version Exchange Fields
     public void setSftpClientVersion(Integer sftpClientVersion) {
@@ -1280,6 +1287,10 @@ public class SshContext {
 
     public void setSftpServerVersion(Integer sftpServerVersion) {
         this.sftpServerVersion = sftpServerVersion;
+    }
+
+    public void setSftpNegotiatedVersion(Integer sftpNegotiatedVersion) {
+        this.sftpNegotiatedVersion = sftpNegotiatedVersion;
     }
 
     // endregion

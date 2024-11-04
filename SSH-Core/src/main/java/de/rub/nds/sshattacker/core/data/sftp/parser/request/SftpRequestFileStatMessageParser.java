@@ -7,17 +7,27 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestFileStatMessage;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SftpRequestFileStatMessageParser
         extends SftpRequestWithHandleMessageParser<SftpRequestFileStatMessage> {
 
-    public SftpRequestFileStatMessageParser(byte[] array) {
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final Chooser chooser;
+
+    public SftpRequestFileStatMessageParser(byte[] array, Chooser chooser) {
         super(array);
+        this.chooser = chooser;
     }
 
-    public SftpRequestFileStatMessageParser(byte[] array, int startPosition) {
+    public SftpRequestFileStatMessageParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
+        this.chooser = chooser;
     }
 
     @Override
@@ -25,6 +35,16 @@ public class SftpRequestFileStatMessageParser
         return new SftpRequestFileStatMessage();
     }
 
+    private void parseFlags() {
+        if (chooser.getSftpNegotiatedVersion() > 3) {
+            int flags = parseIntField(DataFormatConstants.UINT32_SIZE);
+            message.setFlags(flags);
+            LOGGER.debug("Flags: {}", flags);
+        }
+    }
+
     @Override
-    protected void parseRequestWithHandleSpecificContents() {}
+    protected void parseRequestWithHandleSpecificContents() {
+        parseFlags();
+    }
 }

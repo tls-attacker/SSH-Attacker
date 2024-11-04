@@ -89,6 +89,17 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
                             new SftpExtensionMakeTempFolderHandler(null)
                                     .getParser(getArray(), extensionStartPointer);
                     break;
+                    // SFTP v4
+                case TEXT_SEEK:
+                    extensionParser =
+                            new SftpExtensionTextSeekHandler(null)
+                                    .getParser(getArray(), extensionStartPointer);
+                    break;
+                case NEWLINE:
+                    extensionParser =
+                            new SftpExtensionNewlineHandler(null)
+                                    .getParser(getArray(), extensionStartPointer);
+                    break;
                     // Vendor extensions
                 case POSIX_RENAME_OPENSSH_COM:
                     extensionParser =

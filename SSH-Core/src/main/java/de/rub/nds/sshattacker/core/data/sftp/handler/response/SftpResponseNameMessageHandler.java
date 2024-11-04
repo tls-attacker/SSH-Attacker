@@ -27,12 +27,12 @@ public class SftpResponseNameMessageHandler
 
     @Override
     public SftpResponseNameMessageParser getParser(byte[] array) {
-        return new SftpResponseNameMessageParser(array);
+        return new SftpResponseNameMessageParser(array, context.getChooser());
     }
 
     @Override
     public SftpResponseNameMessageParser getParser(byte[] array, int startPosition) {
-        return new SftpResponseNameMessageParser(array, startPosition);
+        return new SftpResponseNameMessageParser(array, startPosition, context.getChooser());
     }
 
     @Override

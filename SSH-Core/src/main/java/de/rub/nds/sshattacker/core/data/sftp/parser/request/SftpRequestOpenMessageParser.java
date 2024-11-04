@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,13 +18,16 @@ public class SftpRequestOpenMessageParser
         extends SftpRequestWithPathMessageParser<SftpRequestOpenMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final Chooser chooser;
 
-    public SftpRequestOpenMessageParser(byte[] array) {
+    public SftpRequestOpenMessageParser(byte[] array, Chooser chooser) {
         super(array);
+        this.chooser = chooser;
     }
 
-    public SftpRequestOpenMessageParser(byte[] array, int startPosition) {
+    public SftpRequestOpenMessageParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
+        this.chooser = chooser;
     }
 
     @Override
@@ -39,7 +43,7 @@ public class SftpRequestOpenMessageParser
 
     private void parseAttributes() {
         SftpFileAttributesParser attributesParser =
-                new SftpFileAttributesParser(getArray(), getPointer());
+                new SftpFileAttributesParser(getArray(), getPointer(), chooser);
         message.setAttributes(attributesParser.parse());
         setPointer(attributesParser.getPointer());
     }
