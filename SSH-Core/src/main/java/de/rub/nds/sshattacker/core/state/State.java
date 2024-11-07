@@ -58,7 +58,7 @@ public class State {
     @HoldsModifiableVariable private WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
-    public String workflowOutputName;
+    private String workflowOutputName;
 
     private long startTimestamp;
     private long endTimestamp;

@@ -290,10 +290,10 @@ public class SshContext {
     // region SSH Extensions
     /** List of extensions supported by the client */
     /** List of extensions supported by the client */
-    public List<AbstractExtension<?>> clientSupportedExtensions;
+    private List<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
-    public List<AbstractExtension<?>> serverSupportedExtensions;
+    private List<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Add this new field for supported public key algorithms */
     private String supportedPublicKeyAlgorithms;
@@ -363,10 +363,10 @@ public class SshContext {
 
     // region SFTP Extensions
     /** List of SFTP extensions supported by the client */
-    public List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+    private List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
 
     /** List of SFTP extensions supported by the server */
-    public List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
+    private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion
 
