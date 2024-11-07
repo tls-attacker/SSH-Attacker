@@ -289,7 +289,6 @@ public class SshContext {
 
     // region SSH Extensions
     /** List of extensions supported by the client */
-    /** List of extensions supported by the client */
     private List<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
