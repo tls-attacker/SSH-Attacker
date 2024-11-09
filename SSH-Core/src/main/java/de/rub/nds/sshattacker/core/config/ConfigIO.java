@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +42,9 @@ public final class ConfigIO {
     }
 
     public static void write(Config config, File file) {
-        try {
-            write(config, new FileOutputStream(file));
-        } catch (FileNotFoundException ex) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            write(config, fos);
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -89,10 +88,12 @@ public final class ConfigIO {
                         // Raise an exception also on warnings
                         return false;
                     });
-            return read(new FileInputStream(file), unmarshaller);
+            try (FileInputStream fis = new FileInputStream(file)) {
+                return read(fis, unmarshaller);
+            }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("File cannot be found", e);
         }
     }

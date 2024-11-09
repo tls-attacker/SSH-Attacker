@@ -59,8 +59,11 @@ public final class WorkflowTraceSerializer {
      */
     public static void write(File file, WorkflowTrace workflowTrace)
             throws FileNotFoundException, JAXBException, IOException {
-        FileOutputStream fos = new FileOutputStream(file, true);
-        write(fos, workflowTrace);
+        try (FileOutputStream fos = new FileOutputStream(file, true)) {
+            write(fos, workflowTrace);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -147,8 +150,8 @@ public final class WorkflowTraceSerializer {
                     continue;
                 }
                 WorkflowTrace trace;
-                try {
-                    trace = insecureRead(new FileInputStream(file));
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    trace = insecureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
