@@ -292,6 +292,9 @@ public class Config implements Serializable {
         @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(
+                type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
+                name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private List<AbstractExtension<?>> clientSupportedExtensions;
@@ -302,6 +305,9 @@ public class Config implements Serializable {
         @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(
+                type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
+                name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private List<AbstractExtension<?>> serverSupportedExtensions;
@@ -444,12 +450,60 @@ public class Config implements Serializable {
     // region SSH Extensions
     /** List of SFTP extensions supported by the client */
     @XmlElementWrapper
-    @XmlElements({@XmlElement(type = SftpExtensionUnknown.class, name = "SftpUnknownExtension")})
+    @XmlElements({
+        @XmlElement(type = SftpExtensionCheckFile.class, name = "SftpExtensionCheckFile"),
+        @XmlElement(type = SftpExtensionCopyData.class, name = "SftpExtensionCopyData"),
+        @XmlElement(type = SftpExtensionCopyFile.class, name = "SftpExtensionCopyFile"),
+        @XmlElement(type = SftpExtensionExpandPath.class, name = "SftpExtensionExpandPath"),
+        @XmlElement(type = SftpExtensionFileStatVfs.class, name = "SftpExtensionFileStatVfs"),
+        @XmlElement(type = SftpExtensionFileSync.class, name = "SftpExtensionFileSync"),
+        @XmlElement(type = SftpExtensionGetTempFolder.class, name = "SftpExtensionGetTempFolder"),
+        @XmlElement(type = SftpExtensionHardlink.class, name = "SftpExtensionHardlink"),
+        @XmlElement(type = SftpExtensionHomeDirectory.class, name = "SftpExtensionHomeDirectory"),
+        @XmlElement(type = SftpExtensionLimits.class, name = "SftpExtensionLimits"),
+        @XmlElement(type = SftpExtensionLinkSetStat.class, name = "SftpExtensionLinkSetStat"),
+        @XmlElement(type = SftpExtensionMakeTempFolder.class, name = "SftpExtensionMakeTempFolder"),
+        @XmlElement(type = SftpExtensionNewline.class, name = "SftpExtensionNewline"),
+        @XmlElement(type = SftpExtensionPosixRename.class, name = "SftpExtensionPosixRename"),
+        @XmlElement(type = SftpExtensionSpaceAvailable.class, name = "SftpExtensionSpaceAvailable"),
+        @XmlElement(type = SftpExtensionStatVfs.class, name = "SftpExtensionStatVfs"),
+        @XmlElement(type = SftpExtensionTextSeek.class, name = "SftpExtensionTextSeek"),
+        @XmlElement(type = SftpExtensionUnknown.class, name = "SftpExtensionUnknown"),
+        @XmlElement(
+                type = SftpExtensionUsersGroupsById.class,
+                name = "SftpExtensionUsersGroupsById"),
+        @XmlElement(type = SftpExtensionVendorId.class, name = "SftpExtensionVendorId"),
+        @XmlElement(type = SftpExtensionWithVersion.class, name = "SftpExtensionWithVersion")
+    })
     private List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
 
     /** List of SFTP extensions supported by the server */
     @XmlElementWrapper
-    @XmlElements({@XmlElement(type = SftpExtensionUnknown.class, name = "SftpUnknownExtension")})
+    @XmlElements({
+        @XmlElement(type = SftpExtensionCheckFile.class, name = "SftpExtensionCheckFile"),
+        @XmlElement(type = SftpExtensionCopyData.class, name = "SftpExtensionCopyData"),
+        @XmlElement(type = SftpExtensionCopyFile.class, name = "SftpExtensionCopyFile"),
+        @XmlElement(type = SftpExtensionExpandPath.class, name = "SftpExtensionExpandPath"),
+        @XmlElement(type = SftpExtensionFileStatVfs.class, name = "SftpExtensionFileStatVfs"),
+        @XmlElement(type = SftpExtensionFileSync.class, name = "SftpExtensionFileSync"),
+        @XmlElement(type = SftpExtensionGetTempFolder.class, name = "SftpExtensionGetTempFolder"),
+        @XmlElement(type = SftpExtensionHardlink.class, name = "SftpExtensionHardlink"),
+        @XmlElement(type = SftpExtensionHomeDirectory.class, name = "SftpExtensionHomeDirectory"),
+        @XmlElement(type = SftpExtensionLimits.class, name = "SftpExtensionLimits"),
+        @XmlElement(type = SftpExtensionLinkSetStat.class, name = "SftpExtensionLinkSetStat"),
+        @XmlElement(type = SftpExtensionMakeTempFolder.class, name = "SftpExtensionMakeTempFolder"),
+        @XmlElement(type = SftpExtensionNewline.class, name = "SftpExtensionNewline"),
+        @XmlElement(type = SftpExtensionPosixRename.class, name = "SftpExtensionPosixRename"),
+        @XmlElement(type = SftpExtensionSpaceAvailable.class, name = "SftpExtensionSpaceAvailable"),
+        @XmlElement(type = SftpExtensionStatVfs.class, name = "SftpExtensionStatVfs"),
+        @XmlElement(type = SftpExtensionTextSeek.class, name = "SftpExtensionTextSeek"),
+        @XmlElement(type = SftpExtensionUnknown.class, name = "SftpExtensionUnknown"),
+        @XmlElement(
+                type = SftpExtensionUsersGroupsById.class,
+                name = "SftpExtensionUsersGroupsById"),
+        @XmlElement(type = SftpExtensionVendorId.class, name = "SftpExtensionVendorId"),
+        @XmlElement(type = SftpExtensionWithVersion.class, name = "SftpExtensionWithVersion")
+    })
     private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion

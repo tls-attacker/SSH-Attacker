@@ -87,7 +87,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                                     kill();
                                     LOGGER.info("Waiting for connections to be closed...");
                                     int watchDog = 3;
-                                    while ((!shutdown) && (watchDog > 0)) {
+                                    while (!shutdown && watchDog > 0) {
                                         try {
                                             TimeUnit.SECONDS.sleep(1);
                                         } catch (InterruptedException ex) {
@@ -117,7 +117,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         try {
             while (!killed) {
                 Socket socket = serverSocket.accept();
-                this.handleClient(socket);
+                handleClient(socket);
                 sockets.add(socket);
             }
         } catch (IOException ex) {
@@ -155,7 +155,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     private void initialize() {
         LOGGER.info("Initializing server connection end at port {}", bindPort);
-        if ((serverSocket != null) && (!serverSocket.isClosed())) {
+        if (serverSocket != null && !serverSocket.isClosed()) {
             LOGGER.debug("Server socket already initialized");
             return;
         }

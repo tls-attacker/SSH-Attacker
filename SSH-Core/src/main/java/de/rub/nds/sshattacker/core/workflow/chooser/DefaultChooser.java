@@ -628,9 +628,9 @@ public class DefaultChooser extends Chooser {
                                                             : getServerSupportedKeyExchangeAlgorithms()
                                                                     .get(0));
                             // TODO: Determine whether updating the context here can be
-                            // considered
-                            // useful or disadvantageous (same for all negotiated algorithm
-                            // methods)
+                            //  considered
+                            //  useful or disadvantageous (same for all negotiated algorithm
+                            //  methods)
                             context.setKeyExchangeAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
