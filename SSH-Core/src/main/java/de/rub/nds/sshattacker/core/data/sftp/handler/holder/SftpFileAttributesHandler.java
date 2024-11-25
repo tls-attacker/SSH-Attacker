@@ -5,12 +5,12 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.handler.attribute;
+package de.rub.nds.sshattacker.core.data.sftp.handler.holder;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
-import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
-import de.rub.nds.sshattacker.core.data.sftp.preperator.attribute.SftpFileAttributesPreparator;
-import de.rub.nds.sshattacker.core.data.sftp.serializer.attribute.SftpFileAttributesSerializer;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpFileAttributesParser;
+import de.rub.nds.sshattacker.core.data.sftp.preperator.holder.SftpFileAttributesPreparator;
+import de.rub.nds.sshattacker.core.data.sftp.serializer.holder.SftpFileAttributesSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

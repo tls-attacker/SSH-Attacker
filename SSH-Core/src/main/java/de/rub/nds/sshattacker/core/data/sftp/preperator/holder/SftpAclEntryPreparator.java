@@ -5,12 +5,12 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.preperator.attribute;
+package de.rub.nds.sshattacker.core.data.sftp.preperator.holder;
 
 import de.rub.nds.sshattacker.core.constants.SftpAceFlag;
 import de.rub.nds.sshattacker.core.constants.SftpAceMask;
 import de.rub.nds.sshattacker.core.constants.SftpAceType;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpAclEntry;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 

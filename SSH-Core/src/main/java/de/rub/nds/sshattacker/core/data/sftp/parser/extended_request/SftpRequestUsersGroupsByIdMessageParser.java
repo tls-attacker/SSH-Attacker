@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUsersGroupsByIdMessage;
+import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpIdEntryParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,11 +35,13 @@ public class SftpRequestUsersGroupsByIdMessageParser
         int userIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         message.setUserIdsLength(userIdsLength);
         LOGGER.debug("UserIdsLength: {}", userIdsLength);
-        int userIdsCount = message.getUserIdsLength().getValue() / DataFormatConstants.UINT32_SIZE;
-        for (int i = 0; i < userIdsCount; i++) {
-            int userId = parseIntField(DataFormatConstants.UINT32_SIZE);
-            message.addUserId(userId);
-            LOGGER.debug("UserId[{}]: {}", i, userId);
+
+        int oldPointer = getPointer();
+        while (getPointer() - oldPointer < userIdsLength) {
+            SftpIdEntryParser idEntryParser = new SftpIdEntryParser(getArray(), getPointer());
+
+            message.addUserId(idEntryParser.parse());
+            setPointer(idEntryParser.getPointer());
         }
     }
 
@@ -46,12 +49,12 @@ public class SftpRequestUsersGroupsByIdMessageParser
         int groupIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         message.setGroupIdsLength(groupIdsLength);
         LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
-        int groupIdsCount =
-                message.getGroupIdsLength().getValue() / DataFormatConstants.UINT32_SIZE;
-        for (int i = 0; i < groupIdsCount; i++) {
-            int groupId = parseIntField(DataFormatConstants.UINT32_SIZE);
-            message.addGroupId(groupId);
-            LOGGER.debug("GroupId[{}]: {}", i, groupId);
+        int oldPointer = getPointer();
+        while (getPointer() - oldPointer < groupIdsLength) {
+            SftpIdEntryParser idEntryParser = new SftpIdEntryParser(getArray(), getPointer());
+
+            message.addGroupId(idEntryParser.parse());
+            setPointer(idEntryParser.getPointer());
         }
     }
 

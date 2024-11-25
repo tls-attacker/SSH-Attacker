@@ -5,9 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.message.attribute;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.name;
+package de.rub.nds.sshattacker.core.data.sftp.message.holder;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -17,7 +15,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
-import de.rub.nds.sshattacker.core.data.sftp.handler.attribute.SftpFileAttributesHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileAttributesHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.*;

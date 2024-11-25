@@ -5,14 +5,13 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.message.response;
+package de.rub.nds.sshattacker.core.data.sftp.message.holder;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseNameEntryHandler;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileNameEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -21,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SftpResponseNameEntry extends ModifiableVariableHolder {
+public class SftpFileNameEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger filenameLength;
     private ModifiableString filename;
@@ -121,8 +120,8 @@ public class SftpResponseNameEntry extends ModifiableVariableHolder {
         this.attributes = attributes;
     }
 
-    public SftpResponseNameEntryHandler getHandler(SshContext context) {
-        return new SftpResponseNameEntryHandler(context, this);
+    public SftpFileNameEntryHandler getHandler(SshContext context) {
+        return new SftpFileNameEntryHandler(context, this);
     }
 
     @Override

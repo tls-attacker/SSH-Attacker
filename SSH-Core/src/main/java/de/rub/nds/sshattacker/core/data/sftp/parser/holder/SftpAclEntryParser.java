@@ -5,12 +5,12 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.parser.attribute;
+package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpAclEntry;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;

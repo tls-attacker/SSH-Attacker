@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSetStatMessageHandler;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;

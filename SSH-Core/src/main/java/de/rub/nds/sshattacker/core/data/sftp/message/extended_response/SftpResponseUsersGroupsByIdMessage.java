@@ -7,22 +7,37 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.message.extended_response;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseUsersGroupsByIdMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SftpResponseUsersGroupsByIdMessage
         extends SftpResponseMessage<SftpResponseUsersGroupsByIdMessage> {
 
     private ModifiableInteger userNamesLength;
-    private List<ModifiableString> userNames = new ArrayList<>();
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(@XmlElement(type = SftpNameEntry.class, name = "SftpNameEntry"))
+    private List<SftpNameEntry> userNames = new ArrayList<>();
+
     private ModifiableInteger groupNamesLength;
-    private List<ModifiableString> groupNames = new ArrayList<>();
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(@XmlElement(type = SftpNameEntry.class, name = "SftpNameEntry"))
+    private List<SftpNameEntry> groupNames = new ArrayList<>();
 
     public ModifiableInteger getUserNamesLength() {
         return userNamesLength;
@@ -37,20 +52,33 @@ public class SftpResponseUsersGroupsByIdMessage
                 ModifiableVariableFactory.safelySetValue(this.userNamesLength, userNamesLength);
     }
 
-    public List<ModifiableString> getUserNames() {
+    public List<SftpNameEntry> getUserNames() {
         return userNames;
     }
 
-    public void setUserNames(List<ModifiableString> userNames) {
+    public List<ModifiableString> getUserNamesDirect() {
+        return userNames.stream().map(SftpNameEntry::getName).collect(Collectors.toList());
+    }
+
+    public void setUserNames(List<SftpNameEntry> userNames) {
         this.userNames = userNames;
     }
 
-    public void addUserName(ModifiableString userName) {
+    public void setUserNamesDirect(List<ModifiableString> userNames) {
+        this.userNames = userNames.stream().map(SftpNameEntry::new).collect(Collectors.toList());
+        ;
+    }
+
+    public void addUserName(SftpNameEntry userName) {
         userNames.add(userName);
     }
 
+    public void addUserName(ModifiableString userName) {
+        userNames.add(new SftpNameEntry(userName));
+    }
+
     public void addUserName(String userName) {
-        userNames.add(ModifiableVariableFactory.safelySetValue(null, userName));
+        userNames.add(new SftpNameEntry(ModifiableVariableFactory.safelySetValue(null, userName)));
     }
 
     public ModifiableInteger getGroupNamesLength() {
@@ -66,20 +94,35 @@ public class SftpResponseUsersGroupsByIdMessage
                 ModifiableVariableFactory.safelySetValue(this.groupNamesLength, groupNamesLength);
     }
 
-    public List<ModifiableString> getGroupNames() {
+    public List<SftpNameEntry> getGroupNames() {
         return groupNames;
     }
 
-    public void setGroupNames(List<ModifiableString> groupNames) {
+    public List<ModifiableString> getGroupNamesDirect() {
+        return groupNames.stream().map(SftpNameEntry::getName).collect(Collectors.toList());
+    }
+
+    public void setGroupNames(List<SftpNameEntry> groupNames) {
         this.groupNames = groupNames;
     }
 
-    public void addGroupName(ModifiableString groupName) {
+    public void setGroupNamesDirect(List<ModifiableString> groupNames) {
+        this.groupNames = groupNames.stream().map(SftpNameEntry::new).collect(Collectors.toList());
+        ;
+        ;
+    }
+
+    public void addGroupName(SftpNameEntry groupName) {
         groupNames.add(groupName);
     }
 
+    public void addGroupName(ModifiableString groupName) {
+        groupNames.add(new SftpNameEntry(groupName));
+    }
+
     public void addGroupName(String groupName) {
-        groupNames.add(ModifiableVariableFactory.safelySetValue(null, groupName));
+        groupNames.add(
+                new SftpNameEntry(ModifiableVariableFactory.safelySetValue(null, groupName)));
     }
 
     @Override

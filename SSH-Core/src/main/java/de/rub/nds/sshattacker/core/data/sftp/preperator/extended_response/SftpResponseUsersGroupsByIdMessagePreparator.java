@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.preperator.extended_response;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUsersGroupsByIdMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseUsersGroupsByIdMessagePreparator
@@ -34,15 +35,15 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
                 .setUserNamesLength(
                         getObject().getUserNames().size() * DataFormatConstants.UINT32_SIZE
                                 + getObject().getUserNames().stream()
-                                        .map(ModifiableVariable::getValue)
-                                        .mapToInt(String::length)
+                                        .map(SftpNameEntry::getNameLength)
+                                        .mapToInt(ModifiableVariable::getValue)
                                         .sum());
         getObject()
                 .setGroupNamesLength(
                         getObject().getGroupNames().size() * DataFormatConstants.UINT32_SIZE
                                 + getObject().getGroupNames().stream()
-                                        .map(ModifiableVariable::getValue)
-                                        .mapToInt(String::length)
+                                        .map(SftpNameEntry::getNameLength)
+                                        .mapToInt(ModifiableVariable::getValue)
                                         .sum());
     }
 }

@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request;
 
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestLinkSetStatMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestLinkSetStatMessagePreparator

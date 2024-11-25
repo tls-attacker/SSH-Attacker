@@ -5,33 +5,32 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.parser.response;
+package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameEntry;
-import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpResponseNameEntryParser extends Parser<SftpResponseNameEntry> {
+public class SftpFileNameEntryParser extends Parser<SftpFileNameEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SftpResponseNameEntry nameEntry = new SftpResponseNameEntry();
+    private final SftpFileNameEntry nameEntry = new SftpFileNameEntry();
 
     private final Chooser chooser;
 
-    public SftpResponseNameEntryParser(byte[] array, Chooser chooser) {
+    public SftpFileNameEntryParser(byte[] array, Chooser chooser) {
         super(array);
         this.chooser = chooser;
     }
 
-    public SftpResponseNameEntryParser(byte[] array, int startPosition, Chooser chooser) {
+    public SftpFileNameEntryParser(byte[] array, int startPosition, Chooser chooser) {
         super(array, startPosition);
         this.chooser = chooser;
     }
@@ -64,7 +63,7 @@ public class SftpResponseNameEntryParser extends Parser<SftpResponseNameEntry> {
     }
 
     @Override
-    public final SftpResponseNameEntry parse() {
+    public final SftpFileNameEntry parse() {
         parseFilename();
         parseLongName();
         parseAttributes();

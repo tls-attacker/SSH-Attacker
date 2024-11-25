@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestLinkSetStatMessage;
-import de.rub.nds.sshattacker.core.data.sftp.parser.attribute.SftpFileAttributesParser;
+import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpFileAttributesParser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestLinkSetStatMessageParser

@@ -31,6 +31,9 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
         @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(
+                type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
+                name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private List<AbstractExtension<?>> extensions = new ArrayList<>();

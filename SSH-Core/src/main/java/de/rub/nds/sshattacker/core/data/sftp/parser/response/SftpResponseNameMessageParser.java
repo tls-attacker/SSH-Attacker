@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameMessage;
+import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpFileNameEntryParser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,8 +44,8 @@ public class SftpResponseNameMessageParser
                 nameEntryIndex < message.getCountNameEntries().getValue();
                 nameEntryIndex++, nameEntryStartPointer = getPointer()) {
 
-            SftpResponseNameEntryParser nameEntryParser =
-                    new SftpResponseNameEntryParser(getArray(), nameEntryStartPointer, chooser);
+            SftpFileNameEntryParser nameEntryParser =
+                    new SftpFileNameEntryParser(getArray(), nameEntryStartPointer, chooser);
 
             message.addNameEntry(nameEntryParser.parse());
             setPointer(nameEntryParser.getPointer());

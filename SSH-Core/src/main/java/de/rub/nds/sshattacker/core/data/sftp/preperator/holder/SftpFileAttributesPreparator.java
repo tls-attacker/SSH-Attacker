@@ -5,15 +5,15 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.preperator.attribute;
+package de.rub.nds.sshattacker.core.data.sftp.preperator.holder;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpAclEntry;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileExtendedAttribute;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileExtendedAttribute;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 

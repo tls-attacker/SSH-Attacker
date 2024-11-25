@@ -5,24 +5,24 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
+package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameEntry;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpResponseNameEntrySerializer extends Serializer<SftpResponseNameEntry> {
+public class SftpFileNameEntrySerializer extends Serializer<SftpFileNameEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SftpResponseNameEntry nameEntry;
+    private final SftpFileNameEntry nameEntry;
 
-    public SftpResponseNameEntrySerializer(SftpResponseNameEntry nameEntry) {
+    public SftpFileNameEntrySerializer(SftpFileNameEntry nameEntry) {
         super();
         this.nameEntry = nameEntry;
     }

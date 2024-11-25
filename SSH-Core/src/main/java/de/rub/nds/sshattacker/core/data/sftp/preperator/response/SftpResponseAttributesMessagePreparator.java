@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator.response;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseAttributesMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 

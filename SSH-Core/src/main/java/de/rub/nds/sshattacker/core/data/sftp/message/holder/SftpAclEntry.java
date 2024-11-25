@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.message.attribute;
+package de.rub.nds.sshattacker.core.data.sftp.message.holder;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SftpAceFlag;
 import de.rub.nds.sshattacker.core.constants.SftpAceMask;
 import de.rub.nds.sshattacker.core.constants.SftpAceType;
-import de.rub.nds.sshattacker.core.data.sftp.handler.attribute.SftpAclEntryHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpAclEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlAccessType;

@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.SftpFileOpenFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestOpenMessageHandler;
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;

@@ -7,12 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 
-import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
-
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUsersGroupsByIdMessage;
+import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpNameEntryParser;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
-import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,13 +37,11 @@ public class SftpResponseUsersGroupsByIdMessageParser
         message.setUserNamesLength(userNamesLength);
         LOGGER.debug("UserNames length: {}", userNamesLength);
         int oldPointer = getPointer();
-        int bytesToRead = message.getUserNamesLength().getValue();
-        while (getPointer() - oldPointer < bytesToRead) {
-            int usernameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("UserName length: {}", usernameLength);
-            String username = parseByteString(usernameLength, StandardCharsets.UTF_8);
-            message.addUserName(username);
-            LOGGER.debug("UserName: {}", () -> backslashEscapeString(username));
+        while (getPointer() - oldPointer < userNamesLength) {
+            SftpNameEntryParser nameEntryParser = new SftpNameEntryParser(getArray(), getPointer());
+
+            message.addUserName(nameEntryParser.parse());
+            setPointer(nameEntryParser.getPointer());
         }
     }
 
@@ -54,13 +50,11 @@ public class SftpResponseUsersGroupsByIdMessageParser
         message.setGroupNamesLength(groupNamesLength);
         LOGGER.debug("GroupNames length: {}", groupNamesLength);
         int oldPointer = getPointer();
-        int bytesToRead = message.getGroupNamesLength().getValue();
-        while (getPointer() - oldPointer < bytesToRead) {
-            int usernameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("GroupName length: {}", usernameLength);
-            String groupName = parseByteString(usernameLength, StandardCharsets.UTF_8);
-            message.addGroupName(groupName);
-            LOGGER.debug("GroupName: {}", () -> backslashEscapeString(groupName));
+        while (getPointer() - oldPointer < groupNamesLength) {
+            SftpNameEntryParser nameEntryParser = new SftpNameEntryParser(getArray(), getPointer());
+
+            message.addGroupName(nameEntryParser.parse());
+            setPointer(nameEntryParser.getPointer());
         }
     }
 

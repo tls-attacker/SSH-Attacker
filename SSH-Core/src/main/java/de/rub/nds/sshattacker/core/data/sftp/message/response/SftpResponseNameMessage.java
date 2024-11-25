@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseNameMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -25,8 +26,8 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements({@XmlElement(type = SftpResponseNameEntry.class, name = "SftpResponseNameEntry")})
-    private List<SftpResponseNameEntry> nameEntries = new ArrayList<>();
+    @XmlElements({@XmlElement(type = SftpFileNameEntry.class, name = "SftpResponseNameEntry")})
+    private List<SftpFileNameEntry> nameEntries = new ArrayList<>();
 
     public ModifiableInteger getCountNameEntries() {
         return countNameEntries;
@@ -41,26 +42,26 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
                 ModifiableVariableFactory.safelySetValue(this.countNameEntries, countNameEntries);
     }
 
-    public List<SftpResponseNameEntry> getNameEntries() {
+    public List<SftpFileNameEntry> getNameEntries() {
         return nameEntries;
     }
 
-    public void setNameEntries(List<SftpResponseNameEntry> nameEntries) {
+    public void setNameEntries(List<SftpFileNameEntry> nameEntries) {
         setNameEntries(nameEntries, false);
     }
 
-    public void setNameEntries(List<SftpResponseNameEntry> nameEntries, boolean adjustLengthField) {
+    public void setNameEntries(List<SftpFileNameEntry> nameEntries, boolean adjustLengthField) {
         if (adjustLengthField) {
             setCountNameEntries(nameEntries.size());
         }
         this.nameEntries = nameEntries;
     }
 
-    public void addNameEntry(SftpResponseNameEntry nameEntry) {
+    public void addNameEntry(SftpFileNameEntry nameEntry) {
         addNameEntry(nameEntry, false);
     }
 
-    public void addNameEntry(SftpResponseNameEntry nameEntry, boolean adjustLengthField) {
+    public void addNameEntry(SftpFileNameEntry nameEntry, boolean adjustLengthField) {
         nameEntries.add(nameEntry);
         if (adjustLengthField) {
             setCountNameEntries(nameEntries.size());
@@ -75,7 +76,7 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        for (SftpResponseNameEntry nameEntry : nameEntries) {
+        for (SftpFileNameEntry nameEntry : nameEntries) {
             holders.addAll(nameEntry.getAllModifiableVariableHolders());
         }
         return holders;

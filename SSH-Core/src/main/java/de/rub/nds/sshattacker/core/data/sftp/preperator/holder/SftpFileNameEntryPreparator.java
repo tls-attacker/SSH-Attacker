@@ -5,17 +5,17 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.data.sftp.preperator.response;
+package de.rub.nds.sshattacker.core.data.sftp.preperator.holder;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.attribute.SftpFileAttributes;
-import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameEntry;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
+import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class SftpResponseNameEntryPreparator extends Preparator<SftpResponseNameEntry> {
+public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
 
-    public SftpResponseNameEntryPreparator(Chooser chooser, SftpResponseNameEntry attribute) {
-        super(chooser, attribute);
+    public SftpFileNameEntryPreparator(Chooser chooser, SftpFileNameEntry nameEntry) {
+        super(chooser, nameEntry);
     }
 
     @Override

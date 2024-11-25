@@ -26,10 +26,9 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
         LOGGER.debug("UserIdsLength: {}", userIdsLength);
         appendInt(userIdsLength, DataFormatConstants.UINT32_SIZE);
 
-        for (int i = 0; i < message.getUserIds().size(); i++) {
-            LOGGER.debug("UserId[{}]: {}", i, message.getUserIdsLength().getValue());
-            appendInt(message.getUserIdsLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        }
+        message.getUserIds()
+                .forEach(
+                        userId -> appendBytes(userId.getHandler(null).getSerializer().serialize()));
     }
 
     private void serializeGroupIdsLength() {
@@ -37,10 +36,10 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
         LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
         appendInt(groupIdsLength, DataFormatConstants.UINT32_SIZE);
 
-        for (int i = 0; i < message.getGroupIds().size(); i++) {
-            LOGGER.debug("GroupId[{}]: {}", i, message.getGroupIdsLength().getValue());
-            appendInt(message.getGroupIdsLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        }
+        message.getGroupIds()
+                .forEach(
+                        groupId ->
+                                appendBytes(groupId.getHandler(null).getSerializer().serialize()));
     }
 
     @Override
