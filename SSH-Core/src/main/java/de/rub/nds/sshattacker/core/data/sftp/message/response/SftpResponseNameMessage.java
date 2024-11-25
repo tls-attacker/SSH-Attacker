@@ -76,7 +76,7 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if(nameEntries != null){
+        if (nameEntries != null) {
             for (SftpFileNameEntry nameEntry : nameEntries) {
                 holders.addAll(nameEntry.getAllModifiableVariableHolders());
             }

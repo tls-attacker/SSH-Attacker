@@ -82,8 +82,7 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if(extensions != null)
-        {
+        if (extensions != null) {
             holders.addAll(extensions);
         }
         return holders;
