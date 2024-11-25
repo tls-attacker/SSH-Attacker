@@ -406,8 +406,14 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.addAll(extendedAttributes);
-        holders.addAll(aclEntries);
+        if(extendedAttributes != null)
+        {
+            holders.addAll(extendedAttributes);
+        }
+        if(aclEntries != null)
+        {
+            holders.addAll(aclEntries);
+        }
         return holders;
     }
 }

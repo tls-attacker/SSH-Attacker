@@ -80,7 +80,9 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.addAll(extensions);
+        if(extensions != null) {
+            holders.addAll(extensions);
+        }
         return holders;
     }
 }

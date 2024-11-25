@@ -30,7 +30,9 @@ public class SftpRequestFileSetStatMessage
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.addAll(attributes.getAllModifiableVariableHolders());
+        if (attributes != null) {
+            holders.addAll(attributes.getAllModifiableVariableHolders());
+        }
         return holders;
     }
 
