@@ -22,11 +22,11 @@ public class SftpRequestReadMessagePreparator
     public void prepareRequestSpecificContents() {
         getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getOffset() == null) {
+        if (getObject().getOffset() == null || getObject().getOffset().getOriginalValue() == null) {
             getObject().setOffset(0);
         }
 
-        if (getObject().getLength() == null) {
+        if (getObject().getLength() == null || getObject().getLength().getOriginalValue() == null) {
             getObject().setLength(100000000);
         }
     }

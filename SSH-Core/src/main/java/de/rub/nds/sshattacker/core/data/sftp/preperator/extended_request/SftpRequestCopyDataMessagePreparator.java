@@ -23,17 +23,17 @@ public class SftpRequestCopyDataMessagePreparator
     public void prepareRequestExtendedSpecificContents() {
         getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getReadFromOffset() == null) {
+        if (getObject().getReadFromOffset() == null || getObject().getReadFromOffset().getOriginalValue() == null) {
             getObject().setReadFromOffset(0);
         }
 
-        if (getObject().getReadDataLength() == null) {
+        if (getObject().getReadDataLength() == null || getObject().getReadDataLength().getOriginalValue() == null) {
             getObject().setReadDataLength(1000000);
         }
 
         getObject().setWriteToHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getWriteToOffset() == null) {
+        if (getObject().getWriteToOffset() == null || getObject().getWriteToOffset().getOriginalValue() == null) {
             getObject().setWriteToOffset(0);
         }
     }

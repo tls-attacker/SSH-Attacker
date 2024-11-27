@@ -22,20 +22,20 @@ public class SftpAclEntryPreparator extends Preparator<SftpAclEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getType() == null) {
+        if (getObject().getType() == null || getObject().getType().getOriginalValue() == null) {
             getObject().setType(SftpAceType.ACE4_ACCESS_ALLOWED_ACE_TYPE);
         }
-        if (getObject().getFlags() == null) {
+        if (getObject().getFlags() == null || getObject().getFlags().getOriginalValue() == null) {
             getObject().setFlags(SftpAceFlag.ACE4_FILE_INHERIT_ACE);
         }
-        if (getObject().getMask() == null) {
+        if (getObject().getMask() == null || getObject().getMask().getOriginalValue() == null) {
             getObject().setMask(SftpAceMask.ACE4_ADD_FILE);
         }
 
-        if (getObject().getWho() == null) {
+        if (getObject().getWho() == null || getObject().getWho().getOriginalValue() == null) {
             getObject().setWho(chooser.getConfig().getUsername(), true);
         }
-        if (getObject().getWhoLength() == null) {
+        if (getObject().getWhoLength() == null || getObject().getWhoLength().getOriginalValue() == null) {
             getObject().setWhoLength(getObject().getWho().getValue().length());
         }
     }

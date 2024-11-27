@@ -20,11 +20,11 @@ public class SftpResponseHandleMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getHandle() == null) {
+        if (getObject().getHandle() == null || getObject().getHandle().getOriginalValue() == null) {
             // Should be set in SftpManager handleRequestMessage()
             getObject().setHandle(new byte[100], true);
         }
-        if (getObject().getHandleLength() == null) {
+        if (getObject().getHandleLength() == null || getObject().getHandleLength().getOriginalValue() == null) {
             getObject().setHandleLength(getObject().getHandle().getValue().length);
         }
     }

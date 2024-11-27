@@ -22,14 +22,14 @@ public class SftpRequestWriteMessagePreparator
     public void prepareRequestSpecificContents() {
         getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getOffset() == null) {
+        if (getObject().getOffset() == null || getObject().getOffset().getOriginalValue() == null) {
             getObject().setOffset(0);
         }
 
-        if (getObject().getData() == null) {
+        if (getObject().getData() == null || getObject().getData().getOriginalValue() == null) {
             getObject().setData(new byte[100], true);
         }
-        if (getObject().getDataLength() == null) {
+        if (getObject().getDataLength() == null || getObject().getDataLength().getOriginalValue() == null) {
             getObject().setDataLength(getObject().getData().getValue().length);
         }
     }

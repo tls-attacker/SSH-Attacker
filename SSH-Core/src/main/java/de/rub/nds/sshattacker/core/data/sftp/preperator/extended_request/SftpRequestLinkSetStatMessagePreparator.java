@@ -22,14 +22,14 @@ public class SftpRequestLinkSetStatMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getPath() == null) {
+        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/bin/python3", true);
         }
 
-        if (getObject().getPathLength() == null) {
+        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
-        if (getObject().getAttributes() == null) {
+        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();

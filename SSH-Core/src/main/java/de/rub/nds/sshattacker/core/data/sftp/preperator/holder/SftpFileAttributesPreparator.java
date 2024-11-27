@@ -25,7 +25,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
     @Override
     public final void prepare() {
-        if (getObject().getFlags() == null) {
+        if (getObject().getFlags() == null || getObject().getFlags().getOriginalValue() == null) {
             getObject()
                     .setFlags(
                             SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
@@ -37,7 +37,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getType() == null) {
+            if (getObject().getType() == null || getObject().getType().getOriginalValue() == null) {
                 getObject().setType(SftpFileType.SSH_FILEXFER_TYPE_REGULAR);
             }
         } else {
@@ -46,7 +46,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
         int flags = getObject().getFlags().getValue();
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE)) {
-            if (getObject().getSize() == null) {
+            if (getObject().getSize() == null || getObject().getSize().getOriginalValue() == null) {
                 getObject().setSize(0);
             }
         } else {
@@ -56,17 +56,17 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_OWNERGROUP)) {
-                if (getObject().getOwner() == null) {
+                if (getObject().getOwner() == null || getObject().getOwner().getOriginalValue() == null) {
                     getObject().setOwner("ssh-attacker", true);
                 }
-                if (getObject().getOwnerLength() == null) {
+                if (getObject().getOwnerLength() == null || getObject().getOwnerLength().getOriginalValue() == null) {
                     getObject().setOwnerLength(getObject().getOwner().getValue().length());
                 }
 
-                if (getObject().getGroup() == null) {
+                if (getObject().getGroup() == null || getObject().getGroup().getOriginalValue() == null) {
                     getObject().setGroup("nds", true);
                 }
-                if (getObject().getGroupLength() == null) {
+                if (getObject().getGroupLength() == null || getObject().getGroupLength().getOriginalValue() == null) {
                     getObject().setGroupLength(getObject().getGroup().getValue().length());
                 }
             } else {
@@ -77,10 +77,10 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             getObject().clearGroupId();
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID)) {
-                if (getObject().getUserId() == null) {
+                if (getObject().getUserId() == null || getObject().getUserId().getOriginalValue() == null) {
                     getObject().setUserId(0);
                 }
-                if (getObject().getGroupId() == null) {
+                if (getObject().getGroupId() == null || getObject().getGroupId().getOriginalValue() == null) {
                     getObject().setGroupId(0);
                 }
             } else {
@@ -92,7 +92,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         }
 
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS)) {
-            if (getObject().getPermissions() == null) {
+            if (getObject().getPermissions() == null || getObject().getPermissions().getOriginalValue() == null) {
                 getObject().setPermissions(0);
             }
         } else {
@@ -102,14 +102,14 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME)) {
-                if (getObject().getAccessTime() == null) {
+                if (getObject().getAccessTime() == null || getObject().getAccessTime().getOriginalValue() == null) {
                     getObject().setAccessTime(0);
                 }
             } else {
                 getObject().clearAccessTime();
             }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_CREATETIME)) {
-                if (getObject().getCreateTime() == null) {
+                if (getObject().getCreateTime() == null || getObject().getCreateTime().getOriginalValue() == null) {
                     getObject().setCreateTime(0);
                 }
             } else {
@@ -117,7 +117,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             }
 
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_MODIFYTIME)) {
-                if (getObject().getModifyTime() == null) {
+                if (getObject().getModifyTime() == null || getObject().getModifyTime().getOriginalValue() == null) {
                     getObject().setModifyTime(0);
                 }
             } else {
@@ -125,10 +125,10 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             }
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME)) {
-                if (getObject().getAccessTime() == null) {
+                if (getObject().getAccessTime() == null || getObject().getAccessTime().getOriginalValue() == null) {
                     getObject().setAccessTime(0);
                 }
-                if (getObject().getModifyTime() == null) {
+                if (getObject().getModifyTime() == null || getObject().getModifyTime().getOriginalValue() == null) {
                     getObject().setModifyTime(0);
                 }
             } else {
@@ -144,7 +144,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
                 if (getObject().getAclEntries().isEmpty()) {
                     getObject().addAclEntry(new SftpAclEntry());
                 }
-                if (getObject().getAclEntriesCount() == null) {
+                if (getObject().getAclEntriesCount() == null || getObject().getAclEntriesCount().getOriginalValue() == null) {
                     getObject().setAclEntriesCount(getObject().getAclEntries().size());
                 }
                 getObject()
@@ -175,7 +175,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             if (getObject().getExtendedAttributes().isEmpty()) {
                 getObject().addExtendedAttribute(new SftpFileExtendedAttribute());
             }
-            if (getObject().getExtendedCount() == null) {
+            if (getObject().getExtendedCount() == null || getObject().getExtendedCount().getOriginalValue() == null) {
                 getObject().setExtendedCount(getObject().getExtendedAttributes().size());
             }
             getObject()

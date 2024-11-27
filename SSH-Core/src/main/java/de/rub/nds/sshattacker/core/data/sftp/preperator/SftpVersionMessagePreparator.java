@@ -19,7 +19,7 @@ public class SftpVersionMessagePreparator extends SftpMessagePreparator<SftpVers
     }
 
     public void prepareMessageSpecificContents() {
-        if (getObject().getVersion() == null) {
+        if (getObject().getVersion() == null || getObject().getVersion().getOriginalValue() == null) {
             // Send own server version, but negotiate the version that is the lower if the two
             getObject().setVersion(chooser.getSftpServerVersion());
         }

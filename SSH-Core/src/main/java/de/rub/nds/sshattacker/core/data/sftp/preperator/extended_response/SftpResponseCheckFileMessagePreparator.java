@@ -21,16 +21,16 @@ public class SftpResponseCheckFileMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getUsedHashAlgorithm() == null) {
+        if (getObject().getUsedHashAlgorithm() == null || getObject().getUsedHashAlgorithm().getOriginalValue() == null) {
             getObject().setUsedHashAlgorithm(HashAlgorithm.MD5, true);
         }
-        if (getObject().getUsedHashAlgorithmLength() == null) {
+        if (getObject().getUsedHashAlgorithmLength() == null || getObject().getUsedHashAlgorithmLength().getOriginalValue() == null) {
             getObject()
                     .setUsedHashAlgorithmLength(
                             getObject().getUsedHashAlgorithm().getValue().length());
         }
 
-        if (getObject().getHash() == null) {
+        if (getObject().getHash() == null || getObject().getHash().getOriginalValue() == null) {
             getObject().setHash(new byte[100]);
         }
     }

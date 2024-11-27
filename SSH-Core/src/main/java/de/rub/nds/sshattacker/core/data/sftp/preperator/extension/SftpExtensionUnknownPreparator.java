@@ -19,17 +19,17 @@ public class SftpExtensionUnknownPreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
-        if (getObject().getName() == null) {
+        if (getObject().getName() == null || getObject().getName().getOriginalValue() == null) {
             getObject().setName("hello-from@ssh-attacker.de", true);
         }
-        if (getObject().getNameLength() == null) {
+        if (getObject().getNameLength() == null || getObject().getNameLength().getOriginalValue() == null) {
             getObject().setNameLength(getObject().getName().getValue().length());
         }
 
-        if (getObject().getValue() == null) {
+        if (getObject().getValue() == null || getObject().getValue().getOriginalValue() == null) {
             getObject().setValue(new byte[100], true);
         }
-        if (getObject().getValueLength() == null) {
+        if (getObject().getValueLength() == null || getObject().getValueLength().getOriginalValue() == null) {
             getObject().setValueLength(getObject().getValue().getValue().length);
         }
     }

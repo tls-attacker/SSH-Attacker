@@ -21,17 +21,17 @@ public class SftpRequestHardlinkMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getPath() == null) {
+        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getPathLength() == null) {
+        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
-        if (getObject().getNewPath() == null) {
+        if (getObject().getNewPath() == null || getObject().getNewPath().getOriginalValue() == null) {
             getObject().setNewPath("/etc/passwd-new", true);
         }
-        if (getObject().getNewPathLength() == null) {
+        if (getObject().getNewPathLength() == null || getObject().getNewPathLength().getOriginalValue() == null) {
             getObject().setNewPathLength(getObject().getNewPath().getValue().length());
         }
     }

@@ -21,10 +21,10 @@ public class SftpRequestHomeDirectoryMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getUsername() == null) {
+        if (getObject().getUsername() == null || getObject().getUsername().getOriginalValue() == null) {
             getObject().setUsername("ssh-attacker", true);
         }
-        if (getObject().getUsernameLength() == null) {
+        if (getObject().getUsernameLength() == null || getObject().getUsernameLength().getOriginalValue() == null) {
             getObject().setUsernameLength(getObject().getUsername().getValue().length());
         }
     }

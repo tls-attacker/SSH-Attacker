@@ -19,7 +19,7 @@ public class SftpIdEntryPreparator extends Preparator<SftpIdEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getId() == null) {
+        if (getObject().getId() == null || getObject().getId().getOriginalValue() == null) {
             getObject().setId(1000);
         }
     }

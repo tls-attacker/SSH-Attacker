@@ -25,23 +25,23 @@ public class SftpRequestCheckFileHandleMessagePreparator
     public void prepareRequestExtendedSpecificContents() {
         getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getHashAlgorithms() == null) {
+        if (getObject().getHashAlgorithms() == null || getObject().getHashAlgorithms().getOriginalValue() == null) {
             getObject().setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);
         }
-        if (getObject().getHashAlgorithmsLength() == null) {
+        if (getObject().getHashAlgorithmsLength() == null || getObject().getHashAlgorithmsLength().getOriginalValue() == null) {
             getObject()
                     .setHashAlgorithmsLength(getObject().getHashAlgorithms().getValue().length());
         }
 
-        if (getObject().getStartOffset() == null) {
+        if (getObject().getStartOffset() == null || getObject().getStartOffset().getOriginalValue() == null) {
             getObject().setStartOffset(0);
         }
 
-        if (getObject().getLength() == null) {
+        if (getObject().getLength() == null || getObject().getLength().getOriginalValue() == null) {
             getObject().setLength(100000); // 0 for all data
         }
 
-        if (getObject().getBlockSize() == null) {
+        if (getObject().getBlockSize() == null || getObject().getBlockSize().getOriginalValue() == null) {
             getObject().setBlockSize(512); // Should be >= 256
         }
     }

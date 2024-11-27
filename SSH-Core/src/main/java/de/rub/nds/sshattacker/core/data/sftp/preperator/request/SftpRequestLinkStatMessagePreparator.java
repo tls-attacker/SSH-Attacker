@@ -21,10 +21,10 @@ public class SftpRequestLinkStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getPath() == null) {
+        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/bin/python3", true);
         }
-        if (getObject().getPathLength() == null) {
+        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
     }

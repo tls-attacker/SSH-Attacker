@@ -22,7 +22,7 @@ public class SftpResponseAttributesMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getAttributes() == null) {
+        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();

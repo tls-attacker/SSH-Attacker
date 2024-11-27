@@ -22,17 +22,17 @@ public class SftpRequestOpenMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getPath() == null) {
+        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getPathLength() == null) {
+        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
-        if (getObject().getPFlags() == null) {
+        if (getObject().getPFlags() == null || getObject().getPFlags().getOriginalValue() == null) {
             getObject().setPFlags(SftpFileOpenFlag.SSH_FXF_READ);
         }
-        if (getObject().getAttributes() == null) {
+        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();

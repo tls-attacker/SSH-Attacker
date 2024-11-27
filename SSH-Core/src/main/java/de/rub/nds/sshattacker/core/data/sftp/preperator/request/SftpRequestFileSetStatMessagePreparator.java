@@ -25,7 +25,7 @@ public class SftpRequestFileSetStatMessagePreparator
         getObject()
                 .setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
 
-        if (getObject().getAttributes() == null) {
+        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
