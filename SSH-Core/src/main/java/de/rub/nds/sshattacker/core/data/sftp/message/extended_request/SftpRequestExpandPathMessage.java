@@ -15,6 +15,6 @@ public class SftpRequestExpandPathMessage
 
     @Override
     public SftpRequestExpandPathMessageHandler getHandler(SshContext context) {
-        return new SftpRequestExpandPathMessageHandler(context);
+        return new SftpRequestExpandPathMessageHandler(context, this);
     }
 }

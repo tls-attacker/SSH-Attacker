@@ -33,6 +33,6 @@ public class SftpRequestUnknownMessage
 
     @Override
     public SftpRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new SftpRequestUnknownMessageHandler(context);
+        return new SftpRequestUnknownMessageHandler(context, this);
     }
 }

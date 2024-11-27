@@ -63,6 +63,6 @@ public class SftpRequestHardlinkMessage
 
     @Override
     public SftpRequestHardlinkMessageHandler getHandler(SshContext context) {
-        return new SftpRequestHardlinkMessageHandler(context);
+        return new SftpRequestHardlinkMessageHandler(context, this);
     }
 }

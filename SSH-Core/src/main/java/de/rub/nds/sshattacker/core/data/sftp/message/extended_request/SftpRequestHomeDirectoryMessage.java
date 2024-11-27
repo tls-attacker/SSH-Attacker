@@ -61,6 +61,6 @@ public class SftpRequestHomeDirectoryMessage
 
     @Override
     public SftpRequestHomeDirectoryMessageHandler getHandler(SshContext context) {
-        return new SftpRequestHomeDirectoryMessageHandler(context);
+        return new SftpRequestHomeDirectoryMessageHandler(context, this);
     }
 }

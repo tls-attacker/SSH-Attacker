@@ -15,6 +15,6 @@ public class SftpRequestGetTempFolderMessage
 
     @Override
     public SftpRequestGetTempFolderMessageHandler getHandler(SshContext context) {
-        return new SftpRequestGetTempFolderMessageHandler(context);
+        return new SftpRequestGetTempFolderMessageHandler(context, this);
     }
 }

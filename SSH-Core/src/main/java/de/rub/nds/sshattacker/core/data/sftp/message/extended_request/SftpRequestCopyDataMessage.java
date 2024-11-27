@@ -107,6 +107,6 @@ public class SftpRequestCopyDataMessage
 
     @Override
     public SftpRequestCopyDataMessageHandler getHandler(SshContext context) {
-        return new SftpRequestCopyDataMessageHandler(context);
+        return new SftpRequestCopyDataMessageHandler(context, this);
     }
 }

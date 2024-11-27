@@ -15,6 +15,6 @@ public class SftpRequestSpaceAvailableMessage
 
     @Override
     public SftpRequestSpaceAvailableMessageHandler getHandler(SshContext context) {
-        return new SftpRequestSpaceAvailableMessageHandler(context);
+        return new SftpRequestSpaceAvailableMessageHandler(context, this);
     }
 }

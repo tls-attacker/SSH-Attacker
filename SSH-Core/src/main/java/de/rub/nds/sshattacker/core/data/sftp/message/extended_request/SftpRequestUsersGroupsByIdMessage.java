@@ -121,6 +121,6 @@ public class SftpRequestUsersGroupsByIdMessage
 
     @Override
     public SftpRequestUsersGroupsByIdMessageHandler getHandler(SshContext context) {
-        return new SftpRequestUsersGroupsByIdMessageHandler(context);
+        return new SftpRequestUsersGroupsByIdMessageHandler(context, this);
     }
 }

@@ -15,6 +15,6 @@ public class SftpRequestFileSyncMessage
 
     @Override
     public SftpRequestFileSyncMessageHandler getHandler(SshContext context) {
-        return new SftpRequestFileSyncMessageHandler(context);
+        return new SftpRequestFileSyncMessageHandler(context, this);
     }
 }

@@ -162,6 +162,6 @@ public class SftpRequestVendorIdMessage
 
     @Override
     public SftpRequestVendorIdMessageHandler getHandler(SshContext context) {
-        return new SftpRequestVendorIdMessageHandler(context);
+        return new SftpRequestVendorIdMessageHandler(context, this);
     }
 }

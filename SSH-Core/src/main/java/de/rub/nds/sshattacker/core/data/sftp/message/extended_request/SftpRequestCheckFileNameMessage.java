@@ -130,6 +130,6 @@ public class SftpRequestCheckFileNameMessage
 
     @Override
     public SftpRequestCheckFileNameMessageHandler getHandler(SshContext context) {
-        return new SftpRequestCheckFileNameMessageHandler(context);
+        return new SftpRequestCheckFileNameMessageHandler(context, this);
     }
 }

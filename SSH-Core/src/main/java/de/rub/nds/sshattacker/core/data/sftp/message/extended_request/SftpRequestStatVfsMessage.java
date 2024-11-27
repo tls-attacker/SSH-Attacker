@@ -15,6 +15,6 @@ public class SftpRequestStatVfsMessage
 
     @Override
     public SftpRequestStatVfsMessageHandler getHandler(SshContext context) {
-        return new SftpRequestStatVfsMessageHandler(context);
+        return new SftpRequestStatVfsMessageHandler(context, this);
     }
 }

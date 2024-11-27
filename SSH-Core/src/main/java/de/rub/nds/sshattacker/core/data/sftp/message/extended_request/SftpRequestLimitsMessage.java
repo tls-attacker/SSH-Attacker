@@ -14,6 +14,6 @@ public class SftpRequestLimitsMessage extends SftpRequestExtendedMessage<SftpReq
 
     @Override
     public SftpRequestLimitsMessageHandler getHandler(SshContext context) {
-        return new SftpRequestLimitsMessageHandler(context);
+        return new SftpRequestLimitsMessageHandler(context, this);
     }
 }

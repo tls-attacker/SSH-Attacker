@@ -31,6 +31,6 @@ public class SftpRequestTextSeekMessage
 
     @Override
     public SftpRequestTextSeekMessageHandler getHandler(SshContext context) {
-        return new SftpRequestTextSeekMessageHandler(context);
+        return new SftpRequestTextSeekMessageHandler(context, this);
     }
 }

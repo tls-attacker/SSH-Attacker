@@ -29,7 +29,7 @@ public class SftpRequestLinkSetStatMessage
 
     @Override
     public SftpRequestLinkSetStatMessageHandler getHandler(SshContext context) {
-        return new SftpRequestLinkSetStatMessageHandler(context);
+        return new SftpRequestLinkSetStatMessageHandler(context, this);
     }
 
     @Override

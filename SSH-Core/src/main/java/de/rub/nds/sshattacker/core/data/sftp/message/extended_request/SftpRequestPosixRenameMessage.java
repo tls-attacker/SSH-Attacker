@@ -63,6 +63,6 @@ public class SftpRequestPosixRenameMessage
 
     @Override
     public SftpRequestPosixRenameMessageHandler getHandler(SshContext context) {
-        return new SftpRequestPosixRenameMessageHandler(context);
+        return new SftpRequestPosixRenameMessageHandler(context, this);
     }
 }
