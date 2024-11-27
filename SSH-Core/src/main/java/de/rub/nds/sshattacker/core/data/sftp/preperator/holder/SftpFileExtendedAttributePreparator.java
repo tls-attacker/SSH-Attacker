@@ -23,14 +23,16 @@ public class SftpFileExtendedAttributePreparator extends Preparator<SftpFileExte
         if (getObject().getType() == null || getObject().getType().getOriginalValue() == null) {
             getObject().setType("hello-from@ssh-attacker.de", true);
         }
-        if (getObject().getTypeLength() == null || getObject().getTypeLength().getOriginalValue() == null) {
+        if (getObject().getTypeLength() == null
+                || getObject().getTypeLength().getOriginalValue() == null) {
             getObject().setTypeLength(getObject().getType().getValue().length());
         }
 
         if (getObject().getData() == null || getObject().getData().getOriginalValue() == null) {
             getObject().setData(new byte[100], true);
         }
-        if (getObject().getDataLength() == null || getObject().getDataLength().getOriginalValue() == null) {
+        if (getObject().getDataLength() == null
+                || getObject().getDataLength().getOriginalValue() == null) {
             getObject().setDataLength(getObject().getData().getValue().length);
         }
     }

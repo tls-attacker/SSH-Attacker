@@ -35,7 +35,8 @@ public class SftpAclEntryPreparator extends Preparator<SftpAclEntry> {
         if (getObject().getWho() == null || getObject().getWho().getOriginalValue() == null) {
             getObject().setWho(chooser.getConfig().getUsername(), true);
         }
-        if (getObject().getWhoLength() == null || getObject().getWhoLength().getOriginalValue() == null) {
+        if (getObject().getWhoLength() == null
+                || getObject().getWhoLength().getOriginalValue() == null) {
             getObject().setWhoLength(getObject().getWho().getValue().length());
         }
     }

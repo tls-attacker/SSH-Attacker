@@ -24,13 +24,15 @@ public class SftpRequestStatMessagePreparator
         if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
+        if (getObject().getPathLength() == null
+                || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getFlags() == null || getObject().getFlags().getOriginalValue() == null) {
+            if (getObject().getFlags() == null
+                    || getObject().getFlags().getOriginalValue() == null) {
                 getObject().setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
             }
         } else {

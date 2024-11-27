@@ -19,16 +19,19 @@ public class SftpRequestUnknownMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getExtendedRequestName() == null || getObject().getExtendedRequestName().getOriginalValue() == null) {
+        if (getObject().getExtendedRequestName() == null
+                || getObject().getExtendedRequestName().getOriginalValue() == null) {
             getObject().setExtendedRequestName("hello-from@ssh-attacker.de");
         }
-        if (getObject().getExtendedRequestNameLength() == null || getObject().getExtendedRequestNameLength().getOriginalValue() == null) {
+        if (getObject().getExtendedRequestNameLength() == null
+                || getObject().getExtendedRequestNameLength().getOriginalValue() == null) {
             getObject()
                     .setExtendedRequestNameLength(
                             getObject().getExtendedRequestName().getValue().length());
         }
 
-        if (getObject().getRequestSpecificData() == null || getObject().getRequestSpecificData().getOriginalValue() == null) {
+        if (getObject().getRequestSpecificData() == null
+                || getObject().getRequestSpecificData().getOriginalValue() == null) {
             getObject().setRequestSpecificData(new byte[100]);
         }
     }

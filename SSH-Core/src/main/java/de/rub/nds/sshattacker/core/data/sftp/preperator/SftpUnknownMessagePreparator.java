@@ -20,7 +20,8 @@ public class SftpUnknownMessagePreparator extends SftpMessagePreparator<SftpUnkn
 
     @Override
     public void prepareMessageSpecificContents() {
-        if (getObject().getPayload() == null || getObject().getPayload().getOriginalValue() == null) {
+        if (getObject().getPayload() == null
+                || getObject().getPayload().getOriginalValue() == null) {
             getObject().setPayload(new byte[0]);
         }
     }

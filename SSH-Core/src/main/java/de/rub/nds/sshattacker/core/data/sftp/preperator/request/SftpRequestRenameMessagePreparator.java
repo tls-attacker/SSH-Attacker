@@ -23,14 +23,17 @@ public class SftpRequestRenameMessagePreparator
         if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
+        if (getObject().getPathLength() == null
+                || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
-        if (getObject().getNewPath() == null || getObject().getNewPath().getOriginalValue() == null) {
+        if (getObject().getNewPath() == null
+                || getObject().getNewPath().getOriginalValue() == null) {
             getObject().setNewPath("/tmp/passwd-win", true);
         }
-        if (getObject().getNewPathLength() == null || getObject().getNewPathLength().getOriginalValue() == null) {
+        if (getObject().getNewPathLength() == null
+                || getObject().getNewPathLength().getOriginalValue() == null) {
             getObject().setNewPathLength(getObject().getNewPath().getValue().length());
         }
     }

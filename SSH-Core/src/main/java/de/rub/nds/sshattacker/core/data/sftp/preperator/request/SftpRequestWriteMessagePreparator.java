@@ -29,7 +29,8 @@ public class SftpRequestWriteMessagePreparator
         if (getObject().getData() == null || getObject().getData().getOriginalValue() == null) {
             getObject().setData(new byte[100], true);
         }
-        if (getObject().getDataLength() == null || getObject().getDataLength().getOriginalValue() == null) {
+        if (getObject().getDataLength() == null
+                || getObject().getDataLength().getOriginalValue() == null) {
             getObject().setDataLength(getObject().getData().getValue().length);
         }
     }

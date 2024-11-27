@@ -24,14 +24,17 @@ public class SftpRequestSymbolicLinkMessagePreparator
         if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/bin/sh", true);
         }
-        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
+        if (getObject().getPathLength() == null
+                || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
-        if (getObject().getTargetPath() == null || getObject().getTargetPath().getOriginalValue() == null) {
+        if (getObject().getTargetPath() == null
+                || getObject().getTargetPath().getOriginalValue() == null) {
             getObject().setTargetPath("/tmp/ssh-attacker-sh", true);
         }
-        if (getObject().getTargetPathLength() == null || getObject().getTargetPathLength().getOriginalValue() == null) {
+        if (getObject().getTargetPathLength() == null
+                || getObject().getTargetPathLength().getOriginalValue() == null) {
             getObject().setTargetPathLength(getObject().getTargetPath().getValue().length());
         }
     }

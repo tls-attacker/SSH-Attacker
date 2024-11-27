@@ -23,7 +23,8 @@ public class SftpRequestTextSeekMessagePreparator
     public void prepareRequestExtendedSpecificContents() {
         getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        if (getObject().getLineNumber() == null || getObject().getLineNumber().getOriginalValue() == null) {
+        if (getObject().getLineNumber() == null
+                || getObject().getLineNumber().getOriginalValue() == null) {
             getObject().setLineNumber(0);
         }
     }

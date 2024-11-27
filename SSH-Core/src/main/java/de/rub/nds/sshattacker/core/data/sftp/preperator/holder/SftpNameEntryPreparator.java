@@ -22,7 +22,8 @@ public class SftpNameEntryPreparator extends Preparator<SftpNameEntry> {
         if (getObject().getName() == null || getObject().getName().getOriginalValue() == null) {
             getObject().setName("ssh-attacker", true);
         }
-        if (getObject().getNameLength() == null || getObject().getNameLength().getOriginalValue() == null) {
+        if (getObject().getNameLength() == null
+                || getObject().getNameLength().getOriginalValue() == null) {
             getObject().setNameLength(getObject().getName().getValue().length());
         }
     }

@@ -20,7 +20,8 @@ public class SftpResponseNameMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getCountNameEntries() == null || getObject().getCountNameEntries().getOriginalValue() == null) {
+        if (getObject().getCountNameEntries() == null
+                || getObject().getCountNameEntries().getOriginalValue() == null) {
             getObject().setCountNameEntries(0);
         }
 

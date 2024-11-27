@@ -20,10 +20,12 @@ public class SftpExtensionNewlinePreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
-        if (getObject().getNewlineSeperator() == null || getObject().getNewlineSeperator().getOriginalValue() == null) {
+        if (getObject().getNewlineSeperator() == null
+                || getObject().getNewlineSeperator().getOriginalValue() == null) {
             getObject().setNewlineSeperator("\n", true);
         }
-        if (getObject().getNewlineSeperatorLength() == null || getObject().getNewlineSeperatorLength().getOriginalValue() == null) {
+        if (getObject().getNewlineSeperatorLength() == null
+                || getObject().getNewlineSeperatorLength().getOriginalValue() == null) {
             getObject()
                     .setNewlineSeperatorLength(
                             getObject().getNewlineSeperator().getValue().length());

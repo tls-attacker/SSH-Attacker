@@ -20,22 +20,26 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getFilename() == null || getObject().getFilename().getOriginalValue() == null) {
+        if (getObject().getFilename() == null
+                || getObject().getFilename().getOriginalValue() == null) {
             getObject().setFilename("/etc/passwd", true);
         }
-        if (getObject().getFilenameLength() == null || getObject().getFilenameLength().getOriginalValue() == null) {
+        if (getObject().getFilenameLength() == null
+                || getObject().getFilenameLength().getOriginalValue() == null) {
             getObject().setFilenameLength(getObject().getFilename().getValue().length());
         }
 
         if (chooser.getSftpNegotiatedVersion() <= 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getLongName() == null || getObject().getLongName().getOriginalValue() == null) {
+            if (getObject().getLongName() == null
+                    || getObject().getLongName().getOriginalValue() == null) {
                 getObject()
                         .setLongName(
                                 "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
                                 true);
             }
-            if (getObject().getLongNameLength() == null || getObject().getLongNameLength().getOriginalValue() == null) {
+            if (getObject().getLongNameLength() == null
+                    || getObject().getLongNameLength().getOriginalValue() == null) {
                 getObject().setLongNameLength(getObject().getLongName().getValue().length());
             }
         } else {
@@ -43,7 +47,7 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
             getObject().clearLongName();
         }
 
-        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
+        if (getObject().getAttributes() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();

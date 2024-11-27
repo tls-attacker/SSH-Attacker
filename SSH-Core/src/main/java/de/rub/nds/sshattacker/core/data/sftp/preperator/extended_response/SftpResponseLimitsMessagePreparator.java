@@ -19,19 +19,23 @@ public class SftpResponseLimitsMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getMaximumPacketLength() == null || getObject().getMaximumPacketLength().getOriginalValue() == null) {
+        if (getObject().getMaximumPacketLength() == null
+                || getObject().getMaximumPacketLength().getOriginalValue() == null) {
             getObject().setMaximumPacketLength(100000);
         }
 
-        if (getObject().getMaximumReadLength() == null || getObject().getMaximumReadLength().getOriginalValue() == null) {
+        if (getObject().getMaximumReadLength() == null
+                || getObject().getMaximumReadLength().getOriginalValue() == null) {
             getObject().setMaximumReadLength(0);
         }
 
-        if (getObject().getMaximumWriteLength() == null || getObject().getMaximumWriteLength().getOriginalValue() == null) {
+        if (getObject().getMaximumWriteLength() == null
+                || getObject().getMaximumWriteLength().getOriginalValue() == null) {
             getObject().setMaximumWriteLength(0);
         }
 
-        if (getObject().getMaximumOpenHandles() == null || getObject().getMaximumOpenHandles().getOriginalValue() == null) {
+        if (getObject().getMaximumOpenHandles() == null
+                || getObject().getMaximumOpenHandles().getOriginalValue() == null) {
             getObject().setMaximumOpenHandles(1);
         }
     }

@@ -26,19 +26,23 @@ public class SftpRequestCheckFileNameMessagePreparator
         if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
             getObject().setPath("/etc/passwd", true);
         }
-        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
+        if (getObject().getPathLength() == null
+                || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
 
-        if (getObject().getHashAlgorithms() == null || getObject().getHashAlgorithms().getOriginalValue() == null) {
+        if (getObject().getHashAlgorithms() == null
+                || getObject().getHashAlgorithms().getOriginalValue() == null) {
             getObject().setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);
         }
-        if (getObject().getHashAlgorithmsLength() == null || getObject().getHashAlgorithmsLength().getOriginalValue() == null) {
+        if (getObject().getHashAlgorithmsLength() == null
+                || getObject().getHashAlgorithmsLength().getOriginalValue() == null) {
             getObject()
                     .setHashAlgorithmsLength(getObject().getHashAlgorithms().getValue().length());
         }
 
-        if (getObject().getStartOffset() == null || getObject().getStartOffset().getOriginalValue() == null) {
+        if (getObject().getStartOffset() == null
+                || getObject().getStartOffset().getOriginalValue() == null) {
             getObject().setStartOffset(0);
         }
 
@@ -46,7 +50,8 @@ public class SftpRequestCheckFileNameMessagePreparator
             getObject().setLength(100000); // 0 for all data
         }
 
-        if (getObject().getBlockSize() == null || getObject().getBlockSize().getOriginalValue() == null) {
+        if (getObject().getBlockSize() == null
+                || getObject().getBlockSize().getOriginalValue() == null) {
             getObject().setBlockSize(512); // Should be >= 256
         }
     }

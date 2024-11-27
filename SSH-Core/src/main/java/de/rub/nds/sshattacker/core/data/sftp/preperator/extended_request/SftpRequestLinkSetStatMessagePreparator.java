@@ -26,10 +26,11 @@ public class SftpRequestLinkSetStatMessagePreparator
             getObject().setPath("/bin/python3", true);
         }
 
-        if (getObject().getPathLength() == null || getObject().getPathLength().getOriginalValue() == null) {
+        if (getObject().getPathLength() == null
+                || getObject().getPathLength().getOriginalValue() == null) {
             getObject().setPathLength(getObject().getPath().getValue().length());
         }
-        if (getObject().getAttributes() == null || getObject().getAttributes().getOriginalValue() == null) {
+        if (getObject().getAttributes() == null) {
             getObject().setAttributes(new SftpFileAttributes());
         }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();

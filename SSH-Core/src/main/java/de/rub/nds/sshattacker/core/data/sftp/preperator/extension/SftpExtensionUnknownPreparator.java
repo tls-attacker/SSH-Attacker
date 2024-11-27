@@ -22,14 +22,16 @@ public class SftpExtensionUnknownPreparator
         if (getObject().getName() == null || getObject().getName().getOriginalValue() == null) {
             getObject().setName("hello-from@ssh-attacker.de", true);
         }
-        if (getObject().getNameLength() == null || getObject().getNameLength().getOriginalValue() == null) {
+        if (getObject().getNameLength() == null
+                || getObject().getNameLength().getOriginalValue() == null) {
             getObject().setNameLength(getObject().getName().getValue().length());
         }
 
         if (getObject().getValue() == null || getObject().getValue().getOriginalValue() == null) {
             getObject().setValue(new byte[100], true);
         }
-        if (getObject().getValueLength() == null || getObject().getValueLength().getOriginalValue() == null) {
+        if (getObject().getValueLength() == null
+                || getObject().getValueLength().getOriginalValue() == null) {
             getObject().setValueLength(getObject().getValue().getValue().length);
         }
     }
