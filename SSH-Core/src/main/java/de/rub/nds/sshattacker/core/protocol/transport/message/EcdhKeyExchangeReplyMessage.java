@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -82,6 +83,21 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         }
     }
 
+    public void setSoftlyHostKeyBytes(
+            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+            this.hostKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostKeyBytesLength == null
+                    || hostKeyBytesLength.getOriginalValue() == null) {
+                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+            }
+        }
+    }
+
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;
     }
@@ -122,6 +138,22 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
                         this.ephemeralPublicKey, ephemeralPublicKey);
         if (adjustLengthField) {
             setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+        }
+    }
+
+    public void setSoftlyEphemeralPublicKey(
+            byte[] ephemeralPublicKey, boolean adjustLengthField, Config config) {
+        if (this.ephemeralPublicKey == null || this.ephemeralPublicKey.getOriginalValue() == null) {
+            this.ephemeralPublicKey =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.ephemeralPublicKey, ephemeralPublicKey);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || ephemeralPublicKeyLength == null
+                    || ephemeralPublicKeyLength.getOriginalValue() == null) {
+                setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+            }
         }
     }
 
@@ -169,6 +201,19 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

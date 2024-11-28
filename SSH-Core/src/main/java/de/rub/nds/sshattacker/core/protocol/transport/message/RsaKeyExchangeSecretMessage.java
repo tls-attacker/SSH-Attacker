@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeSecretMessageHandler;
@@ -54,6 +55,21 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
                 ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
         if (adjustLengthField) {
             setEncryptedSecretLength(this.encryptedSecret.getValue().length);
+        }
+    }
+
+    public void setSoftlyEncryptedSecret(
+            byte[] encryptedSecret, boolean adjustLengthField, Config config) {
+        if (this.encryptedSecret == null || this.encryptedSecret.getOriginalValue() == null) {
+            this.encryptedSecret =
+                    ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || encryptedSecretLength == null
+                    || encryptedSecretLength.getOriginalValue() == null) {
+                setEncryptedSecretLength(this.encryptedSecret.getValue().length);
+            }
         }
     }
 

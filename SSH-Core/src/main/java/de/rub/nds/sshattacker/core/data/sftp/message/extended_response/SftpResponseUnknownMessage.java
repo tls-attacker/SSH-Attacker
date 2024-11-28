@@ -30,6 +30,15 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
                         this.responseSpecificData, responseSpecificData);
     }
 
+    public void setSoftlyResponseSpecificData(byte[] responseSpecificData) {
+        if (this.responseSpecificData == null
+                || this.responseSpecificData.getOriginalValue() == null) {
+            this.responseSpecificData =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.responseSpecificData, responseSpecificData);
+        }
+    }
+
     @Override
     public SftpResponseUnknownMessageHandler getHandler(SshContext context) {
         return new SftpResponseUnknownMessageHandler(context, this);

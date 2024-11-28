@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
@@ -86,6 +87,21 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
         }
     }
 
+    public void setSoftlyHostKeyBytes(
+            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+            this.hostKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostKeyBytesLength == null
+                    || hostKeyBytesLength.getOriginalValue() == null) {
+                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+            }
+        }
+    }
+
     // Transient Public Key (K_T) Methods
     public ModifiableInteger getTransientPublicKeyBytesLength() {
         return transientPublicKeyBytesLength;
@@ -134,6 +150,23 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
                         this.transientPublicKeyBytes, transientPublicKeyBytes);
         if (adjustLengthField) {
             setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+        }
+    }
+
+    public void setSoftlyTransientPublicKeyBytes(
+            byte[] transientPublicKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.transientPublicKeyBytes == null
+                || this.transientPublicKeyBytes.getOriginalValue() == null) {
+            this.transientPublicKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.transientPublicKeyBytes, transientPublicKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || transientPublicKeyBytesLength == null
+                    || transientPublicKeyBytesLength.getOriginalValue() == null) {
+                setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+            }
         }
     }
 

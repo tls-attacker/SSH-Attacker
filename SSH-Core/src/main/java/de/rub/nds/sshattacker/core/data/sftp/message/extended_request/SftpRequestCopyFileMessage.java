@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyFileMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -39,8 +40,21 @@ public class SftpRequestCopyFileMessage
                         this.overwriteDestination, overwriteDestination);
     }
 
+    public void setSoftlyOverwriteDestination(byte overwriteDestination) {
+        if (this.overwriteDestination == null
+                || this.overwriteDestination.getOriginalValue() == null) {
+            this.overwriteDestination =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.overwriteDestination, overwriteDestination);
+        }
+    }
+
     public void setOverwriteDestination(boolean overwriteDestination) {
         setOverwriteDestination(Converter.booleanToByte(overwriteDestination));
+    }
+
+    public void setSoftlyOverwriteDestination(boolean overwriteDestination) {
+        setSoftlyOverwriteDestination(Converter.booleanToByte(overwriteDestination));
     }
 
     public ModifiableInteger getDestinationPathLength() {
@@ -78,11 +92,28 @@ public class SftpRequestCopyFileMessage
     }
 
     public void setDestinationPath(String destinationPath, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDestinationPathLength(destinationPath.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.destinationPath =
                 ModifiableVariableFactory.safelySetValue(this.destinationPath, destinationPath);
+        if (adjustLengthField) {
+            setDestinationPathLength(
+                    this.destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyDestinationPath(
+            String destinationPath, boolean adjustLengthField, Config config) {
+        if (this.destinationPath == null || this.destinationPath.getOriginalValue() == null) {
+            this.destinationPath =
+                    ModifiableVariableFactory.safelySetValue(this.destinationPath, destinationPath);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || destinationPathLength == null
+                    || destinationPathLength.getOriginalValue() == null) {
+                setDestinationPathLength(
+                        this.destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     @Override

@@ -19,10 +19,7 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
     }
 
     public void prepareMessageSpecificContents() {
-        if (getObject().getVersion() == null
-                || getObject().getVersion().getOriginalValue() == null) {
-            getObject().setVersion(chooser.getSftpClientVersion());
-        }
+        getObject().setSoftlyVersion(chooser.getSftpClientVersion());
         if (getObject().getExtensions().isEmpty()) {
             if (chooser.getSftpClientVersion() == 3) {
                 // Only Clients with protocol version 3 should send supported extensions,

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -35,6 +36,13 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     public void setChangePassword(byte changePassword) {
         this.changePassword =
                 ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
+    }
+
+    public void setSoftlyChangePassword(byte changePassword) {
+        if (this.changePassword == null || this.changePassword.getOriginalValue() == null) {
+            this.changePassword =
+                    ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
+        }
     }
 
     public void setChangePassword(boolean changePassword) {
@@ -80,6 +88,19 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         }
     }
 
+    public void setSoftlyPassword(String password, boolean adjustLengthField, Config config) {
+        if (this.password == null || this.password.getOriginalValue() == null) {
+            this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || passwordLength == null
+                    || passwordLength.getOriginalValue() == null) {
+                setPasswordLength(this.password.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getNewPasswordLength() {
         return newPasswordLength;
     }
@@ -118,6 +139,21 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         if (adjustLengthField) {
             setNewPasswordLength(
                     this.newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyNewPassword(String newPassword, boolean adjustLengthField, Config config) {
+        if (this.newPassword == null || this.newPassword.getOriginalValue() == null) {
+            this.newPassword =
+                    ModifiableVariableFactory.safelySetValue(this.newPassword, newPassword);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || newPasswordLength == null
+                    || newPasswordLength.getOriginalValue() == null) {
+                setNewPasswordLength(
+                        this.newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

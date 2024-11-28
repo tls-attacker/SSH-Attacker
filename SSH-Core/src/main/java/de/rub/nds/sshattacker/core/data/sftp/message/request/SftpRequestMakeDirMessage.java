@@ -17,7 +17,7 @@ import java.util.List;
 public class SftpRequestMakeDirMessage
         extends SftpRequestWithPathMessage<SftpRequestMakeDirMessage> {
 
-    @HoldsModifiableVariable private SftpFileAttributes attributes;
+    @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
     public SftpFileAttributes getAttributes() {
         return attributes;

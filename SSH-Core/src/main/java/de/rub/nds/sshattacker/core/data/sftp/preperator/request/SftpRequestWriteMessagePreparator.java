@@ -20,18 +20,14 @@ public class SftpRequestWriteMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
+        getObject()
+                .setSoftlyHandle(
+                        chooser.getContext().getSftpManager().getFileHandle(),
+                        true,
+                        chooser.getConfig());
 
-        if (getObject().getOffset() == null || getObject().getOffset().getOriginalValue() == null) {
-            getObject().setOffset(0);
-        }
+        getObject().setSoftlyOffset(0);
 
-        if (getObject().getData() == null || getObject().getData().getOriginalValue() == null) {
-            getObject().setData(new byte[100], true);
-        }
-        if (getObject().getDataLength() == null
-                || getObject().getDataLength().getOriginalValue() == null) {
-            getObject().setDataLength(getObject().getData().getValue().length);
-        }
+        getObject().setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -53,6 +54,19 @@ public class SftpResponseDataMessage extends SftpResponseMessage<SftpResponseDat
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
         if (adjustLengthField) {
             setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
+        if (this.data == null || this.data.getOriginalValue() == null) {
+            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || dataLength == null
+                    || dataLength.getOriginalValue() == null) {
+                setDataLength(this.data.getValue().length);
+            }
         }
     }
 

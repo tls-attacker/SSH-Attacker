@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.HashAlgorithm;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseCheckFileMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
@@ -63,16 +64,41 @@ public class SftpResponseCheckFileMessage
     }
 
     public void setUsedHashAlgorithm(String usedHashAlgorithm, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUsedHashAlgorithmLength(
-                    usedHashAlgorithm.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.usedHashAlgorithm =
                 ModifiableVariableFactory.safelySetValue(this.usedHashAlgorithm, usedHashAlgorithm);
+        if (adjustLengthField) {
+            setUsedHashAlgorithmLength(
+                    this.usedHashAlgorithm.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyUsedHashAlgorithm(
+            String usedHashAlgorithm, boolean adjustLengthField, Config config) {
+        if (this.usedHashAlgorithm == null || this.usedHashAlgorithm.getOriginalValue() == null) {
+            this.usedHashAlgorithm =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.usedHashAlgorithm, usedHashAlgorithm);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || usedHashAlgorithmLength == null
+                    || usedHashAlgorithmLength.getOriginalValue() == null) {
+                setUsedHashAlgorithmLength(
+                        this.usedHashAlgorithm
+                                .getValue()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length);
+            }
+        }
     }
 
     public void setUsedHashAlgorithm(HashAlgorithm usedHashAlgorithm, boolean adjustLengthField) {
-        setUsedHashAlgorithm(usedHashAlgorithm.getName());
+        setUsedHashAlgorithm(usedHashAlgorithm.getName(), adjustLengthField);
+    }
+
+    public void setSoftlyUsedHashAlgorithm(
+            HashAlgorithm usedHashAlgorithm, boolean adjustLengthField, Config config) {
+        setSoftlyUsedHashAlgorithm(usedHashAlgorithm.getName(), adjustLengthField, config);
     }
 
     public ModifiableByteArray getHash() {
@@ -85,6 +111,12 @@ public class SftpResponseCheckFileMessage
 
     public void setHash(byte[] hash) {
         this.hash = ModifiableVariableFactory.safelySetValue(this.hash, hash);
+    }
+
+    public void setSoftlyHash(byte[] hash) {
+        if (this.hash == null || this.hash.getOriginalValue() == null) {
+            this.hash = ModifiableVariableFactory.safelySetValue(this.hash, hash);
+        }
     }
 
     @Override

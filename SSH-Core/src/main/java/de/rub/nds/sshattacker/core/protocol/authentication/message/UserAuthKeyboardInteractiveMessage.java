@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -63,6 +64,21 @@ public class UserAuthKeyboardInteractiveMessage
         }
     }
 
+    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
+        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
+            this.languageTag =
+                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || languageTagLength == null
+                    || languageTagLength.getOriginalValue() == null) {
+                setLanguageTagLength(
+                        this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getSubMethodsLength() {
         return subMethodsLength;
     }
@@ -99,6 +115,20 @@ public class UserAuthKeyboardInteractiveMessage
         this.subMethods = ModifiableVariableFactory.safelySetValue(this.subMethods, subMethods);
         if (adjustLengthField) {
             setSubMethodsLength(this.subMethods.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlySubMethods(String subMethods, boolean adjustLengthField, Config config) {
+        if (this.subMethods == null || this.subMethods.getOriginalValue() == null) {
+            this.subMethods = ModifiableVariableFactory.safelySetValue(this.subMethods, subMethods);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || subMethodsLength == null
+                    || subMethodsLength.getOriginalValue() == null) {
+                setSubMethodsLength(
+                        this.subMethods.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

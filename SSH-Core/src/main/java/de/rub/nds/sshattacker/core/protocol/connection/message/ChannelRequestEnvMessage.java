@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestEnvMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,22 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         if (adjustLengthField) {
             setVariableNameLength(
                     this.variableName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyVariableName(
+            String variableName, boolean adjustLengthField, Config config) {
+        if (this.variableName == null || this.variableName.getOriginalValue() == null) {
+            this.variableName =
+                    ModifiableVariableFactory.safelySetValue(this.variableName, variableName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || variableNameLength == null
+                    || variableNameLength.getOriginalValue() == null) {
+                setVariableNameLength(
+                        this.variableName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 
@@ -92,6 +109,22 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         if (adjustLengthField) {
             setVariableValueLength(
                     this.variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyVariableValue(
+            String variableValue, boolean adjustLengthField, Config config) {
+        if (this.variableValue == null || this.variableValue.getOriginalValue() == null) {
+            this.variableValue =
+                    ModifiableVariableFactory.safelySetValue(this.variableValue, variableValue);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || variableValueLength == null
+                    || variableValueLength.getOriginalValue() == null) {
+                setVariableValueLength(
+                        this.variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

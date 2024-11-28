@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
@@ -24,7 +25,7 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     // Neue Variable für die Zertifikatsdaten
     private ModifiableByteArray certificatePublicKeyData;
-    private ModifiableInteger certificatePublicKeyLength;
+    private ModifiableInteger certificatePublicKeyDataLength;
 
     public ModifiableInteger getAgreementPublicKeyLength() {
         return agreementPublicKeyLength;
@@ -66,6 +67,22 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
                         this.agreementPublicKey, agreementPublicKey);
         if (adjustLengthField) {
             setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+        }
+    }
+
+    public void setSoftlyAgreementPublicKey(
+            byte[] agreementPublicKey, boolean adjustLengthField, Config config) {
+        if (this.agreementPublicKey == null || this.agreementPublicKey.getOriginalValue() == null) {
+            this.agreementPublicKey =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.agreementPublicKey, agreementPublicKey);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || agreementPublicKeyLength == null
+                    || agreementPublicKeyLength.getOriginalValue() == null) {
+                setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+            }
         }
     }
 
@@ -113,6 +130,23 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
         }
     }
 
+    public void setSoftlyEncapsulationPublicKey(
+            byte[] encapsulationPublicKey, boolean adjustLengthField, Config config) {
+        if (this.encapsulationPublicKey == null
+                || this.encapsulationPublicKey.getOriginalValue() == null) {
+            this.encapsulationPublicKey =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.encapsulationPublicKey, encapsulationPublicKey);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || encapsulationPublicKeyLength == null
+                    || encapsulationPublicKeyLength.getOriginalValue() == null) {
+                setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
+            }
+        }
+    }
+
     // Getter und Setter für das Zertifikat
     public ModifiableByteArray getCertificatePublicKeyData() {
         return certificatePublicKeyData;
@@ -130,7 +164,7 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
             ModifiableByteArray certificatePublicKeyData, boolean adjustLengthField) {
         this.certificatePublicKeyData = certificatePublicKeyData;
         if (adjustLengthField) {
-            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
+            setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
         }
     }
 
@@ -140,22 +174,40 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
                 ModifiableVariableFactory.safelySetValue(
                         this.certificatePublicKeyData, certificatePublicKeyData);
         if (adjustLengthField) {
-            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
+            setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
         }
     }
 
-    public ModifiableInteger getCertificatePublicKeyLength() {
-        return certificatePublicKeyLength;
+    public void setSoftlyCertificatePublicKeyData(
+            byte[] certificatePublicKeyData, boolean adjustLengthField, Config config) {
+        if (this.certificatePublicKeyData == null
+                || this.certificatePublicKeyData.getOriginalValue() == null) {
+            this.certificatePublicKeyData =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.certificatePublicKeyData, certificatePublicKeyData);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || certificatePublicKeyDataLength == null
+                    || certificatePublicKeyDataLength.getOriginalValue() == null) {
+                setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
+            }
+        }
     }
 
-    public void setCertificatePublicKeyLength(ModifiableInteger certificatePublicKeyLength) {
-        this.certificatePublicKeyLength = certificatePublicKeyLength;
+    public ModifiableInteger getCertificatePublicKeyDataLength() {
+        return certificatePublicKeyDataLength;
     }
 
-    public void setCertificatePublicKeyLength(int certificatePublicKeyLength) {
-        this.certificatePublicKeyLength =
+    public void setCertificatePublicKeyDataLength(
+            ModifiableInteger certificatePublicKeyDataLength) {
+        this.certificatePublicKeyDataLength = certificatePublicKeyDataLength;
+    }
+
+    public void setCertificatePublicKeyDataLength(int certificatePublicKeyDataLength) {
+        this.certificatePublicKeyDataLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.certificatePublicKeyLength, certificatePublicKeyLength);
+                        this.certificatePublicKeyDataLength, certificatePublicKeyDataLength);
     }
 
     @Override

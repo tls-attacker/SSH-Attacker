@@ -21,19 +21,8 @@ public class SftpResponseCheckFileMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getUsedHashAlgorithm() == null
-                || getObject().getUsedHashAlgorithm().getOriginalValue() == null) {
-            getObject().setUsedHashAlgorithm(HashAlgorithm.MD5, true);
-        }
-        if (getObject().getUsedHashAlgorithmLength() == null
-                || getObject().getUsedHashAlgorithmLength().getOriginalValue() == null) {
-            getObject()
-                    .setUsedHashAlgorithmLength(
-                            getObject().getUsedHashAlgorithm().getValue().length());
-        }
+        getObject().setSoftlyUsedHashAlgorithm(HashAlgorithm.MD5, true, chooser.getConfig());
 
-        if (getObject().getHash() == null || getObject().getHash().getOriginalValue() == null) {
-            getObject().setHash(new byte[100]);
-        }
+        getObject().setSoftlyHash(new byte[100]);
     }
 }

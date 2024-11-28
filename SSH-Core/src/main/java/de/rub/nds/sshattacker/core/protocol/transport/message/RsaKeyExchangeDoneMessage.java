@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
@@ -65,6 +66,19 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

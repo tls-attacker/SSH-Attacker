@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -80,10 +81,24 @@ public class AuthenticationResponse
         }
 
         public void setResponse(String response, boolean adjustLengthField) {
-            if (adjustLengthField) {
-                setResponseLength(response.getBytes(StandardCharsets.UTF_8).length);
-            }
             this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
+            if (adjustLengthField) {
+                setResponseLength(this.response.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+
+        public void setSoftlyResponse(String response, boolean adjustLengthField, Config config) {
+            if (this.response == null || this.response.getOriginalValue() == null) {
+                this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
+            }
+            if (adjustLengthField) {
+                if (config.getAlwaysPrepareLengthFields()
+                        || responseLength == null
+                        || responseLength.getOriginalValue() == null) {
+                    setResponseLength(
+                            this.response.getValue().getBytes(StandardCharsets.UTF_8).length);
+                }
+            }
         }
 
         public boolean isExecuted() {

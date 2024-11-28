@@ -30,6 +30,12 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
         this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
     }
 
+    public void setSoftlyOffset(long offset) {
+        if (this.offset == null || this.offset.getOriginalValue() == null) {
+            this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
+        }
+    }
+
     public ModifiableInteger getLength() {
         return length;
     }
@@ -40,6 +46,12 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
 
     public void setLength(int length) {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    }
+
+    public void setSoftlyLength(int length) {
+        if (this.length == null || this.length.getOriginalValue() == null) {
+            this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+        }
     }
 
     @Override

@@ -429,6 +429,15 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region general SFTP settings
+    /**
+     * Whether the length fields in the messages should be consistent with their corresponding
+     * fields.
+     */
+    private Boolean alwaysPrepareLengthFields;
+
+    // endregion
+
     // region SFTP Version Exchange
     /** SFTP Client protocol version */
     private Integer sftpClientVersion;
@@ -508,7 +517,16 @@ public class Config implements Serializable {
 
     // endregion
 
-    // region SSH Attributes Settings
+    // region general SFTP settings
+    /**
+     * Whether the length fields in the messages should be consistent with their corresponding
+     * fields.
+     */
+    private Boolean alwaysPrepareSftpLengthFields;
+
+    /** Whether the handle fields in the messages should always be prepared. */
+    private Boolean alwaysPrepareSftpHandle;
+
     /** Whether the attributes in messages should be consistent with the attributes flags. */
     private Boolean respectSftpAttributesFlags;
 
@@ -1173,6 +1191,10 @@ public class Config implements Serializable {
         defaultBreakLength = 600;
         // endregion
 
+        // region general SSH Settings
+        alwaysPrepareLengthFields = true;
+        // endregion
+
         // region Workflow settings initialization
         workflowTraceType = null;
         outputFilters = new ArrayList<>();
@@ -1194,7 +1216,9 @@ public class Config implements Serializable {
         addAllSftpExtensions(sftpServerSupportedExtensions);
         // endregion
 
-        // region SSH Attributes Settings
+        // region general SFTP settings
+        alwaysPrepareSftpLengthFields = true;
+        alwaysPrepareSftpHandle = true;
         respectSftpAttributesFlags = true;
         // endregion
 
@@ -1952,6 +1976,17 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region general SSH settings
+    public void setAlwaysPrepareLengthFields(Boolean alwaysPrepareLengthFields) {
+        this.alwaysPrepareLengthFields = alwaysPrepareLengthFields;
+    }
+
+    public Boolean getAlwaysPrepareLengthFields() {
+        return alwaysPrepareLengthFields;
+    }
+
+    // endregion
+
     // region Getters for Workflow settings
     public Boolean isFiltersKeepUserSettings() {
         return filtersKeepUserSettings;
@@ -2189,9 +2224,25 @@ public class Config implements Serializable {
 
     // endregion
 
-    // region SSH Attributes Settings
+    // region general SFTP settings
+    public void setAlwaysPrepareSftpLengthFields(Boolean alwaysPrepareSftpLengthFields) {
+        this.alwaysPrepareSftpLengthFields = alwaysPrepareSftpLengthFields;
+    }
+
+    public void setAlwaysPrepareSftpHandle(Boolean alwaysPrepareSftpHandle) {
+        this.alwaysPrepareSftpHandle = alwaysPrepareSftpHandle;
+    }
+
     public void setRespectSftpAttributesFlags(Boolean respectSftpAttributesFlags) {
         this.respectSftpAttributesFlags = respectSftpAttributesFlags;
+    }
+
+    public Boolean getAlwaysPrepareSftpLengthFields() {
+        return alwaysPrepareSftpLengthFields;
+    }
+
+    public Boolean getAlwaysPrepareSftpHandle() {
+        return alwaysPrepareSftpHandle;
     }
 
     public Boolean getRespectSftpAttributesFlags() {

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileExtendedAttributeHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -58,10 +59,23 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
     }
 
     public void setType(String type, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTypeLength(type.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+        if (adjustLengthField) {
+            setTypeLength(this.type.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyType(String type, boolean adjustLengthField, Config config) {
+        if (this.type == null || this.type.getOriginalValue() == null) {
+            this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || typeLength == null
+                    || typeLength.getOriginalValue() == null) {
+                setTypeLength(this.type.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
+        }
     }
 
     public ModifiableInteger getDataLength() {
@@ -99,6 +113,19 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
         if (adjustLengthField) {
             setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
+        if (this.data == null || this.data.getOriginalValue() == null) {
+            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || dataLength == null
+                    || dataLength.getOriginalValue() == null) {
+                setDataLength(this.data.getValue().length);
+            }
         }
     }
 

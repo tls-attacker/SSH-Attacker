@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
@@ -92,21 +93,44 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsClientToServer = compressionMethodsClientToServer;
     }
 
     public void setCompressionMethodsClientToServer(
             String compressionMethodsClientToServer, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCompressionMethodsClientToServerLength(
-                    compressionMethodsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-            setCompressionMethodsLength(computeCompressionMethodsLength());
-        }
         this.compressionMethodsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
                         this.compressionMethodsClientToServer, compressionMethodsClientToServer);
+        if (adjustLengthField) {
+            setCompressionMethodsClientToServerLength(
+                    this.compressionMethodsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
+    }
+
+    public void setSoftlyCompressionMethodsClientToServer(
+            String compressionMethodsClientToServer, boolean adjustLengthField, Config config) {
+        if (this.compressionMethodsClientToServer == null
+                || this.compressionMethodsClientToServer.getOriginalValue() == null) {
+            this.compressionMethodsClientToServer =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.compressionMethodsClientToServer,
+                            compressionMethodsClientToServer);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || compressionMethodsClientToServerLength == null
+                    || compressionMethodsClientToServerLength.getOriginalValue() == null) {
+                setCompressionMethodsClientToServerLength(
+                        this.compressionMethodsClientToServer
+                                .getValue()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length);
+            }
+        }
     }
 
     public void setCompressionMethodsClientToServer(
@@ -173,21 +197,44 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsServerToClient = compressionMethodsServerToClient;
     }
 
     public void setCompressionMethodsServerToClient(
             String compressionMethodsServerToClient, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCompressionMethodsServerToClientLength(
-                    compressionMethodsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-            setCompressionMethodsLength(computeCompressionMethodsLength());
-        }
         this.compressionMethodsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
                         this.compressionMethodsServerToClient, compressionMethodsServerToClient);
+        if (adjustLengthField) {
+            setCompressionMethodsServerToClientLength(
+                    this.compressionMethodsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
+    }
+
+    public void setSoftlyCompressionMethodsServerToClient(
+            String compressionMethodsServerToClient, boolean adjustLengthField, Config config) {
+        if (this.compressionMethodsServerToClient == null
+                || this.compressionMethodsServerToClient.getOriginalValue() == null) {
+            this.compressionMethodsServerToClient =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.compressionMethodsServerToClient,
+                            compressionMethodsServerToClient);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || compressionMethodsServerToClientLength == null
+                    || compressionMethodsServerToClientLength.getOriginalValue() == null) {
+                setCompressionMethodsServerToClientLength(
+                        this.compressionMethodsServerToClient
+                                .getValue()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length);
+            }
+        }
     }
 
     public void setCompressionMethodsServerToClient(
@@ -207,7 +254,7 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
         setCompressionMethodsServerToClient(nameList, adjustLengthField);
     }
 
-    private int computeCompressionMethodsLength() {
+    public int computeCompressionMethodsLength() {
         return 2 * DataFormatConstants.STRING_SIZE_LENGTH
                 + (compressionMethodsClientToServerLength != null
                         ? compressionMethodsClientToServerLength.getValue()

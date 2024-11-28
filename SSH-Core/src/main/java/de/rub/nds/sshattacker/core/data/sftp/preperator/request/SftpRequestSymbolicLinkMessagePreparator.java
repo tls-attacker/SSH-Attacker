@@ -21,21 +21,8 @@ public class SftpRequestSymbolicLinkMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/bin/sh", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/bin/sh", true, chooser.getConfig());
 
-        if (getObject().getTargetPath() == null
-                || getObject().getTargetPath().getOriginalValue() == null) {
-            getObject().setTargetPath("/tmp/ssh-attacker-sh", true);
-        }
-        if (getObject().getTargetPathLength() == null
-                || getObject().getTargetPathLength().getOriginalValue() == null) {
-            getObject().setTargetPathLength(getObject().getTargetPath().getValue().length());
-        }
+        getObject().setSoftlyTargetPath("/tmp/ssh-attacker-sh", true, chooser.getConfig());
     }
 }

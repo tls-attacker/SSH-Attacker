@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.holder;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpAceFlag;
 import de.rub.nds.sshattacker.core.constants.SftpAceMask;
 import de.rub.nds.sshattacker.core.constants.SftpAceType;
@@ -41,8 +42,20 @@ public class SftpAclEntry extends ModifiableVariableHolder {
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
+    public void setSoftlyType(int type) {
+        if (this.type == null || this.type.getOriginalValue() == null) {
+            this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+        }
+    }
+
     public void setType(SftpAceType type) {
         setType(type.getType());
+    }
+
+    public void setSoftlyType(SftpAceType type) {
+        if (this.type == null || this.type.getOriginalValue() == null) {
+            setType(type.getType());
+        }
     }
 
     public ModifiableInteger getFlags() {
@@ -57,8 +70,20 @@ public class SftpAclEntry extends ModifiableVariableHolder {
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
     }
 
+    public void setSoftlyFlags(int flags) {
+        if (this.flags == null || this.flags.getOriginalValue() == null) {
+            this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
+        }
+    }
+
     public void setFlags(SftpAceFlag... flags) {
         setFlags(SftpAceFlag.flagsToInt(flags));
+    }
+
+    public void setSoftlyFlags(SftpAceFlag... flags) {
+        if (this.flags == null || this.flags.getOriginalValue() == null) {
+            setFlags(SftpAceFlag.flagsToInt(flags));
+        }
     }
 
     public ModifiableInteger getMask() {
@@ -73,8 +98,18 @@ public class SftpAclEntry extends ModifiableVariableHolder {
         this.mask = ModifiableVariableFactory.safelySetValue(this.mask, mask);
     }
 
+    public void setSoftlyMask(int mask) {
+        if (this.mask == null || this.mask.getOriginalValue() == null) {
+            this.mask = ModifiableVariableFactory.safelySetValue(this.mask, mask);
+        }
+    }
+
     public void setMask(SftpAceMask... flags) {
         setMask(SftpAceMask.flagsToInt(flags));
+    }
+
+    public void setSoftlyMask(SftpAceMask... flags) {
+        setSoftlyMask(SftpAceMask.flagsToInt(flags));
     }
 
     public ModifiableInteger getWhoLength() {
@@ -109,10 +144,23 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     }
 
     public void setWho(String who, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setWhoLength(who.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.who = ModifiableVariableFactory.safelySetValue(this.who, who);
+        if (adjustLengthField) {
+            setWhoLength(this.who.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyWho(String who, boolean adjustLengthField, Config config) {
+        if (this.who == null || this.who.getOriginalValue() == null) {
+            this.who = ModifiableVariableFactory.safelySetValue(this.who, who);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || whoLength == null
+                    || whoLength.getOriginalValue() == null) {
+                setWhoLength(this.who.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public SftpAclEntryHandler getHandler(SshContext context) {

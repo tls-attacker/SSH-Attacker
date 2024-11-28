@@ -23,36 +23,15 @@ public class SftpRequestCheckFileNameMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/etc/passwd", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        if (getObject().getHashAlgorithms() == null
-                || getObject().getHashAlgorithms().getOriginalValue() == null) {
-            getObject().setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);
-        }
-        if (getObject().getHashAlgorithmsLength() == null
-                || getObject().getHashAlgorithmsLength().getOriginalValue() == null) {
-            getObject()
-                    .setHashAlgorithmsLength(getObject().getHashAlgorithms().getValue().length());
-        }
+        getObject()
+                .setSoftlyHashAlgorithms(
+                        List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, chooser.getConfig());
 
-        if (getObject().getStartOffset() == null
-                || getObject().getStartOffset().getOriginalValue() == null) {
-            getObject().setStartOffset(0);
-        }
+        getObject().setSoftlyStartOffset(0);
 
-        if (getObject().getLength() == null || getObject().getLength().getOriginalValue() == null) {
-            getObject().setLength(100000); // 0 for all data
-        }
-
-        if (getObject().getBlockSize() == null
-                || getObject().getBlockSize().getOriginalValue() == null) {
-            getObject().setBlockSize(512); // Should be >= 256
-        }
+        getObject().setSoftlyLength(100000); // 0 for all data
+        getObject().setSoftlyBlockSize(512); // Should be >= 256
     }
 }

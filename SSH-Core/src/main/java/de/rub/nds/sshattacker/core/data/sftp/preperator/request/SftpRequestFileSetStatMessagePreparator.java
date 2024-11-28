@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator.request;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestFileSetStatMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -23,11 +22,11 @@ public class SftpRequestFileSetStatMessagePreparator
     @Override
     public void prepareRequestSpecificContents() {
         getObject()
-                .setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
+                .setSoftlyHandle(
+                        chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                        true,
+                        chooser.getConfig());
 
-        if (getObject().getAttributes() == null) {
-            getObject().setAttributes(new SftpFileAttributes());
-        }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

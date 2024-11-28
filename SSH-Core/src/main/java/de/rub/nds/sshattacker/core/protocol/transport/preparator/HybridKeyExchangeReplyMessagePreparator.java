@@ -60,7 +60,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);
-        getObject().setCiphertext(encapsulationBytes, true);
+        getObject().setCombinedKeyShare(encapsulationBytes, true);
         byte[] concatenated;
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

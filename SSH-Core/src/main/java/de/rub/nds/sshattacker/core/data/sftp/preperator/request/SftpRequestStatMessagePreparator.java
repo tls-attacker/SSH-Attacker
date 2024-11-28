@@ -21,20 +21,11 @@ public class SftpRequestStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/etc/passwd", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getFlags() == null
-                    || getObject().getFlags().getOriginalValue() == null) {
-                getObject().setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
-            }
+            getObject().setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             getObject().clearFlags();
         }

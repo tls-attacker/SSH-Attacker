@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -38,6 +39,13 @@ public class SftpRequestCopyDataMessage
                 ModifiableVariableFactory.safelySetValue(this.readFromOffset, readFromOffset);
     }
 
+    public void setSoftlyReadFromOffset(long readFromOffset) {
+        if (this.readFromOffset == null || this.readFromOffset.getOriginalValue() == null) {
+            this.readFromOffset =
+                    ModifiableVariableFactory.safelySetValue(this.readFromOffset, readFromOffset);
+        }
+    }
+
     public ModifiableLong getReadDataLength() {
         return readDataLength;
     }
@@ -49,6 +57,13 @@ public class SftpRequestCopyDataMessage
     public void setReadDataLength(long readDataLength) {
         this.readDataLength =
                 ModifiableVariableFactory.safelySetValue(this.readDataLength, readDataLength);
+    }
+
+    public void setSoftlyReadDataLength(long readDataLength) {
+        if (this.readDataLength == null || this.readDataLength.getOriginalValue() == null) {
+            this.readDataLength =
+                    ModifiableVariableFactory.safelySetValue(this.readDataLength, readDataLength);
+        }
     }
 
     public ModifiableInteger getWriteToHandleLength() {
@@ -92,6 +107,23 @@ public class SftpRequestCopyDataMessage
         }
     }
 
+    public void setSoftlyWriteToHandle(
+            byte[] writeToHandle, boolean adjustLengthField, Config config) {
+        if (config.getAlwaysPrepareSftpHandle()
+                || this.writeToHandle == null
+                || this.writeToHandle.getOriginalValue() == null) {
+            this.writeToHandle =
+                    ModifiableVariableFactory.safelySetValue(this.writeToHandle, writeToHandle);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || writeToHandleLength == null
+                    || writeToHandleLength.getOriginalValue() == null) {
+                setWriteToHandleLength(this.writeToHandle.getValue().length);
+            }
+        }
+    }
+
     public ModifiableLong getWriteToOffset() {
         return writeToOffset;
     }
@@ -103,6 +135,13 @@ public class SftpRequestCopyDataMessage
     public void setWriteToOffset(long writeToOffset) {
         this.writeToOffset =
                 ModifiableVariableFactory.safelySetValue(this.writeToOffset, writeToOffset);
+    }
+
+    public void setSoftlyWriteToOffset(long writeToOffset) {
+        if (this.writeToOffset == null || this.writeToOffset.getOriginalValue() == null) {
+            this.writeToOffset =
+                    ModifiableVariableFactory.safelySetValue(this.writeToOffset, writeToOffset);
+        }
     }
 
     @Override

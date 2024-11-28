@@ -21,27 +21,10 @@ public class SftpRequestCopyFileMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/etc/passwd", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        if (getObject().getDestinationPath() == null
-                || getObject().getDestinationPath().getOriginalValue() == null) {
-            getObject().setDestinationPath("/tmp/passwd", true);
-        }
-        if (getObject().getDestinationPathLength() == null
-                || getObject().getDestinationPathLength().getOriginalValue() == null) {
-            getObject()
-                    .setDestinationPathLength(getObject().getDestinationPath().getValue().length());
-        }
+        getObject().setSoftlyDestinationPath("/tmp/passwd", true, chooser.getConfig());
 
-        if (getObject().getOverwriteDestination() == null
-                || getObject().getOverwriteDestination().getOriginalValue() == null) {
-            getObject().setOverwriteDestination(true);
-        }
+        getObject().setSoftlyOverwriteDestination(true);
     }
 }

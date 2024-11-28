@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,22 @@ public class GlobalRequestTcpIpForwardMessage
         if (adjustLengthField) {
             setIpAddressToBindLength(
                     this.ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyIpAddressToBind(
+            String ipAddressToBind, boolean adjustLengthField, Config config) {
+        if (this.ipAddressToBind == null || this.ipAddressToBind.getOriginalValue() == null) {
+            this.ipAddressToBind =
+                    ModifiableVariableFactory.safelySetValue(this.ipAddressToBind, ipAddressToBind);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || ipAddressToBindLength == null
+                    || ipAddressToBindLength.getOriginalValue() == null) {
+                setIpAddressToBindLength(
+                        this.ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
         }
     }
 

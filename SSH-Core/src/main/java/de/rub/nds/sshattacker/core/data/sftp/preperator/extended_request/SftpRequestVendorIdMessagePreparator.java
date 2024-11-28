@@ -21,37 +21,12 @@ public class SftpRequestVendorIdMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getVendorName() == null
-                || getObject().getVendorName().getOriginalValue() == null) {
-            getObject().setVendorName("NDS RUB", true);
-        }
-        if (getObject().getVendorNameLength() == null
-                || getObject().getVendorNameLength().getOriginalValue() == null) {
-            getObject().setVendorNameLength(getObject().getVendorName().getValue().length());
-        }
+        getObject().setSoftlyVendorName("NDS RUB", true, chooser.getConfig());
 
-        if (getObject().getProductName() == null
-                || getObject().getProductName().getOriginalValue() == null) {
-            getObject().setProductName("SSH-Attacker", true);
-        }
-        if (getObject().getProductNameLength() == null
-                || getObject().getProductNameLength().getOriginalValue() == null) {
-            getObject().setProductNameLength(getObject().getProductName().getValue().length());
-        }
+        getObject().setSoftlyProductName("SSH-Attacker", true, chooser.getConfig());
 
-        if (getObject().getProductVersion() == null
-                || getObject().getProductVersion().getOriginalValue() == null) {
-            getObject().setProductVersion("1.0", true);
-        }
-        if (getObject().getProductVersionLength() == null
-                || getObject().getProductVersionLength().getOriginalValue() == null) {
-            getObject()
-                    .setProductVersionLength(getObject().getProductVersion().getValue().length());
-        }
+        getObject().setSoftlyProductVersion("1.0", true, chooser.getConfig());
 
-        if (getObject().getProductBuildNumber() == null
-                || getObject().getProductBuildNumber().getOriginalValue() == null) {
-            getObject().setProductBuildNumber(2024);
-        }
+        getObject().setSoftlyProductBuildNumber(2024);
     }
 }

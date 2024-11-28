@@ -20,6 +20,10 @@ public class SftpRequestReadDirMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setHandle(chooser.getContext().getSftpManager().getDirectoryHandle(), true);
+        getObject()
+                .setSoftlyHandle(
+                        chooser.getContext().getSftpManager().getDirectoryHandle(),
+                        true,
+                        chooser.getConfig());
     }
 }

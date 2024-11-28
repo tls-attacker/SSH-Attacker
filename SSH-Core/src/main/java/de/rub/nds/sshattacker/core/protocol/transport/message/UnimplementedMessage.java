@@ -30,6 +30,13 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
+    public void setSoftlySequenceNumber(int sequenceNumber) {
+        if (this.sequenceNumber == null || this.sequenceNumber.getOriginalValue() == null) {
+            this.sequenceNumber =
+                    ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+        }
+    }
+
     @Override
     public UnimplementedMessageHandler getHandler(SshContext context) {
         return new UnimplementedMessageHandler(context, this);

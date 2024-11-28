@@ -31,6 +31,15 @@ public class SftpRequestUnknownMessage
                         this.requestSpecificData, requestSpecificData);
     }
 
+    public void setSoftlyRequestSpecificData(byte[] requestSpecificData) {
+        if (this.requestSpecificData == null
+                || this.requestSpecificData.getOriginalValue() == null) {
+            this.requestSpecificData =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.requestSpecificData, requestSpecificData);
+        }
+    }
+
     @Override
     public SftpRequestUnknownMessageHandler getHandler(SshContext context) {
         return new SftpRequestUnknownMessageHandler(context, this);

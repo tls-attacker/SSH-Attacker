@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.util.Converter;
 import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -66,10 +67,23 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
         }
 
         public void setPrompt(String prompt, boolean adjustLengthField) {
-            if (adjustLengthField) {
-                setPromptLength(prompt.getBytes(StandardCharsets.UTF_8).length);
-            }
             this.prompt = ModifiableVariableFactory.safelySetValue(this.prompt, prompt);
+            if (adjustLengthField) {
+                setPromptLength(this.prompt.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+
+        public void setSoftlyPrompt(String prompt, boolean adjustLengthField, Config config) {
+            if (this.prompt == null || this.prompt.getOriginalValue() == null) {
+                this.prompt = ModifiableVariableFactory.safelySetValue(this.prompt, prompt);
+            }
+            if (adjustLengthField) {
+                if (config.getAlwaysPrepareLengthFields()
+                        || promptLength == null
+                        || promptLength.getOriginalValue() == null) {
+                    setPromptLength(this.prompt.getValue().getBytes(StandardCharsets.UTF_8).length);
+                }
+            }
         }
 
         public ModifiableByte getEcho() {
@@ -80,8 +94,14 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
             this.echo = echo;
         }
 
-        public void setEcho(Byte echo) {
+        public void setEcho(byte echo) {
             this.echo = ModifiableVariableFactory.safelySetValue(this.echo, echo);
+        }
+
+        public void setSoftlyEcho(byte echo) {
+            if (this.echo == null || this.echo.getOriginalValue() == null) {
+                this.echo = ModifiableVariableFactory.safelySetValue(this.echo, echo);
+            }
         }
 
         public void setEcho(boolean echo) {

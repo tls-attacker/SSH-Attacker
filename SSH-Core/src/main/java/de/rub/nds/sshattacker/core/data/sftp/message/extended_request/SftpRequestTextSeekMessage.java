@@ -29,6 +29,12 @@ public class SftpRequestTextSeekMessage
         this.lineNumber = ModifiableVariableFactory.safelySetValue(this.lineNumber, lineNumber);
     }
 
+    public void setSoftlyLineNumber(long lineNumber) {
+        if (this.lineNumber == null || this.lineNumber.getOriginalValue() == null) {
+            this.lineNumber = ModifiableVariableFactory.safelySetValue(this.lineNumber, lineNumber);
+        }
+    }
+
     @Override
     public SftpRequestTextSeekMessageHandler getHandler(SshContext context) {
         return new SftpRequestTextSeekMessageHandler(context, this);

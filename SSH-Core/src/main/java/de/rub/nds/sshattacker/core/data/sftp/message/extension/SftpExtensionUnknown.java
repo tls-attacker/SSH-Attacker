@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionUnknownHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -51,10 +52,23 @@ public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnk
     }
 
     public void setValue(byte[] value, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setValueLength(value.length);
-        }
         this.value = ModifiableVariableFactory.safelySetValue(this.value, value);
+        if (adjustLengthField) {
+            setValueLength(this.value.getValue().length);
+        }
+    }
+
+    public void setSoftlyValue(byte[] value, boolean adjustLengthField, Config config) {
+        if (this.value == null || this.value.getOriginalValue() == null) {
+            this.value = ModifiableVariableFactory.safelySetValue(this.value, value);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || valueLength == null
+                    || valueLength.getOriginalValue() == null) {
+                setValueLength(this.value.getValue().length);
+            }
+        }
     }
 
     @Override

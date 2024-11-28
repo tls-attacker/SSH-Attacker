@@ -33,6 +33,13 @@ public class ChannelRequestWindowChangeMessage
                 ModifiableVariableFactory.safelySetValue(this.widthColumns, widthColumns);
     }
 
+    public void setSoftlyWidthColumns(int widthColumns) {
+        if (this.widthColumns == null || this.widthColumns.getOriginalValue() == null) {
+            this.widthColumns =
+                    ModifiableVariableFactory.safelySetValue(this.widthColumns, widthColumns);
+        }
+    }
+
     public ModifiableInteger getHeightRows() {
         return heightRows;
     }
@@ -43,6 +50,12 @@ public class ChannelRequestWindowChangeMessage
 
     public void setHeightRows(int heightRows) {
         this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
+    }
+
+    public void setSoftlyHeightRows(int heightRows) {
+        if (this.heightRows == null || this.heightRows.getOriginalValue() == null) {
+            this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
+        }
     }
 
     public ModifiableInteger getWidthPixels() {
@@ -57,6 +70,13 @@ public class ChannelRequestWindowChangeMessage
         this.widthPixels = ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
     }
 
+    public void setSoftlyWidthPixels(int widthPixels) {
+        if (this.widthPixels == null || this.widthPixels.getOriginalValue() == null) {
+            this.widthPixels =
+                    ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
+        }
+    }
+
     public ModifiableInteger getHeightPixels() {
         return heightPixels;
     }
@@ -68,6 +88,13 @@ public class ChannelRequestWindowChangeMessage
     public void setHeightPixels(int heightPixels) {
         this.heightPixels =
                 ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
+    }
+
+    public void setSoftlyHeightPixels(int heightPixels) {
+        if (this.heightPixels == null || this.heightPixels.getOriginalValue() == null) {
+            this.heightPixels =
+                    ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
+        }
     }
 
     @Override

@@ -65,6 +65,12 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
     }
 
+    public void setSoftlyVersion(Integer version) {
+        if (this.version == null || this.version.getOriginalValue() == null) {
+            this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
+        }
+    }
+
     public List<SftpAbstractExtension<?>> getExtensions() {
         return extensions;
     }

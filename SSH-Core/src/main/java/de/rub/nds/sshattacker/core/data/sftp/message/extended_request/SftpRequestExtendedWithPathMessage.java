@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import java.nio.charset.StandardCharsets;
 
 public abstract class SftpRequestExtendedWithPathMessage<
@@ -51,9 +52,22 @@ public abstract class SftpRequestExtendedWithPathMessage<
     }
 
     public void setPath(String path, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPathLength(path.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.path = ModifiableVariableFactory.safelySetValue(this.path, path);
+        if (adjustLengthField) {
+            setPathLength(this.path.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyPath(String path, boolean adjustLengthField, Config config) {
+        if (this.path == null || this.path.getOriginalValue() == null) {
+            this.path = ModifiableVariableFactory.safelySetValue(this.path, path);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || pathLength == null
+                    || pathLength.getOriginalValue() == null) {
+                setPathLength(this.path.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 }

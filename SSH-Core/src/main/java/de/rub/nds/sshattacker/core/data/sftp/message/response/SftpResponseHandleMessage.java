@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseHandleMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -29,6 +30,15 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     public void setHandleLength(int handleLength) {
         this.handleLength =
                 ModifiableVariableFactory.safelySetValue(this.handleLength, handleLength);
+    }
+
+    public void setSoftlyHandleLength(int handleLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.handleLength == null
+                || this.handleLength.getOriginalValue() == null) {
+            this.handleLength =
+                    ModifiableVariableFactory.safelySetValue(this.handleLength, handleLength);
+        }
     }
 
     public ModifiableByteArray getHandle() {
@@ -54,6 +64,21 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
         this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
         if (adjustLengthField) {
             setHandleLength(this.handle.getValue().length);
+        }
+    }
+
+    public void setSoftlyHandle(byte[] handle, boolean adjustLengthField, Config config) {
+        if (config.getAlwaysPrepareSftpHandle()
+                || this.handle == null
+                || this.handle.getOriginalValue() == null) {
+            this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || handleLength == null
+                    || handleLength.getOriginalValue() == null) {
+                setHandleLength(this.handle.getValue().length);
+            }
         }
     }
 

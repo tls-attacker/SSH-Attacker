@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRenameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -54,10 +55,23 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     }
 
     public void setNewPath(String newPath, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setNewPathLength(newPath.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.newPath = ModifiableVariableFactory.safelySetValue(this.newPath, newPath);
+        if (adjustLengthField) {
+            setNewPathLength(this.newPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyNewPath(String newPath, boolean adjustLengthField, Config config) {
+        if (this.newPath == null || this.newPath.getOriginalValue() == null) {
+            this.newPath = ModifiableVariableFactory.safelySetValue(this.newPath, newPath);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || newPathLength == null
+                    || newPathLength.getOriginalValue() == null) {
+                setNewPathLength(this.newPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     @Override

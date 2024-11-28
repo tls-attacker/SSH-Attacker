@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -47,6 +48,19 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         if (adjustLengthField) {
             setPubkeyLength(this.pubkey.getValue().length);
+        }
+    }
+
+    public void setSoftlyPubkey(byte[] pubkey, boolean adjustLengthField, Config config) {
+        if (this.pubkey == null || this.pubkey.getOriginalValue() == null) {
+            this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || pubkeyLength == null
+                    || pubkeyLength.getOriginalValue() == null) {
+                setPubkeyLength(this.pubkey.getValue().length);
+            }
         }
     }
 
@@ -89,6 +103,22 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         }
     }
 
+    public void setSoftlyPubkeyAlgName(
+            String pubkeyAlgName, boolean adjustLengthField, Config config) {
+        if (this.pubkeyAlgName == null || this.pubkeyAlgName.getOriginalValue() == null) {
+            this.pubkeyAlgName =
+                    ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || pubkeyAlgNameLength == null
+                    || pubkeyAlgNameLength.getOriginalValue() == null) {
+                setPubkeyAlgNameLength(
+                        this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
+        }
+    }
+
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
         setPubkeyAlgName(pubkeyAlgName, false);
     }
@@ -108,6 +138,13 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     public void setUseSignature(byte useSignature) {
         this.useSignature =
                 ModifiableVariableFactory.safelySetValue(this.useSignature, useSignature);
+    }
+
+    public void setSoftlyUseSignature(byte useSignature) {
+        if (this.useSignature == null || this.useSignature.getOriginalValue() == null) {
+            this.useSignature =
+                    ModifiableVariableFactory.safelySetValue(this.useSignature, useSignature);
+        }
     }
 
     public void setUseSignature(boolean useSignature) {
@@ -138,6 +175,19 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

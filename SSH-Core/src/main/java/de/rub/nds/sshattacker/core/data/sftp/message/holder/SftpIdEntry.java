@@ -41,6 +41,12 @@ public class SftpIdEntry extends ModifiableVariableHolder {
         this.id = ModifiableVariableFactory.safelySetValue(this.id, id);
     }
 
+    public void setSoftlyId(int id) {
+        if (this.id == null || this.id.getOriginalValue() == null) {
+            this.id = ModifiableVariableFactory.safelySetValue(this.id, id);
+        }
+    }
+
     public SftpIdEntryHandler getHandler(SshContext context) {
         return new SftpIdEntryHandler(context, this);
     }

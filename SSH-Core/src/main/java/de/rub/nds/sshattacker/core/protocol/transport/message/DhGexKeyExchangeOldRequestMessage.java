@@ -32,6 +32,14 @@ public class DhGexKeyExchangeOldRequestMessage
                         this.preferredGroupSize, preferredGroupSize);
     }
 
+    public void setSoftlyPreferredGroupSize(int preferredGroupSize) {
+        if (this.preferredGroupSize == null || this.preferredGroupSize.getOriginalValue() == null) {
+            this.preferredGroupSize =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.preferredGroupSize, preferredGroupSize);
+        }
+    }
+
     @Override
     public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
         return new DhGexKeyExchangeOldRequestMessageHandler(context, this);

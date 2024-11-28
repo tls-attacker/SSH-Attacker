@@ -21,48 +21,16 @@ public class SftpResponseStatVfsMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getBlockSize() == null
-                || getObject().getBlockSize().getOriginalValue() == null) {
-            getObject().setBlockSize(32);
-        }
-        if (getObject().getFundamentalBlockSize() == null
-                || getObject().getFundamentalBlockSize().getOriginalValue() == null) {
-            getObject().setFundamentalBlockSize(32);
-        }
-        if (getObject().getCountBlocks() == null
-                || getObject().getCountBlocks().getOriginalValue() == null) {
-            getObject().setCountBlocks(11608687979080L);
-        }
-        if (getObject().getFreeBlocks() == null
-                || getObject().getFreeBlocks().getOriginalValue() == null) {
-            getObject().setFreeBlocks(11608687979080L);
-        }
-        if (getObject().getFreeBlocksNonRoot() == null
-                || getObject().getFreeBlocksNonRoot().getOriginalValue() == null) {
-            getObject().setFreeBlocksNonRoot(11608687979080L);
-        }
-        if (getObject().getFileInodes() == null
-                || getObject().getFileInodes().getOriginalValue() == null) {
-            getObject().setFileInodes(0);
-        }
-        if (getObject().getFreeInodes() == null
-                || getObject().getFreeInodes().getOriginalValue() == null) {
-            getObject().setFreeInodes(11608687979080L);
-        }
-        if (getObject().getFreeInodesNonRoot() == null
-                || getObject().getFreeInodesNonRoot().getOriginalValue() == null) {
-            getObject().setFreeInodesNonRoot(11608687979080L);
-        }
-        if (getObject().getSystemId() == null
-                || getObject().getSystemId().getOriginalValue() == null) {
-            getObject().setSystemId(0);
-        }
-        if (getObject().getFlags() == null || getObject().getFlags().getOriginalValue() == null) {
-            getObject().setFlags(SftpVfsFlag.SSH_FXE_STATVFS_ST_RDONLY);
-        }
-        if (getObject().getMaximumFilenameLength() == null
-                || getObject().getMaximumFilenameLength().getOriginalValue() == null) {
-            getObject().setMaximumFilenameLength(256);
-        }
+        getObject().setSoftlyBlockSize(32);
+        getObject().setSoftlyFundamentalBlockSize(32);
+        getObject().setSoftlyCountBlocks(11608687979080L);
+        getObject().setSoftlyFreeBlocks(11608687979080L);
+        getObject().setSoftlyFreeBlocksNonRoot(11608687979080L);
+        getObject().setSoftlyFileInodes(0);
+        getObject().setSoftlyFreeInodes(11608687979080L);
+        getObject().setSoftlyFreeInodesNonRoot(11608687979080L);
+        getObject().setSoftlySystemId(0);
+        getObject().setSoftlyFlags(SftpVfsFlag.SSH_FXE_STATVFS_ST_RDONLY);
+        getObject().setSoftlyMaximumFilenameLength(256);
     }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostbasedMessageHandler;
@@ -77,6 +78,22 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
+    public void setSoftlyPubKeyAlgorithm(
+            String pubKeyAlgorithm, boolean adjustLengthField, Config config) {
+        if (this.pubKeyAlgorithm == null || this.pubKeyAlgorithm.getOriginalValue() == null) {
+            this.pubKeyAlgorithm =
+                    ModifiableVariableFactory.safelySetValue(this.pubKeyAlgorithm, pubKeyAlgorithm);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || pubKeyAlgorithmLength == null
+                    || pubKeyAlgorithmLength.getOriginalValue() == null) {
+                setPubKeyAlgorithmLength(
+                        this.pubKeyAlgorithm.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;
@@ -131,6 +148,21 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
+    public void setSoftlyHostKeyBytes(
+            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+            this.hostKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostKeyBytesLength == null
+                    || hostKeyBytesLength.getOriginalValue() == null) {
+                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+            }
+        }
+    }
+
     public ModifiableInteger getHostNameLength() {
         return hostNameLength;
     }
@@ -167,6 +199,19 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
         if (adjustLengthField) {
             setHostNameLength(this.hostName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyHostName(String hostName, boolean adjustLengthField, Config config) {
+        if (this.hostName == null || this.hostName.getOriginalValue() == null) {
+            this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostNameLength == null
+                    || hostNameLength.getOriginalValue() == null) {
+                setHostNameLength(this.hostName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 
@@ -214,6 +259,22 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
+    public void setSoftlyClientUserName(
+            String clientUserName, boolean adjustLengthField, Config config) {
+        if (this.clientUserName == null || this.clientUserName.getOriginalValue() == null) {
+            this.clientUserName =
+                    ModifiableVariableFactory.safelySetValue(this.clientUserName, clientUserName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || clientUserNameLength == null
+                    || clientUserNameLength.getOriginalValue() == null) {
+                setClientUserNameLength(
+                        this.clientUserName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
@@ -258,6 +319,19 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

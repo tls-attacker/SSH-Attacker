@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request;
 
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestLinkSetStatMessage;
-import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestLinkSetStatMessagePreparator
@@ -22,17 +21,7 @@ public class SftpRequestLinkSetStatMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/bin/python3", true);
-        }
-
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
-        if (getObject().getAttributes() == null) {
-            getObject().setAttributes(new SftpFileAttributes());
-        }
+        getObject().setSoftlyPath("/bin/python3", true, chooser.getConfig());
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

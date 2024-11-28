@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -35,8 +36,18 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
         this.statusCode = ModifiableVariableFactory.safelySetValue(this.statusCode, statusCode);
     }
 
+    public void setSoftlyStatusCode(int statusCode) {
+        if (this.statusCode == null || this.statusCode.getOriginalValue() == null) {
+            this.statusCode = ModifiableVariableFactory.safelySetValue(this.statusCode, statusCode);
+        }
+    }
+
     public void setStatusCode(SftpStatusCode statusCode) {
         setStatusCode(statusCode.getCode());
+    }
+
+    public void setSoftlyStatusCode(SftpStatusCode statusCode) {
+        setSoftlyStatusCode(statusCode.getCode());
     }
 
     public ModifiableInteger getErrorMessageLength() {
@@ -73,11 +84,28 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     }
 
     public void setErrorMessage(String errorMessage, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setErrorMessageLength(errorMessage.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.errorMessage =
                 ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
+        if (adjustLengthField) {
+            setErrorMessageLength(
+                    this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyErrorMessage(
+            String errorMessage, boolean adjustLengthField, Config config) {
+        if (this.errorMessage == null || this.errorMessage.getOriginalValue() == null) {
+            this.errorMessage =
+                    ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || errorMessageLength == null
+                    || errorMessageLength.getOriginalValue() == null) {
+                setErrorMessageLength(
+                        this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public ModifiableInteger getLanguageTagLength() {
@@ -113,10 +141,26 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
+        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
+            this.languageTag =
+                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || languageTagLength == null
+                    || languageTagLength.getOriginalValue() == null) {
+                setLanguageTagLength(
+                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
+        }
     }
 
     @Override

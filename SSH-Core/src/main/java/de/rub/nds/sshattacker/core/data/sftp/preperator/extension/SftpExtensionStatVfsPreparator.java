@@ -21,10 +21,7 @@ public class SftpExtensionStatVfsPreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
-        if (getObject().getVersion() == null
-                || getObject().getVersion().getOriginalValue() == null) {
-            getObject().setVersion("2", true);
-        }
+        getObject().setSoftlyVersion("2", true, chooser.getConfig());
         super.prepareExtensionSpecificContents();
     }
 }

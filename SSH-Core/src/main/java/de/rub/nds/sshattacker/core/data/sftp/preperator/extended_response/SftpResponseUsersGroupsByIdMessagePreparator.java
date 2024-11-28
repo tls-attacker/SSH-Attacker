@@ -32,18 +32,21 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
         }
 
         getObject()
-                .setUserNamesLength(
+                .setSoftlyUserNamesLength(
                         getObject().getUserNames().size() * DataFormatConstants.UINT32_SIZE
                                 + getObject().getUserNames().stream()
                                         .map(SftpNameEntry::getNameLength)
                                         .mapToInt(ModifiableVariable::getValue)
-                                        .sum());
+                                        .sum(),
+                        chooser.getConfig());
+
         getObject()
-                .setGroupNamesLength(
+                .setSoftlyGroupNamesLength(
                         getObject().getGroupNames().size() * DataFormatConstants.UINT32_SIZE
                                 + getObject().getGroupNames().stream()
                                         .map(SftpNameEntry::getNameLength)
                                         .mapToInt(ModifiableVariable::getValue)
-                                        .sum());
+                                        .sum(),
+                        chooser.getConfig());
     }
 }

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -66,6 +67,19 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
+    public void setSoftlyUserName(String userName, boolean adjustLengthField, Config config) {
+        if (this.userName == null || this.userName.getOriginalValue() == null) {
+            this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || userNameLength == null
+                    || userNameLength.getOriginalValue() == null) {
+                setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getInstructionLength() {
         return instructionLength;
     }
@@ -107,6 +121,21 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
+    public void setSoftlyInstruction(String instruction, boolean adjustLengthField, Config config) {
+        if (this.instruction == null || this.instruction.getOriginalValue() == null) {
+            this.instruction =
+                    ModifiableVariableFactory.safelySetValue(this.instruction, instruction);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || instructionLength == null
+                    || instructionLength.getOriginalValue() == null) {
+                setInstructionLength(
+                        this.instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }
@@ -145,6 +174,21 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
+        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
+            this.languageTag =
+                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || languageTagLength == null
+                    || languageTagLength.getOriginalValue() == null) {
+                setLanguageTagLength(
+                        this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.preperator.request;
 
 import de.rub.nds.sshattacker.core.constants.SftpFileOpenFlag;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -22,20 +21,10 @@ public class SftpRequestOpenMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/etc/passwd", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        if (getObject().getPFlags() == null || getObject().getPFlags().getOriginalValue() == null) {
-            getObject().setPFlags(SftpFileOpenFlag.SSH_FXF_READ);
-        }
-        if (getObject().getAttributes() == null) {
-            getObject().setAttributes(new SftpFileAttributes());
-        }
+        getObject().setSoftlyPFlags(SftpFileOpenFlag.SSH_FXF_READ);
+
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

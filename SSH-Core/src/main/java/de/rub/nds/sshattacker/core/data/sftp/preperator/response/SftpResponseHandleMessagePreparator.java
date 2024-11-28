@@ -24,9 +24,9 @@ public class SftpResponseHandleMessagePreparator
             // Should be set in SftpManager handleRequestMessage()
             getObject().setHandle(new byte[100], true);
         }
-        if (getObject().getHandleLength() == null
-                || getObject().getHandleLength().getOriginalValue() == null) {
-            getObject().setHandleLength(getObject().getHandle().getValue().length);
-        }
+        // This should not be necessary:
+        getObject()
+                .setSoftlyHandleLength(
+                        getObject().getHandle().getValue().length, chooser.getConfig());
     }
 }

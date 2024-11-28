@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.holder;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,36 +19,20 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getFilename() == null
-                || getObject().getFilename().getOriginalValue() == null) {
-            getObject().setFilename("/etc/passwd", true);
-        }
-        if (getObject().getFilenameLength() == null
-                || getObject().getFilenameLength().getOriginalValue() == null) {
-            getObject().setFilenameLength(getObject().getFilename().getValue().length());
-        }
+        getObject().setSoftlyFilename("/etc/passwd", true, chooser.getConfig());
 
         if (chooser.getSftpNegotiatedVersion() <= 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getLongName() == null
-                    || getObject().getLongName().getOriginalValue() == null) {
-                getObject()
-                        .setLongName(
-                                "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
-                                true);
-            }
-            if (getObject().getLongNameLength() == null
-                    || getObject().getLongNameLength().getOriginalValue() == null) {
-                getObject().setLongNameLength(getObject().getLongName().getValue().length());
-            }
+            getObject()
+                    .setSoftlyLongName(
+                            "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
+                            true,
+                            chooser.getConfig());
         } else {
             // As of version 4 there is no longer a longName field
             getObject().clearLongName();
         }
 
-        if (getObject().getAttributes() == null) {
-            getObject().setAttributes(new SftpFileAttributes());
-        }
         getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

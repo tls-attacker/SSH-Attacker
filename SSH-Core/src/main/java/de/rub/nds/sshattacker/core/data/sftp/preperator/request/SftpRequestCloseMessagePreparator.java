@@ -21,6 +21,9 @@ public class SftpRequestCloseMessagePreparator
     @Override
     public void prepareRequestSpecificContents() {
         getObject()
-                .setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
+                .setSoftlyHandle(
+                        chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                        true,
+                        chooser.getConfig());
     }
 }

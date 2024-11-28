@@ -40,6 +40,12 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
     }
 
+    public void setSoftlyBlockSize(long blockSize) {
+        if (this.blockSize == null || this.blockSize.getOriginalValue() == null) {
+            this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
+        }
+    }
+
     public ModifiableLong getFundamentalBlockSize() {
         return fundamentalBlockSize;
     }
@@ -54,6 +60,15 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
                         this.fundamentalBlockSize, fundamentalBlockSize);
     }
 
+    public void setSoftlyFundamentalBlockSize(long fundamentalBlockSize) {
+        if (this.fundamentalBlockSize == null
+                || this.fundamentalBlockSize.getOriginalValue() == null) {
+            this.fundamentalBlockSize =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.fundamentalBlockSize, fundamentalBlockSize);
+        }
+    }
+
     public ModifiableLong getCountBlocks() {
         return countBlocks;
     }
@@ -66,6 +81,13 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.countBlocks = ModifiableVariableFactory.safelySetValue(this.countBlocks, countBlocks);
     }
 
+    public void setSoftlyCountBlocks(long countBlocks) {
+        if (this.countBlocks == null || this.countBlocks.getOriginalValue() == null) {
+            this.countBlocks =
+                    ModifiableVariableFactory.safelySetValue(this.countBlocks, countBlocks);
+        }
+    }
+
     public ModifiableLong getFreeBlocks() {
         return freeBlocks;
     }
@@ -76,6 +98,12 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setFreeBlocks(long freeBlocks) {
         this.freeBlocks = ModifiableVariableFactory.safelySetValue(this.freeBlocks, freeBlocks);
+    }
+
+    public void setSoftlyFreeBlocks(long freeBlocks) {
+        if (this.freeBlocks == null || this.freeBlocks.getOriginalValue() == null) {
+            this.freeBlocks = ModifiableVariableFactory.safelySetValue(this.freeBlocks, freeBlocks);
+        }
     }
 
     public ModifiableLong getFreeBlocksNonRoot() {
@@ -91,6 +119,14 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
                 ModifiableVariableFactory.safelySetValue(this.freeBlocksNonRoot, freeBlocksNonRoot);
     }
 
+    public void setSoftlyFreeBlocksNonRoot(long freeBlocksNonRoot) {
+        if (this.freeBlocksNonRoot == null || this.freeBlocksNonRoot.getOriginalValue() == null) {
+            this.freeBlocksNonRoot =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.freeBlocksNonRoot, freeBlocksNonRoot);
+        }
+    }
+
     public ModifiableLong getFileInodes() {
         return fileInodes;
     }
@@ -103,6 +139,12 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.fileInodes = ModifiableVariableFactory.safelySetValue(this.fileInodes, fileInodes);
     }
 
+    public void setSoftlyFileInodes(long fileInodes) {
+        if (this.fileInodes == null || this.fileInodes.getOriginalValue() == null) {
+            this.fileInodes = ModifiableVariableFactory.safelySetValue(this.fileInodes, fileInodes);
+        }
+    }
+
     public ModifiableLong getFreeInodes() {
         return freeInodes;
     }
@@ -113,6 +155,12 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setFreeInodes(long freeInodes) {
         this.freeInodes = ModifiableVariableFactory.safelySetValue(this.freeInodes, freeInodes);
+    }
+
+    public void setSoftlyFreeInodes(long freeInodes) {
+        if (this.freeInodes == null || this.freeInodes.getOriginalValue() == null) {
+            this.freeInodes = ModifiableVariableFactory.safelySetValue(this.freeInodes, freeInodes);
+        }
     }
 
     public ModifiableLong getFreeInodesNonRoot() {
@@ -128,6 +176,14 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
                 ModifiableVariableFactory.safelySetValue(this.freeInodesNonRoot, freeInodesNonRoot);
     }
 
+    public void setSoftlyFreeInodesNonRoot(long freeInodesNonRoot) {
+        if (this.freeInodesNonRoot == null || this.freeInodesNonRoot.getOriginalValue() == null) {
+            this.freeInodesNonRoot =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.freeInodesNonRoot, freeInodesNonRoot);
+        }
+    }
+
     public ModifiableLong getSystemId() {
         return systemId;
     }
@@ -138,6 +194,12 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setSystemId(long systemId) {
         this.systemId = ModifiableVariableFactory.safelySetValue(this.systemId, systemId);
+    }
+
+    public void setSoftlySystemId(long systemId) {
+        if (this.systemId == null || this.systemId.getOriginalValue() == null) {
+            this.systemId = ModifiableVariableFactory.safelySetValue(this.systemId, systemId);
+        }
     }
 
     public ModifiableLong getFlags() {
@@ -152,8 +214,18 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
     }
 
+    public void setSoftlyFlags(long flags) {
+        if (this.flags == null || this.flags.getOriginalValue() == null) {
+            this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
+        }
+    }
+
     public void setFlags(SftpVfsFlag... vfsFlags) {
         setFlags(SftpVfsFlag.flagsToLong(vfsFlags));
+    }
+
+    public void setSoftlyFlags(SftpVfsFlag... vfsFlags) {
+        setSoftlyFlags(SftpVfsFlag.flagsToLong(vfsFlags));
     }
 
     public ModifiableLong getMaximumFilenameLength() {
@@ -168,6 +240,15 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.maximumFilenameLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.maximumFilenameLength, maximumFilenameLength);
+    }
+
+    public void setSoftlyMaximumFilenameLength(long maximumFilenameLength) {
+        if (this.maximumFilenameLength == null
+                || this.maximumFilenameLength.getOriginalValue() == null) {
+            this.maximumFilenameLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximumFilenameLength, maximumFilenameLength);
+        }
     }
 
     @Override

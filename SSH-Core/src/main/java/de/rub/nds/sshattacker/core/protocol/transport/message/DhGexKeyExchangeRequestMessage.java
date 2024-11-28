@@ -32,6 +32,14 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                 ModifiableVariableFactory.safelySetValue(this.minimalGroupSize, minimalGroupSize);
     }
 
+    public void setSoftlyMinimalGroupSize(int minimalGroupSize) {
+        if (this.minimalGroupSize == null || this.minimalGroupSize.getOriginalValue() == null) {
+            this.minimalGroupSize =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.minimalGroupSize, minimalGroupSize);
+        }
+    }
+
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;
     }
@@ -46,6 +54,14 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                         this.preferredGroupSize, preferredGroupSize);
     }
 
+    public void setSoftlyPreferredGroupSize(int preferredGroupSize) {
+        if (this.preferredGroupSize == null || this.preferredGroupSize.getOriginalValue() == null) {
+            this.preferredGroupSize =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.preferredGroupSize, preferredGroupSize);
+        }
+    }
+
     public ModifiableInteger getMaximalGroupSize() {
         return maximalGroupSize;
     }
@@ -57,6 +73,14 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     public void setMaximalGroupSize(int maximalGroupSize) {
         this.maximalGroupSize =
                 ModifiableVariableFactory.safelySetValue(this.maximalGroupSize, maximalGroupSize);
+    }
+
+    public void setSoftlyMaximalGroupSize(int maximalGroupSize) {
+        if (this.maximalGroupSize == null || this.maximalGroupSize.getOriginalValue() == null) {
+            this.maximalGroupSize =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximalGroupSize, maximalGroupSize);
+        }
     }
 
     @Override

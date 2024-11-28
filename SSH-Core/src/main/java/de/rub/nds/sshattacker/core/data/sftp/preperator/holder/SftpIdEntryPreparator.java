@@ -19,8 +19,6 @@ public class SftpIdEntryPreparator extends Preparator<SftpIdEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getId() == null || getObject().getId().getOriginalValue() == null) {
-            getObject().setId(1000);
-        }
+        getObject().setSoftlyId(1000);
     }
 }

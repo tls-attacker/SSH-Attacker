@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -61,6 +62,19 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
         }
     }
 
+    public void setSoftlyMessage(String message, boolean adjustLengthField, Config config) {
+        if (this.message == null || this.message.getOriginalValue() == null) {
+            this.message = ModifiableVariableFactory.safelySetValue(this.message, message);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || messageLength == null
+                    || messageLength.getOriginalValue() == null) {
+                setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }
@@ -99,6 +113,21 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
+        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
+            this.languageTag =
+                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || languageTagLength == null
+                    || languageTagLength.getOriginalValue() == null) {
+                setLanguageTagLength(
+                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
         }
     }
 

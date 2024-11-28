@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -68,6 +69,21 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
         }
     }
 
+    public void setSoftlyRequestName(String requestName, boolean adjustLengthField, Config config) {
+        if (this.requestName == null || this.requestName.getOriginalValue() == null) {
+            this.requestName =
+                    ModifiableVariableFactory.safelySetValue(this.requestName, requestName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || requestNameLength == null
+                    || requestNameLength.getOriginalValue() == null) {
+                setRequestNameLength(
+                        this.requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
+        }
+    }
+
     public void setRequestName(GlobalRequestType requestType, boolean adjustLengthField) {
         setRequestName(requestType.toString(), adjustLengthField);
     }
@@ -82,6 +98,12 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
 
     public void setWantReply(byte wantReply) {
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
+    }
+
+    public void setSoftlyWantReply(byte wantReply) {
+        if (this.wantReply == null || this.wantReply.getOriginalValue() == null) {
+            this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
+        }
     }
 
     public void setWantReply(boolean wantReply) {

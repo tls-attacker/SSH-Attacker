@@ -29,6 +29,12 @@ public class ChannelRequestExitStatusMessage
         this.exitStatus = ModifiableVariableFactory.safelySetValue(this.exitStatus, exitStatus);
     }
 
+    public void setSoftlyExitStatus(int exitStatus) {
+        if (this.exitStatus == null || this.exitStatus.getOriginalValue() == null) {
+            this.exitStatus = ModifiableVariableFactory.safelySetValue(this.exitStatus, exitStatus);
+        }
+    }
+
     @Override
     public ChannelRequestExitStatusMessageHandler getHandler(SshContext context) {
         return new ChannelRequestExitStatusMessageHandler(context, this);

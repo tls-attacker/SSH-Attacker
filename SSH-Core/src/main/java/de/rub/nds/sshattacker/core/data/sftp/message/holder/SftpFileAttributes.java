@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileAttributesHandler;
@@ -72,8 +73,20 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
     }
 
+    public void setSoftlyFlags(int flags) {
+        if (this.flags == null || this.flags.getOriginalValue() == null) {
+            this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
+        }
+    }
+
     public void setFlags(SftpFileAttributeFlag... attributeFlags) {
         setFlags(SftpFileAttributeFlag.flagsToInt(attributeFlags));
+    }
+
+    public void setSoftlyFlags(SftpFileAttributeFlag... attributeFlags) {
+        if (flags == null || flags.getOriginalValue() == null) {
+            setFlags(SftpFileAttributeFlag.flagsToInt(attributeFlags));
+        }
     }
 
     public ModifiableLong getSize() {
@@ -86,6 +99,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setSize(long size) {
         this.size = ModifiableVariableFactory.safelySetValue(this.size, size);
+    }
+
+    public void setSoftlySize(long size) {
+        if (this.size == null || this.size.getOriginalValue() == null) {
+            this.size = ModifiableVariableFactory.safelySetValue(this.size, size);
+        }
     }
 
     public void clearSize() {
@@ -104,6 +123,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.userId = ModifiableVariableFactory.safelySetValue(this.userId, userId);
     }
 
+    public void setSoftlyUserId(int userId) {
+        if (this.userId == null || this.userId.getOriginalValue() == null) {
+            this.userId = ModifiableVariableFactory.safelySetValue(this.userId, userId);
+        }
+    }
+
     public void clearUserId() {
         userId = null;
     }
@@ -118,6 +143,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setGroupId(int groupId) {
         this.groupId = ModifiableVariableFactory.safelySetValue(this.groupId, groupId);
+    }
+
+    public void setSoftlyGroupId(int groupId) {
+        if (this.groupId == null || this.groupId.getOriginalValue() == null) {
+            this.groupId = ModifiableVariableFactory.safelySetValue(this.groupId, groupId);
+        }
     }
 
     public void clearGroupId() {
@@ -136,6 +167,13 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.permissions = ModifiableVariableFactory.safelySetValue(this.permissions, permissions);
     }
 
+    public void setSoftlyPermissions(int permissions) {
+        if (this.permissions == null || this.permissions.getOriginalValue() == null) {
+            this.permissions =
+                    ModifiableVariableFactory.safelySetValue(this.permissions, permissions);
+        }
+    }
+
     public void clearPermissions() {
         permissions = null;
     }
@@ -150,6 +188,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setAccessTime(int accessTime) {
         this.accessTime = ModifiableVariableFactory.safelySetValue(this.accessTime, accessTime);
+    }
+
+    public void setSoftlyAccessTime(int accessTime) {
+        if (this.accessTime == null || this.accessTime.getOriginalValue() == null) {
+            this.accessTime = ModifiableVariableFactory.safelySetValue(this.accessTime, accessTime);
+        }
     }
 
     public void clearAccessTime() {
@@ -168,6 +212,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.modifyTime = ModifiableVariableFactory.safelySetValue(this.modifyTime, modifyTime);
     }
 
+    public void setSoftlyModifyTime(int modifyTime) {
+        if (this.modifyTime == null || this.modifyTime.getOriginalValue() == null) {
+            this.modifyTime = ModifiableVariableFactory.safelySetValue(this.modifyTime, modifyTime);
+        }
+    }
+
     public void clearModifyTime() {
         modifyTime = null;
     }
@@ -183,6 +233,15 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setExtendedCount(int extendedCount) {
         this.extendedCount =
                 ModifiableVariableFactory.safelySetValue(this.extendedCount, extendedCount);
+    }
+
+    public void setSoftlyExtendedCount(int extendedCount, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.extendedCount == null
+                || this.extendedCount.getOriginalValue() == null) {
+            this.extendedCount =
+                    ModifiableVariableFactory.safelySetValue(this.extendedCount, extendedCount);
+        }
     }
 
     public void clearExtendedAttributes() {
@@ -236,8 +295,18 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
+    public void setSoftlyType(byte type) {
+        if (this.type == null || this.type.getOriginalValue() == null) {
+            this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+        }
+    }
+
     public void setType(SftpFileType type) {
         setType(type.getType());
+    }
+
+    public void setSoftlyType(SftpFileType type) {
+        setSoftlyType(type.getType());
     }
 
     public void clearType() {
@@ -276,10 +345,23 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     }
 
     public void setOwner(String owner, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setOwnerLength(owner.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.owner = ModifiableVariableFactory.safelySetValue(this.owner, owner);
+        if (adjustLengthField) {
+            setOwnerLength(this.owner.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyOwner(String owner, boolean adjustLengthField, Config config) {
+        if (this.owner == null || this.owner.getOriginalValue() == null) {
+            this.owner = ModifiableVariableFactory.safelySetValue(this.owner, owner);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || ownerLength == null
+                    || ownerLength.getOriginalValue() == null) {
+                setOwnerLength(this.owner.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public void clearOwner() {
@@ -319,10 +401,23 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     }
 
     public void setGroup(String group, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setGroupLength(group.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.group = ModifiableVariableFactory.safelySetValue(this.group, group);
+        if (adjustLengthField) {
+            setGroupLength(this.group.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyGroup(String group, boolean adjustLengthField, Config config) {
+        if (this.group == null || this.group.getOriginalValue() == null) {
+            this.group = ModifiableVariableFactory.safelySetValue(this.group, group);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || groupLength == null
+                    || groupLength.getOriginalValue() == null) {
+                setGroupLength(this.group.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public void clearGroup() {
@@ -340,6 +435,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setCreateTime(int createTime) {
         this.createTime = ModifiableVariableFactory.safelySetValue(this.createTime, createTime);
+    }
+
+    public void setSoftlyCreateTime(int createTime) {
+        if (this.createTime == null || this.createTime.getOriginalValue() == null) {
+            this.createTime = ModifiableVariableFactory.safelySetValue(this.createTime, createTime);
+        }
     }
 
     public void clearCreateTime() {
@@ -364,6 +465,14 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.aclLength = ModifiableVariableFactory.safelySetValue(this.aclLength, aclLength);
     }
 
+    public void setSoftlyAclLength(int aclLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.aclLength == null
+                || this.aclLength.getOriginalValue() == null) {
+            this.aclLength = ModifiableVariableFactory.safelySetValue(this.aclLength, aclLength);
+        }
+    }
+
     public ModifiableInteger getAclEntriesCount() {
         return aclEntriesCount;
     }
@@ -375,6 +484,15 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setAclEntriesCount(int aclEntriesCount) {
         this.aclEntriesCount =
                 ModifiableVariableFactory.safelySetValue(this.aclEntriesCount, aclEntriesCount);
+    }
+
+    public void setSoftlyAclEntriesCount(int aclEntriesCount, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.aclEntriesCount == null
+                || this.aclEntriesCount.getOriginalValue() == null) {
+            this.aclEntriesCount =
+                    ModifiableVariableFactory.safelySetValue(this.aclEntriesCount, aclEntriesCount);
+        }
     }
 
     public List<SftpAclEntry> getAclEntries() {

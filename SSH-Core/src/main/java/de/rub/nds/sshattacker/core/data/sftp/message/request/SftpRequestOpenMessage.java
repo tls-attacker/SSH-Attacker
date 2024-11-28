@@ -23,7 +23,7 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
 
     private ModifiableInteger pFlags;
 
-    @HoldsModifiableVariable private SftpFileAttributes attributes;
+    @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
     public ModifiableInteger getPFlags() {
         return pFlags;
@@ -37,8 +37,18 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
         this.pFlags = ModifiableVariableFactory.safelySetValue(this.pFlags, pFlags);
     }
 
+    public void setSoftlyPFlags(int pFlags) {
+        if (this.pFlags == null || this.pFlags.getOriginalValue() == null) {
+            this.pFlags = ModifiableVariableFactory.safelySetValue(this.pFlags, pFlags);
+        }
+    }
+
     public void setPFlags(SftpFileOpenFlag... fileOpenFlags) {
         setPFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
+    }
+
+    public void setSoftlyPFlags(SftpFileOpenFlag... fileOpenFlags) {
+        setSoftlyPFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
     }
 
     public SftpFileAttributes getAttributes() {

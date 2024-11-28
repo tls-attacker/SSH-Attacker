@@ -17,7 +17,7 @@ import java.util.List;
 public class SftpRequestSetStatMessage
         extends SftpRequestWithPathMessage<SftpRequestSetStatMessage> {
 
-    @HoldsModifiableVariable private SftpFileAttributes attributes;
+    @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
     public SftpFileAttributes getAttributes() {
         return attributes;

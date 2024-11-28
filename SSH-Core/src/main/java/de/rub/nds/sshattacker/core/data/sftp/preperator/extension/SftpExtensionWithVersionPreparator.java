@@ -26,13 +26,6 @@ public class SftpExtensionWithVersionPreparator<T extends SftpExtensionWithVersi
     public void prepareExtensionSpecificContents() {
         getObject().setName(extensionName, true);
 
-        if (getObject().getVersion() == null
-                || getObject().getVersion().getOriginalValue() == null) {
-            getObject().setVersion("1", true);
-        }
-        if (getObject().getVersionLength() == null
-                || getObject().getVersionLength().getOriginalValue() == null) {
-            getObject().setVersionLength(getObject().getVersion().getValue().length());
-        }
+        getObject().setSoftlyVersion("1", true, chooser.getConfig());
     }
 }

@@ -20,12 +20,6 @@ public class SftpRequestRemoveDirMessagePreparator
     }
 
     public void prepareMessageSpecificContents() {
-        if (getObject().getPath() == null || getObject().getPath().getOriginalValue() == null) {
-            getObject().setPath("/tmp/ssh-attacker", true);
-        }
-        if (getObject().getPathLength() == null
-                || getObject().getPathLength().getOriginalValue() == null) {
-            getObject().setPathLength(getObject().getPath().getValue().length());
-        }
+        getObject().setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
     }
 }

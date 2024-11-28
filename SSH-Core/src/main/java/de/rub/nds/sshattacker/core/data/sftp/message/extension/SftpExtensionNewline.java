@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionNewlineHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -54,11 +55,29 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
     }
 
     public void setNewlineSeperator(String newlineSeperator, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setNewlineSeperatorLength(newlineSeperator.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.newlineSeperator =
                 ModifiableVariableFactory.safelySetValue(this.newlineSeperator, newlineSeperator);
+        if (adjustLengthField) {
+            setNewlineSeperatorLength(
+                    this.newlineSeperator.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyNewlineSeperator(
+            String newlineSeperator, boolean adjustLengthField, Config config) {
+        if (this.newlineSeperator == null || this.newlineSeperator.getOriginalValue() == null) {
+            this.newlineSeperator =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.newlineSeperator, newlineSeperator);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || newlineSeperatorLength == null
+                    || newlineSeperatorLength.getOriginalValue() == null) {
+                setNewlineSeperatorLength(
+                        this.newlineSeperator.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     @Override

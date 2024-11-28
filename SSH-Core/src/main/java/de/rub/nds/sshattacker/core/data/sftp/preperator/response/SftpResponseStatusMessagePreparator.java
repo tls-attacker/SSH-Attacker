@@ -21,27 +21,10 @@ public class SftpResponseStatusMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getStatusCode() == null
-                || getObject().getStatusCode().getOriginalValue() == null) {
-            getObject().setStatusCode(SftpStatusCode.SSH_FX_OK);
-        }
+        getObject().setSoftlyStatusCode(SftpStatusCode.SSH_FX_OK);
 
-        if (getObject().getErrorMessage() == null
-                || getObject().getErrorMessage().getOriginalValue() == null) {
-            getObject().setErrorMessage("SSH-Attacker sagt NEIN!", true);
-        }
-        if (getObject().getErrorMessageLength() == null
-                || getObject().getErrorMessageLength().getOriginalValue() == null) {
-            getObject().setErrorMessageLength(getObject().getErrorMessage().getValue().length());
-        }
+        getObject().setSoftlyErrorMessage("SSH-Attacker sagt NEIN!", true, chooser.getConfig());
 
-        if (getObject().getLanguageTag() == null
-                || getObject().getLanguageTag().getOriginalValue() == null) {
-            getObject().setLanguageTag("de", true);
-        }
-        if (getObject().getLanguageTagLength() == null
-                || getObject().getLanguageTagLength().getOriginalValue() == null) {
-            getObject().setLanguageTagLength(getObject().getLanguageTag().getValue().length());
-        }
+        getObject().setSoftlyLanguageTag("de", true, chooser.getConfig());
     }
 }

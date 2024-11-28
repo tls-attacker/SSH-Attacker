@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionVendorIdHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -38,6 +39,17 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         this.vendorStructureLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.vendorStructureLength, vendorStructureLength);
+    }
+
+    public void setSoftlyVendorStructureLength(int vendorStructureLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.vendorStructureLength == null
+                || this.vendorStructureLength.getOriginalValue() == null) {
+
+            this.vendorStructureLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.vendorStructureLength, vendorStructureLength);
+        }
     }
 
     public ModifiableInteger getVendorNameLength() {
@@ -73,10 +85,24 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     }
 
     public void setVendorName(String vendorName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setVendorNameLength(vendorName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.vendorName = ModifiableVariableFactory.safelySetValue(this.vendorName, vendorName);
+        if (adjustLengthField) {
+            setVendorNameLength(this.vendorName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyVendorName(String vendorName, boolean adjustLengthField, Config config) {
+        if (this.vendorName == null || this.vendorName.getOriginalValue() == null) {
+            this.vendorName = ModifiableVariableFactory.safelySetValue(this.vendorName, vendorName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || vendorNameLength == null
+                    || vendorNameLength.getOriginalValue() == null) {
+                setVendorNameLength(
+                        this.vendorName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public ModifiableInteger getProductNameLength() {
@@ -112,10 +138,26 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     }
 
     public void setProductName(String productName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setProductNameLength(productName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.productName = ModifiableVariableFactory.safelySetValue(this.productName, productName);
+        if (adjustLengthField) {
+            setProductNameLength(
+                    this.productName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyProductName(String productName, boolean adjustLengthField, Config config) {
+        if (this.productName == null || this.productName.getOriginalValue() == null) {
+            this.productName =
+                    ModifiableVariableFactory.safelySetValue(this.productName, productName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || productNameLength == null
+                    || productNameLength.getOriginalValue() == null) {
+                setProductNameLength(
+                        this.productName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public ModifiableInteger getProductVersionLength() {
@@ -153,11 +195,28 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     }
 
     public void setProductVersion(String productVersion, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setProductVersionLength(productVersion.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.productVersion =
                 ModifiableVariableFactory.safelySetValue(this.productVersion, productVersion);
+        if (adjustLengthField) {
+            setProductVersionLength(
+                    this.productVersion.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyProductVersion(
+            String productVersion, boolean adjustLengthField, Config config) {
+        if (this.productVersion == null || this.productVersion.getOriginalValue() == null) {
+            this.productVersion =
+                    ModifiableVariableFactory.safelySetValue(this.productVersion, productVersion);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || productVersionLength == null
+                    || productVersionLength.getOriginalValue() == null) {
+                setProductVersionLength(
+                        this.productVersion.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     public ModifiableLong getProductBuildNumber() {
@@ -172,6 +231,14 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         this.productBuildNumber =
                 ModifiableVariableFactory.safelySetValue(
                         this.productBuildNumber, productBuildNumber);
+    }
+
+    public void setSoftlyProductBuildNumber(long productBuildNumber) {
+        if (this.productBuildNumber == null || this.productBuildNumber.getOriginalValue() == null) {
+            this.productBuildNumber =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.productBuildNumber, productBuildNumber);
+        }
     }
 
     @Override

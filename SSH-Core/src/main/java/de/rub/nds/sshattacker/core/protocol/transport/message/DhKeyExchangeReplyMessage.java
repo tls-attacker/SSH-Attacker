@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.*;
@@ -81,6 +82,21 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
                 ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         if (adjustLengthField) {
             setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
+    }
+
+    public void setSoftlyHostKeyBytes(
+            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+            this.hostKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostKeyBytesLength == null
+                    || hostKeyBytesLength.getOriginalValue() == null) {
+                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+            }
         }
     }
 
@@ -171,6 +187,19 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

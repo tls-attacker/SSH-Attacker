@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -85,6 +86,21 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
+    public void setSoftlyHostKeyBytes(
+            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
+        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+            this.hostKeyBytes =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || hostKeyBytesLength == null
+                    || hostKeyBytesLength.getOriginalValue() == null) {
+                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+            }
+        }
+    }
+
     public ModifiableInteger getPublicKeyLength() {
         return publicKeyLength;
     }
@@ -120,6 +136,19 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
+    public void setSoftlyPublicKey(byte[] publicKey, boolean adjustLengthField, Config config) {
+        if (this.publicKey == null || this.publicKey.getOriginalValue() == null) {
+            this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || publicKeyLength == null
+                    || publicKeyLength.getOriginalValue() == null) {
+                setPublicKeyLength(this.publicKey.getValue().length);
+            }
+        }
+    }
+
     public ModifiableInteger getCombinedKeyShareLength() {
         return combinedKeyShareLength;
     }
@@ -128,7 +157,7 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         this.combinedKeyShareLength = combinedKeyShareLength;
     }
 
-    public void setCiphertextLength(int ciphertextLength) {
+    public void setCombinedKeyShareLength(int ciphertextLength) {
         combinedKeyShareLength =
                 ModifiableVariableFactory.safelySetValue(combinedKeyShareLength, ciphertextLength);
     }
@@ -138,20 +167,37 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setCombinedKeyShare(byte[] combinedKeyShare) {
-        setCiphertext(combinedKeyShare, false);
+        setCombinedKeyShare(combinedKeyShare, false);
     }
 
-    public void setCiphertext(ModifiableByteArray ciphertext, boolean adjustLengthField) {
+    public void setCombinedKeyShare(ModifiableByteArray ciphertext, boolean adjustLengthField) {
         combinedKeyShare = ciphertext;
         if (adjustLengthField) {
-            setCiphertextLength(combinedKeyShare.getValue().length);
+            setCombinedKeyShareLength(combinedKeyShare.getValue().length);
         }
     }
 
-    public void setCiphertext(byte[] ciphertext, boolean adjustLengthField) {
-        combinedKeyShare = ModifiableVariableFactory.safelySetValue(combinedKeyShare, ciphertext);
+    public void setCombinedKeyShare(byte[] combinedKeyShare, boolean adjustLengthField) {
+        this.combinedKeyShare =
+                ModifiableVariableFactory.safelySetValue(this.combinedKeyShare, combinedKeyShare);
         if (adjustLengthField) {
-            setCiphertextLength(combinedKeyShare.getValue().length);
+            setCombinedKeyShareLength(this.combinedKeyShare.getValue().length);
+        }
+    }
+
+    public void setSoftlyCombinedKeyShare(
+            byte[] combinedKeyShare, boolean adjustLengthField, Config config) {
+        if (this.combinedKeyShare == null || this.combinedKeyShare.getOriginalValue() == null) {
+            this.combinedKeyShare =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.combinedKeyShare, combinedKeyShare);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || combinedKeyShareLength == null
+                    || combinedKeyShareLength.getOriginalValue() == null) {
+                setCombinedKeyShareLength(this.combinedKeyShare.getValue().length);
+            }
         }
     }
 
@@ -199,6 +245,19 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
+        }
+    }
+
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (this.signature == null || this.signature.getOriginalValue() == null) {
+            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signatureLength == null
+                    || signatureLength.getOriginalValue() == null) {
+                setSignatureLength(this.signature.getValue().length);
+            }
         }
     }
 

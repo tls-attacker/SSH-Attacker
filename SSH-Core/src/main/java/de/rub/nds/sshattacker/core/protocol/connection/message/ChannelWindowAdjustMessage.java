@@ -28,6 +28,12 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
         this.bytesToAdd = ModifiableVariableFactory.safelySetValue(this.bytesToAdd, bytesToAdd);
     }
 
+    public void setSoftlyBytesToAdd(int bytesToAdd) {
+        if (this.bytesToAdd == null || this.bytesToAdd.getOriginalValue() == null) {
+            this.bytesToAdd = ModifiableVariableFactory.safelySetValue(this.bytesToAdd, bytesToAdd);
+        }
+    }
+
     @Override
     public ChannelWindowAdjustMessageHandler getHandler(SshContext context) {
         return new ChannelWindowAdjustMessageHandler(context, this);

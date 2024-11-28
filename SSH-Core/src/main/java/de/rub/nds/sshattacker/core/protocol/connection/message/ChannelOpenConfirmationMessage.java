@@ -43,6 +43,12 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
 
+    public void setSoftlyWindowSize(int windowSize) {
+        if (this.windowSize == null || this.windowSize.getOriginalValue() == null) {
+            this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
+        }
+    }
+
     public ModifiableInteger getPacketSize() {
         return packetSize;
     }
@@ -53,6 +59,12 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+    }
+
+    public void setSoftlyPacketSize(int packetSize) {
+        if (this.packetSize == null || this.packetSize.getOriginalValue() == null) {
+            this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+        }
     }
 
     @Override

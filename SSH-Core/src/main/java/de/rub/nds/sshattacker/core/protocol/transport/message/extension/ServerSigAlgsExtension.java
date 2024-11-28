@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
@@ -77,15 +78,38 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            String publicKeyAlgorithms, boolean adjustLengthField) {
+            String acceptedPublicKeyAlgorithms, boolean adjustLengthField) {
+        this.acceptedPublicKeyAlgorithms =
+                ModifiableVariableFactory.safelySetValue(
+                        this.acceptedPublicKeyAlgorithms, acceptedPublicKeyAlgorithms);
         if (adjustLengthField) {
             setAcceptedPublicKeyAlgorithmsLength(
-                    publicKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
-            setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength.getValue());
+                    this.acceptedPublicKeyAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
-        acceptedPublicKeyAlgorithms =
-                ModifiableVariableFactory.safelySetValue(
-                        acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
+    }
+
+    public void setSoftlyAcceptedPublicKeyAlgorithms(
+            String acceptedPublicKeyAlgorithms, boolean adjustLengthField, Config config) {
+        if (this.acceptedPublicKeyAlgorithms == null
+                || this.acceptedPublicKeyAlgorithms.getOriginalValue() == null) {
+            this.acceptedPublicKeyAlgorithms =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.acceptedPublicKeyAlgorithms, acceptedPublicKeyAlgorithms);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || acceptedPublicKeyAlgorithmsLength == null
+                    || acceptedPublicKeyAlgorithmsLength.getOriginalValue() == null) {
+                setAcceptedPublicKeyAlgorithmsLength(
+                        this.acceptedPublicKeyAlgorithms
+                                .getValue()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length);
+            }
+        }
     }
 
     public void setAcceptedPublicKeyAlgorithms(

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSymbolicLinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -58,10 +59,24 @@ public class SftpRequestSymbolicLinkMessage
     }
 
     public void setTargetPath(String targetPath, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTargetPathLength(targetPath.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.targetPath = ModifiableVariableFactory.safelySetValue(this.targetPath, targetPath);
+        if (adjustLengthField) {
+            setTargetPathLength(this.targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyTargetPath(String targetPath, boolean adjustLengthField, Config config) {
+        if (this.targetPath == null || this.targetPath.getOriginalValue() == null) {
+            this.targetPath = ModifiableVariableFactory.safelySetValue(this.targetPath, targetPath);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || targetPathLength == null
+                    || targetPathLength.getOriginalValue() == null) {
+                setTargetPathLength(
+                        this.targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     @Override

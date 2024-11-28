@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -61,6 +62,22 @@ public class ChannelRequestSubsystemMessage
         if (adjustLengthField) {
             setSubsystemNameLength(
                     this.subsystemName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlySubsystemName(
+            String subsystemName, boolean adjustLengthField, Config config) {
+        if (this.subsystemName == null || this.subsystemName.getOriginalValue() == null) {
+            this.subsystemName =
+                    ModifiableVariableFactory.safelySetValue(this.subsystemName, subsystemName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || subsystemNameLength == null
+                    || subsystemNameLength.getOriginalValue() == null) {
+                setSubsystemNameLength(
+                        this.subsystemName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

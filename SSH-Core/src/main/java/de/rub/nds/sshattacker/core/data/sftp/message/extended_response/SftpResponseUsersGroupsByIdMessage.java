@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseUsersGroupsByIdMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
@@ -50,6 +51,15 @@ public class SftpResponseUsersGroupsByIdMessage
     public void setUserNamesLength(int userNamesLength) {
         this.userNamesLength =
                 ModifiableVariableFactory.safelySetValue(this.userNamesLength, userNamesLength);
+    }
+
+    public void setSoftlyUserNamesLength(int userNamesLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.userNamesLength == null
+                || this.userNamesLength.getOriginalValue() == null) {
+            this.userNamesLength =
+                    ModifiableVariableFactory.safelySetValue(this.userNamesLength, userNamesLength);
+        }
     }
 
     public List<SftpNameEntry> getUserNames() {
@@ -92,6 +102,16 @@ public class SftpResponseUsersGroupsByIdMessage
     public void setGroupNamesLength(int groupNamesLength) {
         this.groupNamesLength =
                 ModifiableVariableFactory.safelySetValue(this.groupNamesLength, groupNamesLength);
+    }
+
+    public void setSoftlyGroupNamesLength(int groupNamesLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.groupNamesLength == null
+                || this.groupNamesLength.getOriginalValue() == null) {
+            this.groupNamesLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.groupNamesLength, groupNamesLength);
+        }
     }
 
     public List<SftpNameEntry> getGroupNames() {

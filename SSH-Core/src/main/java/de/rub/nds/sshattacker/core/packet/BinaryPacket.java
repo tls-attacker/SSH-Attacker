@@ -78,6 +78,13 @@ public class BinaryPacket extends AbstractPacket {
                 ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
 
+    public void setSoftlyPaddingLength(byte paddingLength) {
+        if (this.paddingLength == null || this.paddingLength.getOriginalValue() == null) {
+            this.paddingLength =
+                    ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+        }
+    }
+
     public ModifiableByteArray getPadding() {
         return padding;
     }
@@ -113,6 +120,13 @@ public class BinaryPacket extends AbstractPacket {
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public void setSoftlySequenceNumber(int sequenceNumber) {
+        if (this.sequenceNumber == null || this.sequenceNumber.getOriginalValue() == null) {
+            this.sequenceNumber =
+                    ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -75,6 +76,19 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         }
     }
 
+    public void setSoftlyUserName(String userName, boolean adjustLengthField, Config config) {
+        if (this.userName == null || this.userName.getOriginalValue() == null) {
+            this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || userNameLength == null
+                    || userNameLength.getOriginalValue() == null) {
+                setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
+    }
+
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;
     }
@@ -117,6 +131,21 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         if (adjustLengthField) {
             setServiceNameLength(
                     this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
+        if (this.serviceName == null || this.serviceName.getOriginalValue() == null) {
+            this.serviceName =
+                    ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || serviceNameLength == null
+                    || serviceNameLength.getOriginalValue() == null) {
+                setServiceNameLength(
+                        this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
         }
     }
 
@@ -166,6 +195,20 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         if (adjustLengthField) {
             setMethodNameLength(
                     this.methodName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public void setSoftlyMethodName(String methodName, boolean adjustLengthField, Config config) {
+        if (this.methodName == null || this.methodName.getOriginalValue() == null) {
+            this.methodName = ModifiableVariableFactory.safelySetValue(this.methodName, methodName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || methodNameLength == null
+                    || methodNameLength.getOriginalValue() == null) {
+                setMethodNameLength(
+                        this.methodName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
         }
     }
 

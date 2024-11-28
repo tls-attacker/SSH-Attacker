@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -61,6 +62,20 @@ public class ChannelRequestSignalMessage
         this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
         if (adjustLengthField) {
             setSignalNameLength(this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlySignalName(String signalName, boolean adjustLengthField, Config config) {
+        if (this.signalName == null || this.signalName.getOriginalValue() == null) {
+            this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || signalNameLength == null
+                    || signalNameLength.getOriginalValue() == null) {
+                setSignalNameLength(
+                        this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
         }
     }
 

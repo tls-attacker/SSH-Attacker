@@ -19,12 +19,6 @@ public class SftpNameEntryPreparator extends Preparator<SftpNameEntry> {
 
     @Override
     public final void prepare() {
-        if (getObject().getName() == null || getObject().getName().getOriginalValue() == null) {
-            getObject().setName("ssh-attacker", true);
-        }
-        if (getObject().getNameLength() == null
-                || getObject().getNameLength().getOriginalValue() == null) {
-            getObject().setNameLength(getObject().getName().getValue().length());
-        }
+        getObject().setSoftlyName("ssh-attacker", true, chooser.getConfig());
     }
 }

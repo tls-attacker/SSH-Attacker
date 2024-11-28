@@ -29,11 +29,15 @@ public class SftpRequestUsersGroupsByIdMessagePreparator
         if (getObject().getGroupIds().isEmpty()) {
             getObject().addGroupId(0);
         }
+
         getObject()
-                .setUserIdsLength(
-                        getObject().getUserIds().size() * DataFormatConstants.UINT32_SIZE);
+                .setSoftlyUserIdsLength(
+                        getObject().getUserIds().size() * DataFormatConstants.UINT32_SIZE,
+                        chooser.getConfig());
+
         getObject()
-                .setGroupIdsLength(
-                        getObject().getGroupIds().size() * DataFormatConstants.UINT32_SIZE);
+                .setSoftlyGroupIdsLength(
+                        getObject().getGroupIds().size() * DataFormatConstants.UINT32_SIZE,
+                        chooser.getConfig());
     }
 }

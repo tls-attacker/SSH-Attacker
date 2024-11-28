@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestHomeDirectoryMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -53,10 +54,23 @@ public class SftpRequestHomeDirectoryMessage
     }
 
     public void setUsername(String username, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUsernameLength(username.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.username = ModifiableVariableFactory.safelySetValue(this.username, username);
+        if (adjustLengthField) {
+            setUsernameLength(this.username.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setSoftlyUsername(String username, boolean adjustLengthField, Config config) {
+        if (this.username == null || this.username.getOriginalValue() == null) {
+            this.username = ModifiableVariableFactory.safelySetValue(this.username, username);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || usernameLength == null
+                    || usernameLength.getOriginalValue() == null) {
+                setUsernameLength(this.username.getValue().getBytes(StandardCharsets.UTF_8).length);
+            }
+        }
     }
 
     @Override

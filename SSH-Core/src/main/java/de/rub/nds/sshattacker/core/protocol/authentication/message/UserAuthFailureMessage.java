@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
@@ -90,6 +91,27 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
         }
     }
 
+    public void setSoftlyPossibleAuthenticationMethods(
+            String possibleAuthenticationMethods, boolean adjustLengthField, Config config) {
+        if (this.possibleAuthenticationMethods == null
+                || this.possibleAuthenticationMethods.getOriginalValue() == null) {
+            this.possibleAuthenticationMethods =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.possibleAuthenticationMethods, possibleAuthenticationMethods);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || possibleAuthenticationMethodsLength == null
+                    || possibleAuthenticationMethodsLength.getOriginalValue() == null) {
+                setPossibleAuthenticationMethodsLength(
+                        this.possibleAuthenticationMethods
+                                .getValue()
+                                .getBytes(StandardCharsets.US_ASCII)
+                                .length);
+            }
+        }
+    }
+
     public void setPossibleAuthenticationMethods(
             String[] possibleAuthenticationMethods, boolean adjustLengthField) {
         String nameList =
@@ -117,6 +139,13 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
     public void setPartialSuccess(byte partialSuccess) {
         this.partialSuccess =
                 ModifiableVariableFactory.safelySetValue(this.partialSuccess, partialSuccess);
+    }
+
+    public void setSoftlyPartialSuccess(byte partialSuccess) {
+        if (this.partialSuccess == null || this.partialSuccess.getOriginalValue() == null) {
+            this.partialSuccess =
+                    ModifiableVariableFactory.safelySetValue(this.partialSuccess, partialSuccess);
+        }
     }
 
     public void setPartialSuccess(boolean partialSuccess) {

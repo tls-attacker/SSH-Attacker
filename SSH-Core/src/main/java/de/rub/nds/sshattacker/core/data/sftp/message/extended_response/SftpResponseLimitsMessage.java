@@ -34,6 +34,15 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
                         this.maximumPacketLength, maximumPacketLength);
     }
 
+    public void setSoftlyMaximumPacketLength(long maximumPacketLength) {
+        if (this.maximumPacketLength == null
+                || this.maximumPacketLength.getOriginalValue() == null) {
+            this.maximumPacketLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximumPacketLength, maximumPacketLength);
+        }
+    }
+
     public ModifiableLong getMaximumReadLength() {
         return maximumReadLength;
     }
@@ -45,6 +54,14 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     public void setMaximumReadLength(long maximumReadLength) {
         this.maximumReadLength =
                 ModifiableVariableFactory.safelySetValue(this.maximumReadLength, maximumReadLength);
+    }
+
+    public void setSoftlyMaximumReadLength(long maximumReadLength) {
+        if (this.maximumReadLength == null || this.maximumReadLength.getOriginalValue() == null) {
+            this.maximumReadLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximumReadLength, maximumReadLength);
+        }
     }
 
     public ModifiableLong getMaximumWriteLength() {
@@ -61,6 +78,14 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
                         this.maximumWriteLength, maximumWriteLength);
     }
 
+    public void setSoftlyMaximumWriteLength(long maximumWriteLength) {
+        if (this.maximumWriteLength == null || this.maximumWriteLength.getOriginalValue() == null) {
+            this.maximumWriteLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximumWriteLength, maximumWriteLength);
+        }
+    }
+
     public ModifiableLong getMaximumOpenHandles() {
         return maximumOpenHandles;
     }
@@ -73,6 +98,14 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
         this.maximumOpenHandles =
                 ModifiableVariableFactory.safelySetValue(
                         this.maximumOpenHandles, maximumOpenHandles);
+    }
+
+    public void setSoftlyMaximumOpenHandles(long maximumOpenHandles) {
+        if (this.maximumOpenHandles == null || this.maximumOpenHandles.getOriginalValue() == null) {
+            this.maximumOpenHandles =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.maximumOpenHandles, maximumOpenHandles);
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.HashAlgorithm;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCheckFileHandleMessageHandler;
@@ -79,6 +80,22 @@ public class SftpRequestCheckFileHandleMessage
         }
     }
 
+    public void setSoftlyHashAlgorithms(
+            String hashAlgorithms, boolean adjustLengthField, Config config) {
+        if (this.hashAlgorithms == null || this.hashAlgorithms.getOriginalValue() == null) {
+            this.hashAlgorithms =
+                    ModifiableVariableFactory.safelySetValue(this.hashAlgorithms, hashAlgorithms);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareSftpLengthFields()
+                    || hashAlgorithmsLength == null
+                    || hashAlgorithmsLength.getOriginalValue() == null) {
+                setHashAlgorithmsLength(
+                        this.hashAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            }
+        }
+    }
+
     public void setHashAlgorithms(String[] hashAlgorithms, boolean adjustLengthField) {
         String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, hashAlgorithms);
         setHashAlgorithms(nameList, adjustLengthField);
@@ -90,6 +107,15 @@ public class SftpRequestCheckFileHandleMessage
                         .map(HashAlgorithm::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setHashAlgorithms(nameList, adjustLengthField);
+    }
+
+    public void setSoftlyHashAlgorithms(
+            List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField, Config config) {
+        String nameList =
+                hashAlgorithms.stream()
+                        .map(HashAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+        setSoftlyHashAlgorithms(nameList, adjustLengthField, config);
     }
 
     public ModifiableLong getStartOffset() {
@@ -104,6 +130,13 @@ public class SftpRequestCheckFileHandleMessage
         this.startOffset = ModifiableVariableFactory.safelySetValue(this.startOffset, startOffset);
     }
 
+    public void setSoftlyStartOffset(long startOffset) {
+        if (this.startOffset == null || this.startOffset.getOriginalValue() == null) {
+            this.startOffset =
+                    ModifiableVariableFactory.safelySetValue(this.startOffset, startOffset);
+        }
+    }
+
     public ModifiableLong getLength() {
         return length;
     }
@@ -116,6 +149,12 @@ public class SftpRequestCheckFileHandleMessage
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
+    public void setSoftlyLength(long length) {
+        if (this.length == null || this.length.getOriginalValue() == null) {
+            this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+        }
+    }
+
     public ModifiableInteger getBlockSize() {
         return blockSize;
     }
@@ -126,6 +165,12 @@ public class SftpRequestCheckFileHandleMessage
 
     public void setBlockSize(int blockSize) {
         this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
+    }
+
+    public void setSoftlyBlockSize(int blockSize) {
+        if (this.blockSize == null || this.blockSize.getOriginalValue() == null) {
+            this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
+        }
     }
 
     @Override

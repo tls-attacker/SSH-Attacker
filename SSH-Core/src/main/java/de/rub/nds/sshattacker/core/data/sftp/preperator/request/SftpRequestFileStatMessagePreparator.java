@@ -23,14 +23,14 @@ public class SftpRequestFileStatMessagePreparator
     @Override
     public void prepareRequestSpecificContents() {
         getObject()
-                .setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
+                .setSoftlyHandle(
+                        chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                        true,
+                        chooser.getConfig());
 
         if (chooser.getSftpNegotiatedVersion() > 3
                 || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            if (getObject().getFlags() == null
-                    || getObject().getFlags().getOriginalValue() == null) {
-                getObject().setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
-            }
+            getObject().setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             getObject().clearFlags();
         }

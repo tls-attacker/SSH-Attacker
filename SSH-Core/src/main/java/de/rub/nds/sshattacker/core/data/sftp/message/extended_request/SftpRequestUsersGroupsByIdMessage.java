@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestUsersGroupsByIdMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpIdEntry;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -48,6 +49,15 @@ public class SftpRequestUsersGroupsByIdMessage
     public void setUserIdsLength(int userIdsLength) {
         this.userIdsLength =
                 ModifiableVariableFactory.safelySetValue(this.userIdsLength, userIdsLength);
+    }
+
+    public void setSoftlyUserIdsLength(int userIdsLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.userIdsLength == null
+                || this.userIdsLength.getOriginalValue() == null) {
+            this.userIdsLength =
+                    ModifiableVariableFactory.safelySetValue(this.userIdsLength, userIdsLength);
+        }
     }
 
     public List<SftpIdEntry> getUserIds() {
@@ -89,6 +99,15 @@ public class SftpRequestUsersGroupsByIdMessage
     public void setGroupIdsLength(int groupIdsLength) {
         this.groupIdsLength =
                 ModifiableVariableFactory.safelySetValue(this.groupIdsLength, groupIdsLength);
+    }
+
+    public void setSoftlyGroupIdsLength(int groupIdsLength, Config config) {
+        if (config.getAlwaysPrepareSftpLengthFields()
+                || this.groupIdsLength == null
+                || this.groupIdsLength.getOriginalValue() == null) {
+            this.groupIdsLength =
+                    ModifiableVariableFactory.safelySetValue(this.groupIdsLength, groupIdsLength);
+        }
     }
 
     public List<SftpIdEntry> getGroupIds() {
