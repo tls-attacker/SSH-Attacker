@@ -206,7 +206,6 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
     }
 
     private boolean isFlagSet(int attributes, SftpFileAttributeFlag attribute) {
-        return chooser.getConfig().getRespectSftpAttributesFlags()
-                || (attributes & attribute.getValue()) != 0;
+        return (attributes & attribute.getValue()) != 0 || !chooser.getConfig().getRespectSftpAttributesFlags();
     }
 }
