@@ -19,6 +19,25 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     private ModifiableInteger preferredGroupSize;
     private ModifiableInteger maximalGroupSize;
 
+    public DhGexKeyExchangeRequestMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeRequestMessage(DhGexKeyExchangeRequestMessage other) {
+        super(other);
+        minimalGroupSize =
+                other.minimalGroupSize != null ? other.minimalGroupSize.createCopy() : null;
+        preferredGroupSize =
+                other.preferredGroupSize != null ? other.preferredGroupSize.createCopy() : null;
+        maximalGroupSize =
+                other.maximalGroupSize != null ? other.maximalGroupSize.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeRequestMessage createCopy() {
+        return new DhGexKeyExchangeRequestMessage(this);
+    }
+
     public ModifiableInteger getMinimalGroupSize() {
         return minimalGroupSize;
     }

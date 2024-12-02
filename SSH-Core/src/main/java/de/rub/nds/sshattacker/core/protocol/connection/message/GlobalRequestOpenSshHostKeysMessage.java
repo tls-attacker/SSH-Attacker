@@ -22,6 +22,20 @@ public class GlobalRequestOpenSshHostKeysMessage
 
     private ModifiableByteArray hostKeys;
 
+    public GlobalRequestOpenSshHostKeysMessage() {
+        super();
+    }
+
+    public GlobalRequestOpenSshHostKeysMessage(GlobalRequestOpenSshHostKeysMessage other) {
+        super(other);
+        hostKeys = other.hostKeys != null ? other.hostKeys.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestOpenSshHostKeysMessage createCopy() {
+        return new GlobalRequestOpenSshHostKeysMessage(this);
+    }
+
     public ModifiableByteArray getHostKeys() {
         return hostKeys;
     }

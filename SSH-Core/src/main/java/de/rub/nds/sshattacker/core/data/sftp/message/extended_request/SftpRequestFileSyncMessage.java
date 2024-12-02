@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestFileSyncMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestFileSyncMessage> {
 
+    public SftpRequestFileSyncMessage() {
+        super();
+    }
+
+    public SftpRequestFileSyncMessage(SftpRequestFileSyncMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestFileSyncMessage createCopy() {
+        return new SftpRequestFileSyncMessage(this);
+    }
+
     @Override
     public SftpRequestFileSyncMessageHandler getHandler(SshContext context) {
         return new SftpRequestFileSyncMessageHandler(context, this);

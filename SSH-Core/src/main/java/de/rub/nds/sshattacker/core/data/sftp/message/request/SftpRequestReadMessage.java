@@ -18,6 +18,21 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
     private ModifiableLong offset;
     private ModifiableInteger length;
 
+    public SftpRequestReadMessage() {
+        super();
+    }
+
+    public SftpRequestReadMessage(SftpRequestReadMessage other) {
+        super(other);
+        offset = other.offset != null ? other.offset.createCopy() : null;
+        length = other.length != null ? other.length.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestReadMessage createCopy() {
+        return new SftpRequestReadMessage(this);
+    }
+
     public ModifiableLong getOffset() {
         return offset;
     }

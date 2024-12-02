@@ -23,6 +23,32 @@ public class SftpResponseSpaceAvailableMessage
     private ModifiableLong unusedBytesAvailableToUser;
     private ModifiableInteger bytesPerAllocationUnit;
 
+    public SftpResponseSpaceAvailableMessage() {
+        super();
+    }
+
+    public SftpResponseSpaceAvailableMessage(SftpResponseSpaceAvailableMessage other) {
+        super(other);
+        bytesOnDevice = other.bytesOnDevice != null ? other.bytesOnDevice.createCopy() : null;
+        unusedBytesOnDevice =
+                other.unusedBytesOnDevice != null ? other.unusedBytesOnDevice.createCopy() : null;
+        bytesAvailableToUser =
+                other.bytesAvailableToUser != null ? other.bytesAvailableToUser.createCopy() : null;
+        unusedBytesAvailableToUser =
+                other.unusedBytesAvailableToUser != null
+                        ? other.unusedBytesAvailableToUser.createCopy()
+                        : null;
+        bytesPerAllocationUnit =
+                other.bytesPerAllocationUnit != null
+                        ? other.bytesPerAllocationUnit.createCopy()
+                        : null;
+    }
+
+    @Override
+    public SftpResponseSpaceAvailableMessage createCopy() {
+        return new SftpResponseSpaceAvailableMessage(this);
+    }
+
     public ModifiableLong getBytesOnDevice() {
         return bytesOnDevice;
     }

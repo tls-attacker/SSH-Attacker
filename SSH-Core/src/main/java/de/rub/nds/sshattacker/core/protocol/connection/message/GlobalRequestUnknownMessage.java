@@ -16,6 +16,21 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
 
     private ModifiableByteArray typeSpecificData;
 
+    public GlobalRequestUnknownMessage() {
+        super();
+    }
+
+    public GlobalRequestUnknownMessage(GlobalRequestUnknownMessage other) {
+        super(other);
+        typeSpecificData =
+                other.typeSpecificData != null ? other.typeSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestUnknownMessage createCopy() {
+        return new GlobalRequestUnknownMessage(this);
+    }
+
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
     }

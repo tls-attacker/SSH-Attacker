@@ -17,6 +17,21 @@ public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccess
 
     private ModifiableByteArray responseSpecificData;
 
+    public GlobalRequestSuccessMessage() {
+        super();
+    }
+
+    public GlobalRequestSuccessMessage(GlobalRequestSuccessMessage other) {
+        super(other);
+        responseSpecificData =
+                other.responseSpecificData != null ? other.responseSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestSuccessMessage createCopy() {
+        return new GlobalRequestSuccessMessage(this);
+    }
+
     public ModifiableByteArray getResponseSpecificData() {
         return responseSpecificData;
     }

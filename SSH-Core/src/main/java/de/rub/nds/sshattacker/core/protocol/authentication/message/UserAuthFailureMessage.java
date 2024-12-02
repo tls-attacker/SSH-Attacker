@@ -28,6 +28,28 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
 
+    public UserAuthFailureMessage() {
+        super();
+    }
+
+    public UserAuthFailureMessage(UserAuthFailureMessage other) {
+        super(other);
+        possibleAuthenticationMethodsLength =
+                other.possibleAuthenticationMethodsLength != null
+                        ? other.possibleAuthenticationMethodsLength.createCopy()
+                        : null;
+        possibleAuthenticationMethods =
+                other.possibleAuthenticationMethods != null
+                        ? other.possibleAuthenticationMethods.createCopy()
+                        : null;
+        partialSuccess = other.partialSuccess != null ? other.partialSuccess.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthFailureMessage createCopy() {
+        return new UserAuthFailureMessage(this);
+    }
+
     public ModifiableInteger getPossibleAuthenticationMethodsLength() {
         return possibleAuthenticationMethodsLength;
     }

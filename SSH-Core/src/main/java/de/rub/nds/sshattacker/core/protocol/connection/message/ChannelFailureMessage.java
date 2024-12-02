@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage> {
 
+    public ChannelFailureMessage() {
+        super();
+    }
+
+    public ChannelFailureMessage(ChannelFailureMessage other) {
+        super(other);
+    }
+
+    @Override
+    public ChannelFailureMessage createCopy() {
+        return new ChannelFailureMessage(this);
+    }
+
     @Override
     public ChannelFailureMessageHandler getHandler(SshContext context) {
         return new ChannelFailureMessageHandler(context, this);

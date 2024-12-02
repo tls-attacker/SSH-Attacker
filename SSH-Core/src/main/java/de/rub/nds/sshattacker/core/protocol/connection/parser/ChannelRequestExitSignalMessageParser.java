@@ -43,8 +43,9 @@ public class ChannelRequestExitSignalMessageParser
     }
 
     private void parseCoreDump() {
-        message.setCoreDump(false);
-        LOGGER.debug("Core dumped: {}", message.getCoreDump().getValue());
+        byte coreDump = parseByteField(1);
+        message.setCoreDump(coreDump);
+        LOGGER.debug("Core dumped: {}", coreDump);
     }
 
     private void parseErrorMessage() {

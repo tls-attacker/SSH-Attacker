@@ -27,6 +27,34 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger encodedTerminalModesLength;
     private ModifiableByteArray encodedTerminalModes;
 
+    public ChannelRequestPtyMessage() {
+        super();
+    }
+
+    public ChannelRequestPtyMessage(ChannelRequestPtyMessage other) {
+        super(other);
+        termEnvVariableLength =
+                other.termEnvVariableLength != null
+                        ? other.termEnvVariableLength.createCopy()
+                        : null;
+        termEnvVariable = other.termEnvVariable != null ? other.termEnvVariable.createCopy() : null;
+        widthCharacters = other.widthCharacters != null ? other.widthCharacters.createCopy() : null;
+        heightRows = other.heightRows != null ? other.heightRows.createCopy() : null;
+        widthPixels = other.widthPixels != null ? other.widthPixels.createCopy() : null;
+        heightPixels = other.heightPixels != null ? other.heightPixels.createCopy() : null;
+        encodedTerminalModesLength =
+                other.encodedTerminalModesLength != null
+                        ? other.encodedTerminalModesLength.createCopy()
+                        : null;
+        encodedTerminalModes =
+                other.encodedTerminalModes != null ? other.encodedTerminalModes.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestPtyMessage createCopy() {
+        return new ChannelRequestPtyMessage(this);
+    }
+
     public ModifiableInteger getTermEnvVariableLength() {
         return termEnvVariableLength;
     }

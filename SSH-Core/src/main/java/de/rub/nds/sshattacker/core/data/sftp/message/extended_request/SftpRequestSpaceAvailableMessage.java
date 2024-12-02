@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestSpaceAvailableMessage
         extends SftpRequestExtendedWithPathMessage<SftpRequestSpaceAvailableMessage> {
 
+    public SftpRequestSpaceAvailableMessage() {
+        super();
+    }
+
+    public SftpRequestSpaceAvailableMessage(SftpRequestSpaceAvailableMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestSpaceAvailableMessage createCopy() {
+        return new SftpRequestSpaceAvailableMessage(this);
+    }
+
     @Override
     public SftpRequestSpaceAvailableMessageHandler getHandler(SshContext context) {
         return new SftpRequestSpaceAvailableMessageHandler(context, this);

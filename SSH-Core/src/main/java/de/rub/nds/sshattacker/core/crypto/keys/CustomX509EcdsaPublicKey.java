@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.interfaces.ECPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable ECDSA public key used in X.509 certificates (X509-SSH-ECDSA). */
@@ -32,7 +33,7 @@ public class CustomX509EcdsaPublicKey extends CustomEcPublicKey {
     private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions; // Extensions (optional)
+    private HashMap<String, String> extensions; // Extensions (optional)
 
     public CustomX509EcdsaPublicKey() {
         super();
@@ -62,6 +63,27 @@ public class CustomX509EcdsaPublicKey extends CustomEcPublicKey {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
         this.signature = signature;
+    }
+
+    public CustomX509EcdsaPublicKey(CustomX509EcdsaPublicKey other) {
+        super(other);
+        issuer = other.issuer;
+        subject = other.subject;
+        publicKeyAlgorithm = other.publicKeyAlgorithm;
+        version = other.version;
+        serial = other.serial;
+        signatureAlgorithm = other.signatureAlgorithm;
+        signature = other.signature != null ? other.signature.clone() : null;
+        subjectKeyIdentifier =
+                other.subjectKeyIdentifier != null ? other.subjectKeyIdentifier.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomX509EcdsaPublicKey createCopy() {
+        return new CustomX509EcdsaPublicKey(this);
     }
 
     // Getter and setter for serial number
@@ -151,7 +173,7 @@ public class CustomX509EcdsaPublicKey extends CustomEcPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 

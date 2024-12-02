@@ -10,10 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,22 +52,15 @@ public class UserAuthInfoRequestMessageSerializer
     }
 
     private void serializePrompt() {
-        Integer promptEntryCount = message.getPromptEntryCount().getValue();
+        Integer promptEntryCount = message.getPromptEntriesCount().getValue();
         LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
         appendInt(promptEntryCount, DataFormatConstants.UINT32_SIZE);
 
-        for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
-            AuthenticationPrompt.PromptEntry entry = message.getPrompt().get(i);
-            LOGGER.debug("Prompt entry [{}] length: {}", i, entry.getPromptLength().getValue());
-            appendInt(entry.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("Prompt entry [{}]: {}", i, entry.getPrompt().getValue());
-            appendString(entry.getPrompt().getValue());
-            LOGGER.debug(
-                    "Prompt entry [{}] wants echo: {}",
-                    i,
-                    Converter.byteToBoolean(entry.getEcho().getValue()));
-            appendByte(entry.getEcho().getValue());
-        }
+        message.getPromptEntries()
+                .forEach(
+                        promptEntry ->
+                                appendBytes(
+                                        promptEntry.getHandler(null).getSerializer().serialize()));
     }
 
     @Override

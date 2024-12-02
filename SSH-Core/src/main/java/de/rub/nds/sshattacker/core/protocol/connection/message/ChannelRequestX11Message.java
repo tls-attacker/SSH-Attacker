@@ -26,6 +26,38 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     private ModifiableString x11AuthenticationCookie;
     private ModifiableInteger x11ScreenNumber;
 
+    public ChannelRequestX11Message() {
+        super();
+    }
+
+    public ChannelRequestX11Message(ChannelRequestX11Message other) {
+        super(other);
+        singleConnection =
+                other.singleConnection != null ? other.singleConnection.createCopy() : null;
+        x11AuthenticationProtocolLength =
+                other.x11AuthenticationProtocolLength != null
+                        ? other.x11AuthenticationProtocolLength.createCopy()
+                        : null;
+        x11AuthenticationProtocol =
+                other.x11AuthenticationProtocol != null
+                        ? other.x11AuthenticationProtocol.createCopy()
+                        : null;
+        x11AuthenticationCookieLength =
+                other.x11AuthenticationCookieLength != null
+                        ? other.x11AuthenticationCookieLength.createCopy()
+                        : null;
+        x11AuthenticationCookie =
+                other.x11AuthenticationCookie != null
+                        ? other.x11AuthenticationCookie.createCopy()
+                        : null;
+        x11ScreenNumber = other.x11ScreenNumber != null ? other.x11ScreenNumber.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestX11Message createCopy() {
+        return new ChannelRequestX11Message(this);
+    }
+
     public ModifiableByte getSingleConnection() {
         return singleConnection;
     }

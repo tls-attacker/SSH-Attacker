@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestExpandPathMessage
         extends SftpRequestExtendedWithPathMessage<SftpRequestExpandPathMessage> {
 
+    public SftpRequestExpandPathMessage() {
+        super();
+    }
+
+    public SftpRequestExpandPathMessage(SftpRequestExpandPathMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestExpandPathMessage createCopy() {
+        return new SftpRequestExpandPathMessage(this);
+    }
+
     @Override
     public SftpRequestExpandPathMessageHandler getHandler(SshContext context) {
         return new SftpRequestExpandPathMessageHandler(context, this);

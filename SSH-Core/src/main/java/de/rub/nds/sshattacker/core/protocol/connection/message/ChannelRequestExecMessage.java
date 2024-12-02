@@ -20,6 +20,21 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     private ModifiableInteger commandLength;
     private ModifiableString command;
 
+    public ChannelRequestExecMessage() {
+        super();
+    }
+
+    public ChannelRequestExecMessage(ChannelRequestExecMessage other) {
+        super(other);
+        commandLength = other.commandLength != null ? other.commandLength.createCopy() : null;
+        command = other.command != null ? other.command.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestExecMessage createCopy() {
+        return new ChannelRequestExecMessage(this);
+    }
+
     public ModifiableInteger getCommandLength() {
         return commandLength;
     }

@@ -15,6 +15,21 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnknownMessage> {
     private ModifiableByteArray methodSpecificFields;
 
+    public UserAuthUnknownMessage() {
+        super();
+    }
+
+    public UserAuthUnknownMessage(UserAuthUnknownMessage other) {
+        super(other);
+        methodSpecificFields =
+                other.methodSpecificFields != null ? other.methodSpecificFields.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthUnknownMessage createCopy() {
+        return new UserAuthUnknownMessage(this);
+    }
+
     public ModifiableByteArray getMethodSpecificFields() {
         return methodSpecificFields;
     }

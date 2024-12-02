@@ -26,6 +26,25 @@ public class SftpRequestCopyDataMessage
     private ModifiableByteArray writeToHandle;
     private ModifiableLong writeToOffset;
 
+    public SftpRequestCopyDataMessage() {
+        super();
+    }
+
+    public SftpRequestCopyDataMessage(SftpRequestCopyDataMessage other) {
+        super(other);
+        readFromOffset = other.readFromOffset != null ? other.readFromOffset.createCopy() : null;
+        readDataLength = other.readDataLength != null ? other.readDataLength.createCopy() : null;
+        writeToHandleLength =
+                other.writeToHandleLength != null ? other.writeToHandleLength.createCopy() : null;
+        writeToHandle = other.writeToHandle != null ? other.writeToHandle.createCopy() : null;
+        writeToOffset = other.writeToOffset != null ? other.writeToOffset.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestCopyDataMessage createCopy() {
+        return new SftpRequestCopyDataMessage(this);
+    }
+
     public ModifiableLong getReadFromOffset() {
         return readFromOffset;
     }

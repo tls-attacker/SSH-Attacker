@@ -20,6 +20,21 @@ public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnk
 
     private ModifiableByteArray value;
 
+    public SftpExtensionUnknown() {
+        super();
+    }
+
+    public SftpExtensionUnknown(SftpExtensionUnknown other) {
+        super(other);
+        valueLength = other.valueLength != null ? other.valueLength.createCopy() : null;
+        value = other.value != null ? other.value.createCopy() : null;
+    }
+
+    @Override
+    public SftpExtensionUnknown createCopy() {
+        return new SftpExtensionUnknown(this);
+    }
+
     public ModifiableInteger getValueLength() {
         return valueLength;
     }

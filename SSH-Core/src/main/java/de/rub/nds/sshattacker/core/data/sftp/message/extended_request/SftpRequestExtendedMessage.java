@@ -21,6 +21,20 @@ public abstract class SftpRequestExtendedMessage<T extends SftpRequestExtendedMe
     private ModifiableString extendedRequestName;
     private ModifiableInteger extendedRequestNameLength;
 
+    protected SftpRequestExtendedMessage() {
+        super();
+    }
+
+    protected SftpRequestExtendedMessage(SftpRequestExtendedMessage<T> other) {
+        super(other);
+        extendedRequestName =
+                other.extendedRequestName != null ? other.extendedRequestName.createCopy() : null;
+        extendedRequestNameLength =
+                other.extendedRequestNameLength != null
+                        ? other.extendedRequestNameLength.createCopy()
+                        : null;
+    }
+
     public ModifiableInteger getExtendedRequestNameLength() {
         return extendedRequestNameLength;
     }

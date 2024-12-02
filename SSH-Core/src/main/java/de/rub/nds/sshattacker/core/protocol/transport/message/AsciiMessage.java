@@ -24,6 +24,22 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     private ModifiableString text;
     private ModifiableString endOfMessageSequence;
 
+    public AsciiMessage() {
+        super();
+    }
+
+    public AsciiMessage(AsciiMessage other) {
+        super(other);
+        text = other.text != null ? other.text.createCopy() : null;
+        endOfMessageSequence =
+                other.endOfMessageSequence != null ? other.endOfMessageSequence.createCopy() : null;
+    }
+
+    @Override
+    public AsciiMessage createCopy() {
+        return new AsciiMessage(this);
+    }
+
     public ModifiableString getText() {
         return text;
     }

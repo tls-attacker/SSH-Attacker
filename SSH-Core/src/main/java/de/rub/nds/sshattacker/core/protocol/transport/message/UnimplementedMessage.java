@@ -17,6 +17,20 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
     private ModifiableInteger sequenceNumber;
 
+    public UnimplementedMessage() {
+        super();
+    }
+
+    public UnimplementedMessage(UnimplementedMessage other) {
+        super(other);
+        sequenceNumber = other.sequenceNumber != null ? other.sequenceNumber.createCopy() : null;
+    }
+
+    @Override
+    public UnimplementedMessage createCopy() {
+        return new UnimplementedMessage(this);
+    }
+
     public ModifiableInteger getSequenceNumber() {
         return sequenceNumber;
     }

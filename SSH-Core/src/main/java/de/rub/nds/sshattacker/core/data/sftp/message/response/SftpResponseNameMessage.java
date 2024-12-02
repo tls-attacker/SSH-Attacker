@@ -27,8 +27,29 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements({@XmlElement(type = SftpFileNameEntry.class, name = "SftpResponseNameEntry")})
-    private List<SftpFileNameEntry> nameEntries = new ArrayList<>();
+    @XmlElements(@XmlElement(type = SftpFileNameEntry.class, name = "SftpResponseNameEntry"))
+    private ArrayList<SftpFileNameEntry> nameEntries = new ArrayList<>();
+
+    public SftpResponseNameMessage() {
+        super();
+    }
+
+    public SftpResponseNameMessage(SftpResponseNameMessage other) {
+        super(other);
+        nameEntriesCount =
+                other.nameEntriesCount != null ? other.nameEntriesCount.createCopy() : null;
+        if (other.nameEntries != null) {
+            nameEntries = new ArrayList<>();
+            for (SftpFileNameEntry item : other.nameEntries) {
+                nameEntries.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public SftpResponseNameMessage createCopy() {
+        return new SftpResponseNameMessage(this);
+    }
 
     public ModifiableInteger getNameEntriesCount() {
         return nameEntriesCount;
@@ -57,11 +78,12 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
         return nameEntries;
     }
 
-    public void setNameEntries(List<SftpFileNameEntry> nameEntries) {
+    public void setNameEntries(ArrayList<SftpFileNameEntry> nameEntries) {
         setNameEntries(nameEntries, false);
     }
 
-    public void setNameEntries(List<SftpFileNameEntry> nameEntries, boolean adjustLengthField) {
+    public void setNameEntries(
+            ArrayList<SftpFileNameEntry> nameEntries, boolean adjustLengthField) {
         if (adjustLengthField) {
             setNameEntriesCount(nameEntries.size());
         }

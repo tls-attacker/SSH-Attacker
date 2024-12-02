@@ -45,6 +45,17 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
         this.privateKey = privateKey;
     }
 
+    public CustomEcPrivateKey(CustomEcPrivateKey other) {
+        super(other);
+        group = other.group;
+        privateKey = other.privateKey;
+    }
+
+    @Override
+    public CustomEcPrivateKey createCopy() {
+        return new CustomEcPrivateKey(this);
+    }
+
     public NamedEcGroup getGroup() {
         return group;
     }

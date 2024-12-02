@@ -28,6 +28,27 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
+    public UserAuthPubkeyMessage() {
+        super();
+    }
+
+    public UserAuthPubkeyMessage(UserAuthPubkeyMessage other) {
+        super(other);
+        pubkeyLength = other.pubkeyLength != null ? other.pubkeyLength.createCopy() : null;
+        pubkey = other.pubkey != null ? other.pubkey.createCopy() : null;
+        pubkeyAlgNameLength =
+                other.pubkeyAlgNameLength != null ? other.pubkeyAlgNameLength.createCopy() : null;
+        pubkeyAlgName = other.pubkeyAlgName != null ? other.pubkeyAlgName.createCopy() : null;
+        useSignature = other.useSignature != null ? other.useSignature.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPubkeyMessage createCopy() {
+        return new UserAuthPubkeyMessage(this);
+    }
+
     public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength =
                 ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);

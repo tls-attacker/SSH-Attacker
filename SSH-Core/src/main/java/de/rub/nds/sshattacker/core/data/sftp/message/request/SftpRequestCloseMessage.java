@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRequestCloseMessage> {
 
+    public SftpRequestCloseMessage() {
+        super();
+    }
+
+    public SftpRequestCloseMessage(SftpRequestCloseMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestCloseMessage createCopy() {
+        return new SftpRequestCloseMessage(this);
+    }
+
     @Override
     public SftpRequestCloseMessageHandler getHandler(SshContext context) {
         return new SftpRequestCloseMessageHandler(context, this);

@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpVersionMessage extends SftpHandshakeMessage<SftpVersionMessage> {
 
+    public SftpVersionMessage() {
+        super();
+    }
+
+    public SftpVersionMessage(SftpVersionMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpVersionMessage createCopy() {
+        return new SftpVersionMessage(this);
+    }
+
     @Override
     public SftpVersionMessageHandler getHandler(SshContext context) {
         return new SftpVersionMessageHandler(context, this);

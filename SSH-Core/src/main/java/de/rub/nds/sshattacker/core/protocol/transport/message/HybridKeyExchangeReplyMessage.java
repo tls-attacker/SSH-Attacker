@@ -32,6 +32,32 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
+    public HybridKeyExchangeReplyMessage() {
+        super();
+    }
+
+    public HybridKeyExchangeReplyMessage(HybridKeyExchangeReplyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        publicKeyLength = other.publicKeyLength != null ? other.publicKeyLength.createCopy() : null;
+        publicKey = other.publicKey != null ? other.publicKey.createCopy() : null;
+        combinedKeyShareLength =
+                other.combinedKeyShareLength != null
+                        ? other.combinedKeyShareLength.createCopy()
+                        : null;
+        combinedKeyShare =
+                other.combinedKeyShare != null ? other.combinedKeyShare.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public HybridKeyExchangeReplyMessage createCopy() {
+        return new HybridKeyExchangeReplyMessage(this);
+    }
+
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;

@@ -23,6 +23,16 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>>
 
     protected ModifiableString name;
 
+    protected AbstractExtension() {
+        super();
+    }
+
+    protected AbstractExtension(AbstractExtension<E> other) {
+        super(other);
+        nameLength = other.nameLength != null ? other.nameLength.createCopy() : null;
+        name = other.name != null ? other.name.createCopy() : null;
+    }
+
     public ModifiableInteger getNameLength() {
         return nameLength;
     }

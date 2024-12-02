@@ -16,6 +16,20 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
 
     private ModifiableInteger bytesToAdd;
 
+    public ChannelWindowAdjustMessage() {
+        super();
+    }
+
+    public ChannelWindowAdjustMessage(ChannelWindowAdjustMessage other) {
+        super(other);
+        bytesToAdd = other.bytesToAdd != null ? other.bytesToAdd.createCopy() : null;
+    }
+
+    @Override
+    public ChannelWindowAdjustMessage createCopy() {
+        return new ChannelWindowAdjustMessage(this);
+    }
+
     public ModifiableInteger getBytesToAdd() {
         return bytesToAdd;
     }

@@ -22,6 +22,25 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableString variableValue;
     private ModifiableInteger variableValueLength;
 
+    public ChannelRequestEnvMessage() {
+        super();
+    }
+
+    public ChannelRequestEnvMessage(ChannelRequestEnvMessage other) {
+        super(other);
+        variableName = other.variableName != null ? other.variableName.createCopy() : null;
+        variableNameLength =
+                other.variableNameLength != null ? other.variableNameLength.createCopy() : null;
+        variableValue = other.variableValue != null ? other.variableValue.createCopy() : null;
+        variableValueLength =
+                other.variableValueLength != null ? other.variableValueLength.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestEnvMessage createCopy() {
+        return new ChannelRequestEnvMessage(this);
+    }
+
     public ModifiableString getVariableName() {
         return variableName;
     }

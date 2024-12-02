@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage> {
 
+    public ChannelSuccessMessage() {
+        super();
+    }
+
+    public ChannelSuccessMessage(ChannelSuccessMessage other) {
+        super(other);
+    }
+
+    @Override
+    public ChannelSuccessMessage createCopy() {
+        return new ChannelSuccessMessage(this);
+    }
+
     @Override
     public ChannelSuccessMessageHandler getHandler(SshContext context) {
         return new ChannelSuccessMessageHandler(context, this);

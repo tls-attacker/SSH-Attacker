@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
+    public NewKeysMessage() {
+        super();
+    }
+
+    public NewKeysMessage(NewKeysMessage other) {
+        super(other);
+    }
+
+    @Override
+    public NewKeysMessage createCopy() {
+        return new NewKeysMessage(this);
+    }
+
     @Override
     public NewKeysMessageHandler getHandler(SshContext context) {
         return new NewKeysMessageHandler(context, this);

@@ -27,6 +27,34 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     private ModifiableString productVersion;
     private ModifiableLong productBuildNumber;
 
+    public SftpExtensionVendorId() {
+        super();
+    }
+
+    public SftpExtensionVendorId(SftpExtensionVendorId other) {
+        super(other);
+        vendorStructureLength =
+                other.vendorStructureLength != null
+                        ? other.vendorStructureLength.createCopy()
+                        : null;
+        vendorNameLength =
+                other.vendorNameLength != null ? other.vendorNameLength.createCopy() : null;
+        vendorName = other.vendorName != null ? other.vendorName.createCopy() : null;
+        productNameLength =
+                other.productNameLength != null ? other.productNameLength.createCopy() : null;
+        productName = other.productName != null ? other.productName.createCopy() : null;
+        productVersionLength =
+                other.productVersionLength != null ? other.productVersionLength.createCopy() : null;
+        productVersion = other.productVersion != null ? other.productVersion.createCopy() : null;
+        productBuildNumber =
+                other.productBuildNumber != null ? other.productBuildNumber.createCopy() : null;
+    }
+
+    @Override
+    public SftpExtensionVendorId createCopy() {
+        return new SftpExtensionVendorId(this);
+    }
+
     public ModifiableInteger getVendorStructureLength() {
         return vendorStructureLength;
     }

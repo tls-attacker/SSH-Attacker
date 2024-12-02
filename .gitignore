@@ -22,6 +22,12 @@ nbactions.xml
 .factorypath
 .vscode
 
-# IntelliJ
-.idea/*.iml
+### IntelliJ IDEA ###
+.idea/*
+!.idea/inspectionProfiles
+!.idea/runConfigurations
+*.iws
+*.iml
+*.ipr
+
 

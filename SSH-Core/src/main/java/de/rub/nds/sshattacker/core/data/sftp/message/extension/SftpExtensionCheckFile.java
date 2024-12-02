@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionCheckFile extends SftpExtensionWithVersion<SftpExtensionCheckFile> {
 
+    public SftpExtensionCheckFile() {
+        super();
+    }
+
+    public SftpExtensionCheckFile(SftpExtensionCheckFile other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionCheckFile createCopy() {
+        return new SftpExtensionCheckFile(this);
+    }
+
     @Override
     public SftpExtensionCheckFileHandler getHandler(SshContext context) {
         return new SftpExtensionCheckFileHandler(context, this);

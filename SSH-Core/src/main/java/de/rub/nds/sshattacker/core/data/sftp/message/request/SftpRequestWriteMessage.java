@@ -21,6 +21,22 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public SftpRequestWriteMessage() {
+        super();
+    }
+
+    public SftpRequestWriteMessage(SftpRequestWriteMessage other) {
+        super(other);
+        offset = other.offset != null ? other.offset.createCopy() : null;
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestWriteMessage createCopy() {
+        return new SftpRequestWriteMessage(this);
+    }
+
     public ModifiableLong getOffset() {
         return offset;
     }

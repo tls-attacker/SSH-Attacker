@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionExpandPath extends SftpExtensionWithVersion<SftpExtensionExpandPath> {
 
+    public SftpExtensionExpandPath() {
+        super();
+    }
+
+    public SftpExtensionExpandPath(SftpExtensionExpandPath other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionExpandPath createCopy() {
+        return new SftpExtensionExpandPath(this);
+    }
+
     @Override
     public SftpExtensionExpandPathHandler getHandler(SshContext context) {
         return new SftpExtensionExpandPathHandler(context, this);

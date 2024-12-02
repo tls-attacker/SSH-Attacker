@@ -22,6 +22,18 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     @XmlAttribute(name = "remoteChannel")
     protected Integer configRemoteChannelId;
 
+    protected ChannelMessage() {
+        super();
+    }
+
+    protected ChannelMessage(ChannelMessage<T> other) {
+        super(other);
+        recipientChannelId =
+                other.recipientChannelId != null ? other.recipientChannelId.createCopy() : null;
+        configLocalChannelId = other.configLocalChannelId;
+        configRemoteChannelId = other.configRemoteChannelId;
+    }
+
     public ModifiableInteger getRecipientChannelId() {
         return recipientChannelId;
     }

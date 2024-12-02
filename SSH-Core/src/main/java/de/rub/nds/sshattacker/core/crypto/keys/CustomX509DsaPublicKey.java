@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import java.math.BigInteger;
 import java.security.interfaces.DSAPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable DSA public key used in X.509 certificates (X509-SSH-DSA). */
@@ -29,7 +30,7 @@ public class CustomX509DsaPublicKey extends CustomDsaPublicKey {
     private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions; // Extensions (optional)
+    private HashMap<String, String> extensions; // Extensions (optional)
 
     public CustomX509DsaPublicKey() {
         super();
@@ -50,6 +51,27 @@ public class CustomX509DsaPublicKey extends CustomDsaPublicKey {
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
         this.signature = signature;
+    }
+
+    public CustomX509DsaPublicKey(CustomX509DsaPublicKey other) {
+        super(other);
+        issuer = other.issuer;
+        subject = other.subject;
+        publicKeyAlgorithm = other.publicKeyAlgorithm;
+        version = other.version;
+        serial = other.serial;
+        signatureAlgorithm = other.signatureAlgorithm;
+        signature = other.signature != null ? other.signature.clone() : null;
+        subjectKeyIdentifier =
+                other.subjectKeyIdentifier != null ? other.subjectKeyIdentifier.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomX509DsaPublicKey createCopy() {
+        return new CustomX509DsaPublicKey(this);
     }
 
     // Getter and setter for serial number
@@ -139,7 +161,7 @@ public class CustomX509DsaPublicKey extends CustomDsaPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 

@@ -32,6 +32,39 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
 
     private ModifiableString compressionMethodsServerToClient;
 
+    public DelayCompressionExtension() {
+        super();
+    }
+
+    public DelayCompressionExtension(DelayCompressionExtension other) {
+        super(other);
+        compressionMethodsLength =
+                other.compressionMethodsLength != null
+                        ? other.compressionMethodsLength.createCopy()
+                        : null;
+        compressionMethodsClientToServerLength =
+                other.compressionMethodsClientToServerLength != null
+                        ? other.compressionMethodsClientToServerLength.createCopy()
+                        : null;
+        compressionMethodsClientToServer =
+                other.compressionMethodsClientToServer != null
+                        ? other.compressionMethodsClientToServer.createCopy()
+                        : null;
+        compressionMethodsServerToClientLength =
+                other.compressionMethodsServerToClientLength != null
+                        ? other.compressionMethodsServerToClientLength.createCopy()
+                        : null;
+        compressionMethodsServerToClient =
+                other.compressionMethodsServerToClient != null
+                        ? other.compressionMethodsServerToClient.createCopy()
+                        : null;
+    }
+
+    @Override
+    public DelayCompressionExtension createCopy() {
+        return new DelayCompressionExtension(this);
+    }
+
     public ModifiableInteger getCompressionMethodsLength() {
         return compressionMethodsLength;
     }

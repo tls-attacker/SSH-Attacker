@@ -17,6 +17,21 @@ public class ChannelRequestUnknownMessage
 
     private ModifiableByteArray typeSpecificData;
 
+    public ChannelRequestUnknownMessage() {
+        super();
+    }
+
+    public ChannelRequestUnknownMessage(ChannelRequestUnknownMessage other) {
+        super(other);
+        typeSpecificData =
+                other.typeSpecificData != null ? other.typeSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestUnknownMessage createCopy() {
+        return new ChannelRequestUnknownMessage(this);
+    }
+
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
     }

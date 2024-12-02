@@ -128,7 +128,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
             SftpAclEntryParser aclEntryParser =
                     new SftpAclEntryParser(getArray(), aclEntryStartPointer);
 
-            attributes.addAclEntry(aclEntryParser.parse(), true);
+            attributes.addAclEntry(aclEntryParser.parse());
             setPointer(aclEntryParser.getPointer());
         }
     }

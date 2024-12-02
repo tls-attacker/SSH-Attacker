@@ -37,6 +37,22 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     protected ModifiableInteger methodNameLength;
     protected ModifiableString methodName;
 
+    protected UserAuthRequestMessage() {
+        super();
+    }
+
+    protected UserAuthRequestMessage(UserAuthRequestMessage<T> other) {
+        super(other);
+        userNameLength = other.userNameLength != null ? other.userNameLength.createCopy() : null;
+        userName = other.userName != null ? other.userName.createCopy() : null;
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+        methodNameLength =
+                other.methodNameLength != null ? other.methodNameLength.createCopy() : null;
+        methodName = other.methodName != null ? other.methodName.createCopy() : null;
+    }
+
     public ModifiableInteger getUserNameLength() {
         return userNameLength;
     }

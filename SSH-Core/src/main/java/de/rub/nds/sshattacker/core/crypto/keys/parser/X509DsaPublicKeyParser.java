@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -121,7 +120,7 @@ public class X509DsaPublicKeyParser
                 }
 
                 // Setze Extensions, falls vorhanden
-                Map<String, String> extensionsMap = new HashMap<>();
+                HashMap<String, String> extensionsMap = new HashMap<>();
                 if (authorityKeyIdentifier != null) {
                     extensionsMap.put(
                             "AuthorityKeyIdentifier", Arrays.toString(authorityKeyIdentifier));

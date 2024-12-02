@@ -30,6 +30,24 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     private ModifiableString who;
     private ModifiableInteger whoLength;
 
+    public SftpAclEntry() {
+        super();
+    }
+
+    public SftpAclEntry(SftpAclEntry other) {
+        super(other);
+        type = other.type != null ? other.type.createCopy() : null;
+        flags = other.flags != null ? other.flags.createCopy() : null;
+        mask = other.mask != null ? other.mask.createCopy() : null;
+        who = other.who != null ? other.who.createCopy() : null;
+        whoLength = other.whoLength != null ? other.whoLength.createCopy() : null;
+    }
+
+    @Override
+    public SftpAclEntry createCopy() {
+        return new SftpAclEntry(this);
+    }
+
     public ModifiableInteger getType() {
         return type;
     }

@@ -22,6 +22,22 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
 
+    public ServiceAcceptMessage() {
+        super();
+    }
+
+    public ServiceAcceptMessage(ServiceAcceptMessage other) {
+        super(other);
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+    }
+
+    @Override
+    public ServiceAcceptMessage createCopy() {
+        return new ServiceAcceptMessage(this);
+    }
+
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;
     }

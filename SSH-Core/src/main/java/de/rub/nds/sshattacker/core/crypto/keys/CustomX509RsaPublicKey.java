@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable RSA public key used in X.509 certificates (X509-SSH-RSA). */
@@ -29,7 +30,7 @@ public class CustomX509RsaPublicKey extends CustomRsaPublicKey {
     private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions; // Extensions (optional)
+    private HashMap<String, String> extensions; // Extensions (optional)
 
     public CustomX509RsaPublicKey() {
         super();
@@ -53,6 +54,27 @@ public class CustomX509RsaPublicKey extends CustomRsaPublicKey {
         this.modulus = modulus;
         this.publicExponent = publicExponent;
         this.signature = signature;
+    }
+
+    public CustomX509RsaPublicKey(CustomX509RsaPublicKey other) {
+        super(other);
+        issuer = other.issuer;
+        subject = other.subject;
+        publicKeyAlgorithm = other.publicKeyAlgorithm;
+        version = other.version;
+        serial = other.serial;
+        signatureAlgorithm = other.signatureAlgorithm;
+        signature = other.signature != null ? other.signature.clone() : null;
+        subjectKeyIdentifier =
+                other.subjectKeyIdentifier != null ? other.subjectKeyIdentifier.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomX509RsaPublicKey createCopy() {
+        return new CustomX509RsaPublicKey(this);
     }
 
     // Getter and setter for serial number
@@ -142,7 +164,7 @@ public class CustomX509RsaPublicKey extends CustomRsaPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 

@@ -18,6 +18,16 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
     private ModifiableByteArray handle;
     private ModifiableInteger handleLength;
 
+    protected SftpRequestWithHandleMessage() {
+        super();
+    }
+
+    protected SftpRequestWithHandleMessage(SftpRequestWithHandleMessage<T> other) {
+        super(other);
+        handle = other.handle != null ? other.handle.createCopy() : null;
+        handleLength = other.handleLength != null ? other.handleLength.createCopy() : null;
+    }
+
     public ModifiableInteger getHandleLength() {
         return handleLength;
     }

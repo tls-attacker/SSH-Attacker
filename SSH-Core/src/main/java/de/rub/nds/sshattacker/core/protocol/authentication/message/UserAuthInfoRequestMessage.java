@@ -7,15 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {
 
@@ -25,8 +32,42 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     private ModifiableString instruction;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-    private ModifiableInteger promptEntryCount;
-    private AuthenticationPrompt prompt = new AuthenticationPrompt();
+    private ModifiableInteger promptEntriesCount;
+
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(
+            @XmlElement(type = AuthenticationPromptEntry.class, name = "AuthenticationPromptEntry"))
+    private ArrayList<AuthenticationPromptEntry> promptEntries = new ArrayList<>();
+
+    public UserAuthInfoRequestMessage() {
+        super();
+    }
+
+    public UserAuthInfoRequestMessage(UserAuthInfoRequestMessage other) {
+        super(other);
+        userNameLength = other.userNameLength != null ? other.userNameLength.createCopy() : null;
+        userName = other.userName != null ? other.userName.createCopy() : null;
+        instructionLength =
+                other.instructionLength != null ? other.instructionLength.createCopy() : null;
+        instruction = other.instruction != null ? other.instruction.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+        promptEntriesCount =
+                other.promptEntriesCount != null ? other.promptEntriesCount.createCopy() : null;
+        if (other.promptEntries != null) {
+            promptEntries = new ArrayList<>();
+            for (AuthenticationPromptEntry item : other.promptEntries) {
+                promptEntries.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public UserAuthInfoRequestMessage createCopy() {
+        return new UserAuthInfoRequestMessage(this);
+    }
 
     public ModifiableInteger getUserNameLength() {
         return userNameLength;
@@ -192,29 +233,68 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
-    public ModifiableInteger getPromptEntryCount() {
-        return promptEntryCount;
+    public ModifiableInteger getPromptEntriesCount() {
+        return promptEntriesCount;
     }
 
-    public void setPromptEntryCount(ModifiableInteger promptEntryCount) {
-        this.promptEntryCount = promptEntryCount;
+    public void setPromptEntriesCount(ModifiableInteger promptEntriesCount) {
+        this.promptEntriesCount = promptEntriesCount;
     }
 
-    public void setPromptEntryCount(int promptEntryCount) {
-        this.promptEntryCount =
-                ModifiableVariableFactory.safelySetValue(this.promptEntryCount, promptEntryCount);
+    public void setPromptEntriesCount(int promptEntriesCount) {
+        this.promptEntriesCount =
+                ModifiableVariableFactory.safelySetValue(
+                        this.promptEntriesCount, promptEntriesCount);
     }
 
-    public AuthenticationPrompt getPrompt() {
-        return prompt;
+    public void setSoftlyPromptEntriesCount(int promptEntriesCount, Config config) {
+        if (config.getAlwaysPrepareLengthFields()
+                || this.promptEntriesCount == null
+                || this.promptEntriesCount.getOriginalValue() == null) {
+            this.promptEntriesCount =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.promptEntriesCount, promptEntriesCount);
+        }
     }
 
-    public void setPrompt(AuthenticationPrompt prompt) {
-        this.prompt = prompt;
+    public ArrayList<AuthenticationPromptEntry> getPromptEntries() {
+        return promptEntries;
+    }
+
+    public void setPromptEntries(ArrayList<AuthenticationPromptEntry> promptEntries) {
+        setPromptEntries(promptEntries, false);
+    }
+
+    public void setPromptEntries(
+            ArrayList<AuthenticationPromptEntry> promptEntries, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPromptEntriesCount(promptEntries.size());
+        }
+        this.promptEntries = promptEntries;
+    }
+
+    public void addPromptEntry(AuthenticationPromptEntry promptEntry) {
+        addPromptEntry(promptEntry, false);
+    }
+
+    public void addPromptEntry(AuthenticationPromptEntry promptEntry, boolean adjustLengthField) {
+        promptEntries.add(promptEntry);
+        if (adjustLengthField) {
+            setPromptEntriesCount(promptEntries.size());
+        }
     }
 
     @Override
     public UserAuthInfoRequestMessageHandler getHandler(SshContext context) {
         return new UserAuthInfoRequestMessageHandler(context, this);
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (promptEntries != null) {
+            holders.addAll(promptEntries);
+        }
+        return holders;
     }
 }

@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionLimits extends SftpExtensionWithVersion<SftpExtensionLimits> {
 
+    public SftpExtensionLimits() {
+        super();
+    }
+
+    public SftpExtensionLimits(SftpExtensionLimits other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionLimits createCopy() {
+        return new SftpExtensionLimits(this);
+    }
+
     @Override
     public SftpExtensionLimitsHandler getHandler(SshContext context) {
         return new SftpExtensionLimitsHandler(context, this);

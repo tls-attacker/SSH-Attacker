@@ -23,6 +23,25 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    public ChannelOpenFailureMessage() {
+        super();
+    }
+
+    public ChannelOpenFailureMessage(ChannelOpenFailureMessage other) {
+        super(other);
+        reasonCode = other.reasonCode != null ? other.reasonCode.createCopy() : null;
+        reasonLength = other.reasonLength != null ? other.reasonLength.createCopy() : null;
+        reason = other.reason != null ? other.reason.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public ChannelOpenFailureMessage createCopy() {
+        return new ChannelOpenFailureMessage(this);
+    }
+
     public ModifiableInteger getReasonCode() {
         return reasonCode;
     }

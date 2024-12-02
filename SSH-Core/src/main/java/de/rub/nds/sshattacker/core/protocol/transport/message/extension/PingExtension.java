@@ -20,6 +20,21 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     private ModifiableInteger versionLength;
     private ModifiableString version;
 
+    public PingExtension() {
+        super();
+    }
+
+    public PingExtension(PingExtension other) {
+        super(other);
+        versionLength = other.versionLength != null ? other.versionLength.createCopy() : null;
+        version = other.version != null ? other.version.createCopy() : null;
+    }
+
+    @Override
+    public PingExtension createCopy() {
+        return new PingExtension(this);
+    }
+
     public ModifiableInteger getVersionLength() {
         return versionLength;
     }

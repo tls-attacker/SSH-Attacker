@@ -27,6 +27,30 @@ public class SftpRequestVendorIdMessage
     private ModifiableString productVersion;
     private ModifiableLong productBuildNumber;
 
+    public SftpRequestVendorIdMessage() {
+        super();
+    }
+
+    public SftpRequestVendorIdMessage(SftpRequestVendorIdMessage other) {
+        super(other);
+        vendorNameLength =
+                other.vendorNameLength != null ? other.vendorNameLength.createCopy() : null;
+        vendorName = other.vendorName != null ? other.vendorName.createCopy() : null;
+        productNameLength =
+                other.productNameLength != null ? other.productNameLength.createCopy() : null;
+        productName = other.productName != null ? other.productName.createCopy() : null;
+        productVersionLength =
+                other.productVersionLength != null ? other.productVersionLength.createCopy() : null;
+        productVersion = other.productVersion != null ? other.productVersion.createCopy() : null;
+        productBuildNumber =
+                other.productBuildNumber != null ? other.productBuildNumber.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestVendorIdMessage createCopy() {
+        return new SftpRequestVendorIdMessage(this);
+    }
+
     public ModifiableInteger getVendorNameLength() {
         return vendorNameLength;
     }

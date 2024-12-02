@@ -18,6 +18,20 @@ public class SftpRequestFileStatMessage
 
     private ModifiableInteger flags;
 
+    public SftpRequestFileStatMessage() {
+        super();
+    }
+
+    public SftpRequestFileStatMessage(SftpRequestFileStatMessage other) {
+        super(other);
+        flags = other.flags != null ? other.flags.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestFileStatMessage createCopy() {
+        return new SftpRequestFileStatMessage(this);
+    }
+
     public ModifiableInteger getFlags() {
         return flags;
     }

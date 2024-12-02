@@ -26,6 +26,26 @@ public class SftpRequestCopyFileMessage
     private ModifiableString destinationPath;
     private ModifiableByte overwriteDestination;
 
+    public SftpRequestCopyFileMessage() {
+        super();
+    }
+
+    public SftpRequestCopyFileMessage(SftpRequestCopyFileMessage other) {
+        super(other);
+        destinationPathLength =
+                other.destinationPathLength != null
+                        ? other.destinationPathLength.createCopy()
+                        : null;
+        destinationPath = other.destinationPath != null ? other.destinationPath.createCopy() : null;
+        overwriteDestination =
+                other.overwriteDestination != null ? other.overwriteDestination.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestCopyFileMessage createCopy() {
+        return new SftpRequestCopyFileMessage(this);
+    }
+
     public ModifiableByte getOverwriteDestination() {
         return overwriteDestination;
     }

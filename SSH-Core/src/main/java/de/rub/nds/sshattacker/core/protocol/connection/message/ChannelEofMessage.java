@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
 
+    public ChannelEofMessage() {
+        super();
+    }
+
+    public ChannelEofMessage(ChannelEofMessage other) {
+        super(other);
+    }
+
+    @Override
+    public ChannelEofMessage createCopy() {
+        return new ChannelEofMessage(this);
+    }
+
     @Override
     public ChannelEofMessageHandler getHandler(SshContext context) {
         return new ChannelEofMessageHandler(context, this);

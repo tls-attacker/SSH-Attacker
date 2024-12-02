@@ -32,6 +32,17 @@ public class CustomPQKemPrivateKey extends CustomPrivateKey {
         this.kemName = kemName;
     }
 
+    public CustomPQKemPrivateKey(CustomPQKemPrivateKey other) {
+        super(other);
+        privateKey = other.privateKey != null ? other.privateKey.clone() : null;
+        kemName = other.kemName;
+    }
+
+    @Override
+    public CustomPQKemPrivateKey createCopy() {
+        return new CustomPQKemPrivateKey(this);
+    }
+
     public byte[] getPrivateKey() {
         return privateKey;
     }

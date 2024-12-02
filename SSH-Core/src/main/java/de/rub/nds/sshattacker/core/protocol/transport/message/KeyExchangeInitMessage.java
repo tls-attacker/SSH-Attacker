@@ -48,6 +48,105 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
 
+    public KeyExchangeInitMessage() {
+        super();
+    }
+
+    public KeyExchangeInitMessage(KeyExchangeInitMessage other) {
+        super(other);
+        cookie = other.cookie != null ? other.cookie.createCopy() : null;
+        keyExchangeAlgorithmsLength =
+                other.keyExchangeAlgorithmsLength != null
+                        ? other.keyExchangeAlgorithmsLength.createCopy()
+                        : null;
+        keyExchangeAlgorithms =
+                other.keyExchangeAlgorithms != null
+                        ? other.keyExchangeAlgorithms.createCopy()
+                        : null;
+        serverHostKeyAlgorithmsLength =
+                other.serverHostKeyAlgorithmsLength != null
+                        ? other.serverHostKeyAlgorithmsLength.createCopy()
+                        : null;
+        serverHostKeyAlgorithms =
+                other.serverHostKeyAlgorithms != null
+                        ? other.serverHostKeyAlgorithms.createCopy()
+                        : null;
+        encryptionAlgorithmsClientToServerLength =
+                other.encryptionAlgorithmsClientToServerLength != null
+                        ? other.encryptionAlgorithmsClientToServerLength.createCopy()
+                        : null;
+        encryptionAlgorithmsClientToServer =
+                other.encryptionAlgorithmsClientToServer != null
+                        ? other.encryptionAlgorithmsClientToServer.createCopy()
+                        : null;
+        encryptionAlgorithmsServerToClientLength =
+                other.encryptionAlgorithmsServerToClientLength != null
+                        ? other.encryptionAlgorithmsServerToClientLength.createCopy()
+                        : null;
+        encryptionAlgorithmsServerToClient =
+                other.encryptionAlgorithmsServerToClient != null
+                        ? other.encryptionAlgorithmsServerToClient.createCopy()
+                        : null;
+        macAlgorithmsClientToServerLength =
+                other.macAlgorithmsClientToServerLength != null
+                        ? other.macAlgorithmsClientToServerLength.createCopy()
+                        : null;
+        macAlgorithmsClientToServer =
+                other.macAlgorithmsClientToServer != null
+                        ? other.macAlgorithmsClientToServer.createCopy()
+                        : null;
+        macAlgorithmsServerToClientLength =
+                other.macAlgorithmsServerToClientLength != null
+                        ? other.macAlgorithmsServerToClientLength.createCopy()
+                        : null;
+        macAlgorithmsServerToClient =
+                other.macAlgorithmsServerToClient != null
+                        ? other.macAlgorithmsServerToClient.createCopy()
+                        : null;
+        compressionMethodsClientToServerLength =
+                other.compressionMethodsClientToServerLength != null
+                        ? other.compressionMethodsClientToServerLength.createCopy()
+                        : null;
+        compressionMethodsClientToServer =
+                other.compressionMethodsClientToServer != null
+                        ? other.compressionMethodsClientToServer.createCopy()
+                        : null;
+        compressionMethodsServerToClientLength =
+                other.compressionMethodsServerToClientLength != null
+                        ? other.compressionMethodsServerToClientLength.createCopy()
+                        : null;
+        compressionMethodsServerToClient =
+                other.compressionMethodsServerToClient != null
+                        ? other.compressionMethodsServerToClient.createCopy()
+                        : null;
+        languagesClientToServerLength =
+                other.languagesClientToServerLength != null
+                        ? other.languagesClientToServerLength.createCopy()
+                        : null;
+        languagesClientToServer =
+                other.languagesClientToServer != null
+                        ? other.languagesClientToServer.createCopy()
+                        : null;
+        languagesServerToClientLength =
+                other.languagesServerToClientLength != null
+                        ? other.languagesServerToClientLength.createCopy()
+                        : null;
+        languagesServerToClient =
+                other.languagesServerToClient != null
+                        ? other.languagesServerToClient.createCopy()
+                        : null;
+        firstKeyExchangePacketFollows =
+                other.firstKeyExchangePacketFollows != null
+                        ? other.firstKeyExchangePacketFollows.createCopy()
+                        : null;
+        reserved = other.reserved != null ? other.reserved.createCopy() : null;
+    }
+
+    @Override
+    public KeyExchangeInitMessage createCopy() {
+        return new KeyExchangeInitMessage(this);
+    }
+
     public ModifiableByteArray getCookie() {
         return cookie;
     }

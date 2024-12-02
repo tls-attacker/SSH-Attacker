@@ -26,6 +26,22 @@ public class SftpRequestSymbolicLinkMessage
     private ModifiableString targetPath;
     private ModifiableInteger targetPathLength;
 
+    public SftpRequestSymbolicLinkMessage() {
+        super();
+    }
+
+    public SftpRequestSymbolicLinkMessage(SftpRequestSymbolicLinkMessage other) {
+        super(other);
+        targetPath = other.targetPath != null ? other.targetPath.createCopy() : null;
+        targetPathLength =
+                other.targetPathLength != null ? other.targetPathLength.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestSymbolicLinkMessage createCopy() {
+        return new SftpRequestSymbolicLinkMessage(this);
+    }
+
     public ModifiableInteger getTargetPathLength() {
         return targetPathLength;
     }

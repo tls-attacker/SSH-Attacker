@@ -21,6 +21,21 @@ public class SftpRequestHomeDirectoryMessage
     private ModifiableInteger usernameLength;
     private ModifiableString username;
 
+    public SftpRequestHomeDirectoryMessage() {
+        super();
+    }
+
+    public SftpRequestHomeDirectoryMessage(SftpRequestHomeDirectoryMessage other) {
+        super(other);
+        usernameLength = other.usernameLength != null ? other.usernameLength.createCopy() : null;
+        username = other.username != null ? other.username.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestHomeDirectoryMessage createCopy() {
+        return new SftpRequestHomeDirectoryMessage(this);
+    }
+
     public ModifiableInteger getUsernameLength() {
         return usernameLength;
     }

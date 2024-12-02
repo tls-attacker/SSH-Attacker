@@ -32,6 +32,17 @@ public class CustomPQKemPublicKey extends CustomPublicKey {
         this.kemName = kemName;
     }
 
+    public CustomPQKemPublicKey(CustomPQKemPublicKey other) {
+        super(other);
+        publicKey = other.publicKey != null ? other.publicKey.clone() : null;
+        kemName = other.kemName;
+    }
+
+    @Override
+    public CustomPQKemPublicKey createCopy() {
+        return new CustomPQKemPublicKey(this);
+    }
+
     public byte[] getPublicKey() {
         return publicKey;
     }

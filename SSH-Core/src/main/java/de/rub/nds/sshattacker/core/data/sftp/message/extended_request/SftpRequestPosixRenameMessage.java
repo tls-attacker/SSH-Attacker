@@ -23,6 +23,21 @@ public class SftpRequestPosixRenameMessage
     private ModifiableInteger newPathLength;
     private ModifiableString newPath;
 
+    public SftpRequestPosixRenameMessage() {
+        super();
+    }
+
+    public SftpRequestPosixRenameMessage(SftpRequestPosixRenameMessage other) {
+        super(other);
+        newPathLength = other.newPathLength != null ? other.newPathLength.createCopy() : null;
+        newPath = other.newPath != null ? other.newPath.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestPosixRenameMessage createCopy() {
+        return new SftpRequestPosixRenameMessage(this);
+    }
+
     public ModifiableInteger getNewPathLength() {
         return newPathLength;
     }

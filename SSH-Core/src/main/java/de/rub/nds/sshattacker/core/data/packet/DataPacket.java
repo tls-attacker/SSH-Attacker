@@ -23,6 +23,20 @@ public class DataPacket extends AbstractDataPacket {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
+    public DataPacket() {
+        super();
+    }
+
+    public DataPacket(DataPacket other) {
+        super(other);
+        length = other.length != null ? other.length.createCopy() : null;
+    }
+
+    @Override
+    public DataPacket createCopy() {
+        return new DataPacket(this);
+    }
+
     public ModifiableInteger getLength() {
         return length;
     }

@@ -46,6 +46,18 @@ public class CustomDhPrivateKey extends CustomPrivateKey implements DHPrivateKey
         return modulus;
     }
 
+    public CustomDhPrivateKey(CustomDhPrivateKey other) {
+        super(other);
+        modulus = other.modulus;
+        generator = other.generator;
+        privateKey = other.privateKey;
+    }
+
+    @Override
+    public CustomDhPrivateKey createCopy() {
+        return new CustomDhPrivateKey(this);
+    }
+
     public void setModulus(BigInteger modulus) {
         this.modulus = modulus;
     }

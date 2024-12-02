@@ -30,6 +30,24 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
+    public SftpFileNameEntry() {
+        super();
+    }
+
+    public SftpFileNameEntry(SftpFileNameEntry other) {
+        super(other);
+        filenameLength = other.filenameLength != null ? other.filenameLength.createCopy() : null;
+        filename = other.filename != null ? other.filename.createCopy() : null;
+        longNameLength = other.longNameLength != null ? other.longNameLength.createCopy() : null;
+        longName = other.longName != null ? other.longName.createCopy() : null;
+        attributes = other.attributes != null ? other.attributes.createCopy() : null;
+    }
+
+    @Override
+    public SftpFileNameEntry createCopy() {
+        return new SftpFileNameEntry(this);
+    }
+
     public ModifiableInteger getFilenameLength() {
         return filenameLength;
     }

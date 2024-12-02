@@ -24,6 +24,17 @@ public class SftpNameEntry extends ModifiableVariableHolder {
     private ModifiableInteger nameLength;
     private ModifiableString name;
 
+    public SftpNameEntry(SftpNameEntry other) {
+        super(other);
+        nameLength = other.nameLength != null ? other.nameLength.createCopy() : null;
+        name = other.name != null ? other.name.createCopy() : null;
+    }
+
+    @Override
+    public SftpNameEntry createCopy() {
+        return new SftpNameEntry(this);
+    }
+
     public SftpNameEntry() {
         super();
     }

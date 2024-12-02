@@ -20,6 +20,25 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
     private ModifiableInteger newlineSeperatorLength;
     private ModifiableString newlineSeperator;
 
+    public SftpExtensionNewline() {
+        super();
+    }
+
+    public SftpExtensionNewline(SftpExtensionNewline other) {
+        super(other);
+        newlineSeperatorLength =
+                other.newlineSeperatorLength != null
+                        ? other.newlineSeperatorLength.createCopy()
+                        : null;
+        newlineSeperator =
+                other.newlineSeperator != null ? other.newlineSeperator.createCopy() : null;
+    }
+
+    @Override
+    public SftpExtensionNewline createCopy() {
+        return new SftpExtensionNewline(this);
+    }
+
     public ModifiableInteger getNewlineSeperatorLength() {
         return newlineSeperatorLength;
     }

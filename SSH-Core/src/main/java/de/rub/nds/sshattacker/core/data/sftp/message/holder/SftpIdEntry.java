@@ -20,6 +20,16 @@ public class SftpIdEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger id;
 
+    public SftpIdEntry(SftpIdEntry other) {
+        super(other);
+        id = other.id != null ? other.id.createCopy() : null;
+    }
+
+    @Override
+    public SftpIdEntry createCopy() {
+        return new SftpIdEntry(this);
+    }
+
     public SftpIdEntry() {
         super();
     }

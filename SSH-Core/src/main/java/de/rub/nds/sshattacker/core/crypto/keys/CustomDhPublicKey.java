@@ -42,6 +42,18 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         this.publicKey = publicKey;
     }
 
+    public CustomDhPublicKey(CustomDhPublicKey other) {
+        super(other);
+        modulus = other.modulus;
+        generator = other.generator;
+        publicKey = other.publicKey;
+    }
+
+    @Override
+    public CustomDhPublicKey createCopy() {
+        return new CustomDhPublicKey(this);
+    }
+
     public BigInteger getModulus() {
         return modulus;
     }

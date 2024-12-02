@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestGetTempFolderMessage
         extends SftpRequestExtendedMessage<SftpRequestGetTempFolderMessage> {
 
+    public SftpRequestGetTempFolderMessage() {
+        super();
+    }
+
+    public SftpRequestGetTempFolderMessage(SftpRequestGetTempFolderMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestGetTempFolderMessage createCopy() {
+        return new SftpRequestGetTempFolderMessage(this);
+    }
+
     @Override
     public SftpRequestGetTempFolderMessageHandler getHandler(SshContext context) {
         return new SftpRequestGetTempFolderMessageHandler(context, this);

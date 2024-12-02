@@ -34,6 +34,20 @@ public abstract class AbstractDataPacket extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
+    protected AbstractDataPacket() {
+        super();
+    }
+
+    protected AbstractDataPacket(AbstractDataPacket other) {
+        super(other);
+        completePacketBytes =
+                other.completePacketBytes != null ? other.completePacketBytes.createCopy() : null;
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
+    @Override
+    public abstract AbstractDataPacket createCopy();
+
     public ModifiableByteArray getCompletePacketBytes() {
         return completePacketBytes;
     }

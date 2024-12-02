@@ -77,6 +77,17 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         this.privateKey = privateKey;
     }
 
+    public SshPublicKey(SshPublicKey<PUBLIC, PRIVATE> other) {
+        super();
+        publicKeyFormat = other.publicKeyFormat;
+        publicKey = other.publicKey;
+        privateKey = other.privateKey;
+    }
+
+    public SshPublicKey<PUBLIC, PRIVATE> createCopy() {
+        return new SshPublicKey<>(this);
+    }
+
     public PublicKeyFormat getPublicKeyFormat() {
         return publicKeyFormat;
     }

@@ -31,14 +31,42 @@ public class SftpResponseUsersGroupsByIdMessage
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(@XmlElement(type = SftpNameEntry.class, name = "SftpNameEntry"))
-    private List<SftpNameEntry> userNames = new ArrayList<>();
+    private ArrayList<SftpNameEntry> userNames = new ArrayList<>();
 
     private ModifiableInteger groupNamesLength;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(@XmlElement(type = SftpNameEntry.class, name = "SftpNameEntry"))
-    private List<SftpNameEntry> groupNames = new ArrayList<>();
+    private ArrayList<SftpNameEntry> groupNames = new ArrayList<>();
+
+    public SftpResponseUsersGroupsByIdMessage() {
+        super();
+    }
+
+    public SftpResponseUsersGroupsByIdMessage(SftpResponseUsersGroupsByIdMessage other) {
+        super(other);
+        userNamesLength = other.userNamesLength != null ? other.userNamesLength.createCopy() : null;
+        if (other.userNames != null) {
+            userNames = new ArrayList<>();
+            for (SftpNameEntry item : other.userNames) {
+                userNames.add(item != null ? item.createCopy() : null);
+            }
+        }
+        groupNamesLength =
+                other.groupNamesLength != null ? other.groupNamesLength.createCopy() : null;
+        if (other.groupNames != null) {
+            groupNames = new ArrayList<>();
+            for (SftpNameEntry item : other.groupNames) {
+                groupNames.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public SftpResponseUsersGroupsByIdMessage createCopy() {
+        return new SftpResponseUsersGroupsByIdMessage(this);
+    }
 
     public ModifiableInteger getUserNamesLength() {
         return userNamesLength;
@@ -62,7 +90,7 @@ public class SftpResponseUsersGroupsByIdMessage
         }
     }
 
-    public List<SftpNameEntry> getUserNames() {
+    public ArrayList<SftpNameEntry> getUserNames() {
         return userNames;
     }
 
@@ -70,13 +98,15 @@ public class SftpResponseUsersGroupsByIdMessage
         return userNames.stream().map(SftpNameEntry::getName).collect(Collectors.toList());
     }
 
-    public void setUserNames(List<SftpNameEntry> userNames) {
+    public void setUserNames(ArrayList<SftpNameEntry> userNames) {
         this.userNames = userNames;
     }
 
     public void setUserNamesDirect(List<ModifiableString> userNames) {
-        this.userNames = userNames.stream().map(SftpNameEntry::new).collect(Collectors.toList());
-        ;
+        this.userNames =
+                userNames.stream()
+                        .map(SftpNameEntry::new)
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void addUserName(SftpNameEntry userName) {
@@ -114,7 +144,7 @@ public class SftpResponseUsersGroupsByIdMessage
         }
     }
 
-    public List<SftpNameEntry> getGroupNames() {
+    public ArrayList<SftpNameEntry> getGroupNames() {
         return groupNames;
     }
 
@@ -122,14 +152,15 @@ public class SftpResponseUsersGroupsByIdMessage
         return groupNames.stream().map(SftpNameEntry::getName).collect(Collectors.toList());
     }
 
-    public void setGroupNames(List<SftpNameEntry> groupNames) {
+    public void setGroupNames(ArrayList<SftpNameEntry> groupNames) {
         this.groupNames = groupNames;
     }
 
     public void setGroupNamesDirect(List<ModifiableString> groupNames) {
-        this.groupNames = groupNames.stream().map(SftpNameEntry::new).collect(Collectors.toList());
-        ;
-        ;
+        this.groupNames =
+                groupNames.stream()
+                        .map(SftpNameEntry::new)
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void addGroupName(SftpNameEntry groupName) {

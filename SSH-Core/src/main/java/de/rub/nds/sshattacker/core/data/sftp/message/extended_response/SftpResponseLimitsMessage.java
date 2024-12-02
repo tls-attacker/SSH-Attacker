@@ -20,6 +20,27 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     private ModifiableLong maximumWriteLength;
     private ModifiableLong maximumOpenHandles;
 
+    public SftpResponseLimitsMessage() {
+        super();
+    }
+
+    public SftpResponseLimitsMessage(SftpResponseLimitsMessage other) {
+        super(other);
+        maximumPacketLength =
+                other.maximumPacketLength != null ? other.maximumPacketLength.createCopy() : null;
+        maximumReadLength =
+                other.maximumReadLength != null ? other.maximumReadLength.createCopy() : null;
+        maximumWriteLength =
+                other.maximumWriteLength != null ? other.maximumWriteLength.createCopy() : null;
+        maximumOpenHandles =
+                other.maximumOpenHandles != null ? other.maximumOpenHandles.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseLimitsMessage createCopy() {
+        return new SftpResponseLimitsMessage(this);
+    }
+
     public ModifiableLong getMaximumPacketLength() {
         return maximumPacketLength;
     }

@@ -43,6 +43,20 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
+    protected AbstractPacket() {
+        super();
+    }
+
+    protected AbstractPacket(AbstractPacket other) {
+        super(other);
+        completePacketBytes =
+                other.completePacketBytes != null ? other.completePacketBytes.createCopy() : null;
+        ciphertext = other.ciphertext != null ? other.ciphertext.createCopy() : null;
+        compressedPayload =
+                other.compressedPayload != null ? other.compressedPayload.createCopy() : null;
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
     public ModifiableByteArray getCompletePacketBytes() {
         return completePacketBytes;
     }

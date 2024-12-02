@@ -40,6 +40,19 @@ public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateK
         this.x = x;
     }
 
+    public CustomDsaPrivateKey(CustomDsaPrivateKey other) {
+        super(other);
+        p = other.p;
+        q = other.q;
+        g = other.g;
+        x = other.x;
+    }
+
+    @Override
+    public CustomDsaPrivateKey createCopy() {
+        return new CustomDsaPrivateKey(this);
+    }
+
     public BigInteger getP() {
         return p;
     }

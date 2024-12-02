@@ -23,6 +23,21 @@ public class SftpRequestHardlinkMessage
     private ModifiableInteger newPathLength;
     private ModifiableString newPath;
 
+    public SftpRequestHardlinkMessage() {
+        super();
+    }
+
+    public SftpRequestHardlinkMessage(SftpRequestHardlinkMessage other) {
+        super(other);
+        newPathLength = other.newPathLength != null ? other.newPathLength.createCopy() : null;
+        newPath = other.newPath != null ? other.newPath.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestHardlinkMessage createCopy() {
+        return new SftpRequestHardlinkMessage(this);
+    }
+
     public ModifiableInteger getNewPathLength() {
         return newPathLength;
     }

@@ -51,7 +51,17 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
         @XmlElement(type = SftpExtensionVendorId.class, name = "SftpExtensionVendorId"),
         @XmlElement(type = SftpExtensionWithVersion.class, name = "SftpExtensionWithVersion")
     })
-    private List<SftpAbstractExtension<?>> extensions = new ArrayList<>();
+    private ArrayList<SftpAbstractExtension<?>> extensions = new ArrayList<>();
+
+    protected SftpHandshakeMessage() {
+        super();
+    }
+
+    protected SftpHandshakeMessage(SftpHandshakeMessage<T> other) {
+        super(other);
+        version = other.version != null ? other.version.createCopy() : null;
+        extensions = other.extensions != null ? new ArrayList<>(other.extensions) : null;
+    }
 
     public ModifiableInteger getVersion() {
         return version;
@@ -71,11 +81,11 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
         }
     }
 
-    public List<SftpAbstractExtension<?>> getExtensions() {
+    public ArrayList<SftpAbstractExtension<?>> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<SftpAbstractExtension<?>> extensions) {
+    public void setExtensions(ArrayList<SftpAbstractExtension<?>> extensions) {
         this.extensions = extensions;
     }
 

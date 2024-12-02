@@ -23,6 +23,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -120,7 +121,9 @@ public class PacketMacedCipher extends PacketCipher {
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
                                     BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                            .collect(
+                                    Collectors.toCollection(
+                                            () -> EnumSet.noneOf(BinaryPacketField.class))));
 
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
@@ -144,7 +147,9 @@ public class PacketMacedCipher extends PacketCipher {
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
                                     BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                            .collect(
+                                    Collectors.toCollection(
+                                            () -> EnumSet.noneOf(BinaryPacketField.class))));
 
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
@@ -227,7 +232,9 @@ public class PacketMacedCipher extends PacketCipher {
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
                                     BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                            .collect(
+                                    Collectors.toCollection(
+                                            () -> EnumSet.noneOf(BinaryPacketField.class))));
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
@@ -241,7 +248,9 @@ public class PacketMacedCipher extends PacketCipher {
                                     BinaryPacketField.PADDING,
                                     BinaryPacketField.PAYLOAD,
                                     BinaryPacketField.PADDING_LENGTH)
-                            .collect(Collectors.toSet()));
+                            .collect(
+                                    Collectors.toCollection(
+                                            () -> EnumSet.noneOf(BinaryPacketField.class))));
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(

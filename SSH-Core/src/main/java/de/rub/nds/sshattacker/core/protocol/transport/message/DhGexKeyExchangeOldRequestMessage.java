@@ -18,6 +18,21 @@ public class DhGexKeyExchangeOldRequestMessage
 
     private ModifiableInteger preferredGroupSize;
 
+    public DhGexKeyExchangeOldRequestMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeOldRequestMessage(DhGexKeyExchangeOldRequestMessage other) {
+        super(other);
+        preferredGroupSize =
+                other.preferredGroupSize != null ? other.preferredGroupSize.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeOldRequestMessage createCopy() {
+        return new DhGexKeyExchangeOldRequestMessage(this);
+    }
+
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;
     }

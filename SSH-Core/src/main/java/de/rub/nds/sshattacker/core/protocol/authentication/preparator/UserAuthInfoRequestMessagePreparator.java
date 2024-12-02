@@ -25,6 +25,6 @@ public class UserAuthInfoRequestMessagePreparator
         getObject().setUserName("", true);
         getObject().setInstruction("", true);
         getObject().setLanguageTag("", true);
-        getObject().setPromptEntryCount(0);
+        getObject().setPromptEntriesCount(0);
     }
 }

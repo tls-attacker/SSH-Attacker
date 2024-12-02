@@ -36,7 +36,22 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
-    private List<AbstractExtension<?>> extensions = new ArrayList<>();
+    private ArrayList<AbstractExtension<?>> extensions = new ArrayList<>();
+
+    public ExtensionInfoMessage() {
+        super();
+    }
+
+    public ExtensionInfoMessage(ExtensionInfoMessage other) {
+        super(other);
+        extensionCount = other.extensionCount != null ? other.extensionCount.createCopy() : null;
+        extensions = other.extensions != null ? new ArrayList<>(other.extensions) : null;
+    }
+
+    @Override
+    public ExtensionInfoMessage createCopy() {
+        return new ExtensionInfoMessage(this);
+    }
 
     public ModifiableInteger getExtensionCount() {
         return extensionCount;
@@ -51,15 +66,16 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
                 ModifiableVariableFactory.safelySetValue(this.extensionCount, extensionCount);
     }
 
-    public List<AbstractExtension<?>> getExtensions() {
+    public ArrayList<AbstractExtension<?>> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<AbstractExtension<?>> extensions) {
+    public void setExtensions(ArrayList<AbstractExtension<?>> extensions) {
         setExtensions(extensions, false);
     }
 
-    public void setExtensions(List<AbstractExtension<?>> extensions, boolean adjustLengthField) {
+    public void setExtensions(
+            ArrayList<AbstractExtension<?>> extensions, boolean adjustLengthField) {
         if (adjustLengthField) {
             setExtensionCount(extensions.size());
         }

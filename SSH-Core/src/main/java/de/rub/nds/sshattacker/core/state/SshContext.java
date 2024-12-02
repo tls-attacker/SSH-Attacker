@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -289,10 +290,10 @@ public class SshContext {
 
     // region SSH Extensions
     /** List of extensions supported by the client */
-    private List<AbstractExtension<?>> clientSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
-    private List<AbstractExtension<?>> serverSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Add this new field for supported public key algorithms */
     private String supportedPublicKeyAlgorithms;
@@ -335,6 +336,11 @@ public class SshContext {
 
     // endregion
 
+    // region Authentication
+    private int nextPreConfiguredAuthResponsIndex;
+
+    // endregion
+
     // region Connection Protocol
 
     private ChannelManager channelManager;
@@ -362,10 +368,10 @@ public class SshContext {
 
     // region SFTP Extensions
     /** List of SFTP extensions supported by the client */
-    private List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+    private ArrayList<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
 
     /** List of SFTP extensions supported by the server */
-    private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
+    private ArrayList<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion
 
@@ -417,6 +423,9 @@ public class SshContext {
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
         handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
+
+        nextPreConfiguredAuthResponsIndex = 0;
+
         channelManager = new ChannelManager(this);
         sftpManager = new SftpManager(this);
     }
@@ -1092,11 +1101,11 @@ public class SshContext {
     // region Getters for SSH Extensions
 
     // section general extensions
-    public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
+    public Optional<ArrayList<AbstractExtension<?>>> getClientSupportedExtensions() {
         return Optional.ofNullable(clientSupportedExtensions);
     }
 
-    public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
+    public Optional<ArrayList<AbstractExtension<?>>> getServerSupportedExtensions() {
         return Optional.ofNullable(serverSupportedExtensions);
     }
 
@@ -1148,11 +1157,11 @@ public class SshContext {
     // region Setters for SSH Extensions
 
     // section general extensions
-    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+    public void setClientSupportedExtensions(ArrayList<AbstractExtension<?>> extensions) {
         clientSupportedExtensions = extensions;
     }
 
-    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+    public void setServerSupportedExtensions(ArrayList<AbstractExtension<?>> extensions) {
         serverSupportedExtensions = extensions;
     }
 
@@ -1205,6 +1214,18 @@ public class SshContext {
 
     public void setDelayCompressionExtensionSent(boolean sent) {
         delayCompressionExtensionSent = sent;
+    }
+
+    // endregion
+
+    // region for Authentication
+
+    public int getNextPreConfiguredAuthResponsIndex() {
+        return nextPreConfiguredAuthResponsIndex;
+    }
+
+    public void setNextPreConfiguredAuthResponsIndex(int nextPreConfiguredAuthResponsIndex) {
+        this.nextPreConfiguredAuthResponsIndex = nextPreConfiguredAuthResponsIndex;
     }
 
     // endregion
@@ -1297,11 +1318,11 @@ public class SshContext {
     // region Getters for SFTP Extensions
 
     // section general SFTP extensions
-    public Optional<List<SftpAbstractExtension<?>>> getSftpClientSupportedExtensions() {
+    public Optional<ArrayList<SftpAbstractExtension<?>>> getSftpClientSupportedExtensions() {
         return Optional.ofNullable(sftpClientSupportedExtensions);
     }
 
-    public Optional<List<SftpAbstractExtension<?>>> getSftpServerSupportedExtensions() {
+    public Optional<ArrayList<SftpAbstractExtension<?>>> getSftpServerSupportedExtensions() {
         return Optional.ofNullable(sftpServerSupportedExtensions);
     }
 
@@ -1310,11 +1331,11 @@ public class SshContext {
     // region Setters for SFTP Extensions
 
     // section general SFTP extensions
-    public void setSftpClientSupportedExtensions(List<SftpAbstractExtension<?>> extensions) {
+    public void setSftpClientSupportedExtensions(ArrayList<SftpAbstractExtension<?>> extensions) {
         sftpClientSupportedExtensions = extensions;
     }
 
-    public void setSftpServerSupportedExtensions(List<SftpAbstractExtension<?>> extensions) {
+    public void setSftpServerSupportedExtensions(ArrayList<SftpAbstractExtension<?>> extensions) {
         sftpServerSupportedExtensions = extensions;
     }
     // endregion

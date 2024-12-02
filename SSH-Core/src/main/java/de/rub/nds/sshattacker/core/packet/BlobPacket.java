@@ -16,6 +16,20 @@ import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class BlobPacket extends AbstractPacket {
+
+    public BlobPacket() {
+        super();
+    }
+
+    public BlobPacket(BlobPacket other) {
+        super(other);
+    }
+
+    @Override
+    public BlobPacket createCopy() {
+        return new BlobPacket(this);
+    }
+
     @Override
     public BlobPacketPreparator getPacketPreparator(
             Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {

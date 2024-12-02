@@ -16,6 +16,21 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponseUnknownMessage> {
     private ModifiableByteArray responseSpecificData;
 
+    public SftpResponseUnknownMessage() {
+        super();
+    }
+
+    public SftpResponseUnknownMessage(SftpResponseUnknownMessage other) {
+        super(other);
+        responseSpecificData =
+                other.responseSpecificData != null ? other.responseSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseUnknownMessage createCopy() {
+        return new SftpResponseUnknownMessage(this);
+    }
+
     public ModifiableByteArray getResponseSpecificData() {
         return responseSpecificData;
     }

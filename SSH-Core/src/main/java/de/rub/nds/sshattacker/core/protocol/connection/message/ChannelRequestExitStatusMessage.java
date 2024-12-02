@@ -17,6 +17,20 @@ public class ChannelRequestExitStatusMessage
 
     private ModifiableInteger exitStatus;
 
+    public ChannelRequestExitStatusMessage() {
+        super();
+    }
+
+    public ChannelRequestExitStatusMessage(ChannelRequestExitStatusMessage other) {
+        super(other);
+        exitStatus = other.exitStatus != null ? other.exitStatus.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessage createCopy() {
+        return new ChannelRequestExitStatusMessage(this);
+    }
+
     public ModifiableInteger getExitStatus() {
         return exitStatus;
     }

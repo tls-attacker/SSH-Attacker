@@ -37,6 +37,17 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     protected byte[] coordinate;
 
+    public XCurveEcPublicKey(XCurveEcPublicKey other) {
+        super(other);
+        group = other.group;
+        coordinate = other.coordinate != null ? other.coordinate.clone() : null;
+    }
+
+    @Override
+    public XCurveEcPublicKey createCopy() {
+        return new XCurveEcPublicKey(this);
+    }
+
     public XCurveEcPublicKey() {
         super();
     }

@@ -18,6 +18,21 @@ public class ChannelRequestXonXoffMessage
 
     private ModifiableByte clientFlowControl;
 
+    public ChannelRequestXonXoffMessage() {
+        super();
+    }
+
+    public ChannelRequestXonXoffMessage(ChannelRequestXonXoffMessage other) {
+        super(other);
+        clientFlowControl =
+                other.clientFlowControl != null ? other.clientFlowControl.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestXonXoffMessage createCopy() {
+        return new ChannelRequestXonXoffMessage(this);
+    }
+
     public ModifiableByte getClientFlowControl() {
         return clientFlowControl;
     }

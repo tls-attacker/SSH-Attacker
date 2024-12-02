@@ -27,6 +27,19 @@ public abstract class SftpAbstractExtension<E extends SftpAbstractExtension<E>>
 
     protected ModifiableString name;
 
+    protected SftpAbstractExtension() {
+        super();
+    }
+
+    protected SftpAbstractExtension(SftpAbstractExtension<E> other) {
+        super(other);
+        nameLength = other.nameLength != null ? other.nameLength.createCopy() : null;
+        name = other.name != null ? other.name.createCopy() : null;
+    }
+
+    @Override
+    public abstract SftpAbstractExtension<E> createCopy();
+
     public ModifiableInteger getNameLength() {
         return nameLength;
     }

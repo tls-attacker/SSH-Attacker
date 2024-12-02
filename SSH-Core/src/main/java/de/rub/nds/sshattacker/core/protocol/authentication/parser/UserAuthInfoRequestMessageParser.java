@@ -10,10 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.holder.AuthenticationPromptEntryParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,24 +61,19 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parsePromptEntries() {
-        int promptEntryCount = parseIntField(DataFormatConstants.UINT32_SIZE);
-        message.setPromptEntryCount(promptEntryCount);
-        LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
+        int promptEntriesCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setPromptEntriesCount(promptEntriesCount);
+        LOGGER.debug("Number of prompt entries: {}", promptEntriesCount);
 
-        for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
-            AuthenticationPrompt.PromptEntry entry = new AuthenticationPrompt.PromptEntry();
-            entry.setPromptLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-            LOGGER.debug("Prompt entry [{}] length: {}", i, entry.getPromptLength().getValue());
-            entry.setPrompt(parseByteString(entry.getPromptLength().getValue()));
-            LOGGER.debug(
-                    "Prompt entry [{}]: {}",
-                    i,
-                    backslashEscapeString(entry.getPrompt().getValue()));
-            byte echo = parseByteField(1);
-            entry.setEcho(echo);
-            LOGGER.debug("Prompt entry [{}] wants echo:{}", i, Converter.byteToBoolean(echo));
+        for (int promptEntryIdx = 0, promptEntryStartPointer = getPointer();
+                promptEntryIdx < promptEntriesCount;
+                promptEntryIdx++, promptEntryStartPointer = getPointer()) {
 
-            message.getPrompt().add(entry);
+            AuthenticationPromptEntryParser promptEntryParser =
+                    new AuthenticationPromptEntryParser(getArray(), promptEntryStartPointer);
+
+            message.addPromptEntry(promptEntryParser.parse());
+            setPointer(promptEntryParser.getPointer());
         }
     }
 

@@ -37,6 +37,17 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
         this.publicExponent = publicExponent;
     }
 
+    public CustomRsaPublicKey(CustomRsaPublicKey other) {
+        super(other);
+        modulus = other.modulus;
+        publicExponent = other.publicExponent;
+    }
+
+    @Override
+    public CustomRsaPublicKey createCopy() {
+        return new CustomRsaPublicKey(this);
+    }
+
     @Override
     public BigInteger getModulus() {
         return modulus;

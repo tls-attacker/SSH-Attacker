@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionTextSeek extends SftpExtensionWithVersion<SftpExtensionTextSeek> {
 
+    public SftpExtensionTextSeek() {
+        super();
+    }
+
+    public SftpExtensionTextSeek(SftpExtensionTextSeek other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionTextSeek createCopy() {
+        return new SftpExtensionTextSeek(this);
+    }
+
     @Override
     public SftpExtensionTextSeekHandler getHandler(SshContext context) {
         return new SftpExtensionTextSeekHandler(context, this);

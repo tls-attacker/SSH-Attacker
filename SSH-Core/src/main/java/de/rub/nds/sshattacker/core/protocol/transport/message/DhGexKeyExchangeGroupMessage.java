@@ -22,6 +22,25 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
     private ModifiableInteger groupGeneratorLength;
     private ModifiableBigInteger groupGenerator;
 
+    public DhGexKeyExchangeGroupMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeGroupMessage(DhGexKeyExchangeGroupMessage other) {
+        super(other);
+        groupModulusLength =
+                other.groupModulusLength != null ? other.groupModulusLength.createCopy() : null;
+        groupModulus = other.groupModulus != null ? other.groupModulus.createCopy() : null;
+        groupGeneratorLength =
+                other.groupGeneratorLength != null ? other.groupGeneratorLength.createCopy() : null;
+        groupGenerator = other.groupGenerator != null ? other.groupGenerator.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeGroupMessage createCopy() {
+        return new DhGexKeyExchangeGroupMessage(this);
+    }
+
     public ModifiableInteger getGroupModulusLength() {
         return groupModulusLength;
     }

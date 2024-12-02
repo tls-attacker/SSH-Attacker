@@ -45,6 +45,21 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
+    protected ProtocolMessage() {
+        super();
+    }
+
+    protected ProtocolMessage(ProtocolMessage<T> other) {
+        super(other);
+        required = other.required != null ? other.required.createCopy() : null;
+        goingToBeSent = other.goingToBeSent != null ? other.goingToBeSent.createCopy() : null;
+        adjustContext = other.adjustContext != null ? other.adjustContext.createCopy() : null;
+        completeResultingMessage =
+                other.completeResultingMessage != null
+                        ? other.completeResultingMessage.createCopy()
+                        : null;
+    }
+
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;

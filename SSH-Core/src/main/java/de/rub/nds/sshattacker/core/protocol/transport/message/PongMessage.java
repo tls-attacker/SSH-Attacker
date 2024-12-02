@@ -20,6 +20,21 @@ public class PongMessage extends SshMessage<PongMessage> {
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public PongMessage() {
+        super();
+    }
+
+    public PongMessage(PongMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PongMessage createCopy() {
+        return new PongMessage(this);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }

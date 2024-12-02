@@ -22,6 +22,21 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     private ModifiableInteger newPathLength;
     private ModifiableString newPath;
 
+    public SftpRequestRenameMessage() {
+        super();
+    }
+
+    public SftpRequestRenameMessage(SftpRequestRenameMessage other) {
+        super(other);
+        newPathLength = other.newPathLength != null ? other.newPathLength.createCopy() : null;
+        newPath = other.newPath != null ? other.newPath.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestRenameMessage createCopy() {
+        return new SftpRequestRenameMessage(this);
+    }
+
     public ModifiableInteger getNewPathLength() {
         return newPathLength;
     }

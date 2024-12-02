@@ -34,6 +34,34 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
+    public UserAuthHostbasedMessage() {
+        super();
+    }
+
+    public UserAuthHostbasedMessage(UserAuthHostbasedMessage other) {
+        super(other);
+        pubKeyAlgorithmLength =
+                other.pubKeyAlgorithmLength != null
+                        ? other.pubKeyAlgorithmLength.createCopy()
+                        : null;
+        pubKeyAlgorithm = other.pubKeyAlgorithm != null ? other.pubKeyAlgorithm.createCopy() : null;
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        hostNameLength = other.hostNameLength != null ? other.hostNameLength.createCopy() : null;
+        hostName = other.hostName != null ? other.hostName.createCopy() : null;
+        clientUserNameLength =
+                other.clientUserNameLength != null ? other.clientUserNameLength.createCopy() : null;
+        clientUserName = other.clientUserName != null ? other.clientUserName.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthHostbasedMessage createCopy() {
+        return new UserAuthHostbasedMessage(this);
+    }
+
     public ModifiableInteger getPubKeyAlgorithmLength() {
         return pubKeyAlgorithmLength;
     }

@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionFileStatVfs extends SftpExtensionWithVersion<SftpExtensionFileStatVfs> {
 
+    public SftpExtensionFileStatVfs() {
+        super();
+    }
+
+    public SftpExtensionFileStatVfs(SftpExtensionFileStatVfs other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionFileStatVfs createCopy() {
+        return new SftpExtensionFileStatVfs(this);
+    }
+
     @Override
     public SftpExtensionFileStatVfsHandler getHandler(SshContext context) {
         return new SftpExtensionFileStatVfsHandler(context, this);

@@ -18,6 +18,20 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
 
     private ModifiableByteArray payload;
 
+    public UnknownMessage() {
+        super();
+    }
+
+    public UnknownMessage(UnknownMessage other) {
+        super(other);
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
+    @Override
+    public UnknownMessage createCopy() {
+        return new UnknownMessage(this);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }

@@ -18,6 +18,16 @@ public abstract class SftpExtensionWithVersion<T extends SftpExtensionWithVersio
     private ModifiableString version;
     private ModifiableInteger versionLength;
 
+    protected SftpExtensionWithVersion() {
+        super();
+    }
+
+    protected SftpExtensionWithVersion(SftpExtensionWithVersion<T> other) {
+        super(other);
+        version = other.version != null ? other.version.createCopy() : null;
+        versionLength = other.versionLength != null ? other.versionLength.createCopy() : null;
+    }
+
     public ModifiableInteger getVersionLength() {
         return versionLength;
     }

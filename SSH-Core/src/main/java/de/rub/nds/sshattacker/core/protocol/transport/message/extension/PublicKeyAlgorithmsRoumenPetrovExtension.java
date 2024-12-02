@@ -23,6 +23,26 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
     private ModifiableInteger publicKeyAlgorithmsLength;
     private ModifiableString publicKeyAlgorithms;
 
+    public PublicKeyAlgorithmsRoumenPetrovExtension() {
+        super();
+    }
+
+    public PublicKeyAlgorithmsRoumenPetrovExtension(
+            PublicKeyAlgorithmsRoumenPetrovExtension other) {
+        super(other);
+        publicKeyAlgorithmsLength =
+                other.publicKeyAlgorithmsLength != null
+                        ? other.publicKeyAlgorithmsLength.createCopy()
+                        : null;
+        publicKeyAlgorithms =
+                other.publicKeyAlgorithms != null ? other.publicKeyAlgorithms.createCopy() : null;
+    }
+
+    @Override
+    public PublicKeyAlgorithmsRoumenPetrovExtension createCopy() {
+        return new PublicKeyAlgorithmsRoumenPetrovExtension(this);
+    }
+
     public ModifiableInteger getPublicKeyAlgorithmsLength() {
         return publicKeyAlgorithmsLength;
     }

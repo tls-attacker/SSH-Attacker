@@ -15,6 +15,17 @@ import java.security.PublicKey;
  * encoding support).
  */
 public abstract class CustomPublicKey implements PublicKey {
+
+    protected CustomPublicKey() {
+        super();
+    }
+
+    protected CustomPublicKey(CustomPublicKey other) {
+        super();
+    }
+
+    public abstract CustomPublicKey createCopy();
+
     @Override
     public String getFormat() {
         return null;

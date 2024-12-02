@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpInitMessage extends SftpHandshakeMessage<SftpInitMessage> {
 
+    public SftpInitMessage() {
+        super();
+    }
+
+    public SftpInitMessage(SftpInitMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpInitMessage createCopy() {
+        return new SftpInitMessage(this);
+    }
+
     @Override
     public SftpInitMessageHandler getHandler(SshContext context) {
         return new SftpInitMessageHandler(context, this);

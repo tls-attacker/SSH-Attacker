@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionMakeTempFolder
         extends SftpExtensionWithVersion<SftpExtensionMakeTempFolder> {
 
+    public SftpExtensionMakeTempFolder() {
+        super();
+    }
+
+    public SftpExtensionMakeTempFolder(SftpExtensionMakeTempFolder other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionMakeTempFolder createCopy() {
+        return new SftpExtensionMakeTempFolder(this);
+    }
+
     @Override
     public SftpExtensionMakeTempFolderHandler getHandler(SshContext context) {
         return new SftpExtensionMakeTempFolderHandler(context, this);

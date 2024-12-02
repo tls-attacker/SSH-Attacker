@@ -19,6 +19,21 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     private ModifiableInteger handleLength;
     private ModifiableByteArray handle;
 
+    public SftpResponseHandleMessage() {
+        super();
+    }
+
+    public SftpResponseHandleMessage(SftpResponseHandleMessage other) {
+        super(other);
+        handleLength = other.handleLength != null ? other.handleLength.createCopy() : null;
+        handle = other.handle != null ? other.handle.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseHandleMessage createCopy() {
+        return new SftpResponseHandleMessage(this);
+    }
+
     public ModifiableInteger getHandleLength() {
         return handleLength;
     }

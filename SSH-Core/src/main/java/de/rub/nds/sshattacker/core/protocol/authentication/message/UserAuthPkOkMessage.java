@@ -23,6 +23,24 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     private ModifiableInteger pubkeyLength;
     private ModifiableString pubkey;
 
+    public UserAuthPkOkMessage() {
+        super();
+    }
+
+    public UserAuthPkOkMessage(UserAuthPkOkMessage other) {
+        super(other);
+        pubkeyAlgNameLength =
+                other.pubkeyAlgNameLength != null ? other.pubkeyAlgNameLength.createCopy() : null;
+        pubkeyAlgName = other.pubkeyAlgName != null ? other.pubkeyAlgName.createCopy() : null;
+        pubkeyLength = other.pubkeyLength != null ? other.pubkeyLength.createCopy() : null;
+        pubkey = other.pubkey != null ? other.pubkey.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPkOkMessage createCopy() {
+        return new UserAuthPkOkMessage(this);
+    }
+
     public ModifiableInteger getPubkeyAlgNameLength() {
         return pubkeyAlgNameLength;
     }

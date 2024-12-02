@@ -18,6 +18,20 @@ public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
 
     private ModifiableByteArray payload;
 
+    public SftpUnknownMessage() {
+        super();
+    }
+
+    public SftpUnknownMessage(SftpUnknownMessage other) {
+        super(other);
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
+    @Override
+    public SftpUnknownMessage createCopy() {
+        return new SftpUnknownMessage(this);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }

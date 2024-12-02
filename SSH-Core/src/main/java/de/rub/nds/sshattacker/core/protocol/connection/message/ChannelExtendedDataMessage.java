@@ -21,6 +21,22 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public ChannelExtendedDataMessage() {
+        super();
+    }
+
+    public ChannelExtendedDataMessage(ChannelExtendedDataMessage other) {
+        super(other);
+        dataTypeCode = other.dataTypeCode != null ? other.dataTypeCode.createCopy() : null;
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public ChannelExtendedDataMessage createCopy() {
+        return new ChannelExtendedDataMessage(this);
+    }
+
     public ModifiableInteger getDataTypeCode() {
         return dataTypeCode;
     }

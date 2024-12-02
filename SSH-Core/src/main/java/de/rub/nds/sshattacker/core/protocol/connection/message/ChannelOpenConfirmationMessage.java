@@ -18,6 +18,22 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
 
+    public ChannelOpenConfirmationMessage() {
+        super();
+    }
+
+    public ChannelOpenConfirmationMessage(ChannelOpenConfirmationMessage other) {
+        super(other);
+        senderChannelId = other.senderChannelId != null ? other.senderChannelId.createCopy() : null;
+        windowSize = other.windowSize != null ? other.windowSize.createCopy() : null;
+        packetSize = other.packetSize != null ? other.packetSize.createCopy() : null;
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessage createCopy() {
+        return new ChannelOpenConfirmationMessage(this);
+    }
+
     public ModifiableInteger getSenderChannelId() {
         return senderChannelId;
     }

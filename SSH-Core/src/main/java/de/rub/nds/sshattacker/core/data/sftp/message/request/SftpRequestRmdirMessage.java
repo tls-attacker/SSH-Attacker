@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestRmdirMessage extends SftpRequestWithPathMessage<SftpRequestRmdirMessage> {
 
+    public SftpRequestRmdirMessage() {
+        super();
+    }
+
+    public SftpRequestRmdirMessage(SftpRequestRmdirMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestRmdirMessage createCopy() {
+        return new SftpRequestRmdirMessage(this);
+    }
+
     @Override
     public SftpRequestRemoveDirMessageHandler getHandler(SshContext context) {
         return new SftpRequestRemoveDirMessageHandler(context, this);

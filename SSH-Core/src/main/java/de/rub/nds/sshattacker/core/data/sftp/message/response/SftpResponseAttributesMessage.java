@@ -19,6 +19,20 @@ public class SftpResponseAttributesMessage
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
+    public SftpResponseAttributesMessage() {
+        super();
+    }
+
+    public SftpResponseAttributesMessage(SftpResponseAttributesMessage other) {
+        super(other);
+        attributes = other.attributes != null ? other.attributes.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseAttributesMessage createCopy() {
+        return new SftpResponseAttributesMessage(this);
+    }
+
     public SftpFileAttributes getAttributes() {
         return attributes;
     }

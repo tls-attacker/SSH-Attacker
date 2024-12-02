@@ -73,6 +73,17 @@ public class Point implements Serializable {
         atInfinity = false;
     }
 
+    public Point(Point other) {
+        super();
+        fieldX = other.fieldX != null ? other.fieldX.createCopy() : null;
+        fieldY = other.fieldY != null ? other.fieldY.createCopy() : null;
+        atInfinity = other.atInfinity;
+    }
+
+    public Point createCopy() {
+        return new Point(this);
+    }
+
     /**
      * Checks whether the point is the point at infinity.
      *

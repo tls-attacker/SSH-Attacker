@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestReadDirMessage
         extends SftpRequestWithHandleMessage<SftpRequestReadDirMessage> {
 
+    public SftpRequestReadDirMessage() {
+        super();
+    }
+
+    public SftpRequestReadDirMessage(SftpRequestReadDirMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestReadDirMessage createCopy() {
+        return new SftpRequestReadDirMessage(this);
+    }
+
     @Override
     public SftpRequestReadDirMessageHandler getHandler(SshContext context) {
         return new SftpRequestReadDirMessageHandler(context, this);

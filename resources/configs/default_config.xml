@@ -305,15 +305,12 @@
                     <response>
                         <originalValue>secret</originalValue>
                     </response>
-                    <executed>false</executed>
                 </responseEntry>
             </responseEntries>
         </preConfiguredAuthResponse>
         <preConfiguredAuthResponse>
             <responseEntries>
-                <responseEntry>
-                    <executed>false</executed>
-                </responseEntry>
+                <responseEntry/>
             </responseEntries>
         </preConfiguredAuthResponse>
     </preConfiguredAuthResponses>

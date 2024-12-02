@@ -22,6 +22,25 @@ public class GlobalRequestCancelTcpIpForwardMessage
     private ModifiableString ipAddressToBind;
     private ModifiableInteger portToBind;
 
+    public GlobalRequestCancelTcpIpForwardMessage() {
+        super();
+    }
+
+    public GlobalRequestCancelTcpIpForwardMessage(GlobalRequestCancelTcpIpForwardMessage other) {
+        super(other);
+        ipAddressToBindLength =
+                other.ipAddressToBindLength != null
+                        ? other.ipAddressToBindLength.createCopy()
+                        : null;
+        ipAddressToBind = other.ipAddressToBind != null ? other.ipAddressToBind.createCopy() : null;
+        portToBind = other.portToBind != null ? other.portToBind.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestCancelTcpIpForwardMessage createCopy() {
+        return new GlobalRequestCancelTcpIpForwardMessage(this);
+    }
+
     public ModifiableString getIpAddressToBind() {
         return ipAddressToBind;
     }

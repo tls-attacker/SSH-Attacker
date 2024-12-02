@@ -23,6 +23,25 @@ public class UserAuthKeyboardInteractiveMessage
     private ModifiableInteger subMethodsLength;
     private ModifiableString subMethods;
 
+    public UserAuthKeyboardInteractiveMessage() {
+        super();
+    }
+
+    public UserAuthKeyboardInteractiveMessage(UserAuthKeyboardInteractiveMessage other) {
+        super(other);
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+        subMethodsLength =
+                other.subMethodsLength != null ? other.subMethodsLength.createCopy() : null;
+        subMethods = other.subMethods != null ? other.subMethods.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthKeyboardInteractiveMessage createCopy() {
+        return new UserAuthKeyboardInteractiveMessage(this);
+    }
+
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }

@@ -16,6 +16,20 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
 
     private ModifiableString data;
 
+    public StringDataMessage() {
+        super();
+    }
+
+    public StringDataMessage(StringDataMessage other) {
+        super();
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public StringDataMessage createCopy() {
+        return new StringDataMessage(this);
+    }
+
     public ModifiableString getData() {
         return data;
     }

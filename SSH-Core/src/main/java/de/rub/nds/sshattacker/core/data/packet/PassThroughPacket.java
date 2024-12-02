@@ -19,6 +19,19 @@ import java.util.Objects;
  */
 public class PassThroughPacket extends AbstractDataPacket {
 
+    public PassThroughPacket() {
+        super();
+    }
+
+    public PassThroughPacket(PassThroughPacket other) {
+        super(other);
+    }
+
+    @Override
+    public PassThroughPacket createCopy() {
+        return new PassThroughPacket(this);
+    }
+
     public PassThroughPacketPreparator getPacketPreparator(Chooser chooser) {
         return new PassThroughPacketPreparator(chooser, this);
     }

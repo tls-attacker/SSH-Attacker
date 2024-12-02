@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailureMessage> {
 
+    public GlobalRequestFailureMessage() {
+        super();
+    }
+
+    public GlobalRequestFailureMessage(GlobalRequestFailureMessage other) {
+        super(other);
+    }
+
+    @Override
+    public GlobalRequestFailureMessage createCopy() {
+        return new GlobalRequestFailureMessage(this);
+    }
+
     @Override
     public GlobalRequestFailureMessageHandler getHandler(SshContext context) {
         return new GlobalRequestFailureMessageHandler(context, this);

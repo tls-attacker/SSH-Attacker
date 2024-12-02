@@ -20,6 +20,23 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     private ModifiableString comment;
     private ModifiableString endOfMessageSequence;
 
+    public VersionExchangeMessage() {
+        super();
+    }
+
+    public VersionExchangeMessage(VersionExchangeMessage other) {
+        super(other);
+        version = other.version != null ? other.version.createCopy() : null;
+        comment = other.comment != null ? other.comment.createCopy() : null;
+        endOfMessageSequence =
+                other.endOfMessageSequence != null ? other.endOfMessageSequence.createCopy() : null;
+    }
+
+    @Override
+    public VersionExchangeMessage createCopy() {
+        return new VersionExchangeMessage(this);
+    }
+
     public ModifiableString getVersion() {
         return version;
     }

@@ -48,6 +48,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         this.y = y;
     }
 
+    public CustomDsaPublicKey(CustomDsaPublicKey other) {
+        super(other);
+        p = other.p;
+        q = other.q;
+        g = other.g;
+        y = other.y;
+    }
+
+    @Override
+    public CustomDsaPublicKey createCopy() {
+        return new CustomDsaPublicKey(this);
+    }
+
     public BigInteger getP() {
         return p;
     }

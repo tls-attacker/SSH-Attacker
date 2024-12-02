@@ -19,6 +19,21 @@ public class SftpResponseDataMessage extends SftpResponseMessage<SftpResponseDat
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public SftpResponseDataMessage() {
+        super();
+    }
+
+    public SftpResponseDataMessage(SftpResponseDataMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseDataMessage createCopy() {
+        return new SftpResponseDataMessage(this);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }

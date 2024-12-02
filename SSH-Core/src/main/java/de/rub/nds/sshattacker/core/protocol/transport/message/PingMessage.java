@@ -20,6 +20,21 @@ public class PingMessage extends SshMessage<PingMessage> {
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public PingMessage() {
+        super();
+    }
+
+    public PingMessage(PingMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PingMessage createCopy() {
+        return new PingMessage(this);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }

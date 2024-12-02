@@ -16,6 +16,21 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
 
     private ModifiableByteArray typeSpecificData;
 
+    public ChannelOpenUnknownMessage() {
+        super();
+    }
+
+    public ChannelOpenUnknownMessage(ChannelOpenUnknownMessage other) {
+        super(other);
+        typeSpecificData =
+                other.typeSpecificData != null ? other.typeSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public ChannelOpenUnknownMessage createCopy() {
+        return new ChannelOpenUnknownMessage(this);
+    }
+
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
     }

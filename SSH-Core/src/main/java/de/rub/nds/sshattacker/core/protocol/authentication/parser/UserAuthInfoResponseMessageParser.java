@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.holder.AuthenticationResponseEntryParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,16 +33,19 @@ public class UserAuthInfoResponseMessageParser
     }
 
     private void parseResponseEntries() {
-        int responseEntryCount = parseIntField(DataFormatConstants.UINT32_SIZE);
-        message.setResponseEntryCount(responseEntryCount);
-        LOGGER.debug("Number of response entries: {}", responseEntryCount);
-        for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
-            AuthenticationResponse.ResponseEntry entry = new AuthenticationResponse.ResponseEntry();
-            entry.setResponseLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-            LOGGER.debug("Response entry [{}] length: {}", i, entry.getResponseLength().getValue());
-            entry.setResponse(parseByteString(entry.getResponseLength().getValue()));
-            LOGGER.debug("Response entry [{}]: {}", i, entry.getResponse().getValue());
-            message.getResponse().add(entry);
+        int responseEntriesCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        message.setResponseEntriesCount(responseEntriesCount);
+        LOGGER.debug("Number of response entries: {}", responseEntriesCount);
+
+        for (int responseEntryIdx = 0, responseEntryStartPointer = getPointer();
+                responseEntryIdx < responseEntriesCount;
+                responseEntryIdx++, responseEntryStartPointer = getPointer()) {
+
+            AuthenticationResponseEntryParser responseEntryParser =
+                    new AuthenticationResponseEntryParser(getArray(), responseEntryStartPointer);
+
+            message.addResponseEntry(responseEntryParser.parse());
+            setPointer(responseEntryParser.getPointer());
         }
     }
 

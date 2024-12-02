@@ -20,6 +20,21 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
     private ModifiableByteArray value;
 
+    public UnknownExtension() {
+        super();
+    }
+
+    public UnknownExtension(UnknownExtension other) {
+        super(other);
+        valueLength = other.valueLength != null ? other.valueLength.createCopy() : null;
+        value = other.value != null ? other.value.createCopy() : null;
+    }
+
+    @Override
+    public UnknownExtension createCopy() {
+        return new UnknownExtension(this);
+    }
+
     public ModifiableInteger getValueLength() {
         return valueLength;
     }

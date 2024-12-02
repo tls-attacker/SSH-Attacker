@@ -20,6 +20,16 @@ public abstract class SftpRequestExtendedWithPathMessage<
     private ModifiableInteger pathLength;
     private ModifiableString path;
 
+    protected SftpRequestExtendedWithPathMessage() {
+        super();
+    }
+
+    protected SftpRequestExtendedWithPathMessage(SftpRequestExtendedWithPathMessage<T> other) {
+        super(other);
+        pathLength = other.pathLength != null ? other.pathLength.createCopy() : null;
+        path = other.path != null ? other.path.createCopy() : null;
+    }
+
     public ModifiableInteger getPathLength() {
         return pathLength;
     }

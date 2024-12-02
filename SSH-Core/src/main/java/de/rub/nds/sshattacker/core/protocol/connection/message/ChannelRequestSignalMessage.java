@@ -22,6 +22,22 @@ public class ChannelRequestSignalMessage
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
 
+    public ChannelRequestSignalMessage() {
+        super();
+    }
+
+    public ChannelRequestSignalMessage(ChannelRequestSignalMessage other) {
+        super(other);
+        signalNameLength =
+                other.signalNameLength != null ? other.signalNameLength.createCopy() : null;
+        signalName = other.signalName != null ? other.signalName.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestSignalMessage createCopy() {
+        return new ChannelRequestSignalMessage(this);
+    }
+
     public ModifiableInteger getSignalNameLength() {
         return signalNameLength;
     }

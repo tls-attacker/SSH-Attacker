@@ -22,6 +22,21 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
+    public RsaKeyExchangeDoneMessage() {
+        super();
+    }
+
+    public RsaKeyExchangeDoneMessage(RsaKeyExchangeDoneMessage other) {
+        super(other);
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public RsaKeyExchangeDoneMessage createCopy() {
+        return new RsaKeyExchangeDoneMessage(this);
+    }
+
     @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;

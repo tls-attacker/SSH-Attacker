@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable ED25519/ED448 certificate public key used in certificates (SSH-ED25519-CERT). */
@@ -25,8 +26,8 @@ public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
     private long validBefore;
     private byte[] signature;
     private byte[] signatureKey;
-    private Map<String, String> criticalOptions;
-    private Map<String, String> extensions;
+    private HashMap<String, String> criticalOptions;
+    private HashMap<String, String> extensions;
 
     public CustomCertXCurvePublicKey() {
         super();
@@ -34,6 +35,29 @@ public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
 
     public CustomCertXCurvePublicKey(byte[] coordinate, NamedEcGroup group) {
         super(coordinate, group);
+    }
+
+    public CustomCertXCurvePublicKey(CustomCertXCurvePublicKey other) {
+        super(other);
+        serial = other.serial;
+        certType = other.certType;
+        certformat = other.certformat;
+        keyId = other.keyId;
+        reserved = other.reserved;
+        validPrincipals = other.validPrincipals != null ? other.validPrincipals.clone() : null;
+        nonce = other.nonce != null ? other.nonce.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        signature = other.signature != null ? other.signature.clone() : null;
+        signatureKey = other.signatureKey != null ? other.signatureKey.clone() : null;
+        criticalOptions =
+                other.criticalOptions != null ? new HashMap<>(other.criticalOptions) : null;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomCertXCurvePublicKey createCopy() {
+        return new CustomCertXCurvePublicKey(this);
     }
 
     // Getter and setter for serial number
@@ -139,7 +163,7 @@ public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
         return criticalOptions;
     }
 
-    public void setCriticalOptions(Map<String, String> criticalOptions) {
+    public void setCriticalOptions(HashMap<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
     }
 
@@ -148,7 +172,7 @@ public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 }

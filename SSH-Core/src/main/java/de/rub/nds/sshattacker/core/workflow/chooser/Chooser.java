@@ -15,8 +15,10 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Chooser {
@@ -115,9 +117,9 @@ public abstract class Chooser {
 
     // region SSH Extensions
     // section general extensions
-    public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
+    public abstract ArrayList<AbstractExtension<?>> getClientSupportedExtensions();
 
-    public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
+    public abstract ArrayList<AbstractExtension<?>> getServerSupportedExtensions();
 
     // section server-sig-algs extension
     public abstract List<PublicKeyAlgorithm>
@@ -250,7 +252,13 @@ public abstract class Chooser {
 
     // endregion
 
+    // region Authentication
+
     public abstract AuthenticationMethod getAuthenticationMethod();
+
+    public abstract ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses();
+
+    // endregion
 
     // region SFTP Version Exchange
     public abstract Integer getSftpClientVersion();
@@ -263,9 +271,9 @@ public abstract class Chooser {
 
     // region SFTP Extensions
     // section general extensions
-    public abstract List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions();
+    public abstract ArrayList<SftpAbstractExtension<?>> getSftpClientSupportedExtensions();
 
-    public abstract List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions();
+    public abstract ArrayList<SftpAbstractExtension<?>> getSftpServerSupportedExtensions();
 
     // endregion
 

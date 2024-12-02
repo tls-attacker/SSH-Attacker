@@ -15,6 +15,15 @@ public abstract class SftpResponseMessage<T extends SftpResponseMessage<T>> exte
 
     private ModifiableInteger requestId;
 
+    protected SftpResponseMessage() {
+        super();
+    }
+
+    protected SftpResponseMessage(SftpResponseMessage<T> other) {
+        super(other);
+        requestId = other.requestId != null ? other.requestId.createCopy() : null;
+    }
+
     public ModifiableInteger getRequestId() {
         return requestId;
     }

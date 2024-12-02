@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Map;
+import java.util.*;
 import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -45,7 +45,7 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
     private long validBefore; // Not After (valid before)
 
     // Extensions (if any)
-    private Map<String, String> extensions; // Extensions (optional)
+    private HashMap<String, String> extensions; // Extensions (optional)
 
     public CustomX509XCurvePublicKey() {
         super();
@@ -59,6 +59,29 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
         this.publicKey = publicKey;
         this.group = group;
         this.signature = signature;
+    }
+
+    public CustomX509XCurvePublicKey(CustomX509XCurvePublicKey other) {
+        super(other);
+        group = other.group;
+        publicKey = other.publicKey != null ? other.publicKey.clone() : null;
+        issuer = other.issuer;
+        subject = other.subject;
+        publicKeyAlgorithm = other.publicKeyAlgorithm;
+        version = other.version;
+        serial = other.serial;
+        signatureAlgorithm = other.signatureAlgorithm;
+        signature = other.signature != null ? other.signature.clone() : null;
+        subjectKeyIdentifier =
+                other.subjectKeyIdentifier != null ? other.subjectKeyIdentifier.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomX509XCurvePublicKey createCopy() {
+        return new CustomX509XCurvePublicKey(this);
     }
 
     // Getter and setter for public key
@@ -166,7 +189,7 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 

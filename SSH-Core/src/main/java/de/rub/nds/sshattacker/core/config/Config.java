@@ -15,7 +15,8 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
+import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponseEntries;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -297,7 +298,7 @@ public class Config implements Serializable {
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
-    private List<AbstractExtension<?>> clientSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
     @XmlElementWrapper
@@ -310,7 +311,7 @@ public class Config implements Serializable {
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
-    private List<AbstractExtension<?>> serverSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Flag for enabling and disabling the server-sig-algs extension */
     private boolean respectServerSigAlgsExtension = true;
@@ -348,7 +349,7 @@ public class Config implements Serializable {
     /** The List of responses used for UserAuthInfoResponseMessage */
     @XmlElement(name = "preConfiguredAuthResponse")
     @XmlElementWrapper
-    private List<AuthenticationResponse> preConfiguredAuthResponses;
+    private ArrayList<AuthenticationResponseEntries> preConfiguredAuthResponses;
 
     /** The List of user keys for public key authentication */
     @XmlElement(name = "userKey")
@@ -484,7 +485,7 @@ public class Config implements Serializable {
         @XmlElement(type = SftpExtensionVendorId.class, name = "SftpExtensionVendorId"),
         @XmlElement(type = SftpExtensionWithVersion.class, name = "SftpExtensionWithVersion")
     })
-    private List<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+    private ArrayList<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
 
     /** List of SFTP extensions supported by the server */
     @XmlElementWrapper
@@ -513,7 +514,7 @@ public class Config implements Serializable {
         @XmlElement(type = SftpExtensionVendorId.class, name = "SftpExtensionVendorId"),
         @XmlElement(type = SftpExtensionWithVersion.class, name = "SftpExtensionWithVersion")
     })
-    private List<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
+    private ArrayList<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
 
     // endregion
 
@@ -1034,13 +1035,16 @@ public class Config implements Serializable {
         username = "sshattacker";
         password = "secret";
 
-        preConfiguredAuthResponses = new LinkedList<>();
-        AuthenticationResponse preConfiguredAuthResponse1 = new AuthenticationResponse();
-        preConfiguredAuthResponse1.add(new AuthenticationResponse.ResponseEntry(password, false));
-        preConfiguredAuthResponses.add(preConfiguredAuthResponse1);
-        AuthenticationResponse preConfiguredAuthResponse2 = new AuthenticationResponse();
-        preConfiguredAuthResponse2.add(new AuthenticationResponse.ResponseEntry(false));
-        preConfiguredAuthResponses.add(preConfiguredAuthResponse2);
+        preConfiguredAuthResponses = new ArrayList<>();
+
+        ArrayList<AuthenticationResponseEntry> preConfiguredAuthResponse1 = new ArrayList<>();
+        preConfiguredAuthResponse1.add(new AuthenticationResponseEntry(password));
+        preConfiguredAuthResponses.add(
+                new AuthenticationResponseEntries(preConfiguredAuthResponse1));
+        ArrayList<AuthenticationResponseEntry> preConfiguredAuthResponse2 = new ArrayList<>();
+        preConfiguredAuthResponse2.add(new AuthenticationResponseEntry());
+        preConfiguredAuthResponses.add(
+                new AuthenticationResponseEntries(preConfiguredAuthResponse2));
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
         // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f
@@ -1640,11 +1644,11 @@ public class Config implements Serializable {
     // region Getters SSH Extensions
 
     // section general extensions
-    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getClientSupportedExtensions() {
         return clientSupportedExtensions;
     }
 
-    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getServerSupportedExtensions() {
         return serverSupportedExtensions;
     }
 
@@ -1675,11 +1679,13 @@ public class Config implements Serializable {
     // region Setters SSH Extensions
 
     // section general extensions
-    public void setClientSupportedExtensions(List<AbstractExtension<?>> clientSupportedExtensions) {
+    public void setClientSupportedExtensions(
+            ArrayList<AbstractExtension<?>> clientSupportedExtensions) {
         this.clientSupportedExtensions = clientSupportedExtensions;
     }
 
-    public void setServerSupportedExtensions(List<AbstractExtension<?>> serverSupportedExtensions) {
+    public void setServerSupportedExtensions(
+            ArrayList<AbstractExtension<?>> serverSupportedExtensions) {
         this.serverSupportedExtensions = serverSupportedExtensions;
     }
 
@@ -1830,7 +1836,7 @@ public class Config implements Serializable {
         return serviceName;
     }
 
-    public List<AuthenticationResponse> getPreConfiguredAuthResponses() {
+    public ArrayList<AuthenticationResponseEntries> getPreConfiguredAuthResponses() {
         return preConfiguredAuthResponses;
     }
 
@@ -1857,7 +1863,7 @@ public class Config implements Serializable {
     }
 
     public void setPreConfiguredAuthResponses(
-            List<AuthenticationResponse> preConfiguredAuthResponses) {
+            ArrayList<AuthenticationResponseEntries> preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
 
@@ -2199,11 +2205,11 @@ public class Config implements Serializable {
     // region Getters SFTP Extensions
 
     // section general extensions
-    public List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
+    public ArrayList<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
         return sftpClientSupportedExtensions;
     }
 
-    public List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
+    public ArrayList<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
         return sftpServerSupportedExtensions;
     }
 
@@ -2213,12 +2219,12 @@ public class Config implements Serializable {
 
     // section general extensions
     public void setSftpClientSupportedExtensions(
-            List<SftpAbstractExtension<?>> sftpClientSupportedExtensions) {
+            ArrayList<SftpAbstractExtension<?>> sftpClientSupportedExtensions) {
         this.sftpClientSupportedExtensions = sftpClientSupportedExtensions;
     }
 
     public void setSftpServerSupportedExtensions(
-            List<SftpAbstractExtension<?>> sftpServerSupportedExtensions) {
+            ArrayList<SftpAbstractExtension<?>> sftpServerSupportedExtensions) {
         this.sftpServerSupportedExtensions = sftpServerSupportedExtensions;
     }
 

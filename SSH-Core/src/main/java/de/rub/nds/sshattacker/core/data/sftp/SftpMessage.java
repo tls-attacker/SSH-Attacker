@@ -16,6 +16,15 @@ public abstract class SftpMessage<T extends SftpMessage<T>> extends DataMessage<
 
     protected ModifiableByte packetType;
 
+    protected SftpMessage() {
+        super();
+    }
+
+    protected SftpMessage(SftpMessage<T> other) {
+        super();
+        packetType = other.packetType != null ? other.packetType.createCopy() : null;
+    }
+
     public ModifiableByte getPacketType() {
         return packetType;
     }

@@ -19,6 +19,20 @@ public class SftpRequestFileSetStatMessage
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
+    public SftpRequestFileSetStatMessage() {
+        super();
+    }
+
+    public SftpRequestFileSetStatMessage(SftpRequestFileSetStatMessage other) {
+        super(other);
+        attributes = other.attributes != null ? other.attributes.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestFileSetStatMessage createCopy() {
+        return new SftpRequestFileSetStatMessage(this);
+    }
+
     public SftpFileAttributes getAttributes() {
         return attributes;
     }

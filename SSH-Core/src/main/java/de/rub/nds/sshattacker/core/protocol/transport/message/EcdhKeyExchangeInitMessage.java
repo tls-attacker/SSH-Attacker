@@ -20,6 +20,25 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableByteArray ephemeralPublicKey;
 
+    public EcdhKeyExchangeInitMessage() {
+        super();
+    }
+
+    public EcdhKeyExchangeInitMessage(EcdhKeyExchangeInitMessage other) {
+        super(other);
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+    }
+
+    @Override
+    public EcdhKeyExchangeInitMessage createCopy() {
+        return new EcdhKeyExchangeInitMessage(this);
+    }
+
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;
     }

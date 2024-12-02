@@ -25,6 +25,26 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    public DisconnectMessage() {
+        super();
+    }
+
+    public DisconnectMessage(DisconnectMessage other) {
+        super(other);
+        reasonCode = other.reasonCode != null ? other.reasonCode.createCopy() : null;
+        descriptionLength =
+                other.descriptionLength != null ? other.descriptionLength.createCopy() : null;
+        description = other.description != null ? other.description.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public DisconnectMessage createCopy() {
+        return new DisconnectMessage(this);
+    }
+
     public ModifiableInteger getReasonCode() {
         return reasonCode;
     }

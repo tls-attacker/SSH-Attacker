@@ -19,6 +19,20 @@ public class SftpRequestMakeDirMessage
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
+    public SftpRequestMakeDirMessage() {
+        super();
+    }
+
+    public SftpRequestMakeDirMessage(SftpRequestMakeDirMessage other) {
+        super(other);
+        attributes = other.attributes != null ? other.attributes.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestMakeDirMessage createCopy() {
+        return new SftpRequestMakeDirMessage(this);
+    }
+
     public SftpFileAttributes getAttributes() {
         return attributes;
     }

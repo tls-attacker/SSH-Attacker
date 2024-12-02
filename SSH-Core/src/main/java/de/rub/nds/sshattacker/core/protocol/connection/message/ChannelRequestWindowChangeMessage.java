@@ -20,6 +20,23 @@ public class ChannelRequestWindowChangeMessage
     private ModifiableInteger widthPixels;
     private ModifiableInteger heightPixels;
 
+    public ChannelRequestWindowChangeMessage() {
+        super();
+    }
+
+    public ChannelRequestWindowChangeMessage(ChannelRequestWindowChangeMessage other) {
+        super(other);
+        widthColumns = other.widthColumns != null ? other.widthColumns.createCopy() : null;
+        heightRows = other.heightRows != null ? other.heightRows.createCopy() : null;
+        widthPixels = other.widthPixels != null ? other.widthPixels.createCopy() : null;
+        heightPixels = other.heightPixels != null ? other.heightPixels.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestWindowChangeMessage createCopy() {
+        return new ChannelRequestWindowChangeMessage(this);
+    }
+
     public ModifiableInteger getWidthColumns() {
         return widthColumns;
     }

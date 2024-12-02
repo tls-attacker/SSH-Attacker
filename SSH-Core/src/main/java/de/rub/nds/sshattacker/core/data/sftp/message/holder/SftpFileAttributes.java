@@ -40,7 +40,7 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     @XmlElementWrapper
     @XmlElements(
             @XmlElement(type = SftpFileExtendedAttribute.class, name = "SftpFileExtendedAttribute"))
-    private List<SftpFileExtendedAttribute> extendedAttributes = new ArrayList<>();
+    private ArrayList<SftpFileExtendedAttribute> extendedAttributes = new ArrayList<>();
 
     // SFTP V4
 
@@ -59,7 +59,48 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(@XmlElement(type = SftpAclEntry.class, name = "SftpAclEntry"))
-    private List<SftpAclEntry> aclEntries = new ArrayList<>();
+    private ArrayList<SftpAclEntry> aclEntries = new ArrayList<>();
+
+    public SftpFileAttributes() {
+        super();
+    }
+
+    public SftpFileAttributes(SftpFileAttributes other) {
+        super(other);
+        flags = other.flags != null ? other.flags.createCopy() : null;
+        size = other.size != null ? other.size.createCopy() : null;
+        userId = other.userId != null ? other.userId.createCopy() : null;
+        groupId = other.groupId != null ? other.groupId.createCopy() : null;
+        permissions = other.permissions != null ? other.permissions.createCopy() : null;
+        accessTime = other.accessTime != null ? other.accessTime.createCopy() : null;
+        modifyTime = other.modifyTime != null ? other.modifyTime.createCopy() : null;
+        extendedCount = other.extendedCount != null ? other.extendedCount.createCopy() : null;
+        if (other.extendedAttributes != null) {
+            extendedAttributes = new ArrayList<>();
+            for (SftpFileExtendedAttribute item : other.extendedAttributes) {
+                extendedAttributes.add(item != null ? item.createCopy() : null);
+            }
+        }
+        type = other.type != null ? other.type.createCopy() : null;
+        ownerLength = other.ownerLength != null ? other.ownerLength.createCopy() : null;
+        owner = other.owner != null ? other.owner.createCopy() : null;
+        groupLength = other.groupLength != null ? other.groupLength.createCopy() : null;
+        group = other.group != null ? other.group.createCopy() : null;
+        createTime = other.createTime != null ? other.createTime.createCopy() : null;
+        aclLength = other.aclLength != null ? other.aclLength.createCopy() : null;
+        aclEntriesCount = other.aclEntriesCount != null ? other.aclEntriesCount.createCopy() : null;
+        if (other.aclEntries != null) {
+            aclEntries = new ArrayList<>();
+            for (SftpAclEntry item : other.aclEntries) {
+                aclEntries.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public SftpFileAttributes createCopy() {
+        return new SftpFileAttributes(this);
+    }
 
     public ModifiableInteger getFlags() {
         return flags;
@@ -253,12 +294,12 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         return extendedAttributes;
     }
 
-    public void setExtendedAttributes(List<SftpFileExtendedAttribute> extendedAttributes) {
+    public void setExtendedAttributes(ArrayList<SftpFileExtendedAttribute> extendedAttributes) {
         setExtendedAttributes(extendedAttributes, false);
     }
 
     public void setExtendedAttributes(
-            List<SftpFileExtendedAttribute> extendedAttributes, boolean adjustLengthField) {
+            ArrayList<SftpFileExtendedAttribute> extendedAttributes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setExtendedCount(extendedAttributes.size());
         }
@@ -499,11 +540,11 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         return aclEntries;
     }
 
-    public void setAclEntries(List<SftpAclEntry> aclEntries) {
+    public void setAclEntries(ArrayList<SftpAclEntry> aclEntries) {
         setAclEntries(aclEntries, false);
     }
 
-    public void setAclEntries(List<SftpAclEntry> aclEntries, boolean adjustLengthField) {
+    public void setAclEntries(ArrayList<SftpAclEntry> aclEntries, boolean adjustLengthField) {
         if (adjustLengthField) {
             setAclEntriesCount(aclEntries.size());
         }

@@ -37,6 +37,17 @@ public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateK
         this.privateExponent = privateExponent;
     }
 
+    public CustomRsaPrivateKey(CustomRsaPrivateKey other) {
+        super(other);
+        modulus = other.modulus;
+        privateExponent = other.privateExponent;
+    }
+
+    @Override
+    public CustomRsaPrivateKey createCopy() {
+        return new CustomRsaPrivateKey(this);
+    }
+
     @Override
     public BigInteger getModulus() {
         return modulus;

@@ -17,6 +17,21 @@ public class SftpRequestUnknownMessage
 
     private ModifiableByteArray requestSpecificData;
 
+    public SftpRequestUnknownMessage() {
+        super();
+    }
+
+    public SftpRequestUnknownMessage(SftpRequestUnknownMessage other) {
+        super(other);
+        requestSpecificData =
+                other.requestSpecificData != null ? other.requestSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestUnknownMessage createCopy() {
+        return new SftpRequestUnknownMessage(this);
+    }
+
     public ModifiableByteArray getRequestSpecificData() {
         return requestSpecificData;
     }

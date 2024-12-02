@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
 
+    public UserAuthSuccessMessage() {
+        super();
+    }
+
+    public UserAuthSuccessMessage(UserAuthSuccessMessage other) {
+        super(other);
+    }
+
+    @Override
+    public UserAuthSuccessMessage createCopy() {
+        return new UserAuthSuccessMessage(this);
+    }
+
     @Override
     public UserAuthSuccessMessageHandler getHandler(SshContext context) {
         return new UserAuthSuccessMessageHandler(context, this);

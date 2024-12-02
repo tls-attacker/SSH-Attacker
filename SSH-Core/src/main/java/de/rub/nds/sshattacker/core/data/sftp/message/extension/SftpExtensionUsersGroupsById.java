@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionUsersGroupsById
         extends SftpExtensionWithVersion<SftpExtensionUsersGroupsById> {
 
+    public SftpExtensionUsersGroupsById() {
+        super();
+    }
+
+    public SftpExtensionUsersGroupsById(SftpExtensionUsersGroupsById other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionUsersGroupsById createCopy() {
+        return new SftpExtensionUsersGroupsById(this);
+    }
+
     @Override
     public SftpExtensionUsersGroupsByIdHandler getHandler(SshContext context) {
         return new SftpExtensionUsersGroupsByIdHandler(context, this);

@@ -24,6 +24,26 @@ public class SftpResponseCheckFileMessage
     private ModifiableString usedHashAlgorithm;
     private ModifiableByteArray hash;
 
+    public SftpResponseCheckFileMessage() {
+        super();
+    }
+
+    public SftpResponseCheckFileMessage(SftpResponseCheckFileMessage other) {
+        super(other);
+        usedHashAlgorithmLength =
+                other.usedHashAlgorithmLength != null
+                        ? other.usedHashAlgorithmLength.createCopy()
+                        : null;
+        usedHashAlgorithm =
+                other.usedHashAlgorithm != null ? other.usedHashAlgorithm.createCopy() : null;
+        hash = other.hash != null ? other.hash.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseCheckFileMessage createCopy() {
+        return new SftpResponseCheckFileMessage(this);
+    }
+
     public ModifiableInteger getUsedHashAlgorithmLength() {
         return usedHashAlgorithmLength;
     }

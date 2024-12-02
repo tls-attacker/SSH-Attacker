@@ -19,6 +19,21 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public ChannelDataMessage() {
+        super();
+    }
+
+    public ChannelDataMessage(ChannelDataMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public ChannelDataMessage createCopy() {
+        return new ChannelDataMessage(this);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }

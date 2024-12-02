@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestLimitsMessage extends SftpRequestExtendedMessage<SftpRequestLimitsMessage> {
 
+    public SftpRequestLimitsMessage() {
+        super();
+    }
+
+    public SftpRequestLimitsMessage(SftpRequestLimitsMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestLimitsMessage createCopy() {
+        return new SftpRequestLimitsMessage(this);
+    }
+
     @Override
     public SftpRequestLimitsMessageHandler getHandler(SshContext context) {
         return new SftpRequestLimitsMessageHandler(context, this);

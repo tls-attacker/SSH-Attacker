@@ -22,6 +22,22 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
 
+    public ServiceRequestMessage() {
+        super();
+    }
+
+    public ServiceRequestMessage(ServiceRequestMessage other) {
+        super(other);
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+    }
+
+    @Override
+    public ServiceRequestMessage createCopy() {
+        return new ServiceRequestMessage(this);
+    }
+
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;
     }

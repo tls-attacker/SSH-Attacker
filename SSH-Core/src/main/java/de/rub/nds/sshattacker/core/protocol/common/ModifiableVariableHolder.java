@@ -26,6 +26,17 @@ public abstract class ModifiableVariableHolder implements Serializable {
         super();
     }
 
+    protected ModifiableVariableHolder(ModifiableVariableHolder other) {
+        super();
+    }
+
+    /**
+     * Copies this ModifiableVariableHolder
+     *
+     * @return A copy of this ModifiableVariableHolder
+     */
+    public abstract ModifiableVariableHolder createCopy();
+
     /**
      * Lists all the modifiable variables declared in the class
      *

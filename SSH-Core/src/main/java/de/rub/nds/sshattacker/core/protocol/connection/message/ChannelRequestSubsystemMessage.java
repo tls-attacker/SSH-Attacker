@@ -21,6 +21,22 @@ public class ChannelRequestSubsystemMessage
     private ModifiableInteger subsystemNameLength;
     private ModifiableString subsystemName;
 
+    public ChannelRequestSubsystemMessage() {
+        super();
+    }
+
+    public ChannelRequestSubsystemMessage(ChannelRequestSubsystemMessage other) {
+        super(other);
+        subsystemNameLength =
+                other.subsystemNameLength != null ? other.subsystemNameLength.createCopy() : null;
+        subsystemName = other.subsystemName != null ? other.subsystemName.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestSubsystemMessage createCopy() {
+        return new ChannelRequestSubsystemMessage(this);
+    }
+
     public ModifiableInteger getSubsystemNameLength() {
         return subsystemNameLength;
     }

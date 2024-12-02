@@ -24,6 +24,26 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    public SftpResponseStatusMessage() {
+        super();
+    }
+
+    public SftpResponseStatusMessage(SftpResponseStatusMessage other) {
+        super(other);
+        statusCode = other.statusCode != null ? other.statusCode.createCopy() : null;
+        errorMessageLength =
+                other.errorMessageLength != null ? other.errorMessageLength.createCopy() : null;
+        errorMessage = other.errorMessage != null ? other.errorMessage.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public SftpResponseStatusMessage createCopy() {
+        return new SftpResponseStatusMessage(this);
+    }
+
     public ModifiableInteger getStatusCode() {
         return statusCode;
     }

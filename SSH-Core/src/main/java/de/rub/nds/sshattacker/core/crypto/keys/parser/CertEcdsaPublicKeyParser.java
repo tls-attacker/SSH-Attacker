@@ -24,7 +24,6 @@ import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -138,7 +137,7 @@ public class CertEcdsaPublicKeyParser
         int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed criticalOptionsLength: {}", criticalOptionsLength);
 
-        Map<String, String> criticalOptionsMap = new HashMap<>();
+        HashMap<String, String> criticalOptionsMap = new HashMap<>();
         if (criticalOptionsLength > 0) {
             int bytesParsed = 0;
             while (bytesParsed < criticalOptionsLength) {
@@ -160,7 +159,7 @@ public class CertEcdsaPublicKeyParser
         int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed extensionsLength: {}", extensionsLength);
 
-        Map<String, String> extensionsMap = new HashMap<>();
+        HashMap<String, String> extensionsMap = new HashMap<>();
         if (extensionsLength > 0) {
             int bytesParsed = 0;
             while (bytesParsed < extensionsLength) {

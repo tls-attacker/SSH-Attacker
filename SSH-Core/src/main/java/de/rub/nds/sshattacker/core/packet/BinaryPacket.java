@@ -53,6 +53,25 @@ public class BinaryPacket extends AbstractPacket {
     /** A holder instance for all temporary fields used during crypto computations. */
     private PacketCryptoComputations computations;
 
+    public BinaryPacket() {
+        super();
+    }
+
+    public BinaryPacket(BinaryPacket other) {
+        super(other);
+        length = other.length != null ? other.length.createCopy() : null;
+        paddingLength = other.paddingLength != null ? other.paddingLength.createCopy() : null;
+        padding = other.padding != null ? other.padding.createCopy() : null;
+        mac = other.mac != null ? other.mac.createCopy() : null;
+        sequenceNumber = other.sequenceNumber != null ? other.sequenceNumber.createCopy() : null;
+        computations = other.computations != null ? other.computations.createCopy() : null;
+    }
+
+    @Override
+    public BinaryPacket createCopy() {
+        return new BinaryPacket(this);
+    }
+
     public ModifiableInteger getLength() {
         return length;
     }

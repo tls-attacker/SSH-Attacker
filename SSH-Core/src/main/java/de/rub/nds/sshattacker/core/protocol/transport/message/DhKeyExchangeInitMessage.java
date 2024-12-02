@@ -20,6 +20,25 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;
 
+    public DhKeyExchangeInitMessage() {
+        super();
+    }
+
+    public DhKeyExchangeInitMessage(DhKeyExchangeInitMessage other) {
+        super(other);
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+    }
+
+    @Override
+    public DhKeyExchangeInitMessage createCopy() {
+        return new DhKeyExchangeInitMessage(this);
+    }
+
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;
     }

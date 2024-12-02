@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelRequestShellMessage> {
 
+    public ChannelRequestShellMessage() {
+        super();
+    }
+
+    public ChannelRequestShellMessage(ChannelRequestShellMessage other) {
+        super(other);
+    }
+
+    @Override
+    public ChannelRequestShellMessage createCopy() {
+        return new ChannelRequestShellMessage(this);
+    }
+
     @Override
     public ChannelRequestShellMessageHandler getHandler(SshContext context) {
         return new ChannelRequestShellMessageHandler(context, this);

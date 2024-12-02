@@ -29,14 +29,41 @@ public class SftpRequestUsersGroupsByIdMessage
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(@XmlElement(type = SftpIdEntry.class, name = "SftpIdEntry"))
-    private List<SftpIdEntry> userIds = new ArrayList<>();
+    private ArrayList<SftpIdEntry> userIds = new ArrayList<>();
 
     private ModifiableInteger groupIdsLength;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(@XmlElement(type = SftpIdEntry.class, name = "SftpIdEntry"))
-    private List<SftpIdEntry> groupIds = new ArrayList<>();
+    private ArrayList<SftpIdEntry> groupIds = new ArrayList<>();
+
+    public SftpRequestUsersGroupsByIdMessage() {
+        super();
+    }
+
+    public SftpRequestUsersGroupsByIdMessage(SftpRequestUsersGroupsByIdMessage other) {
+        super(other);
+        userIdsLength = other.userIdsLength != null ? other.userIdsLength.createCopy() : null;
+        if (other.userIds != null) {
+            userIds = new ArrayList<>();
+            for (SftpIdEntry item : other.userIds) {
+                userIds.add(item != null ? item.createCopy() : null);
+            }
+        }
+        groupIdsLength = other.groupIdsLength != null ? other.groupIdsLength.createCopy() : null;
+        if (other.groupIds != null) {
+            groupIds = new ArrayList<>();
+            for (SftpIdEntry item : other.groupIds) {
+                groupIds.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public SftpRequestUsersGroupsByIdMessage createCopy() {
+        return new SftpRequestUsersGroupsByIdMessage(this);
+    }
 
     public ModifiableInteger getUserIdsLength() {
         return userIdsLength;
@@ -60,7 +87,7 @@ public class SftpRequestUsersGroupsByIdMessage
         }
     }
 
-    public List<SftpIdEntry> getUserIds() {
+    public ArrayList<SftpIdEntry> getUserIds() {
         return userIds;
     }
 
@@ -68,12 +95,15 @@ public class SftpRequestUsersGroupsByIdMessage
         return userIds.stream().map(SftpIdEntry::getId).collect(Collectors.toList());
     }
 
-    public void setUserIds(List<SftpIdEntry> userIds) {
+    public void setUserIds(ArrayList<SftpIdEntry> userIds) {
         this.userIds = userIds;
     }
 
     public void setUserIdsDirect(List<ModifiableInteger> userIds) {
-        this.userIds = userIds.stream().map(SftpIdEntry::new).collect(Collectors.toList());
+        this.userIds =
+                userIds.stream()
+                        .map(SftpIdEntry::new)
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void addUserId(int userId) {
@@ -110,7 +140,7 @@ public class SftpRequestUsersGroupsByIdMessage
         }
     }
 
-    public List<SftpIdEntry> getGroupIds() {
+    public ArrayList<SftpIdEntry> getGroupIds() {
         return groupIds;
     }
 
@@ -118,12 +148,15 @@ public class SftpRequestUsersGroupsByIdMessage
         return groupIds.stream().map(SftpIdEntry::getId).collect(Collectors.toList());
     }
 
-    public void setGroupIds(List<SftpIdEntry> groupIds) {
+    public void setGroupIds(ArrayList<SftpIdEntry> groupIds) {
         this.groupIds = groupIds;
     }
 
     public void setGroupIdsDirect(List<ModifiableInteger> groupIds) {
-        this.groupIds = groupIds.stream().map(SftpIdEntry::new).collect(Collectors.toList());
+        this.groupIds =
+                groupIds.stream()
+                        .map(SftpIdEntry::new)
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void addGroupId(int groupId) {

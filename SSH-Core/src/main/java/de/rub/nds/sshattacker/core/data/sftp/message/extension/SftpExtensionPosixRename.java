@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionPosixRename extends SftpExtensionWithVersion<SftpExtensionPosixRename> {
 
+    public SftpExtensionPosixRename() {
+        super();
+    }
+
+    public SftpExtensionPosixRename(SftpExtensionPosixRename other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionPosixRename createCopy() {
+        return new SftpExtensionPosixRename(this);
+    }
+
     @Override
     public SftpExtensionPosixRenameHandler getHandler(SshContext context) {
         return new SftpExtensionPosixRenameHandler(context, this);

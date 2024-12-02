@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -492,7 +493,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of client supported extensions
      */
-    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getClientSupportedExtensions() {
         return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
     }
 
@@ -503,7 +504,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of server supported extensions
      */
-    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getServerSupportedExtensions() {
         return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
     }
 
@@ -1009,6 +1010,7 @@ public class DefaultChooser extends Chooser {
 
     // endregion
 
+    // region Authentication
     /**
      * Retrieves the primary authentication method from config. A context field for authentication
      * method does not yet exist as the authentication protocol is only implemented for SSH-Attacker
@@ -1020,6 +1022,21 @@ public class DefaultChooser extends Chooser {
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
     }
+
+    /**
+     * @return The next pre-configured authentication responses
+     */
+    @Override
+    public ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses() {
+        int nextIndex = context.getNextPreConfiguredAuthResponsIndex();
+        if (nextIndex < config.getPreConfiguredAuthResponses().size()) {
+            nextIndex++;
+            return config.getPreConfiguredAuthResponses().get(nextIndex).getResponseEntries();
+        }
+        return null;
+    }
+
+    // endregion
 
     // region SFTP
     /**
@@ -1067,7 +1084,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of client supported SFTP extensions
      */
-    public List<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
+    public ArrayList<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
         return context.getSftpClientSupportedExtensions()
                 .orElse(config.getSftpClientSupportedExtensions());
     }
@@ -1079,7 +1096,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of server supported SFTP extensions
      */
-    public List<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
+    public ArrayList<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
         return context.getSftpServerSupportedExtensions()
                 .orElse(config.getSftpServerSupportedExtensions());
     }

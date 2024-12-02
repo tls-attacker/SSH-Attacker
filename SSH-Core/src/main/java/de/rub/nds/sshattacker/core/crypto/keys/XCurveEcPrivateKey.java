@@ -58,6 +58,17 @@ public class XCurveEcPrivateKey extends CustomPrivateKey {
         this.scalar = scalar;
     }
 
+    public XCurveEcPrivateKey(XCurveEcPrivateKey other) {
+        super(other);
+        group = other.group;
+        scalar = other.scalar != null ? other.scalar.clone() : null;
+    }
+
+    @Override
+    public XCurveEcPrivateKey createCopy() {
+        return new XCurveEcPrivateKey(this);
+    }
+
     public NamedEcGroup getGroup() {
         return group;
     }

@@ -26,6 +26,25 @@ public class DebugMessage extends SshMessage<DebugMessage> {
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    public DebugMessage() {
+        super();
+    }
+
+    public DebugMessage(DebugMessage other) {
+        super(other);
+        alwaysDisplay = other.alwaysDisplay != null ? other.alwaysDisplay.createCopy() : null;
+        messageLength = other.messageLength != null ? other.messageLength.createCopy() : null;
+        message = other.message != null ? other.message.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public DebugMessage createCopy() {
+        return new DebugMessage(this);
+    }
+
     public ModifiableByte getAlwaysDisplay() {
         return alwaysDisplay;
     }

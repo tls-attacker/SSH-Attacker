@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthNoneMessage extends UserAuthRequestMessage<UserAuthNoneMessage> {
 
+    public UserAuthNoneMessage() {
+        super();
+    }
+
+    public UserAuthNoneMessage(UserAuthNoneMessage other) {
+        super(other);
+    }
+
+    @Override
+    public UserAuthNoneMessage createCopy() {
+        return new UserAuthNoneMessage(this);
+    }
+
     @Override
     public UserAuthNoneMessageHandler getHandler(SshContext context) {
         return new UserAuthNoneMessageHandler(context, this);

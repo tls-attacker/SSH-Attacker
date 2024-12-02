@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestReadLinkMessage
         extends SftpRequestWithPathMessage<SftpRequestReadLinkMessage> {
 
+    public SftpRequestReadLinkMessage() {
+        super();
+    }
+
+    public SftpRequestReadLinkMessage(SftpRequestReadLinkMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestReadLinkMessage createCopy() {
+        return new SftpRequestReadLinkMessage(this);
+    }
+
     @Override
     public SftpRequestReadLinkMessageHandler getHandler(SshContext context) {
         return new SftpRequestReadLinkMessageHandler(context, this);

@@ -32,6 +32,30 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     private ModifiableInteger transientPublicKeyBytesLength;
     private ModifiableByteArray transientPublicKeyBytes;
 
+    public RsaKeyExchangePubkeyMessage() {
+        super();
+    }
+
+    public RsaKeyExchangePubkeyMessage(RsaKeyExchangePubkeyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        transientPublicKeyBytesLength =
+                other.transientPublicKeyBytesLength != null
+                        ? other.transientPublicKeyBytesLength.createCopy()
+                        : null;
+        transientPublicKeyBytes =
+                other.transientPublicKeyBytes != null
+                        ? other.transientPublicKeyBytes.createCopy()
+                        : null;
+    }
+
+    @Override
+    public RsaKeyExchangePubkeyMessage createCopy() {
+        return new RsaKeyExchangePubkeyMessage(this);
+    }
+
     // Host Key (K_S) Methods
     @Override
     public ModifiableInteger getHostKeyBytesLength() {

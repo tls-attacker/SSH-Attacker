@@ -32,6 +32,27 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     private ModifiableInteger acceptedPublicKeyAlgorithmsLength;
     private ModifiableString acceptedPublicKeyAlgorithms;
 
+    public ServerSigAlgsExtension() {
+        super();
+    }
+
+    public ServerSigAlgsExtension(ServerSigAlgsExtension other) {
+        super(other);
+        acceptedPublicKeyAlgorithmsLength =
+                other.acceptedPublicKeyAlgorithmsLength != null
+                        ? other.acceptedPublicKeyAlgorithmsLength.createCopy()
+                        : null;
+        acceptedPublicKeyAlgorithms =
+                other.acceptedPublicKeyAlgorithms != null
+                        ? other.acceptedPublicKeyAlgorithms.createCopy()
+                        : null;
+    }
+
+    @Override
+    public ServerSigAlgsExtension createCopy() {
+        return new ServerSigAlgsExtension(this);
+    }
+
     public ModifiableInteger getAcceptedPublicKeyAlgorithmsLength() {
         return acceptedPublicKeyAlgorithmsLength;
     }

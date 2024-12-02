@@ -27,6 +27,41 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
     private ModifiableByteArray certificatePublicKeyData;
     private ModifiableInteger certificatePublicKeyDataLength;
 
+    public HybridKeyExchangeInitMessage() {
+        super();
+    }
+
+    public HybridKeyExchangeInitMessage(HybridKeyExchangeInitMessage other) {
+        super(other);
+        agreementPublicKeyLength =
+                other.agreementPublicKeyLength != null
+                        ? other.agreementPublicKeyLength.createCopy()
+                        : null;
+        agreementPublicKey =
+                other.agreementPublicKey != null ? other.agreementPublicKey.createCopy() : null;
+        encapsulationPublicKeyLength =
+                other.encapsulationPublicKeyLength != null
+                        ? other.encapsulationPublicKeyLength.createCopy()
+                        : null;
+        encapsulationPublicKey =
+                other.encapsulationPublicKey != null
+                        ? other.encapsulationPublicKey.createCopy()
+                        : null;
+        certificatePublicKeyData =
+                other.certificatePublicKeyData != null
+                        ? other.certificatePublicKeyData.createCopy()
+                        : null;
+        certificatePublicKeyDataLength =
+                other.certificatePublicKeyDataLength != null
+                        ? other.certificatePublicKeyDataLength.createCopy()
+                        : null;
+    }
+
+    @Override
+    public HybridKeyExchangeInitMessage createCopy() {
+        return new HybridKeyExchangeInitMessage(this);
+    }
+
     public ModifiableInteger getAgreementPublicKeyLength() {
         return agreementPublicKeyLength;
     }

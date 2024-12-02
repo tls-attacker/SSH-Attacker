@@ -25,6 +25,25 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     private ModifiableInteger newPasswordLength;
     private ModifiableString newPassword;
 
+    public UserAuthPasswordMessage() {
+        super();
+    }
+
+    public UserAuthPasswordMessage(UserAuthPasswordMessage other) {
+        super(other);
+        changePassword = other.changePassword != null ? other.changePassword.createCopy() : null;
+        passwordLength = other.passwordLength != null ? other.passwordLength.createCopy() : null;
+        password = other.password != null ? other.password.createCopy() : null;
+        newPasswordLength =
+                other.newPasswordLength != null ? other.newPasswordLength.createCopy() : null;
+        newPassword = other.newPassword != null ? other.newPassword.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPasswordMessage createCopy() {
+        return new UserAuthPasswordMessage(this);
+    }
+
     public ModifiableByte getChangePassword() {
         return changePassword;
     }

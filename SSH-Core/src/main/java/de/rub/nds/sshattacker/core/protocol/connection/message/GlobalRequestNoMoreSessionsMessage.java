@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestNoMoreSessionsMessage
         extends GlobalRequestMessage<GlobalRequestNoMoreSessionsMessage> {
 
+    public GlobalRequestNoMoreSessionsMessage() {
+        super();
+    }
+
+    public GlobalRequestNoMoreSessionsMessage(GlobalRequestNoMoreSessionsMessage other) {
+        super(other);
+    }
+
+    @Override
+    public GlobalRequestNoMoreSessionsMessage createCopy() {
+        return new GlobalRequestNoMoreSessionsMessage(this);
+    }
+
     @Override
     public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {
         return new GlobalRequestNoMoreSessionsMessageHandler(context, this);

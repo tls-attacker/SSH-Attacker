@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestFileStatVfsMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestFileStatVfsMessage> {
 
+    public SftpRequestFileStatVfsMessage() {
+        super();
+    }
+
+    public SftpRequestFileStatVfsMessage(SftpRequestFileStatVfsMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestFileStatVfsMessage createCopy() {
+        return new SftpRequestFileStatVfsMessage(this);
+    }
+
     @Override
     public SftpRequestFileStatVfsMessageHandler getHandler(SshContext context) {
         return new SftpRequestFileStatVfsMessageHandler(context, this);

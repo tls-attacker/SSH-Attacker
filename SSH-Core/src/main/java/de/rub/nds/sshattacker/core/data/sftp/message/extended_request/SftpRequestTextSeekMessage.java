@@ -17,6 +17,20 @@ public class SftpRequestTextSeekMessage
 
     private ModifiableLong lineNumber;
 
+    public SftpRequestTextSeekMessage() {
+        super();
+    }
+
+    public SftpRequestTextSeekMessage(SftpRequestTextSeekMessage other) {
+        super(other);
+        lineNumber = other.lineNumber != null ? other.lineNumber.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestTextSeekMessage createCopy() {
+        return new SftpRequestTextSeekMessage(this);
+    }
+
     public ModifiableLong getLineNumber() {
         return lineNumber;
     }

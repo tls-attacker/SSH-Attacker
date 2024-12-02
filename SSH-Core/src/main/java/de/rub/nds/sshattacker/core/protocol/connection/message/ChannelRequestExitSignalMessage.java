@@ -8,13 +8,14 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
@@ -22,11 +23,34 @@ public class ChannelRequestExitSignalMessage
 
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
-    private ModifiableBoolean coreDump;
+    private ModifiableByte coreDump;
     private ModifiableInteger errorMessageLength;
     private ModifiableString errorMessage;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public ChannelRequestExitSignalMessage() {
+        super();
+    }
+
+    public ChannelRequestExitSignalMessage(ChannelRequestExitSignalMessage other) {
+        super(other);
+        signalNameLength =
+                other.signalNameLength != null ? other.signalNameLength.createCopy() : null;
+        signalName = other.signalName != null ? other.signalName.createCopy() : null;
+        coreDump = other.coreDump != null ? other.coreDump.createCopy() : null;
+        errorMessageLength =
+                other.errorMessageLength != null ? other.errorMessageLength.createCopy() : null;
+        errorMessage = other.errorMessage != null ? other.errorMessage.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestExitSignalMessage createCopy() {
+        return new ChannelRequestExitSignalMessage(this);
+    }
 
     public ModifiableInteger getSignalNameLength() {
         return signalNameLength;
@@ -89,21 +113,25 @@ public class ChannelRequestExitSignalMessage
         setSignalName(signalName.toString(), adjustLengthField);
     }
 
-    public ModifiableBoolean getCoreDump() {
+    public ModifiableByte getCoreDump() {
         return coreDump;
     }
 
-    public void setCoreDump(boolean coreDump) {
+    public void setCoreDump(byte coreDump) {
         this.coreDump = ModifiableVariableFactory.safelySetValue(this.coreDump, coreDump);
     }
 
-    public void setSoftlyCoreDump(boolean coreDump) {
+    public void setCoreDump(boolean coreDump) {
+        setCoreDump(Converter.booleanToByte(coreDump));
+    }
+
+    public void setSoftlyCoreDump(byte coreDump) {
         if (this.coreDump == null || this.coreDump.getOriginalValue() == null) {
             this.coreDump = ModifiableVariableFactory.safelySetValue(this.coreDump, coreDump);
         }
     }
 
-    public void setCoreDump(ModifiableBoolean coreDump) {
+    public void setCoreDump(ModifiableByte coreDump) {
         this.coreDump = coreDump;
     }
 

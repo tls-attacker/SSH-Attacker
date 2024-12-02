@@ -127,7 +127,7 @@ public class X509EcdsaPublicKeyParser
                 LOGGER.debug("Parsed Curve Name: {}", curveName);
 
                 // Set Extensions, if any
-                Map<String, String> extensionsMap = parseExtensions(cert);
+                HashMap<String, String> extensionsMap = parseExtensions(cert);
                 customX509EcdsaPublicKey.setExtensions(extensionsMap);
                 if (extensionsMap != null && !extensionsMap.isEmpty()) {
                     LOGGER.debug("Parsed Certificate Extensions:");
@@ -253,8 +253,8 @@ public class X509EcdsaPublicKeyParser
         }
     }
 
-    private Map<String, String> parseExtensions(X509Certificate cert) {
-        Map<String, String> extensionsMap = new HashMap<>();
+    private HashMap<String, String> parseExtensions(X509Certificate cert) {
+        HashMap<String, String> extensionsMap = new HashMap<>();
 
         try {
             byte[] subjectKeyIdentifier =

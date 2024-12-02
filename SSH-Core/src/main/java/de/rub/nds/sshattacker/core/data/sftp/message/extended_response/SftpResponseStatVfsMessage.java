@@ -28,6 +28,36 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
     private ModifiableLong flags;
     private ModifiableLong maximumFilenameLength;
 
+    public SftpResponseStatVfsMessage() {
+        super();
+    }
+
+    public SftpResponseStatVfsMessage(SftpResponseStatVfsMessage other) {
+        super(other);
+        blockSize = other.blockSize != null ? other.blockSize.createCopy() : null;
+        fundamentalBlockSize =
+                other.fundamentalBlockSize != null ? other.fundamentalBlockSize.createCopy() : null;
+        countBlocks = other.countBlocks != null ? other.countBlocks.createCopy() : null;
+        freeBlocks = other.freeBlocks != null ? other.freeBlocks.createCopy() : null;
+        freeBlocksNonRoot =
+                other.freeBlocksNonRoot != null ? other.freeBlocksNonRoot.createCopy() : null;
+        fileInodes = other.fileInodes != null ? other.fileInodes.createCopy() : null;
+        freeInodes = other.freeInodes != null ? other.freeInodes.createCopy() : null;
+        freeInodesNonRoot =
+                other.freeInodesNonRoot != null ? other.freeInodesNonRoot.createCopy() : null;
+        systemId = other.systemId != null ? other.systemId.createCopy() : null;
+        flags = other.flags != null ? other.flags.createCopy() : null;
+        maximumFilenameLength =
+                other.maximumFilenameLength != null
+                        ? other.maximumFilenameLength.createCopy()
+                        : null;
+    }
+
+    @Override
+    public SftpResponseStatVfsMessage createCopy() {
+        return new SftpResponseStatVfsMessage(this);
+    }
+
     public ModifiableLong getBlockSize() {
         return blockSize;
     }

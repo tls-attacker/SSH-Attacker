@@ -12,6 +12,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionLinkSetStat extends SftpExtensionWithVersion<SftpExtensionLinkSetStat> {
 
+    public SftpExtensionLinkSetStat() {
+        super();
+    }
+
+    public SftpExtensionLinkSetStat(SftpExtensionLinkSetStat other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionLinkSetStat createCopy() {
+        return new SftpExtensionLinkSetStat(this);
+    }
+
     @Override
     public SftpExtensionLinkSetStatHandler getHandler(SshContext context) {
         return new SftpExtensionLinkSetStatHandler(context, this);

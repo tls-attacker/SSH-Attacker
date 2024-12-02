@@ -8,10 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.ArrayList;
 
 public class UserAuthInfoResponseMessagePreparator
         extends SshMessagePreparator<UserAuthInfoResponseMessage> {
@@ -23,18 +24,12 @@ public class UserAuthInfoResponseMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setResponseEntryCount(0);
-        for (int i = 0; i < chooser.getConfig().getPreConfiguredAuthResponses().size(); i++) {
-            AuthenticationResponse authenticationResponse =
-                    chooser.getConfig().getPreConfiguredAuthResponses().get(i);
-            if (authenticationResponse.get(0).isExecuted()) {
-                i++;
-            } else {
-                getObject().setResponse(authenticationResponse);
-                getObject().setResponseEntryCount(authenticationResponse.size());
-                authenticationResponse.get(0).setExecuted(true);
-                break;
-            }
+        getObject().setResponseEntriesCount(0);
+        ArrayList<AuthenticationResponseEntry> nextResponses =
+                chooser.getNextPreConfiguredAuthResponses();
+
+        if (nextResponses != null) {
+            getObject().setResponseEntries(nextResponses, true);
         }
     }
 }

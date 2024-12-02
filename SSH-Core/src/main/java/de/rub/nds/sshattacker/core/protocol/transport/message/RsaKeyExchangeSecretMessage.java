@@ -21,6 +21,24 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     private ModifiableInteger encryptedSecretLength;
     private ModifiableByteArray encryptedSecret;
 
+    public RsaKeyExchangeSecretMessage() {
+        super();
+    }
+
+    public RsaKeyExchangeSecretMessage(RsaKeyExchangeSecretMessage other) {
+        super(other);
+        encryptedSecretLength =
+                other.encryptedSecretLength != null
+                        ? other.encryptedSecretLength.createCopy()
+                        : null;
+        encryptedSecret = other.encryptedSecret != null ? other.encryptedSecret.createCopy() : null;
+    }
+
+    @Override
+    public RsaKeyExchangeSecretMessage createCopy() {
+        return new RsaKeyExchangeSecretMessage(this);
+    }
+
     public ModifiableInteger getEncryptedSecretLength() {
         return encryptedSecretLength;
     }

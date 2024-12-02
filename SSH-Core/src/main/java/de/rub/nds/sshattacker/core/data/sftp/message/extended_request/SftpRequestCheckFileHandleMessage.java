@@ -29,6 +29,25 @@ public class SftpRequestCheckFileHandleMessage
     private ModifiableLong length;
     private ModifiableInteger blockSize;
 
+    public SftpRequestCheckFileHandleMessage() {
+        super();
+    }
+
+    public SftpRequestCheckFileHandleMessage(SftpRequestCheckFileHandleMessage other) {
+        super(other);
+        hashAlgorithmsLength =
+                other.hashAlgorithmsLength != null ? other.hashAlgorithmsLength.createCopy() : null;
+        hashAlgorithms = other.hashAlgorithms != null ? other.hashAlgorithms.createCopy() : null;
+        startOffset = other.startOffset != null ? other.startOffset.createCopy() : null;
+        length = other.length != null ? other.length.createCopy() : null;
+        blockSize = other.blockSize != null ? other.blockSize.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestCheckFileHandleMessage createCopy() {
+        return new SftpRequestCheckFileHandleMessage(this);
+    }
+
     public ModifiableInteger getHashAlgorithmsLength() {
         return hashAlgorithmsLength;
     }

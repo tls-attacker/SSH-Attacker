@@ -20,6 +20,21 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public IgnoreMessage() {
+        super();
+    }
+
+    public IgnoreMessage(IgnoreMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public IgnoreMessage createCopy() {
+        return new IgnoreMessage(this);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }

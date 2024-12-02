@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewCompressMessage extends SshMessage<NewCompressMessage> {
 
+    public NewCompressMessage() {
+        super();
+    }
+
+    public NewCompressMessage(NewCompressMessage other) {
+        super(other);
+    }
+
+    @Override
+    public NewCompressMessage createCopy() {
+        return new NewCompressMessage(this);
+    }
+
     @Override
     public NewCompressMessageHandler getHandler(SshContext context) {
         return new NewCompressMessageHandler(context, this);

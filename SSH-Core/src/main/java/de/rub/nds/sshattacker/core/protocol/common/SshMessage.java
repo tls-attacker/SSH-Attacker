@@ -21,6 +21,15 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
 
     protected ModifiableByte messageId;
 
+    protected SshMessage() {
+        super();
+    }
+
+    protected SshMessage(SshMessage<T> other) {
+        super(other);
+        messageId = other.messageId != null ? other.messageId.createCopy() : null;
+    }
+
     public ModifiableByte getMessageId() {
         return messageId;
     }

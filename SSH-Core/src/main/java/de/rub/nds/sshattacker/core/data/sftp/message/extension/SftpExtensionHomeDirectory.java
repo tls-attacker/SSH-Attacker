@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionHomeDirectory
         extends SftpExtensionWithVersion<SftpExtensionHomeDirectory> {
 
+    public SftpExtensionHomeDirectory() {
+        super();
+    }
+
+    public SftpExtensionHomeDirectory(SftpExtensionHomeDirectory other) {
+        super(other);
+    }
+
+    @Override
+    public SftpExtensionHomeDirectory createCopy() {
+        return new SftpExtensionHomeDirectory(this);
+    }
+
     @Override
     public SftpExtensionHomeDirectoryHandler getHandler(SshContext context) {
         return new SftpExtensionHomeDirectoryHandler(context, this);

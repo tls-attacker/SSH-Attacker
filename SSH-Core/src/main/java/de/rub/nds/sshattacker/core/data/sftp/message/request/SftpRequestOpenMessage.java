@@ -25,6 +25,21 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
+    public SftpRequestOpenMessage() {
+        super();
+    }
+
+    public SftpRequestOpenMessage(SftpRequestOpenMessage other) {
+        super(other);
+        pFlags = other.pFlags != null ? other.pFlags.createCopy() : null;
+        attributes = other.attributes != null ? other.attributes.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestOpenMessage createCopy() {
+        return new SftpRequestOpenMessage(this);
+    }
+
     public ModifiableInteger getPFlags() {
         return pFlags;
     }

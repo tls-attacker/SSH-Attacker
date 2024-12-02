@@ -15,6 +15,17 @@ import java.security.PrivateKey;
  * encoding support).
  */
 public abstract class CustomPrivateKey implements PrivateKey {
+
+    protected CustomPrivateKey() {
+        super();
+    }
+
+    protected CustomPrivateKey(CustomPrivateKey other) {
+        super();
+    }
+
+    public abstract CustomPrivateKey createCopy();
+
     @Override
     public String getFormat() {
         return null;

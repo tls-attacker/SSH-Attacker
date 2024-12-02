@@ -16,6 +16,20 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
 
     private ModifiableInteger breakLength;
 
+    public ChannelRequestBreakMessage() {
+        super();
+    }
+
+    public ChannelRequestBreakMessage(ChannelRequestBreakMessage other) {
+        super(other);
+        breakLength = other.breakLength != null ? other.breakLength.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestBreakMessage createCopy() {
+        return new ChannelRequestBreakMessage(this);
+    }
+
     public ModifiableInteger getBreakLength() {
         return breakLength;
     }

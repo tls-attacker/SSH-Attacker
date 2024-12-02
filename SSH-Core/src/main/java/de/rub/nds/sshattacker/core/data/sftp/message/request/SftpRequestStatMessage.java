@@ -17,6 +17,20 @@ public class SftpRequestStatMessage extends SftpRequestWithPathMessage<SftpReque
 
     private ModifiableInteger flags;
 
+    public SftpRequestStatMessage() {
+        super();
+    }
+
+    public SftpRequestStatMessage(SftpRequestStatMessage other) {
+        super(other);
+        flags = other.flags != null ? other.flags.createCopy() : null;
+    }
+
+    @Override
+    public SftpRequestStatMessage createCopy() {
+        return new SftpRequestStatMessage(this);
+    }
+
     public ModifiableInteger getFlags() {
         return flags;
     }

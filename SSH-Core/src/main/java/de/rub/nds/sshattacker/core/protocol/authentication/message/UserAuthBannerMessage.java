@@ -23,6 +23,24 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    public UserAuthBannerMessage() {
+        super();
+    }
+
+    public UserAuthBannerMessage(UserAuthBannerMessage other) {
+        super(other);
+        messageLength = other.messageLength != null ? other.messageLength.createCopy() : null;
+        message = other.message != null ? other.message.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthBannerMessage createCopy() {
+        return new UserAuthBannerMessage(this);
+    }
+
     public ModifiableInteger getMessageLength() {
         return messageLength;
     }

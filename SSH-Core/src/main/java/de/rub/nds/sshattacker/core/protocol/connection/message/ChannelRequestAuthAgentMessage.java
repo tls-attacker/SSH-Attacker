@@ -13,6 +13,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelRequestAuthAgentMessage
         extends ChannelRequestMessage<ChannelRequestAuthAgentMessage> {
 
+    public ChannelRequestAuthAgentMessage() {
+        super();
+    }
+
+    public ChannelRequestAuthAgentMessage(ChannelRequestAuthAgentMessage other) {
+        super(other);
+    }
+
+    @Override
+    public ChannelRequestAuthAgentMessage createCopy() {
+        return new ChannelRequestAuthAgentMessage(this);
+    }
+
     @Override
     public ChannelRequestAuthAgentMessageHandler getHandler(SshContext context) {
         return new ChannelRequestAuthAgentMessageHandler(context, this);

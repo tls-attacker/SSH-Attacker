@@ -16,6 +16,20 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
 
     private ModifiableByteArray payload;
 
+    public UnknownDataMessage() {
+        super();
+    }
+
+    public UnknownDataMessage(UnknownDataMessage other) {
+        super();
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
+    @Override
+    public UnknownDataMessage createCopy() {
+        return new UnknownDataMessage(this);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }

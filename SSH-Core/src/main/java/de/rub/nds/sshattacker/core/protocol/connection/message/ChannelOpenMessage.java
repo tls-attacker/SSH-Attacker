@@ -27,6 +27,21 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     @XmlAttribute(name = "localChannel")
     private Integer configLocalChannelId;
 
+    protected ChannelOpenMessage() {
+        super();
+    }
+
+    protected ChannelOpenMessage(ChannelOpenMessage<T> other) {
+        super(other);
+        channelTypeLength =
+                other.channelTypeLength != null ? other.channelTypeLength.createCopy() : null;
+        channelType = other.channelType != null ? other.channelType.createCopy() : null;
+        windowSize = other.windowSize != null ? other.windowSize.createCopy() : null;
+        packetSize = other.packetSize != null ? other.packetSize.createCopy() : null;
+        senderChannelId = other.senderChannelId != null ? other.senderChannelId.createCopy() : null;
+        configLocalChannelId = other.configLocalChannelId;
+    }
+
     public ModifiableInteger getChannelTypeLength() {
         return channelTypeLength;
     }

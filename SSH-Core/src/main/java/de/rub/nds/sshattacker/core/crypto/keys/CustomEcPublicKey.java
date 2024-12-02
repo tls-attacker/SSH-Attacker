@@ -72,6 +72,17 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
                         publicKey.getW().getAffineX(), publicKey.getW().getAffineY(), group);
     }
 
+    public CustomEcPublicKey(CustomEcPublicKey other) {
+        super(other);
+        publicKey = other.publicKey != null ? other.publicKey.createCopy() : null;
+        group = other.group;
+    }
+
+    @Override
+    public CustomEcPublicKey createCopy() {
+        return new CustomEcPublicKey(this);
+    }
+
     public NamedEcGroup getGroup() {
         return group;
     }

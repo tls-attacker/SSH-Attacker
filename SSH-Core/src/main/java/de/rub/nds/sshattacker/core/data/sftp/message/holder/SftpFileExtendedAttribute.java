@@ -27,6 +27,23 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
+    public SftpFileExtendedAttribute() {
+        super();
+    }
+
+    public SftpFileExtendedAttribute(SftpFileExtendedAttribute other) {
+        super(other);
+        typeLength = other.typeLength != null ? other.typeLength.createCopy() : null;
+        type = other.type != null ? other.type.createCopy() : null;
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public SftpFileExtendedAttribute createCopy() {
+        return new SftpFileExtendedAttribute(this);
+    }
+
     public ModifiableInteger getTypeLength() {
         return typeLength;
     }

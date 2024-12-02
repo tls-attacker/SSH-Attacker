@@ -14,6 +14,19 @@ public class SftpRequestRemoveMessage extends SftpRequestWithPathMessage<SftpReq
 
     // path is the filename
 
+    public SftpRequestRemoveMessage() {
+        super();
+    }
+
+    public SftpRequestRemoveMessage(SftpRequestRemoveMessage other) {
+        super(other);
+    }
+
+    @Override
+    public SftpRequestRemoveMessage createCopy() {
+        return new SftpRequestRemoveMessage(this);
+    }
+
     @Override
     public SftpRequestRemoveMessageHandler getHandler(SshContext context) {
         return new SftpRequestRemoveMessageHandler(context, this);
