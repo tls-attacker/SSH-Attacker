@@ -42,6 +42,11 @@ public class InboundConnection extends AliasedConnection {
     }
 
     @Override
+    public InboundConnection createCopy() {
+        return new InboundConnection(this);
+    }
+
+    @Override
     public ConnectionEndType getLocalConnectionEndType() {
         return LOCAL_CONNECTION_END_TYPE;
     }
