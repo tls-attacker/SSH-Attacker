@@ -1257,9 +1257,13 @@ public class Config implements Serializable {
     public Config(Config other) {
         super();
         defaultClientConnection =
-            other.defaultClientConnection != null ? other.defaultClientConnection.createCopy() : null;
+                other.defaultClientConnection != null
+                        ? other.defaultClientConnection.createCopy()
+                        : null;
         defaultServerConnection =
-            other.defaultServerConnection != null ? other.defaultServerConnection.createCopy() : null;
+                other.defaultServerConnection != null
+                        ? other.defaultServerConnection.createCopy()
+                        : null;
         defaultRunningMode = other.defaultRunningMode;
         clientVersion = other.clientVersion;
         clientComment = other.clientComment;
@@ -1269,60 +1273,86 @@ public class Config implements Serializable {
         serverEndOfMessageSequence = other.serverEndOfMessageSequence;
         clientCookie = other.clientCookie != null ? other.clientCookie.clone() : null;
         serverCookie = other.serverCookie != null ? other.serverCookie.clone() : null;
-        clientSupportedKeyExchangeAlgorithms = other.clientSupportedKeyExchangeAlgorithms != null ? new ArrayList<>(
-            other.clientSupportedKeyExchangeAlgorithms) : null;
-        serverSupportedKeyExchangeAlgorithms = other.serverSupportedKeyExchangeAlgorithms != null ? new ArrayList<>(
-            other.serverSupportedKeyExchangeAlgorithms) : null;
+        clientSupportedKeyExchangeAlgorithms =
+                other.clientSupportedKeyExchangeAlgorithms != null
+                        ? new ArrayList<>(other.clientSupportedKeyExchangeAlgorithms)
+                        : null;
+        serverSupportedKeyExchangeAlgorithms =
+                other.serverSupportedKeyExchangeAlgorithms != null
+                        ? new ArrayList<>(other.serverSupportedKeyExchangeAlgorithms)
+                        : null;
         clientSupportedHostKeyAlgorithms =
-            other.clientSupportedHostKeyAlgorithms != null ? new ArrayList<>(other.clientSupportedHostKeyAlgorithms)
-                                                           : null;
+                other.clientSupportedHostKeyAlgorithms != null
+                        ? new ArrayList<>(other.clientSupportedHostKeyAlgorithms)
+                        : null;
         serverSupportedHostKeyAlgorithms =
-            other.serverSupportedHostKeyAlgorithms != null ? new ArrayList<>(other.serverSupportedHostKeyAlgorithms)
-                                                           : null;
+                other.serverSupportedHostKeyAlgorithms != null
+                        ? new ArrayList<>(other.serverSupportedHostKeyAlgorithms)
+                        : null;
         clientSupportedEncryptionAlgorithmsClientToServer =
-            other.clientSupportedEncryptionAlgorithmsClientToServer != null ? new ArrayList<>(
-                other.clientSupportedEncryptionAlgorithmsClientToServer) : null;
+                other.clientSupportedEncryptionAlgorithmsClientToServer != null
+                        ? new ArrayList<>(other.clientSupportedEncryptionAlgorithmsClientToServer)
+                        : null;
         clientSupportedEncryptionAlgorithmsServerToClient =
-            other.clientSupportedEncryptionAlgorithmsServerToClient != null ? new ArrayList<>(
-                other.clientSupportedEncryptionAlgorithmsServerToClient) : null;
+                other.clientSupportedEncryptionAlgorithmsServerToClient != null
+                        ? new ArrayList<>(other.clientSupportedEncryptionAlgorithmsServerToClient)
+                        : null;
         serverSupportedEncryptionAlgorithmsServerToClient =
-            other.serverSupportedEncryptionAlgorithmsServerToClient != null ? new ArrayList<>(
-                other.serverSupportedEncryptionAlgorithmsServerToClient) : null;
+                other.serverSupportedEncryptionAlgorithmsServerToClient != null
+                        ? new ArrayList<>(other.serverSupportedEncryptionAlgorithmsServerToClient)
+                        : null;
         serverSupportedEncryptionAlgorithmsClientToServer =
-            other.serverSupportedEncryptionAlgorithmsClientToServer != null ? new ArrayList<>(
-                other.serverSupportedEncryptionAlgorithmsClientToServer) : null;
+                other.serverSupportedEncryptionAlgorithmsClientToServer != null
+                        ? new ArrayList<>(other.serverSupportedEncryptionAlgorithmsClientToServer)
+                        : null;
         clientSupportedMacAlgorithmsClientToServer =
-            other.clientSupportedMacAlgorithmsClientToServer != null ? new ArrayList<>(
-                other.clientSupportedMacAlgorithmsClientToServer) : null;
+                other.clientSupportedMacAlgorithmsClientToServer != null
+                        ? new ArrayList<>(other.clientSupportedMacAlgorithmsClientToServer)
+                        : null;
         clientSupportedMacAlgorithmsServerToClient =
-            other.clientSupportedMacAlgorithmsServerToClient != null ? new ArrayList<>(
-                other.clientSupportedMacAlgorithmsServerToClient) : null;
+                other.clientSupportedMacAlgorithmsServerToClient != null
+                        ? new ArrayList<>(other.clientSupportedMacAlgorithmsServerToClient)
+                        : null;
         serverSupportedMacAlgorithmsServerToClient =
-            other.serverSupportedMacAlgorithmsServerToClient != null ? new ArrayList<>(
-                other.serverSupportedMacAlgorithmsServerToClient) : null;
+                other.serverSupportedMacAlgorithmsServerToClient != null
+                        ? new ArrayList<>(other.serverSupportedMacAlgorithmsServerToClient)
+                        : null;
         serverSupportedMacAlgorithmsClientToServer =
-            other.serverSupportedMacAlgorithmsClientToServer != null ? new ArrayList<>(
-                other.serverSupportedMacAlgorithmsClientToServer) : null;
+                other.serverSupportedMacAlgorithmsClientToServer != null
+                        ? new ArrayList<>(other.serverSupportedMacAlgorithmsClientToServer)
+                        : null;
         clientSupportedCompressionMethodsClientToServer =
-            other.clientSupportedCompressionMethodsClientToServer != null ? new ArrayList<>(
-                other.clientSupportedCompressionMethodsClientToServer) : null;
+                other.clientSupportedCompressionMethodsClientToServer != null
+                        ? new ArrayList<>(other.clientSupportedCompressionMethodsClientToServer)
+                        : null;
         clientSupportedCompressionMethodsServerToClient =
-            other.clientSupportedCompressionMethodsServerToClient != null ? new ArrayList<>(
-                other.clientSupportedCompressionMethodsServerToClient) : null;
+                other.clientSupportedCompressionMethodsServerToClient != null
+                        ? new ArrayList<>(other.clientSupportedCompressionMethodsServerToClient)
+                        : null;
         serverSupportedCompressionMethodsServerToClient =
-            other.serverSupportedCompressionMethodsServerToClient != null ? new ArrayList<>(
-                other.serverSupportedCompressionMethodsServerToClient) : null;
+                other.serverSupportedCompressionMethodsServerToClient != null
+                        ? new ArrayList<>(other.serverSupportedCompressionMethodsServerToClient)
+                        : null;
         serverSupportedCompressionMethodsClientToServer =
-            other.serverSupportedCompressionMethodsClientToServer != null ? new ArrayList<>(
-                other.serverSupportedCompressionMethodsClientToServer) : null;
-        clientSupportedLanguagesClientToServer = other.clientSupportedLanguagesClientToServer != null ? new ArrayList<>(
-            other.clientSupportedLanguagesClientToServer) : null;
-        clientSupportedLanguagesServerToClient = other.clientSupportedLanguagesServerToClient != null ? new ArrayList<>(
-            other.clientSupportedLanguagesServerToClient) : null;
-        serverSupportedLanguagesServerToClient = other.serverSupportedLanguagesServerToClient != null ? new ArrayList<>(
-            other.serverSupportedLanguagesServerToClient) : null;
-        serverSupportedLanguagesClientToServer = other.serverSupportedLanguagesClientToServer != null ? new ArrayList<>(
-            other.serverSupportedLanguagesClientToServer) : null;
+                other.serverSupportedCompressionMethodsClientToServer != null
+                        ? new ArrayList<>(other.serverSupportedCompressionMethodsClientToServer)
+                        : null;
+        clientSupportedLanguagesClientToServer =
+                other.clientSupportedLanguagesClientToServer != null
+                        ? new ArrayList<>(other.clientSupportedLanguagesClientToServer)
+                        : null;
+        clientSupportedLanguagesServerToClient =
+                other.clientSupportedLanguagesServerToClient != null
+                        ? new ArrayList<>(other.clientSupportedLanguagesServerToClient)
+                        : null;
+        serverSupportedLanguagesServerToClient =
+                other.serverSupportedLanguagesServerToClient != null
+                        ? new ArrayList<>(other.serverSupportedLanguagesServerToClient)
+                        : null;
+        serverSupportedLanguagesClientToServer =
+                other.serverSupportedLanguagesClientToServer != null
+                        ? new ArrayList<>(other.serverSupportedLanguagesClientToServer)
+                        : null;
         clientFirstKeyExchangePacketFollows = other.clientFirstKeyExchangePacketFollows;
         serverFirstKeyExchangePacketFollows = other.serverFirstKeyExchangePacketFollows;
         clientReserved = other.clientReserved;
@@ -1344,7 +1374,9 @@ public class Config implements Serializable {
             }
         }
         fallbackRsaTransientPublicKey =
-            other.fallbackRsaTransientPublicKey != null ? other.fallbackRsaTransientPublicKey.createCopy() : null;
+                other.fallbackRsaTransientPublicKey != null
+                        ? other.fallbackRsaTransientPublicKey.createCopy()
+                        : null;
         if (other.clientSupportedExtensions != null) {
             clientSupportedExtensions = new ArrayList<>();
             for (AbstractExtension<?> item : other.clientSupportedExtensions) {
@@ -1359,12 +1391,17 @@ public class Config implements Serializable {
         }
         respectServerSigAlgsExtension = other.respectServerSigAlgsExtension;
         serverSupportedPublicKeyAlgorithmsForAuthentication =
-            other.serverSupportedPublicKeyAlgorithmsForAuthentication != null ? new ArrayList<>(
-                other.serverSupportedPublicKeyAlgorithmsForAuthentication) : null;
-        clientSupportedDelayCompressionMethods = other.clientSupportedDelayCompressionMethods != null ? new ArrayList<>(
-            other.clientSupportedDelayCompressionMethods) : null;
-        serverSupportedDelayCompressionMethods = other.serverSupportedDelayCompressionMethods != null ? new ArrayList<>(
-            other.serverSupportedDelayCompressionMethods) : null;
+                other.serverSupportedPublicKeyAlgorithmsForAuthentication != null
+                        ? new ArrayList<>(other.serverSupportedPublicKeyAlgorithmsForAuthentication)
+                        : null;
+        clientSupportedDelayCompressionMethods =
+                other.clientSupportedDelayCompressionMethods != null
+                        ? new ArrayList<>(other.clientSupportedDelayCompressionMethods)
+                        : null;
+        serverSupportedDelayCompressionMethods =
+                other.serverSupportedDelayCompressionMethods != null
+                        ? new ArrayList<>(other.serverSupportedDelayCompressionMethods)
+                        : null;
         respectDelayCompressionExtension = other.respectDelayCompressionExtension;
         authenticationMethod = other.authenticationMethod;
         serviceName = other.serviceName;
