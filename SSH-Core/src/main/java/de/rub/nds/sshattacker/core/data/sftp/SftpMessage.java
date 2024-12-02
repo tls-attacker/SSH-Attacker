@@ -25,6 +25,9 @@ public abstract class SftpMessage<T extends SftpMessage<T>> extends DataMessage<
         packetType = other.packetType != null ? other.packetType.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpMessage<T> createCopy();
+
     public ModifiableByte getPacketType() {
         return packetType;
     }

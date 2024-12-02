@@ -213,7 +213,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // SFTP V4
         @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek")
     })
-    protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
+    protected ArrayList<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
     /**
      * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
@@ -259,24 +259,27 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
         @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
     })
-    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
+    protected ArrayList<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    public ReceiveAction(List<ProtocolMessage<?>> expectedMessages) {
+    public ReceiveAction(ArrayList<ProtocolMessage<?>> expectedMessages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.expectedMessages = expectedMessages;
     }
 
+    public ReceiveAction(List<ProtocolMessage<?>> expectedMessages) {
+        this(new ArrayList<>(expectedMessages));
+    }
+
     public ReceiveAction(ProtocolMessage<?>... expectedMessages) {
-        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+        this(Arrays.asList(expectedMessages));
     }
 
     public ReceiveAction(
-            Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> expectedMessages) {
+            Set<ReceiveOption> receiveOptions, ArrayList<ProtocolMessage<?>> expectedMessages) {
         this(expectedMessages);
         setReceiveOptions(receiveOptions);
     }
@@ -285,7 +288,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> expectedMessages) {
+    public ReceiveAction(
+            ReceiveOption receiveOption, ArrayList<ProtocolMessage<?>> expectedMessages) {
         this(Set.of(receiveOption), expectedMessages);
     }
 
@@ -297,13 +301,42 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    public ReceiveAction(String connectionAlias, ArrayList<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         expectedMessages = messages;
     }
 
     public ReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public ReceiveAction(ReceiveAction other) {
+        super(other);
+        if (other.expectedMessages != null) {
+            expectedMessages = new ArrayList<>();
+            for (ProtocolMessage<?> item : other.expectedMessages) {
+                expectedMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+        earlyCleanShutdown = other.earlyCleanShutdown;
+        checkOnlyExpected = other.checkOnlyExpected;
+        ignoreUnexpectedGlobalRequestsWithoutWantReply =
+                other.ignoreUnexpectedGlobalRequestsWithoutWantReply;
+        failOnUnexpectedIgnoreMessages = other.failOnUnexpectedIgnoreMessages;
+        failOnUnexpectedDebugMessages = other.failOnUnexpectedDebugMessages;
+        ignoreUnexpectedChannelWindowAdjusts = other.ignoreUnexpectedChannelWindowAdjusts;
+        ignoreChannelDataWrapper = other.ignoreChannelDataWrapper;
+        if (other.receivedPackets != null) {
+            receivedPackets = new ArrayList<>();
+            for (AbstractPacket item : other.receivedPackets) {
+                receivedPackets.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ReceiveAction createCopy() {
+        return new ReceiveAction(this);
     }
 
     @Override
@@ -485,8 +518,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @SuppressWarnings("SuspiciousGetterSetter")
-    void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
+    void setReceivedMessages(ArrayList<ProtocolMessage<?>> receivedMessages) {
         messages = receivedMessages;
+    }
+
+    void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
+        messages = new ArrayList<>(receivedMessages);
     }
 
     @Override
@@ -494,12 +531,20 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return receivedPackets;
     }
 
-    public void setReceivedPackets(List<AbstractPacket> receivedPackets) {
+    public void setReceivedPackets(ArrayList<AbstractPacket> receivedPackets) {
         this.receivedPackets = receivedPackets;
     }
 
-    public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
+    public void setReceivedPackets(List<AbstractPacket> receivedPackets) {
+        this.receivedPackets = new ArrayList<>(receivedPackets);
+    }
+
+    public void setExpectedMessages(ArrayList<ProtocolMessage<?>> expectedMessages) {
         this.expectedMessages = expectedMessages;
+    }
+
+    public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
+        this.expectedMessages = new ArrayList<>(expectedMessages);
     }
 
     public void setExpectedMessages(ProtocolMessage<?>... expectedMessages) {

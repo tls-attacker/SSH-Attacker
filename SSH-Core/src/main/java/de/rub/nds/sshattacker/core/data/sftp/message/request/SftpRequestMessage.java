@@ -24,6 +24,9 @@ public abstract class SftpRequestMessage<T extends SftpRequestMessage<T>> extend
         requestId = other.requestId != null ? other.requestId.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpRequestMessage<T> createCopy();
+
     public ModifiableInteger getRequestId() {
         return requestId;
     }

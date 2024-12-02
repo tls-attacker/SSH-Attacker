@@ -9,4 +9,15 @@ package de.rub.nds.sshattacker.core.data;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 
-public abstract class DataMessage<T extends DataMessage<T>> extends ProtocolMessage<T> {}
+public abstract class DataMessage<T extends DataMessage<T>> extends ProtocolMessage<T> {
+    protected DataMessage() {
+        super();
+    }
+
+    protected DataMessage(DataMessage<T> other) {
+        super(other);
+    }
+
+    @Override
+    public abstract DataMessage<T> createCopy();
+}

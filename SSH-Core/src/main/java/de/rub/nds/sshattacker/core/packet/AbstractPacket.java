@@ -57,6 +57,9 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
         payload = other.payload != null ? other.payload.createCopy() : null;
     }
 
+    @Override
+    public abstract AbstractPacket createCopy();
+
     public ModifiableByteArray getCompletePacketBytes() {
         return completePacketBytes;
     }

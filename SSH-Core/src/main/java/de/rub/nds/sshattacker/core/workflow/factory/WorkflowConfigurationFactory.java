@@ -283,9 +283,9 @@ public class WorkflowConfigurationFactory {
         return sshActions;
     }
 
-    public static List<SshAction> createKeyExchangeActions(
+    public static ArrayList<SshAction> createKeyExchangeActions(
             KeyExchangeFlowType flowType, AliasedConnection connection) {
-        List<SshAction> sshActions = new ArrayList<>();
+        ArrayList<SshAction> sshActions = new ArrayList<>();
         if (flowType == null) {
             // This may happen if the key exchange algorithm is `ext-info-s` or
             // `ext-info-c` [RFC 8308], since they do not have an associated

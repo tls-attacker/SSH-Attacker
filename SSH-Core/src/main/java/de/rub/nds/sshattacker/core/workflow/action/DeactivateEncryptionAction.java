@@ -24,6 +24,15 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public DeactivateEncryptionAction(DeactivateEncryptionAction other) {
+        super(other);
+    }
+
+    @Override
+    public DeactivateEncryptionAction createCopy() {
+        return new DeactivateEncryptionAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());

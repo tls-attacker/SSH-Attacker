@@ -40,6 +40,17 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         this.targetAlgorithm = targetAlgorithm;
     }
 
+    public ChangeCompressionAction(ChangeCompressionAction other) {
+        super(other);
+        previousAlgorithm = other.previousAlgorithm;
+        targetAlgorithm = other.targetAlgorithm;
+    }
+
+    @Override
+    public ChangeCompressionAction createCopy() {
+        return new ChangeCompressionAction(this);
+    }
+
     public void setTargetAlgorithm(CompressionAlgorithm targetAlgorithm) {
         this.targetAlgorithm = targetAlgorithm;
     }

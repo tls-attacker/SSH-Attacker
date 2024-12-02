@@ -24,6 +24,15 @@ public class DynamicKeyExchangeAction extends DynamicMessageAction {
         super(connectionAlias);
     }
 
+    public DynamicKeyExchangeAction(DynamicKeyExchangeAction other) {
+        super(other);
+    }
+
+    @Override
+    public DynamicKeyExchangeAction createCopy() {
+        return new DynamicKeyExchangeAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {

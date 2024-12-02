@@ -16,8 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,12 +54,19 @@ public final class SendMessageHelper {
             if (handler instanceof MessageSentHandler) {
                 ((MessageSentHandler) handler).adjustContextAfterMessageSent();
             }
+            ArrayList<AbstractPacket> packetList = new ArrayList<>(1);
+            packetList.add(packet);
+            ArrayList<ProtocolMessage<?>> messageList;
             if (innerMessage != null) {
-                return new MessageActionResult(
-                        Collections.singletonList(packet), List.of(message, innerMessage));
+                messageList = new ArrayList<>(2);
+                messageList.add(message);
+                messageList.add(innerMessage);
+                return new MessageActionResult(packetList, messageList);
             }
-            return new MessageActionResult(
-                    Collections.singletonList(packet), Collections.singletonList(message));
+
+            messageList = new ArrayList<>(1);
+            messageList.add(message);
+            return new MessageActionResult(packetList, messageList);
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: {}", e.getMessage());
             return new MessageActionResult();

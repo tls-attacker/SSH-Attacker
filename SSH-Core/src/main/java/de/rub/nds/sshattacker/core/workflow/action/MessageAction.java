@@ -202,34 +202,54 @@ public abstract class MessageAction extends ConnectionBoundAction {
         // SFTP V4
         @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek")
     })
-    protected List<ProtocolMessage<?>> messages = new ArrayList<>();
+    protected ArrayList<ProtocolMessage<?>> messages = new ArrayList<>();
 
     protected MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    protected MessageAction(List<ProtocolMessage<?>> messages) {
+    protected MessageAction(ArrayList<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.messages = new ArrayList<>(messages);
+        this.messages = messages;
+    }
+
+    protected MessageAction(List<ProtocolMessage<?>> messages) {
+        this(new ArrayList<>(messages));
     }
 
     protected MessageAction(ProtocolMessage<?>... messages) {
-        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.messages = Arrays.asList(messages);
+        this(Arrays.asList(messages));
     }
 
     protected MessageAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    protected MessageAction(String connectionAlias, ArrayList<ProtocolMessage<?>> messages) {
         super(connectionAlias);
-        this.messages = new ArrayList<>(messages);
+        this.messages = messages;
+    }
+
+    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+        this(connectionAlias, new ArrayList<>(messages));
     }
 
     protected MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, Arrays.asList(messages));
     }
+
+    protected MessageAction(MessageAction other) {
+        super(other);
+        if (other.messages != null) {
+            messages = new ArrayList<>();
+            for (ProtocolMessage<?> item : other.messages) {
+                messages.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public abstract MessageAction createCopy();
 
     public static String getReadableString(ProtocolMessage<?>... messages) {
         return getReadableString(Arrays.asList(messages));

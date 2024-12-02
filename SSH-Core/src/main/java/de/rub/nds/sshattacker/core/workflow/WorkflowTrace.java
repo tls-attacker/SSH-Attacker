@@ -72,7 +72,7 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
         @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")
     })
-    private List<AliasedConnection> connections = new ArrayList<>();
+    private ArrayList<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElements({
@@ -93,17 +93,22 @@ public class WorkflowTrace implements Serializable {
                 type = DynamicDelayCompressionAction.class,
                 name = "DynamicDelayCompressionAction")
     })
-    private List<SshAction> sshActions = new ArrayList<>();
+    private ArrayList<SshAction> sshActions = new ArrayList<>();
 
     private String name;
     private String description;
 
     public WorkflowTrace() {
         super();
-        sshActions = new LinkedList<>();
+        sshActions = new ArrayList<>();
     }
 
     public WorkflowTrace(List<AliasedConnection> cons) {
+        super();
+        connections = new ArrayList<>(cons);
+    }
+
+    public WorkflowTrace(ArrayList<AliasedConnection> cons) {
         super();
         connections = cons;
     }
@@ -135,9 +140,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addSshActions(List<SshAction> actions) {
-        for (SshAction action : actions) {
-            addSshAction(action);
-        }
+        sshActions.addAll(actions);
     }
 
     public void addSshAction(int position, SshAction action) {
@@ -149,12 +152,16 @@ public class WorkflowTrace implements Serializable {
         return sshActions.remove(index);
     }
 
-    public void setSshActions(List<SshAction> sshActions) {
+    public void setSshActions(ArrayList<SshAction> sshActions) {
         this.sshActions = sshActions;
     }
 
+    public void setSshActions(List<SshAction> sshActions) {
+        this.sshActions = new ArrayList<>(sshActions);
+    }
+
     public void setSshActions(SshAction... sshActions) {
-        this.sshActions = new ArrayList<>(Arrays.asList(sshActions));
+        setSshActions(Arrays.asList(sshActions));
     }
 
     public List<AliasedConnection> getConnections() {
@@ -169,6 +176,10 @@ public class WorkflowTrace implements Serializable {
      * @param connections new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
+        this.connections = new ArrayList<>(connections);
+    }
+
+    public void setConnections(ArrayList<AliasedConnection> connections) {
         this.connections = connections;
     }
 

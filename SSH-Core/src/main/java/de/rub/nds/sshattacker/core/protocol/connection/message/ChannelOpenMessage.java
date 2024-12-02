@@ -42,6 +42,9 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         configLocalChannelId = other.configLocalChannelId;
     }
 
+    @Override
+    public abstract ChannelOpenMessage<T> createCopy();
+
     public ModifiableInteger getChannelTypeLength() {
         return channelTypeLength;
     }

@@ -35,6 +35,9 @@ public abstract class SftpRequestExtendedMessage<T extends SftpRequestExtendedMe
                         : null;
     }
 
+    @Override
+    public abstract SftpRequestExtendedMessage<T> createCopy();
+
     public ModifiableInteger getExtendedRequestNameLength() {
         return extendedRequestNameLength;
     }

@@ -35,6 +35,9 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         wantReply = other.wantReply != null ? other.wantReply.createCopy() : null;
     }
 
+    @Override
+    public abstract ChannelRequestMessage<T> createCopy();
+
     public ModifiableInteger getRequestTypeLength() {
         return requestTypeLength;
     }

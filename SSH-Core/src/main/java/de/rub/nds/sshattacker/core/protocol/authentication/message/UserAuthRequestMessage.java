@@ -53,6 +53,9 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         methodName = other.methodName != null ? other.methodName.createCopy() : null;
     }
 
+    @Override
+    public abstract UserAuthRequestMessage<T> createCopy();
+
     public ModifiableInteger getUserNameLength() {
         return userNameLength;
     }

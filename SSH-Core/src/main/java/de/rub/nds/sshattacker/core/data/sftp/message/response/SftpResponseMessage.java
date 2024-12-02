@@ -24,6 +24,9 @@ public abstract class SftpResponseMessage<T extends SftpResponseMessage<T>> exte
         requestId = other.requestId != null ? other.requestId.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpResponseMessage<T> createCopy();
+
     public ModifiableInteger getRequestId() {
         return requestId;
     }

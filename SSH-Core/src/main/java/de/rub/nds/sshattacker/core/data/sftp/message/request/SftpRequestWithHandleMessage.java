@@ -28,6 +28,9 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
         handleLength = other.handleLength != null ? other.handleLength.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpRequestWithHandleMessage<T> createCopy();
+
     public ModifiableInteger getHandleLength() {
         return handleLength;
     }

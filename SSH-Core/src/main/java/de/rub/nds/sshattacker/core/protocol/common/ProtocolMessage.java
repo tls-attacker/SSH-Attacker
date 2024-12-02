@@ -60,6 +60,9 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                         : null;
     }
 
+    @Override
+    public abstract ProtocolMessage<T> createCopy();
+
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;

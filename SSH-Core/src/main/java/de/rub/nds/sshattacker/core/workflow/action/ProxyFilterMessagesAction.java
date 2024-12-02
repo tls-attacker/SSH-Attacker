@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlTransient;
-import java.util.List;
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,11 +28,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
     // because sendMessages will contain filteredMessages, when storing the workflow trace, so it
     // would just make reading the trace more complicated
-    @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
-
-    public ProxyFilterMessagesAction() {
-        super();
-    }
+    @XmlTransient protected ArrayList<ProtocolMessage<?>> filteredMessages;
 
     /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
@@ -40,13 +36,30 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     }
 
     public ProxyFilterMessagesAction(
-            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
+            String receiveFromAlias,
+            String forwardToAlias,
+            ArrayList<ProtocolMessage<?>> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
     }
 
     public ProxyFilterMessagesAction(
             String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
+    }
+
+    public ProxyFilterMessagesAction(ProxyFilterMessagesAction other) {
+        super(other);
+        if (other.filteredMessages != null) {
+            filteredMessages = new ArrayList<>();
+            for (ProtocolMessage<?> item : other.filteredMessages) {
+                filteredMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ProxyFilterMessagesAction createCopy() {
+        return new ProxyFilterMessagesAction(this);
     }
 
     @Override

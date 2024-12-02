@@ -29,6 +29,9 @@ public abstract class SftpRequestWithPathMessage<T extends SftpRequestWithPathMe
         pathLength = other.pathLength != null ? other.pathLength.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpRequestWithPathMessage<T> createCopy();
+
     public ModifiableInteger getPathLength() {
         return pathLength;
     }

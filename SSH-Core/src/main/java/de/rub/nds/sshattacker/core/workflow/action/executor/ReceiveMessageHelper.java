@@ -134,8 +134,8 @@ public final class ReceiveMessageHelper {
         }
 
         int dataPointer = 0;
-        List<AbstractPacket> retrievedPackets = new LinkedList<>();
-        List<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
+        LinkedList<AbstractPacket> retrievedPackets = new LinkedList<>();
+        LinkedList<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
         do {
             PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
             Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
@@ -155,7 +155,8 @@ public final class ReceiveMessageHelper {
             }
             dataPointer += parseResult.getParsedByteCount();
         } while (dataPointer < receivedBytes.length);
-        return new MessageActionResult(retrievedPackets, parsedMessages);
+        return new MessageActionResult(
+                new ArrayList<>(retrievedPackets), new ArrayList<>(parsedMessages));
     }
 
     /**

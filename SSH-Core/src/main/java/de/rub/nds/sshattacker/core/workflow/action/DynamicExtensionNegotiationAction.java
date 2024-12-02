@@ -24,6 +24,15 @@ public class DynamicExtensionNegotiationAction extends DynamicMessageAction {
         super(connectionAlias);
     }
 
+    public DynamicExtensionNegotiationAction(DynamicExtensionNegotiationAction other) {
+        super(other);
+    }
+
+    @Override
+    public DynamicExtensionNegotiationAction createCopy() {
+        return new DynamicExtensionNegotiationAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {

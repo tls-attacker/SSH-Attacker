@@ -34,6 +34,9 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
         configRemoteChannelId = other.configRemoteChannelId;
     }
 
+    @Override
+    public abstract ChannelMessage<T> createCopy();
+
     public ModifiableInteger getRecipientChannelId() {
         return recipientChannelId;
     }

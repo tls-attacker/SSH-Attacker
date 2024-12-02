@@ -30,6 +30,9 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         messageId = other.messageId != null ? other.messageId.createCopy() : null;
     }
 
+    @Override
+    public abstract SshMessage<T> createCopy();
+
     public ModifiableByte getMessageId() {
         return messageId;
     }

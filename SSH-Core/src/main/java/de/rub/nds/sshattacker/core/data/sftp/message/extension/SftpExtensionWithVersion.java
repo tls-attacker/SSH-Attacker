@@ -28,6 +28,9 @@ public abstract class SftpExtensionWithVersion<T extends SftpExtensionWithVersio
         versionLength = other.versionLength != null ? other.versionLength.createCopy() : null;
     }
 
+    @Override
+    public abstract SftpExtensionWithVersion<T> createCopy();
+
     public ModifiableInteger getVersionLength() {
         return versionLength;
     }

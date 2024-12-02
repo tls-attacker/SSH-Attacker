@@ -60,8 +60,16 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
     protected SftpHandshakeMessage(SftpHandshakeMessage<T> other) {
         super(other);
         version = other.version != null ? other.version.createCopy() : null;
-        extensions = other.extensions != null ? new ArrayList<>(other.extensions) : null;
+        if (other.extensions != null) {
+            extensions = new ArrayList<>();
+            for (SftpAbstractExtension<?> item : other.extensions) {
+                extensions.add(item != null ? item.createCopy() : null);
+            }
+        }
     }
+
+    @Override
+    public abstract SftpHandshakeMessage<T> createCopy();
 
     public ModifiableInteger getVersion() {
         return version;

@@ -66,6 +66,16 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias, Arrays.asList(messages));
     }
 
+    public SendAction(SendAction other) {
+        super(other);
+        failed = other.failed;
+    }
+
+    @Override
+    public SendAction createCopy() {
+        return new SendAction(this);
+    }
+
     /**
      * Set the failure status of this action.
      *

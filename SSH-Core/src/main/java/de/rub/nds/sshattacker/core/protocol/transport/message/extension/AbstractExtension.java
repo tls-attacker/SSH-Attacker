@@ -33,6 +33,9 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>>
         name = other.name != null ? other.name.createCopy() : null;
     }
 
+    @Override
+    public abstract AbstractExtension<E> createCopy();
+
     public ModifiableInteger getNameLength() {
         return nameLength;
     }

@@ -25,6 +25,15 @@ public class DynamicDelayCompressionAction extends DynamicMessageAction {
         super(connectionAlias);
     }
 
+    public DynamicDelayCompressionAction(DynamicDelayCompressionAction other) {
+        super(other);
+    }
+
+    @Override
+    public DynamicDelayCompressionAction createCopy() {
+        return new DynamicDelayCompressionAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public abstract class DynamicMessageAction extends MessageAction
         implements ReceivingAction, SendingAction {
 
-    protected List<SshAction> sshActions = new ArrayList<>();
+    protected ArrayList<SshAction> sshActions = new ArrayList<>();
 
     protected DynamicMessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -28,6 +28,19 @@ public abstract class DynamicMessageAction extends MessageAction
     protected DynamicMessageAction(String connectionAlias) {
         super(connectionAlias);
     }
+
+    protected DynamicMessageAction(DynamicMessageAction other) {
+        super(other);
+        if (other.sshActions != null) {
+            sshActions = new ArrayList<>();
+            for (SshAction item : other.sshActions) {
+                sshActions.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public abstract DynamicMessageAction createCopy();
 
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {

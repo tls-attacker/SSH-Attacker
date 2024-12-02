@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 public final class SshActionFactory {
@@ -41,12 +40,12 @@ public final class SshActionFactory {
     public static MessageAction createDataMessageAction(
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage<?>> dataMessages) {
+            ArrayList<ProtocolMessage<?>> dataMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAction(dataMessages);
+            action = new SendAction(connection.getAlias(), dataMessages);
         } else {
-            action = new ReceiveAction(dataMessages);
+            action = new ReceiveAction(connection.getAlias(), dataMessages);
             ((ReceiveAction) action)
                     .setReceiveOptions(
                             Set.of(
@@ -54,7 +53,6 @@ public final class SshActionFactory {
                                     ReceiveAction.ReceiveOption
                                             .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS));
         }
-        action.setConnectionAlias(connection.getAlias());
         return action;
     }
 
@@ -69,14 +67,13 @@ public final class SshActionFactory {
     public static MessageAction createMessageAction(
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage<?>> protocolMessages) {
+            ArrayList<ProtocolMessage<?>> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
-            action = new SendAction(protocolMessages);
+            action = new SendAction(connection.getAlias(), protocolMessages);
         } else {
-            action = new ReceiveAction(protocolMessages);
+            action = new ReceiveAction(connection.getAlias(), protocolMessages);
         }
-        action.setConnectionAlias(connection.getAlias());
         return action;
     }
 
@@ -126,7 +123,7 @@ public final class SshActionFactory {
             AliasedConnection inboundConnection,
             AliasedConnection outboundConnection,
             ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage<?>> protocolMessages) {
+            ArrayList<ProtocolMessage<?>> protocolMessages) {
         ForwardMessagesAction action;
         if (sendingConnectionEnd == ConnectionEndType.CLIENT) {
             action =
@@ -160,7 +157,7 @@ public final class SshActionFactory {
             AliasedConnection inboundConnection,
             AliasedConnection outboundConnection,
             ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage<?>> protocolMessages) {
+            ArrayList<ProtocolMessage<?>> protocolMessages) {
         ProxyFilterMessagesAction action;
         if (sendingConnectionEnd == ConnectionEndType.CLIENT) {
             action =

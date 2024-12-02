@@ -33,6 +33,15 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public ActivateEncryptionAction(ActivateEncryptionAction other) {
+        super(other);
+    }
+
+    @Override
+    public ActivateEncryptionAction createCopy() {
+        return new ActivateEncryptionAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
