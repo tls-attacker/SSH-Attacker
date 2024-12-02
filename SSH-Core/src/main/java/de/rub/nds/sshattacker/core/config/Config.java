@@ -95,102 +95,102 @@ public class Config implements Serializable {
     /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
-    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+    private ArrayList<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
 
     /** List of key exchange algorithms supported by the server */
     @XmlElement(name = "serverSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
-    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+    private ArrayList<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
 
     /** List of host key algorithms supported by the client */
     @XmlElement(name = "clientSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
+    private ArrayList<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
 
     /** List of host key algorithms supported by the server */
     @XmlElement(name = "serverSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
+    private ArrayList<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
 
     /** List of encryption algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
+    private ArrayList<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
 
     /** List of encryption algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
+    private ArrayList<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
 
     /** List of encryption algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
+    private ArrayList<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
 
     /** List of encryption algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
+    private ArrayList<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
 
     /** List of MAC algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private ArrayList<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
 
     /** List of MAC algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private ArrayList<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
 
     /** List of MAC algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private ArrayList<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
 
     /** List of MAC algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private ArrayList<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
 
     /** List of compression algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
+    private ArrayList<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
 
     /** List of compression algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
+    private ArrayList<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
 
     /** List of compression algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
+    private ArrayList<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
     /** List of compression algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
+    private ArrayList<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
 
     /** List of languages (client to server) supported by the client */
     @XmlElement(name = "clientSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private List<String> clientSupportedLanguagesClientToServer;
+    private ArrayList<String> clientSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the client */
     @XmlElement(name = "clientSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private List<String> clientSupportedLanguagesServerToClient;
+    private ArrayList<String> clientSupportedLanguagesServerToClient;
 
     /** List of languages (client to server) supported by the server */
     @XmlElement(name = "serverSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private List<String> serverSupportedLanguagesServerToClient;
+    private ArrayList<String> serverSupportedLanguagesServerToClient;
 
     /** List of languages (server to client) supported by the server */
     @XmlElement(name = "serverSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private List<String> serverSupportedLanguagesClientToServer;
+    private ArrayList<String> serverSupportedLanguagesClientToServer;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
@@ -275,7 +275,7 @@ public class Config implements Serializable {
     /** Host key */
     @XmlElement(name = "hostKey")
     @XmlElementWrapper
-    private List<SshPublicKey<?, ?>> hostKeys;
+    private ArrayList<SshPublicKey<?, ?>> hostKeys;
 
     /**
      * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
@@ -317,13 +317,13 @@ public class Config implements Serializable {
     private boolean respectServerSigAlgsExtension = true;
 
     /** List of public key algorithms for authentication supported by server */
-    private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
+    private ArrayList<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
     /** List of compression methods supported by the client(delay-compression extension) */
-    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+    private ArrayList<CompressionMethod> clientSupportedDelayCompressionMethods;
 
     /** List of compression methods supported by the server(delay-compression extension) */
-    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+    private ArrayList<CompressionMethod> serverSupportedDelayCompressionMethods;
 
     /** Flag for enabling and disabling the delay-compression extension */
     private boolean respectDelayCompressionExtension = true;
@@ -354,7 +354,7 @@ public class Config implements Serializable {
     /** The List of user keys for public key authentication */
     @XmlElement(name = "userKey")
     @XmlElementWrapper
-    private List<SshPublicKey<?, ?>> userKeys;
+    private ArrayList<SshPublicKey<?, ?>> userKeys;
 
     // endregion
 
@@ -549,7 +549,7 @@ public class Config implements Serializable {
      */
     @XmlElement(name = "outputFilter")
     @XmlElementWrapper
-    private List<FilterType> outputFilters;
+    private ArrayList<FilterType> outputFilters;
 
     /** The path to save the workflow trace as output */
     private String workflowOutput;
@@ -669,7 +669,7 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.EXT_INFO_C,
                                     KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
@@ -687,7 +687,7 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.EXT_INFO_S,
                                     KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         // We don't support SK (U2F) host keys (yet), only listed for
         // completeness
@@ -713,8 +713,8 @@ public class Config implements Serializable {
                                     PublicKeyAlgorithm.RSA_SHA2_256,
                                     PublicKeyAlgorithm.SSH_RSA
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
-        serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
+                        .collect(Collectors.toCollection(ArrayList::new));
+        serverSupportedHostKeyAlgorithms = new ArrayList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedEncryptionAlgorithmsClientToServer =
                 Arrays.stream(
@@ -726,13 +726,13 @@ public class Config implements Serializable {
                                     EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
                                     EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
         clientSupportedEncryptionAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedEncryptionAlgorithmsClientToServer);
         serverSupportedEncryptionAlgorithmsClientToServer =
-                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedEncryptionAlgorithmsClientToServer);
         serverSupportedEncryptionAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedEncryptionAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer =
                 Arrays.stream(
@@ -748,13 +748,13 @@ public class Config implements Serializable {
                                     MacAlgorithm.HMAC_SHA2_512,
                                     MacAlgorithm.HMAC_SHA1
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
         clientSupportedMacAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsClientToServer =
-                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+                new ArrayList<>(clientSupportedMacAlgorithmsClientToServer);
 
         clientSupportedCompressionMethodsClientToServer =
                 Arrays.stream(
@@ -763,21 +763,21 @@ public class Config implements Serializable {
                                     CompressionMethod.ZLIB_OPENSSH_COM,
                                     CompressionMethod.ZLIB
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
         clientSupportedCompressionMethodsServerToClient =
-                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
+                new ArrayList<>(clientSupportedCompressionMethodsClientToServer);
         serverSupportedCompressionMethodsServerToClient =
-                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
+                new ArrayList<>(clientSupportedCompressionMethodsClientToServer);
         serverSupportedCompressionMethodsClientToServer =
-                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
+                new ArrayList<>(clientSupportedCompressionMethodsClientToServer);
 
-        clientSupportedLanguagesClientToServer = new LinkedList<>();
+        clientSupportedLanguagesClientToServer = new ArrayList<>();
         clientSupportedLanguagesServerToClient =
-                new LinkedList<>(clientSupportedLanguagesClientToServer);
+                new ArrayList<>(clientSupportedLanguagesClientToServer);
         serverSupportedLanguagesServerToClient =
-                new LinkedList<>(clientSupportedLanguagesClientToServer);
+                new ArrayList<>(clientSupportedLanguagesClientToServer);
         serverSupportedLanguagesClientToServer =
-                new LinkedList<>(clientSupportedLanguagesClientToServer);
+                new ArrayList<>(clientSupportedLanguagesClientToServer);
 
         clientFirstKeyExchangePacketFollows = false;
         serverFirstKeyExchangePacketFollows = false;
@@ -806,7 +806,7 @@ public class Config implements Serializable {
                                     PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
                                     PublicKeyAlgorithm.SSH_ED25519
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         // section delay-compression extension
         clientSupportedDelayCompressionMethods =
@@ -816,10 +816,10 @@ public class Config implements Serializable {
                                     CompressionMethod.ZLIB_OPENSSH_COM,
                                     CompressionMethod.ZLIB
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         serverSupportedDelayCompressionMethods =
-                new LinkedList<>(clientSupportedDelayCompressionMethods);
+                new ArrayList<>(clientSupportedDelayCompressionMethods);
         // endregion
 
         // region KeyExchange initialization
@@ -1252,6 +1252,197 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region copy constructor
+
+    public Config(Config other) {
+        super();
+        defaultClientConnection =
+            other.defaultClientConnection != null ? other.defaultClientConnection.createCopy() : null;
+        defaultServerConnection =
+            other.defaultServerConnection != null ? other.defaultServerConnection.createCopy() : null;
+        defaultRunningMode = other.defaultRunningMode;
+        clientVersion = other.clientVersion;
+        clientComment = other.clientComment;
+        clientEndOfMessageSequence = other.clientEndOfMessageSequence;
+        serverVersion = other.serverVersion;
+        serverComment = other.serverComment;
+        serverEndOfMessageSequence = other.serverEndOfMessageSequence;
+        clientCookie = other.clientCookie != null ? other.clientCookie.clone() : null;
+        serverCookie = other.serverCookie != null ? other.serverCookie.clone() : null;
+        clientSupportedKeyExchangeAlgorithms = other.clientSupportedKeyExchangeAlgorithms != null ? new ArrayList<>(
+            other.clientSupportedKeyExchangeAlgorithms) : null;
+        serverSupportedKeyExchangeAlgorithms = other.serverSupportedKeyExchangeAlgorithms != null ? new ArrayList<>(
+            other.serverSupportedKeyExchangeAlgorithms) : null;
+        clientSupportedHostKeyAlgorithms =
+            other.clientSupportedHostKeyAlgorithms != null ? new ArrayList<>(other.clientSupportedHostKeyAlgorithms)
+                                                           : null;
+        serverSupportedHostKeyAlgorithms =
+            other.serverSupportedHostKeyAlgorithms != null ? new ArrayList<>(other.serverSupportedHostKeyAlgorithms)
+                                                           : null;
+        clientSupportedEncryptionAlgorithmsClientToServer =
+            other.clientSupportedEncryptionAlgorithmsClientToServer != null ? new ArrayList<>(
+                other.clientSupportedEncryptionAlgorithmsClientToServer) : null;
+        clientSupportedEncryptionAlgorithmsServerToClient =
+            other.clientSupportedEncryptionAlgorithmsServerToClient != null ? new ArrayList<>(
+                other.clientSupportedEncryptionAlgorithmsServerToClient) : null;
+        serverSupportedEncryptionAlgorithmsServerToClient =
+            other.serverSupportedEncryptionAlgorithmsServerToClient != null ? new ArrayList<>(
+                other.serverSupportedEncryptionAlgorithmsServerToClient) : null;
+        serverSupportedEncryptionAlgorithmsClientToServer =
+            other.serverSupportedEncryptionAlgorithmsClientToServer != null ? new ArrayList<>(
+                other.serverSupportedEncryptionAlgorithmsClientToServer) : null;
+        clientSupportedMacAlgorithmsClientToServer =
+            other.clientSupportedMacAlgorithmsClientToServer != null ? new ArrayList<>(
+                other.clientSupportedMacAlgorithmsClientToServer) : null;
+        clientSupportedMacAlgorithmsServerToClient =
+            other.clientSupportedMacAlgorithmsServerToClient != null ? new ArrayList<>(
+                other.clientSupportedMacAlgorithmsServerToClient) : null;
+        serverSupportedMacAlgorithmsServerToClient =
+            other.serverSupportedMacAlgorithmsServerToClient != null ? new ArrayList<>(
+                other.serverSupportedMacAlgorithmsServerToClient) : null;
+        serverSupportedMacAlgorithmsClientToServer =
+            other.serverSupportedMacAlgorithmsClientToServer != null ? new ArrayList<>(
+                other.serverSupportedMacAlgorithmsClientToServer) : null;
+        clientSupportedCompressionMethodsClientToServer =
+            other.clientSupportedCompressionMethodsClientToServer != null ? new ArrayList<>(
+                other.clientSupportedCompressionMethodsClientToServer) : null;
+        clientSupportedCompressionMethodsServerToClient =
+            other.clientSupportedCompressionMethodsServerToClient != null ? new ArrayList<>(
+                other.clientSupportedCompressionMethodsServerToClient) : null;
+        serverSupportedCompressionMethodsServerToClient =
+            other.serverSupportedCompressionMethodsServerToClient != null ? new ArrayList<>(
+                other.serverSupportedCompressionMethodsServerToClient) : null;
+        serverSupportedCompressionMethodsClientToServer =
+            other.serverSupportedCompressionMethodsClientToServer != null ? new ArrayList<>(
+                other.serverSupportedCompressionMethodsClientToServer) : null;
+        clientSupportedLanguagesClientToServer = other.clientSupportedLanguagesClientToServer != null ? new ArrayList<>(
+            other.clientSupportedLanguagesClientToServer) : null;
+        clientSupportedLanguagesServerToClient = other.clientSupportedLanguagesServerToClient != null ? new ArrayList<>(
+            other.clientSupportedLanguagesServerToClient) : null;
+        serverSupportedLanguagesServerToClient = other.serverSupportedLanguagesServerToClient != null ? new ArrayList<>(
+            other.serverSupportedLanguagesServerToClient) : null;
+        serverSupportedLanguagesClientToServer = other.serverSupportedLanguagesClientToServer != null ? new ArrayList<>(
+            other.serverSupportedLanguagesClientToServer) : null;
+        clientFirstKeyExchangePacketFollows = other.clientFirstKeyExchangePacketFollows;
+        serverFirstKeyExchangePacketFollows = other.serverFirstKeyExchangePacketFollows;
+        clientReserved = other.clientReserved;
+        serverReserved = other.serverReserved;
+        dhGexMinimalGroupSize = other.dhGexMinimalGroupSize;
+        dhGexPreferredGroupSize = other.dhGexPreferredGroupSize;
+        dhGexMaximalGroupSize = other.dhGexMaximalGroupSize;
+        defaultDhKeyExchangeAlgorithm = other.defaultDhKeyExchangeAlgorithm;
+        defaultEcdhKeyExchangeAlgorithm = other.defaultEcdhKeyExchangeAlgorithm;
+        defaultRsaKeyExchangeAlgorithm = other.defaultRsaKeyExchangeAlgorithm;
+        defaultHybridKeyExchangeAlgorithm = other.defaultHybridKeyExchangeAlgorithm;
+        enableEncryptionOnNewKeysMessage = other.enableEncryptionOnNewKeysMessage;
+        forcePacketCipherChange = other.forcePacketCipherChange;
+        enforceSettings = other.enforceSettings;
+        if (other.hostKeys != null) {
+            hostKeys = new ArrayList<>();
+            for (SshPublicKey<?, ?> item : other.hostKeys) {
+                hostKeys.add(item != null ? item.createCopy() : null);
+            }
+        }
+        fallbackRsaTransientPublicKey =
+            other.fallbackRsaTransientPublicKey != null ? other.fallbackRsaTransientPublicKey.createCopy() : null;
+        if (other.clientSupportedExtensions != null) {
+            clientSupportedExtensions = new ArrayList<>();
+            for (AbstractExtension<?> item : other.clientSupportedExtensions) {
+                clientSupportedExtensions.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.serverSupportedExtensions != null) {
+            serverSupportedExtensions = new ArrayList<>();
+            for (AbstractExtension<?> item : other.serverSupportedExtensions) {
+                serverSupportedExtensions.add(item != null ? item.createCopy() : null);
+            }
+        }
+        respectServerSigAlgsExtension = other.respectServerSigAlgsExtension;
+        serverSupportedPublicKeyAlgorithmsForAuthentication =
+            other.serverSupportedPublicKeyAlgorithmsForAuthentication != null ? new ArrayList<>(
+                other.serverSupportedPublicKeyAlgorithmsForAuthentication) : null;
+        clientSupportedDelayCompressionMethods = other.clientSupportedDelayCompressionMethods != null ? new ArrayList<>(
+            other.clientSupportedDelayCompressionMethods) : null;
+        serverSupportedDelayCompressionMethods = other.serverSupportedDelayCompressionMethods != null ? new ArrayList<>(
+            other.serverSupportedDelayCompressionMethods) : null;
+        respectDelayCompressionExtension = other.respectDelayCompressionExtension;
+        authenticationMethod = other.authenticationMethod;
+        serviceName = other.serviceName;
+        username = other.username;
+        password = other.password;
+        if (other.preConfiguredAuthResponses != null) {
+            preConfiguredAuthResponses = new ArrayList<>();
+            for (AuthenticationResponseEntries item : other.preConfiguredAuthResponses) {
+                preConfiguredAuthResponses.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.userKeys != null) {
+            userKeys = new ArrayList<>();
+            for (SshPublicKey<?, ?> item : other.userKeys) {
+                userKeys.add(item != null ? item.createCopy() : null);
+            }
+        }
+        channelCommand = other.channelCommand;
+        channelDefaults = other.channelDefaults != null ? other.channelDefaults.createCopy() : null;
+        replyWanted = other.replyWanted;
+        defaultVariableName = other.defaultVariableName;
+        defaultVariableValue = other.defaultVariableValue;
+        clientFlowControl = other.clientFlowControl;
+        defaultTerminalWidthPixels = other.defaultTerminalWidthPixels;
+        defaultTerminalWidthColumns = other.defaultTerminalWidthColumns;
+        defaultTerminalHeightRows = other.defaultTerminalHeightRows;
+        defaultTerminalHeightPixels = other.defaultTerminalHeightPixels;
+        defaultTermEnvVariable = other.defaultTermEnvVariable;
+        defaultSubsystemName = other.defaultSubsystemName;
+        defaultBreakLength = other.defaultBreakLength;
+        alwaysPrepareLengthFields = other.alwaysPrepareLengthFields;
+        sftpClientVersion = other.sftpClientVersion;
+        sftpServerVersion = other.sftpServerVersion;
+        sftpNegotiatedVersion = other.sftpNegotiatedVersion;
+        respectSftpNegotiatedVersion = other.respectSftpNegotiatedVersion;
+        if (other.sftpClientSupportedExtensions != null) {
+            sftpClientSupportedExtensions = new ArrayList<>();
+            for (SftpAbstractExtension<?> item : other.sftpClientSupportedExtensions) {
+                sftpClientSupportedExtensions.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.sftpServerSupportedExtensions != null) {
+            sftpServerSupportedExtensions = new ArrayList<>();
+            for (SftpAbstractExtension<?> item : other.sftpServerSupportedExtensions) {
+                sftpServerSupportedExtensions.add(item != null ? item.createCopy() : null);
+            }
+        }
+        alwaysPrepareSftpLengthFields = other.alwaysPrepareSftpLengthFields;
+        alwaysPrepareSftpHandle = other.alwaysPrepareSftpHandle;
+        respectSftpAttributesFlags = other.respectSftpAttributesFlags;
+        workflowInput = other.workflowInput;
+        workflowTraceType = other.workflowTraceType;
+        outputFilters = other.outputFilters != null ? new ArrayList<>(other.outputFilters) : null;
+        workflowOutput = other.workflowOutput;
+        workflowExecutorType = other.workflowExecutorType;
+        applyFiltersInPlace = other.applyFiltersInPlace;
+        filtersKeepUserSettings = other.filtersKeepUserSettings;
+        workflowExecutorShouldOpen = other.workflowExecutorShouldOpen;
+        stopActionsAfterDisconnect = other.stopActionsAfterDisconnect;
+        stopActionsAfterIOException = other.stopActionsAfterIOException;
+        workflowExecutorShouldClose = other.workflowExecutorShouldClose;
+        resetWorkflowtracesBeforeSaving = other.resetWorkflowtracesBeforeSaving;
+        resetClientSourcePort = other.resetClientSourcePort;
+        retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
+        stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
+        quickReceive = other.quickReceive;
+        receiveMaximumBytes = other.receiveMaximumBytes;
+        stopReceivingAfterDisconnect = other.stopReceivingAfterDisconnect;
+        configOutput = other.configOutput;
+        chooserType = other.chooserType;
+    }
+
+    public Config createCopy() {
+        return new Config(this);
+    }
+
+    // endregion
+
     // region createConfig
     public static Config createConfig() {
         if (DEFAULT_CONFIG_CACHE != null) {
@@ -1407,7 +1598,7 @@ public class Config implements Serializable {
     }
 
     public void setClientSupportedKeyExchangeAlgorithms(
-            List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
+            ArrayList<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
         this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
     }
 
@@ -1515,109 +1706,109 @@ public class Config implements Serializable {
     }
 
     public void setServerSupportedKeyExchangeAlgorithms(
-            List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
+            ArrayList<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
         this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
     }
 
     public void setClientSupportedHostKeyAlgorithms(
-            List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms) {
+            ArrayList<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms) {
         this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
     }
 
     public void setServerSupportedHostKeyAlgorithms(
-            List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms) {
+            ArrayList<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms) {
         this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
     public void setClientSupportedEncryptionAlgorithmsClientToServer(
-            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer) {
+            ArrayList<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer) {
         this.clientSupportedEncryptionAlgorithmsClientToServer =
                 clientSupportedEncryptionAlgorithmsClientToServer;
     }
 
     public void setClientSupportedEncryptionAlgorithmsServerToClient(
-            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient) {
+            ArrayList<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient) {
         this.clientSupportedEncryptionAlgorithmsServerToClient =
                 clientSupportedEncryptionAlgorithmsServerToClient;
     }
 
     public void setServerSupportedEncryptionAlgorithmsServerToClient(
-            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient) {
+            ArrayList<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient) {
         this.serverSupportedEncryptionAlgorithmsServerToClient =
                 serverSupportedEncryptionAlgorithmsServerToClient;
     }
 
     public void setServerSupportedEncryptionAlgorithmsClientToServer(
-            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer) {
+            ArrayList<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer) {
         this.serverSupportedEncryptionAlgorithmsClientToServer =
                 serverSupportedEncryptionAlgorithmsClientToServer;
     }
 
     public void setClientSupportedMacAlgorithmsClientToServer(
-            List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+            ArrayList<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
         this.clientSupportedMacAlgorithmsClientToServer =
                 clientSupportedMacAlgorithmsClientToServer;
     }
 
     public void setClientSupportedMacAlgorithmsServerToClient(
-            List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+            ArrayList<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
         this.clientSupportedMacAlgorithmsServerToClient =
                 clientSupportedMacAlgorithmsServerToClient;
     }
 
     public void setServerSupportedMacAlgorithmsServerToClient(
-            List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+            ArrayList<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
         this.serverSupportedMacAlgorithmsServerToClient =
                 serverSupportedMacAlgorithmsServerToClient;
     }
 
     public void setServerSupportedMacAlgorithmsClientToServer(
-            List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+            ArrayList<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
         this.serverSupportedMacAlgorithmsClientToServer =
                 serverSupportedMacAlgorithmsClientToServer;
     }
 
     public void setClientSupportedCompressionMethodsClientToServer(
-            List<CompressionMethod> clientSupportedCompressionMethodsClientToServer) {
+            ArrayList<CompressionMethod> clientSupportedCompressionMethodsClientToServer) {
         this.clientSupportedCompressionMethodsClientToServer =
                 clientSupportedCompressionMethodsClientToServer;
     }
 
     public void setClientSupportedCompressionMethodsServerToClient(
-            List<CompressionMethod> clientSupportedCompressionMethodsServerToClient) {
+            ArrayList<CompressionMethod> clientSupportedCompressionMethodsServerToClient) {
         this.clientSupportedCompressionMethodsServerToClient =
                 clientSupportedCompressionMethodsServerToClient;
     }
 
     public void setServerSupportedCompressionMethodsServerToClient(
-            List<CompressionMethod> serverSupportedCompressionMethodsServerToClient) {
+            ArrayList<CompressionMethod> serverSupportedCompressionMethodsServerToClient) {
         this.serverSupportedCompressionMethodsServerToClient =
                 serverSupportedCompressionMethodsServerToClient;
     }
 
     public void setServerSupportedCompressionMethodsClientToServer(
-            List<CompressionMethod> serverSupportedCompressionMethodsClientToServer) {
+            ArrayList<CompressionMethod> serverSupportedCompressionMethodsClientToServer) {
         this.serverSupportedCompressionMethodsClientToServer =
                 serverSupportedCompressionMethodsClientToServer;
     }
 
     public void setClientSupportedLanguagesClientToServer(
-            List<String> clientSupportedLanguagesClientToServer) {
+            ArrayList<String> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
     public void setClientSupportedLanguagesServerToClient(
-            List<String> clientSupportedLanguagesServerToClient) {
+            ArrayList<String> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesServerToClient(
-            List<String> serverSupportedLanguagesServerToClient) {
+            ArrayList<String> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesClientToServer(
-            List<String> serverSupportedLanguagesClientToServer) {
+            ArrayList<String> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 
@@ -1691,7 +1882,7 @@ public class Config implements Serializable {
 
     // section server-sig-algs extension
     public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
-            List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication) {
+            ArrayList<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication) {
         this.serverSupportedPublicKeyAlgorithmsForAuthentication =
                 serverSupportedPublicKeyAlgorithmsForAuthentication;
     }
@@ -1702,12 +1893,12 @@ public class Config implements Serializable {
 
     // section delay-compression extension
     public void setClientSupportedDelayCompressionMethods(
-            List<CompressionMethod> clientSupportedDelayCompressionMethods) {
+            ArrayList<CompressionMethod> clientSupportedDelayCompressionMethods) {
         this.clientSupportedDelayCompressionMethods = clientSupportedDelayCompressionMethods;
     }
 
     public void setServerSupportedDelayCompressionMethods(
-            List<CompressionMethod> serverSupportedDelayCompressionMethods) {
+            ArrayList<CompressionMethod> serverSupportedDelayCompressionMethods) {
         this.serverSupportedDelayCompressionMethods = serverSupportedDelayCompressionMethods;
     }
 
@@ -1814,6 +2005,10 @@ public class Config implements Serializable {
     }
 
     public void setHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
+        this.hostKeys = new ArrayList<>(Objects.requireNonNull(hostKeys));
+    }
+
+    public void setHostKeys(ArrayList<SshPublicKey<?, ?>> hostKeys) {
         this.hostKeys = Objects.requireNonNull(hostKeys);
     }
 
@@ -1868,6 +2063,10 @@ public class Config implements Serializable {
     }
 
     public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {
+        this.userKeys = new ArrayList<>(Objects.requireNonNull(userKeys));
+    }
+
+    public void setUserKeys(ArrayList<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
     }
 
@@ -2069,7 +2268,7 @@ public class Config implements Serializable {
         this.workflowTraceType = workflowTraceType;
     }
 
-    public void setOutputFilters(List<FilterType> outputFilters) {
+    public void setOutputFilters(ArrayList<FilterType> outputFilters) {
         this.outputFilters = outputFilters;
     }
 
