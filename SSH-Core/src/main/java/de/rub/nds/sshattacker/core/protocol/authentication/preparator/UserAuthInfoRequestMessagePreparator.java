@@ -26,5 +26,14 @@ public class UserAuthInfoRequestMessagePreparator
         getObject().setInstruction("", true);
         getObject().setLanguageTag("", true);
         getObject().setPromptEntriesCount(0);
+
+        getObject()
+                .getPromptEntries()
+                .forEach(
+                        promptEntry ->
+                                promptEntry
+                                        .getHandler(chooser.getContext())
+                                        .getPreparator()
+                                        .prepare());
     }
 }

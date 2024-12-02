@@ -50,7 +50,7 @@ public class CyclicParserSerializerTest {
         Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
         // TODO: Fix HybridKeyExchangeReplyMessagePreparator
         excludedClasses.add(HybridKeyExchangeReplyMessage.class);
-        return new Reflections("de.rub.nds.sshattacker.core.protocol")
+        return new Reflections("de.rub.nds.sshattacker.core")
                 .getSubTypesOf(ProtocolMessage.class).stream()
                         .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
                         .filter(messageClass -> !excludedClasses.contains(messageClass))

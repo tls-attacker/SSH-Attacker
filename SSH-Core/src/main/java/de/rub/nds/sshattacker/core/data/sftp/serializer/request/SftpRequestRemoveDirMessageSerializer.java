@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRmdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRemoveDirMessage;
 
 public class SftpRequestRemoveDirMessageSerializer
-        extends SftpRequestWithPathMessageSerializer<SftpRequestRmdirMessage> {
+        extends SftpRequestWithPathMessageSerializer<SftpRequestRemoveDirMessage> {
 
-    public SftpRequestRemoveDirMessageSerializer(SftpRequestRmdirMessage message) {
+    public SftpRequestRemoveDirMessageSerializer(SftpRequestRemoveDirMessage message) {
         super(message);
     }
 

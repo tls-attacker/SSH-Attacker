@@ -1030,8 +1030,10 @@ public class DefaultChooser extends Chooser {
     public ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses() {
         int nextIndex = context.getNextPreConfiguredAuthResponsIndex();
         if (nextIndex < config.getPreConfiguredAuthResponses().size()) {
-            nextIndex++;
-            return config.getPreConfiguredAuthResponses().get(nextIndex).getResponseEntries();
+            ArrayList<AuthenticationResponseEntry> result =
+                    config.getPreConfiguredAuthResponses().get(nextIndex).getResponseEntries();
+            context.setNextPreConfiguredAuthResponsIndex(nextIndex + 1);
+            return result;
         }
         return null;
     }

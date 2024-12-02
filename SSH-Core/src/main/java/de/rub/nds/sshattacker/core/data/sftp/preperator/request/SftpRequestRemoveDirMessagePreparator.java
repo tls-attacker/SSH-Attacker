@@ -8,18 +8,18 @@
 package de.rub.nds.sshattacker.core.data.sftp.preperator.request;
 
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessagePreparator;
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRmdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRemoveDirMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestRemoveDirMessagePreparator
-        extends SftpMessagePreparator<SftpRequestRmdirMessage> {
+        extends SftpRequestMessagePreparator<SftpRequestRemoveDirMessage> {
 
-    public SftpRequestRemoveDirMessagePreparator(Chooser chooser, SftpRequestRmdirMessage message) {
+    public SftpRequestRemoveDirMessagePreparator(
+            Chooser chooser, SftpRequestRemoveDirMessage message) {
         super(chooser, message, SftpPacketTypeConstant.SSH_FXP_RMDIR);
     }
 
-    public void prepareMessageSpecificContents() {
+    public void prepareRequestSpecificContents() {
         getObject().setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
     }
 }

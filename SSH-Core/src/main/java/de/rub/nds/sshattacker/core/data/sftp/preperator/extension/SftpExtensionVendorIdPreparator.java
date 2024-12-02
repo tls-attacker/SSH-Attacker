@@ -16,13 +16,11 @@ public class SftpExtensionVendorIdPreparator
         extends SftpAbstractExtensionPreparator<SftpExtensionVendorId> {
 
     public SftpExtensionVendorIdPreparator(Chooser chooser, SftpExtensionVendorId extension) {
-        super(chooser, extension);
+        super(chooser, extension, SftpExtension.VENDOR_ID);
     }
 
     @Override
     public void prepareExtensionSpecificContents() {
-        getObject().setName(SftpExtension.VENDOR_ID, true);
-
         getObject().setSoftlyVendorName("NDS RUB", true, chooser.getConfig());
 
         getObject().setSoftlyProductName("SSH-Attacker", true, chooser.getConfig());

@@ -31,5 +31,14 @@ public class UserAuthInfoResponseMessagePreparator
         if (nextResponses != null) {
             getObject().setResponseEntries(nextResponses, true);
         }
+
+        getObject()
+                .getResponseEntries()
+                .forEach(
+                        responseEntry ->
+                                responseEntry
+                                        .getHandler(chooser.getContext())
+                                        .getPreparator()
+                                        .prepare());
     }
 }

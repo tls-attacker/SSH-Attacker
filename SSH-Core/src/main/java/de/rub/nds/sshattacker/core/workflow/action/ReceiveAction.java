@@ -177,7 +177,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = SftpRequestRealPathMessage.class, name = "SftpRequestRealPath"),
         @XmlElement(type = SftpRequestRemoveMessage.class, name = "SftpRequestRemove"),
         @XmlElement(type = SftpRequestRenameMessage.class, name = "SftpRequestRename"),
-        @XmlElement(type = SftpRequestRmdirMessage.class, name = "SftpRequestRmdir"),
+        @XmlElement(type = SftpRequestRemoveDirMessage.class, name = "SftpRequestRmdir"),
         @XmlElement(type = SftpRequestSetStatMessage.class, name = "SftpRequestSetStat"),
         @XmlElement(
                 type = SftpRequestSpaceAvailableMessage.class,

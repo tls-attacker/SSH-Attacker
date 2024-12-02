@@ -35,7 +35,7 @@ public abstract class SftpAbstractExtensionPreparator<E extends SftpAbstractExte
     @Override
     public void prepare() {
         if (extensionName != null) {
-            getObject().setName(extensionName);
+            getObject().setSoftlyName(extensionName, true, chooser.getConfig());
         }
         prepareExtensionSpecificContents();
     }

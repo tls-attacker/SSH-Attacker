@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRmdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRemoveDirMessage;
 
 public class SftpRequestRemoveDirMessageParser
-        extends SftpRequestWithPathMessageParser<SftpRequestRmdirMessage> {
+        extends SftpRequestWithPathMessageParser<SftpRequestRemoveDirMessage> {
 
     public SftpRequestRemoveDirMessageParser(byte[] array) {
         super(array);
@@ -21,8 +21,8 @@ public class SftpRequestRemoveDirMessageParser
     }
 
     @Override
-    public SftpRequestRmdirMessage createMessage() {
-        return new SftpRequestRmdirMessage();
+    public SftpRequestRemoveDirMessage createMessage() {
+        return new SftpRequestRemoveDirMessage();
     }
 
     @Override

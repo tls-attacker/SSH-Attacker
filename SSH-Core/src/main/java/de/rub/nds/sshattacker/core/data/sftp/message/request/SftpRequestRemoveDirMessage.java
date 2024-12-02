@@ -10,19 +10,20 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRemoveDirMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class SftpRequestRmdirMessage extends SftpRequestWithPathMessage<SftpRequestRmdirMessage> {
+public class SftpRequestRemoveDirMessage
+        extends SftpRequestWithPathMessage<SftpRequestRemoveDirMessage> {
 
-    public SftpRequestRmdirMessage() {
+    public SftpRequestRemoveDirMessage() {
         super();
     }
 
-    public SftpRequestRmdirMessage(SftpRequestRmdirMessage other) {
+    public SftpRequestRemoveDirMessage(SftpRequestRemoveDirMessage other) {
         super(other);
     }
 
     @Override
-    public SftpRequestRmdirMessage createCopy() {
-        return new SftpRequestRmdirMessage(this);
+    public SftpRequestRemoveDirMessage createCopy() {
+        return new SftpRequestRemoveDirMessage(this);
     }
 
     @Override

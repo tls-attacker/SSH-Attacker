@@ -7,21 +7,21 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRmdirMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRemoveDirMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.request.SftpRequestRemoveDirMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestRemoveDirMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestRemoveDirMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestRemoveDirMessageHandler
-        extends SftpRequestMessageHandler<SftpRequestRmdirMessage> {
+        extends SftpRequestMessageHandler<SftpRequestRemoveDirMessage> {
 
     public SftpRequestRemoveDirMessageHandler(SshContext context) {
         super(context);
     }
 
-    public SftpRequestRemoveDirMessageHandler(SshContext context, SftpRequestRmdirMessage message) {
+    public SftpRequestRemoveDirMessageHandler(
+            SshContext context, SftpRequestRemoveDirMessage message) {
         super(context, message);
     }
 
