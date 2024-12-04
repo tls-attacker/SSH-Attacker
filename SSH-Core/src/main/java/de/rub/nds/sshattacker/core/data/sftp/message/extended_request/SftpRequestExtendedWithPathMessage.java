@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import java.nio.charset.StandardCharsets;
 
@@ -18,7 +18,7 @@ public abstract class SftpRequestExtendedWithPathMessage<
         extends SftpRequestExtendedMessage<T> {
 
     private ModifiableInteger pathLength;
-    private ModifiableString path;
+    private ModifiablePath path;
 
     protected SftpRequestExtendedWithPathMessage() {
         super();
@@ -45,11 +45,11 @@ public abstract class SftpRequestExtendedWithPathMessage<
         this.pathLength = ModifiableVariableFactory.safelySetValue(this.pathLength, pathLength);
     }
 
-    public ModifiableString getPath() {
+    public ModifiablePath getPath() {
         return path;
     }
 
-    public void setPath(ModifiableString path) {
+    public void setPath(ModifiablePath path) {
         setPath(path, false);
     }
 
@@ -57,7 +57,7 @@ public abstract class SftpRequestExtendedWithPathMessage<
         setPath(path, false);
     }
 
-    public void setPath(ModifiableString path, boolean adjustLengthField) {
+    public void setPath(ModifiablePath path, boolean adjustLengthField) {
         if (adjustLengthField) {
             setPathLength(path.getValue().getBytes(StandardCharsets.UTF_8).length);
         }

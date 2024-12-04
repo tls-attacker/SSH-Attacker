@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRenameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -20,7 +20,7 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     // path is the old path
 
     private ModifiableInteger newPathLength;
-    private ModifiableString newPath;
+    private ModifiablePath newPath;
 
     public SftpRequestRenameMessage() {
         super();
@@ -50,11 +50,11 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
                 ModifiableVariableFactory.safelySetValue(this.newPathLength, newPathLength);
     }
 
-    public ModifiableString getNewPath() {
+    public ModifiablePath getNewPath() {
         return newPath;
     }
 
-    public void setNewPath(ModifiableString newPath) {
+    public void setNewPath(ModifiablePath newPath) {
         setNewPath(newPath, false);
     }
 
@@ -62,7 +62,7 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
         setNewPath(newPath, false);
     }
 
-    public void setNewPath(ModifiableString newPath, boolean adjustLengthField) {
+    public void setNewPath(ModifiablePath newPath, boolean adjustLengthField) {
         if (adjustLengthField) {
             setNewPathLength(newPath.getValue().getBytes(StandardCharsets.UTF_8).length);
         }

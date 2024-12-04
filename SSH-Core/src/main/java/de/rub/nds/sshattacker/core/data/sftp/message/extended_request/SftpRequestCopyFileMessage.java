@@ -9,8 +9,8 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyFileMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -23,7 +23,7 @@ public class SftpRequestCopyFileMessage
     // path is the source path
 
     private ModifiableInteger destinationPathLength;
-    private ModifiableString destinationPath;
+    private ModifiablePath destinationPath;
     private ModifiableByte overwriteDestination;
 
     public SftpRequestCopyFileMessage() {
@@ -91,11 +91,11 @@ public class SftpRequestCopyFileMessage
                         this.destinationPathLength, destinationPathLength);
     }
 
-    public ModifiableString getDestinationPath() {
+    public ModifiablePath getDestinationPath() {
         return destinationPath;
     }
 
-    public void setDestinationPath(ModifiableString destinationPath) {
+    public void setDestinationPath(ModifiablePath destinationPath) {
         setDestinationPath(destinationPath, false);
     }
 
@@ -103,7 +103,7 @@ public class SftpRequestCopyFileMessage
         setDestinationPath(destinationPath, false);
     }
 
-    public void setDestinationPath(ModifiableString destinationPath, boolean adjustLengthField) {
+    public void setDestinationPath(ModifiablePath destinationPath, boolean adjustLengthField) {
         if (adjustLengthField) {
             setDestinationPathLength(
                     destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);

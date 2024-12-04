@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSymbolicLinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -23,7 +23,7 @@ public class SftpRequestSymbolicLinkMessage
     // Note that OpenSSH and some other Implementations (e.g. ProFTPD, Sun SSH) reverses the order
     // of link path and target path
 
-    private ModifiableString targetPath;
+    private ModifiablePath targetPath;
     private ModifiableInteger targetPathLength;
 
     public SftpRequestSymbolicLinkMessage() {
@@ -55,11 +55,11 @@ public class SftpRequestSymbolicLinkMessage
                 ModifiableVariableFactory.safelySetValue(this.targetPathLength, targetPathLength);
     }
 
-    public ModifiableString getTargetPath() {
+    public ModifiablePath getTargetPath() {
         return targetPath;
     }
 
-    public void setTargetPath(ModifiableString targetPath) {
+    public void setTargetPath(ModifiablePath targetPath) {
         setTargetPath(targetPath, false);
     }
 
@@ -67,7 +67,7 @@ public class SftpRequestSymbolicLinkMessage
         setTargetPath(targetPath, false);
     }
 
-    public void setTargetPath(ModifiableString targetPath, boolean adjustLengthField) {
+    public void setTargetPath(ModifiablePath targetPath, boolean adjustLengthField) {
         if (adjustLengthField) {
             setTargetPathLength(targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
