@@ -581,8 +581,19 @@ public class Config implements Serializable {
      */
     private Boolean workflowExecutorShouldClose = true;
 
+    /**
+     * Defines if the workflow trace should be reset before executing, by resetting all SshActions.
+     */
+    private Boolean resetWorkflowTraceBeforeExecution = true;
+
     /** Defines if the workflow trace should be reset before saving, by resetting all SshActions. */
-    private Boolean resetWorkflowtracesBeforeSaving = false;
+    private Boolean resetWorkflowTraceBeforeSaving = false;
+
+    /**
+     * Defines whether the original values of all modifiable variables in the workflow trace should
+     * be reset to null when the workflow trace is reset.
+     */
+    private Boolean resetModifiableVariables = true;
 
     /**
      * Setting this to true results in the client transport handlers trying to acquire a new port on
@@ -1463,7 +1474,7 @@ public class Config implements Serializable {
         stopActionsAfterDisconnect = other.stopActionsAfterDisconnect;
         stopActionsAfterIOException = other.stopActionsAfterIOException;
         workflowExecutorShouldClose = other.workflowExecutorShouldClose;
-        resetWorkflowtracesBeforeSaving = other.resetWorkflowtracesBeforeSaving;
+        resetWorkflowTraceBeforeSaving = other.resetWorkflowTraceBeforeSaving;
         resetClientSourcePort = other.resetClientSourcePort;
         retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
         stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
@@ -2274,8 +2285,16 @@ public class Config implements Serializable {
         return workflowExecutorShouldClose;
     }
 
-    public Boolean getResetWorkflowtracesBeforeSaving() {
-        return resetWorkflowtracesBeforeSaving;
+    public Boolean getResetWorkflowTraceBeforeExecution() {
+        return resetWorkflowTraceBeforeExecution;
+    }
+
+    public Boolean getResetWorkflowTraceBeforeSaving() {
+        return resetWorkflowTraceBeforeSaving;
+    }
+
+    public Boolean getResetModifiableVariables() {
+        return resetModifiableVariables;
     }
 
     public Boolean getResetClientSourcePort() {
@@ -2337,8 +2356,16 @@ public class Config implements Serializable {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
-        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
+    public void setResetWorkflowTraceBeforeExecution(Boolean resetWorkflowTraceBeforeExecution) {
+        this.resetWorkflowTraceBeforeExecution = resetWorkflowTraceBeforeExecution;
+    }
+
+    public void setResetWorkflowTraceBeforeSaving(Boolean resetWorkflowTraceBeforeSaving) {
+        this.resetWorkflowTraceBeforeSaving = resetWorkflowTraceBeforeSaving;
+    }
+
+    public void setResetModifiableVariables(Boolean resetModifiableVariables) {
+        this.resetModifiableVariables = resetModifiableVariables;
     }
 
     public void setResetClientSourcePort(Boolean resetClientSourcePort) {

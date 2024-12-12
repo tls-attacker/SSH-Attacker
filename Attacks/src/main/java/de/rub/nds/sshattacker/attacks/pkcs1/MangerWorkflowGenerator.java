@@ -7,8 +7,7 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -39,10 +38,7 @@ public final class MangerWorkflowGenerator {
         trace.addSshAction(
                 new ReceiveAction(new KeyExchangeInitMessage(), new RsaKeyExchangePubkeyMessage()));
         RsaKeyExchangeSecretMessage secretMessage = new RsaKeyExchangeSecretMessage();
-        ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
-        encryptedSecretArray.setModification(
-                ByteArrayModificationFactory.explicitValue(encryptedSecret));
-        secretMessage.setEncryptedSecret(encryptedSecretArray, true);
+        secretMessage.setEncryptedSecret(Modifiable.explicit(encryptedSecret), true);
         trace.addSshAction(new SendAction(secretMessage));
         trace.addSshAction(new ReceiveAction());
         return trace;

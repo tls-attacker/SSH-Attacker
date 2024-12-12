@@ -61,7 +61,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     public abstract void execute(State state) throws WorkflowExecutionException;
 
-    public abstract void reset();
+    public abstract void reset(boolean resetModifiableVariables);
 
     /** Add default values and initialize empty fields. */
     @SuppressWarnings("NoopMethodInAbstractClass")

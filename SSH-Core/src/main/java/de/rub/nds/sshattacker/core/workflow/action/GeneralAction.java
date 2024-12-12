@@ -57,7 +57,7 @@ public class GeneralAction extends SshAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

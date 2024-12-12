@@ -84,8 +84,8 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     }
 
     @Override
-    public void reset() {
-        super.reset();
+    public void resetUsingRefelctions() {
+        super.resetUsingRefelctions();
         encryptedPacketFields.clear();
         plainPacketBytesFirstBlockOnly = false;
         paddingValid = null;

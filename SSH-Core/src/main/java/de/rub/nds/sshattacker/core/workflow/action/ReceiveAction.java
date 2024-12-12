@@ -625,7 +625,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         messages = null;
         receivedPackets = null;
         setExecuted(null);

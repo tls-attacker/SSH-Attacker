@@ -78,7 +78,7 @@ public abstract class DynamicMessageAction extends MessageAction
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         sshActions = new ArrayList<>();
         setExecuted(null);
     }

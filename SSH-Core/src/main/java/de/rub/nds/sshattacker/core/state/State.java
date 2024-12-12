@@ -94,7 +94,7 @@ public class State {
 
     public void reset() {
         contextContainer.clear();
-        workflowTrace.reset();
+        workflowTrace.reset(config.getResetModifiableVariables());
         killAllSpawnedSubprocesses();
         initState();
     }

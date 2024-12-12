@@ -81,7 +81,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
         return holders.get(randomHolder);
     }
 
-    public void reset() {
+    public void resetUsingRefelctions() {
         List<Field> fields = getAllModifiableVariableFields();
         for (Field field : fields) {
             field.setAccessible(true);

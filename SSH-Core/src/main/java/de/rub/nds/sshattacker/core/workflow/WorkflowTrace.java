@@ -135,9 +135,9 @@ public class WorkflowTrace implements Serializable {
         return new WorkflowTrace(this);
     }
 
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         for (SshAction action : sshActions) {
-            action.reset();
+            action.reset(resetModifiableVariables);
         }
     }
 

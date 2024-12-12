@@ -92,7 +92,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         setExecuted(null);
     }
 

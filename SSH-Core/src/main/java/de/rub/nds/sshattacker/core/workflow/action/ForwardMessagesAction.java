@@ -268,10 +268,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         receivedMessages = null;
         sendMessages = null;
-        executedAsPlanned = false;
+        executedAsPlanned = null;
         setExecuted(null);
     }
 

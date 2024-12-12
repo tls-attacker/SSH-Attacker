@@ -35,7 +35,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        state.getWorkflowTrace().reset();
+        if (config.getResetWorkflowTraceBeforeExecution()) {
+            state.getWorkflowTrace().reset(config.getResetModifiableVariables());
+        }
+
         state.setStartTimestamp(System.currentTimeMillis());
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
@@ -79,8 +82,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             LOGGER.info("Workflow was not executed as planned.");
         }
 
-        if (config.getResetWorkflowtracesBeforeSaving()) {
-            state.getWorkflowTrace().reset();
+        if (config.getResetWorkflowTraceBeforeSaving()) {
+            state.getWorkflowTrace().reset(config.getResetModifiableVariables());
         }
 
         try {

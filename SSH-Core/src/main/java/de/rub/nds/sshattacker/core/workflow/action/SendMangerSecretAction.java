@@ -7,8 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
@@ -78,7 +77,6 @@ public class SendMangerSecretAction extends SendAction {
     /** Creates an {@link RsaKeyExchangeSecretMessage} by encrypting the shared secret with RSA */
     private RsaKeyExchangeSecretMessage createSecretMessage(State state) {
         RsaKeyExchangeSecretMessage message = new RsaKeyExchangeSecretMessage();
-        ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
         Chooser chooser = state.getSshContext().getChooser();
         RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
         CustomRsaPublicKey publicKey = keyExchange.getTransientKey().getPublicKey();
@@ -88,10 +86,7 @@ public class SendMangerSecretAction extends SendAction {
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
             LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] encryptedSecret = rsa.doFinal(encodedSecret);
-            encryptedSecretArray.setModification(
-                    ByteArrayModificationFactory.explicitValue(encryptedSecret));
-            message.setEncryptedSecret(encryptedSecretArray, true);
+            message.setEncryptedSecret(Modifiable.explicit(rsa.doFinal(encodedSecret)), true);
             return message;
 
         } catch (NoSuchPaddingException
