@@ -39,7 +39,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 @XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {})
 public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();

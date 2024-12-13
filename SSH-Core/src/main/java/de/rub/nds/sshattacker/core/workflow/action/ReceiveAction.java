@@ -631,7 +631,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         setExecuted(null);
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
