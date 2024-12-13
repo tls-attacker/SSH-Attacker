@@ -32,7 +32,7 @@ public abstract class DynamicMessageAction extends MessageAction
     protected DynamicMessageAction(DynamicMessageAction other) {
         super(other);
         if (other.sshActions != null) {
-            sshActions = new ArrayList<>();
+            sshActions = new ArrayList<>(other.sshActions.size());
             for (SshAction item : other.sshActions) {
                 sshActions.add(item != null ? item.createCopy() : null);
             }

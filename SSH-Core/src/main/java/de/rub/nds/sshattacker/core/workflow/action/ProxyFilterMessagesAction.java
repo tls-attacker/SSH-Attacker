@@ -50,7 +50,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     public ProxyFilterMessagesAction(ProxyFilterMessagesAction other) {
         super(other);
         if (other.filteredMessages != null) {
-            filteredMessages = new ArrayList<>();
+            filteredMessages = new ArrayList<>(other.filteredMessages.size());
             for (ProtocolMessage<?> item : other.filteredMessages) {
                 filteredMessages.add(item != null ? item.createCopy() : null);
             }

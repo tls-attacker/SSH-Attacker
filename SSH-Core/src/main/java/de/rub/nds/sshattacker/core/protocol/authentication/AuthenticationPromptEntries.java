@@ -33,7 +33,7 @@ public class AuthenticationPromptEntries implements Serializable {
     public AuthenticationPromptEntries(AuthenticationPromptEntries other) {
         super();
         if (other.promptEntries != null) {
-            promptEntries = new ArrayList<>();
+            promptEntries = new ArrayList<>(other.promptEntries.size());
             for (AuthenticationPromptEntry item : other.promptEntries) {
                 promptEntries.add(item != null ? item.createCopy() : null);
             }

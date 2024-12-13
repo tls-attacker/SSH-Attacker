@@ -76,7 +76,7 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         modifyTime = other.modifyTime != null ? other.modifyTime.createCopy() : null;
         extendedCount = other.extendedCount != null ? other.extendedCount.createCopy() : null;
         if (other.extendedAttributes != null) {
-            extendedAttributes = new ArrayList<>();
+            extendedAttributes = new ArrayList<>(other.extendedAttributes.size());
             for (SftpFileExtendedAttribute item : other.extendedAttributes) {
                 extendedAttributes.add(item != null ? item.createCopy() : null);
             }
@@ -90,7 +90,7 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         aclLength = other.aclLength != null ? other.aclLength.createCopy() : null;
         aclEntriesCount = other.aclEntriesCount != null ? other.aclEntriesCount.createCopy() : null;
         if (other.aclEntries != null) {
-            aclEntries = new ArrayList<>();
+            aclEntries = new ArrayList<>(other.aclEntries.size());
             for (SftpAclEntry item : other.aclEntries) {
                 aclEntries.add(item != null ? item.createCopy() : null);
             }

@@ -46,14 +46,14 @@ public class SftpRequestUsersGroupsByIdMessage
         super(other);
         userIdsLength = other.userIdsLength != null ? other.userIdsLength.createCopy() : null;
         if (other.userIds != null) {
-            userIds = new ArrayList<>();
+            userIds = new ArrayList<>(other.userIds.size());
             for (SftpIdEntry item : other.userIds) {
                 userIds.add(item != null ? item.createCopy() : null);
             }
         }
         groupIdsLength = other.groupIdsLength != null ? other.groupIdsLength.createCopy() : null;
         if (other.groupIds != null) {
-            groupIds = new ArrayList<>();
+            groupIds = new ArrayList<>(other.groupIds.size());
             for (SftpIdEntry item : other.groupIds) {
                 groupIds.add(item != null ? item.createCopy() : null);
             }

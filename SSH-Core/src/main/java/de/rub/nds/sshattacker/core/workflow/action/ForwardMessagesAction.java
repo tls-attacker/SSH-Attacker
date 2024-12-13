@@ -97,19 +97,19 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         executedAsPlanned = other.executedAsPlanned;
         withPrepare = other.withPrepare;
         if (other.receivedMessages != null) {
-            receivedMessages = new ArrayList<>();
+            receivedMessages = new ArrayList<>(other.receivedMessages.size());
             for (ProtocolMessage<?> item : other.receivedMessages) {
                 receivedMessages.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.messages != null) {
-            messages = new ArrayList<>();
+            messages = new ArrayList<>(other.messages.size());
             for (ProtocolMessage<?> item : other.messages) {
                 messages.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.sendMessages != null) {
-            sendMessages = new ArrayList<>();
+            sendMessages = new ArrayList<>(other.sendMessages.size());
             for (ProtocolMessage<?> item : other.sendMessages) {
                 sendMessages.add(item != null ? item.createCopy() : null);
             }
@@ -117,7 +117,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         forwardedConnectionAlias = other.forwardedConnectionAlias;
         receivedBytes = other.receivedBytes != null ? other.receivedBytes.clone() : null;
         if (other.receivedPackets != null) {
-            receivedPackets = new ArrayList<>();
+            receivedPackets = new ArrayList<>(other.receivedPackets.size());
             for (AbstractPacket item : other.receivedPackets) {
                 receivedPackets.add(item != null ? item.createCopy() : null);
             }

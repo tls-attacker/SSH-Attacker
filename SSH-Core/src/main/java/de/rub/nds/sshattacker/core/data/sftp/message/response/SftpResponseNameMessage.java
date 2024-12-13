@@ -39,7 +39,7 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
         nameEntriesCount =
                 other.nameEntriesCount != null ? other.nameEntriesCount.createCopy() : null;
         if (other.nameEntries != null) {
-            nameEntries = new ArrayList<>();
+            nameEntries = new ArrayList<>(other.nameEntries.size());
             for (SftpFileNameEntry item : other.nameEntries) {
                 nameEntries.add(item != null ? item.createCopy() : null);
             }

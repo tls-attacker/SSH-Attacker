@@ -43,7 +43,7 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
         responseEntriesCount =
                 other.responseEntriesCount != null ? other.responseEntriesCount.createCopy() : null;
         if (other.responseEntries != null) {
-            responseEntries = new ArrayList<>();
+            responseEntries = new ArrayList<>(other.responseEntries.size());
             for (AuthenticationResponseEntry item : other.responseEntries) {
                 responseEntries.add(item != null ? item.createCopy() : null);
             }

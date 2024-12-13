@@ -48,7 +48,7 @@ public class SftpResponseUsersGroupsByIdMessage
         super(other);
         userNamesLength = other.userNamesLength != null ? other.userNamesLength.createCopy() : null;
         if (other.userNames != null) {
-            userNames = new ArrayList<>();
+            userNames = new ArrayList<>(other.userNames.size());
             for (SftpNameEntry item : other.userNames) {
                 userNames.add(item != null ? item.createCopy() : null);
             }
@@ -56,7 +56,7 @@ public class SftpResponseUsersGroupsByIdMessage
         groupNamesLength =
                 other.groupNamesLength != null ? other.groupNamesLength.createCopy() : null;
         if (other.groupNames != null) {
-            groupNames = new ArrayList<>();
+            groupNames = new ArrayList<>(other.groupNames.size());
             for (SftpNameEntry item : other.groupNames) {
                 groupNames.add(item != null ? item.createCopy() : null);
             }

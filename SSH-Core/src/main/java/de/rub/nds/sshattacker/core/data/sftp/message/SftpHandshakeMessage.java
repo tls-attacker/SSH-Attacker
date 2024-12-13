@@ -61,7 +61,7 @@ public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
         super(other);
         version = other.version != null ? other.version.createCopy() : null;
         if (other.extensions != null) {
-            extensions = new ArrayList<>();
+            extensions = new ArrayList<>(other.extensions.size());
             for (SftpAbstractExtension<?> item : other.extensions) {
                 extensions.add(item != null ? item.createCopy() : null);
             }

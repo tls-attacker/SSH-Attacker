@@ -57,7 +57,7 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         promptEntriesCount =
                 other.promptEntriesCount != null ? other.promptEntriesCount.createCopy() : null;
         if (other.promptEntries != null) {
-            promptEntries = new ArrayList<>();
+            promptEntries = new ArrayList<>(other.promptEntries.size());
             for (AuthenticationPromptEntry item : other.promptEntries) {
                 promptEntries.add(item != null ? item.createCopy() : null);
             }

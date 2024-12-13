@@ -241,7 +241,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     protected MessageAction(MessageAction other) {
         super(other);
         if (other.messages != null) {
-            messages = new ArrayList<>();
+            messages = new ArrayList<>(other.messages.size());
             for (ProtocolMessage<?> item : other.messages) {
                 messages.add(item != null ? item.createCopy() : null);
             }

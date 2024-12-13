@@ -116,13 +116,13 @@ public class WorkflowTrace implements Serializable {
     public WorkflowTrace(WorkflowTrace other) {
         super();
         if (other.connections != null) {
-            connections = new ArrayList<>();
+            connections = new ArrayList<>(other.connections.size());
             for (AliasedConnection item : other.connections) {
                 connections.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.sshActions != null) {
-            sshActions = new ArrayList<>();
+            sshActions = new ArrayList<>(other.sshActions.size());
             for (SshAction item : other.sshActions) {
                 sshActions.add(item != null ? item.createCopy() : null);
             }

@@ -46,7 +46,7 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
         super(other);
         extensionCount = other.extensionCount != null ? other.extensionCount.createCopy() : null;
         if (other.extensions != null) {
-            extensions = new ArrayList<>();
+            extensions = new ArrayList<>(other.extensions.size());
             for (AbstractExtension<?> item : other.extensions) {
                 extensions.add(item != null ? item.createCopy() : null);
             }

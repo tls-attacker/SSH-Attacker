@@ -313,7 +313,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public ReceiveAction(ReceiveAction other) {
         super(other);
         if (other.expectedMessages != null) {
-            expectedMessages = new ArrayList<>();
+            expectedMessages = new ArrayList<>(other.expectedMessages.size());
             for (ProtocolMessage<?> item : other.expectedMessages) {
                 expectedMessages.add(item != null ? item.createCopy() : null);
             }
@@ -327,7 +327,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         ignoreUnexpectedChannelWindowAdjusts = other.ignoreUnexpectedChannelWindowAdjusts;
         ignoreChannelDataWrapper = other.ignoreChannelDataWrapper;
         if (other.receivedPackets != null) {
-            receivedPackets = new ArrayList<>();
+            receivedPackets = new ArrayList<>(other.receivedPackets.size());
             for (AbstractPacket item : other.receivedPackets) {
                 receivedPackets.add(item != null ? item.createCopy() : null);
             }

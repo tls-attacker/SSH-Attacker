@@ -1379,7 +1379,7 @@ public class Config implements Serializable {
         forcePacketCipherChange = other.forcePacketCipherChange;
         enforceSettings = other.enforceSettings;
         if (other.hostKeys != null) {
-            hostKeys = new ArrayList<>();
+            hostKeys = new ArrayList<>(other.hostKeys.size());
             for (SshPublicKey<?, ?> item : other.hostKeys) {
                 hostKeys.add(item != null ? item.createCopy() : null);
             }
@@ -1389,13 +1389,13 @@ public class Config implements Serializable {
                         ? other.fallbackRsaTransientPublicKey.createCopy()
                         : null;
         if (other.clientSupportedExtensions != null) {
-            clientSupportedExtensions = new ArrayList<>();
+            clientSupportedExtensions = new ArrayList<>(other.clientSupportedExtensions.size());
             for (AbstractExtension<?> item : other.clientSupportedExtensions) {
                 clientSupportedExtensions.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.serverSupportedExtensions != null) {
-            serverSupportedExtensions = new ArrayList<>();
+            serverSupportedExtensions = new ArrayList<>(other.serverSupportedExtensions.size());
             for (AbstractExtension<?> item : other.serverSupportedExtensions) {
                 serverSupportedExtensions.add(item != null ? item.createCopy() : null);
             }
@@ -1419,13 +1419,13 @@ public class Config implements Serializable {
         username = other.username;
         password = other.password;
         if (other.preConfiguredAuthResponses != null) {
-            preConfiguredAuthResponses = new ArrayList<>();
+            preConfiguredAuthResponses = new ArrayList<>(other.preConfiguredAuthResponses.size());
             for (AuthenticationResponseEntries item : other.preConfiguredAuthResponses) {
                 preConfiguredAuthResponses.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.userKeys != null) {
-            userKeys = new ArrayList<>();
+            userKeys = new ArrayList<>(other.userKeys.size());
             for (SshPublicKey<?, ?> item : other.userKeys) {
                 userKeys.add(item != null ? item.createCopy() : null);
             }
@@ -1449,13 +1449,15 @@ public class Config implements Serializable {
         sftpNegotiatedVersion = other.sftpNegotiatedVersion;
         respectSftpNegotiatedVersion = other.respectSftpNegotiatedVersion;
         if (other.sftpClientSupportedExtensions != null) {
-            sftpClientSupportedExtensions = new ArrayList<>();
+            sftpClientSupportedExtensions =
+                    new ArrayList<>(other.sftpClientSupportedExtensions.size());
             for (SftpAbstractExtension<?> item : other.sftpClientSupportedExtensions) {
                 sftpClientSupportedExtensions.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.sftpServerSupportedExtensions != null) {
-            sftpServerSupportedExtensions = new ArrayList<>();
+            sftpServerSupportedExtensions =
+                    new ArrayList<>(other.sftpServerSupportedExtensions.size());
             for (SftpAbstractExtension<?> item : other.sftpServerSupportedExtensions) {
                 sftpServerSupportedExtensions.add(item != null ? item.createCopy() : null);
             }
@@ -1474,7 +1476,9 @@ public class Config implements Serializable {
         stopActionsAfterDisconnect = other.stopActionsAfterDisconnect;
         stopActionsAfterIOException = other.stopActionsAfterIOException;
         workflowExecutorShouldClose = other.workflowExecutorShouldClose;
+        resetWorkflowTraceBeforeExecution = other.resetWorkflowTraceBeforeExecution;
         resetWorkflowTraceBeforeSaving = other.resetWorkflowTraceBeforeSaving;
+        resetModifiableVariables = other.resetModifiableVariables;
         resetClientSourcePort = other.resetClientSourcePort;
         retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
         stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
