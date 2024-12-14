@@ -77,8 +77,12 @@ public class WorkflowConfigurationFactory {
                 return createDynamicAuthenticationWorkflowTrace();
             case FULL:
                 return createFullWorkflowTrace();
+            case REQ_SUBSYSTEM:
+                return createRequestSubsystemWorkflowTrace();
             case SFTP_INIT:
                 return createSftpInitWorkflowTrace();
+            case SFTP_FULL:
+                return createSftpFullWorkflowTrace();
             case REQ_TCP_IP_FORWARD:
                 return createRequestTcpIpForwardWorkflowTrace();
             case MITM:
@@ -155,14 +159,24 @@ public class WorkflowConfigurationFactory {
         return workflow;
     }
 
-    public WorkflowTrace createSftpInitWorkflowTrace() {
+    public WorkflowTrace createRequestSubsystemWorkflowTrace() {
         WorkflowTrace workflow = new WorkflowTrace();
         addTransportProtocolActions(workflow);
         addAuthenticationProtocolActions(workflow);
         // Connection Protocol Actions
         addChannelOpenActions(workflow);
         addChannelRequestSubsystemActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSftpInitWorkflowTrace() {
+        WorkflowTrace workflow = createRequestSubsystemWorkflowTrace();
         addSftpInitActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSftpFullWorkflowTrace() {
+        WorkflowTrace workflow = createSftpInitWorkflowTrace();
         addSftpTestActions(workflow);
         return workflow;
     }

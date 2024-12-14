@@ -368,7 +368,7 @@
     <stopActionsAfterDisconnect>true</stopActionsAfterDisconnect>
     <stopActionsAfterIOException>true</stopActionsAfterIOException>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
-    <resetWorkflowtracesBeforeSaving>false</resetWorkflowtracesBeforeSaving>
+    <resetWorkflowTraceBeforeSaving>false</resetWorkflowTraceBeforeSaving>
     <quickReceive>true</quickReceive>
     <receiveMaximumBytes>16777216</receiveMaximumBytes>
     <stopReceivingAfterDisconnect>false</stopReceivingAfterDisconnect>
