@@ -10,6 +10,10 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +23,21 @@ import java.util.stream.Collectors;
 public abstract class DynamicMessageAction extends MessageAction
         implements ReceivingAction, SendingAction {
 
+    @XmlElementWrapper
+    @XmlElements({
+        @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryptionAction"),
+        @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
+        @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayerAction"),
+        @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
+        @XmlElement(type = DynamicDelayCompressionAction.class, name = "DynamicDelayCompressionAction"),
+        @XmlElement(type = DynamicExtensionNegotiationAction.class, name = "DynamicExtensionNegotiationAction"),
+        @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchangeAction"),
+        @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessagesAction"),
+        @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessagesAction"),
+        @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
+        @XmlElement(type = SendAction.class, name = "SendAction"),
+        @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecretAction")
+    })
     protected ArrayList<SshAction> sshActions = new ArrayList<>();
 
     protected DynamicMessageAction() {
