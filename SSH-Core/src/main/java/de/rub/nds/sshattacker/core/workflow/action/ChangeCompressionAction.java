@@ -89,11 +89,20 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
 
     @Override
     public String toString() {
-        return "ChangeCompressionAction{"
-                + "previousAlgorithm="
-                + previousAlgorithm
-                + ", targetAlgorithm="
-                + targetAlgorithm
-                + '}';
+        if (isExecuted()) {
+            return "ChangeCompressionAction{"
+                    + "previousAlgorithm="
+                    + previousAlgorithm
+                    + ", targetAlgorithm="
+                    + targetAlgorithm
+                    + '}';
+        } else {
+            return "ChangeCompressionAction{"
+                    + "previousAlgorithm="
+                    + previousAlgorithm
+                    + ", targetAlgorithm="
+                    + targetAlgorithm
+                    + "} (not executed)";
+        }
     }
 }

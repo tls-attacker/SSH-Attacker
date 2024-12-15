@@ -57,6 +57,10 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public String toString() {
-        return "DeactivateEncryptionAction{" + '}';
+        if (isExecuted()) {
+            return "DeactivateEncryptionAction";
+        } else {
+            return "DeactivateEncryptionAction (not executed)";
+        }
     }
 }
