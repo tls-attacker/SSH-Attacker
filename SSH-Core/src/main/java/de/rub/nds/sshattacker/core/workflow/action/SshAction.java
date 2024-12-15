@@ -119,12 +119,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     @Override
     public String aliasesToString() {
-        StringBuilder sb = new StringBuilder();
-        for (String alias : getAllAliases()) {
-            sb.append(alias).append(",");
-        }
-        sb.deleteCharAt(sb.lastIndexOf(","));
-        return sb.toString();
+        return String.join(",", getAllAliases());
     }
 
     public String toCompactString() {

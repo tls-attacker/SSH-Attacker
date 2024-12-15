@@ -368,25 +368,28 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
-        sb.append("\tExpected:");
+        sb.append("\tExpected: ");
         if (expectedMessages != null) {
-            for (ProtocolMessage<?> message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < expectedMessages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(expectedMessages.get(i).toCompactString());
             }
         } else {
             sb.append(" (no messages set)");
         }
-        sb.append("\n\tActual:");
+        sb.append("\n\tActual: ");
         if (messages != null && !messages.isEmpty()) {
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
         } else {
             sb.append(" (no messages set)");
         }
-        sb.append("\n");
         return sb.toString();
     }
 
@@ -395,11 +398,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             sb.append(" (");
-            for (ProtocolMessage<?> message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
+            for (int i = 0; i < expectedMessages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(expectedMessages.get(i).toCompactString());
             }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }

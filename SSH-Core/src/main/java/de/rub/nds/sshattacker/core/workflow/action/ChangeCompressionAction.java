@@ -95,7 +95,7 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
                     + previousAlgorithm
                     + ", targetAlgorithm="
                     + targetAlgorithm
-                    + '}';
+                    + "}";
         } else {
             return "ChangeCompressionAction{"
                     + "previousAlgorithm="

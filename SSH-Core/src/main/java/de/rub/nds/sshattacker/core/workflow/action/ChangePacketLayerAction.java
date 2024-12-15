@@ -109,7 +109,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
                     + packetLayerType
                     + ", enableAsciiMode="
                     + enableAsciiMode
-                    + '}';
+                    + "}";
         } else {
             return "ChangePacketLayerAction{"
                     + "packetLayerType="

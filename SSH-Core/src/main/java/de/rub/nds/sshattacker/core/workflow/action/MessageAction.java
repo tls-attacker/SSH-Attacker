@@ -264,7 +264,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        for (ProtocolMessage<?> message : messages) {
+
+        for (int i = 0; i < messages.size(); i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            ProtocolMessage<?> message = messages.get(i);
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -273,9 +278,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             if (!message.isRequired()) {
                 builder.append("*");
             }
-            builder.append(", ");
         }
-        return builder.deleteCharAt(builder.lastIndexOf(", ")).toString();
+        return builder.toString();
     }
 
     @Override

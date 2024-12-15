@@ -132,13 +132,14 @@ public class SendAction extends MessageAction implements SendingAction {
         } else {
             sb = new StringBuilder("Send Action: (not executed)\n");
         }
-        sb.append("\tMessages:");
+        sb.append("\tMessages: ");
         if (messages != null) {
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
-            sb.append("\n");
         } else {
             sb.append("null (no messages set)");
         }
@@ -150,11 +151,13 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if (messages != null && !messages.isEmpty()) {
             sb.append(" (");
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }

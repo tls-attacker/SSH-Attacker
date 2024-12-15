@@ -111,9 +111,11 @@ public abstract class DynamicMessageAction extends MessageAction
         }
         sb.append("Dynamic Actions:\n");
         if (sshActions != null && !sshActions.isEmpty()) {
-            for (SshAction sshAction : sshActions) {
-                sb.append(sshAction.toString());
-                sb.append("\n");
+            for (int i = 0; i < sshActions.size(); i++) {
+                if (i > 0) {
+                    sb.append("\n");
+                }
+                sb.append(messages.get(i).toString());
             }
         } else {
             sb.append("(no actions set)");

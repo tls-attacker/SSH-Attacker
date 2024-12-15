@@ -317,6 +317,7 @@ public class WorkflowTrace implements Serializable {
         for (SshAction action : sshActions) {
             sb.append("\n");
             sb.append(action.toString());
+            sb.append("\n");
         }
         return sb.toString();
     }
@@ -339,10 +340,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (SshAction action : sshActions) {
             if (!action.executedAsPlanned()) {
-                LOGGER.debug("Action {} did not execute as planned", action.toCompactString());
+                LOGGER.debug("Action {} did not execute as planned", action::toCompactString);
                 return false;
             } else {
-                LOGGER.debug("Action {} executed as planned", action.toCompactString());
+                LOGGER.debug("Action {} executed as planned", action::toCompactString);
             }
         }
         return true;
