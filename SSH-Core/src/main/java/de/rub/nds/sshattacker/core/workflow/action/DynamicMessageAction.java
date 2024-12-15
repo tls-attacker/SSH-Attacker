@@ -101,7 +101,14 @@ public abstract class DynamicMessageAction extends MessageAction
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Dynamic Actions:\n");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getClass().getSimpleName()).append(":");
+        if (!isExecuted()) {
+            sb = new StringBuilder(" (not executed)");
+        }
+        sb.append("\n");
+        sb.append("Dynamic Actions:\n");
         if (sshActions != null && !sshActions.isEmpty()) {
             for (SshAction sshAction : sshActions) {
                 sb.append(sshAction.toString());

@@ -100,4 +100,14 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
+
+    @Override
+    public String toString() {
+        return "ChangePacketLayerAction{"
+                + "packetLayerType="
+                + packetLayerType
+                + ", enableAsciiMode="
+                + enableAsciiMode
+                + '}';
+    }
 }
