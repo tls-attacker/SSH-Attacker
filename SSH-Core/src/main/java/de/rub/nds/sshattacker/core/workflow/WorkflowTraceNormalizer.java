@@ -41,7 +41,7 @@ public final class WorkflowTraceNormalizer {
      * @param mode The mode the Trace is run in
      */
     public static void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
-        List<AliasedConnection> traceConnections = trace.getConnections();
+        ArrayList<AliasedConnection> traceConnections = trace.getConnections();
         InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
         OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
 

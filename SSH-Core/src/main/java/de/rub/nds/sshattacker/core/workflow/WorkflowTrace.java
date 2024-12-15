@@ -186,7 +186,7 @@ public class WorkflowTrace implements Serializable {
         setSshActions(Arrays.asList(sshActions));
     }
 
-    public List<AliasedConnection> getConnections() {
+    public ArrayList<AliasedConnection> getConnections() {
         return connections;
     }
 
@@ -195,7 +195,8 @@ public class WorkflowTrace implements Serializable {
      * are manually configuring workflow traces (say for MiTM or unit tests), there shouldn't be any
      * need to call this method.
      *
-     * @param connections new connection to use with this workflow trace
+     * <p>Not that this method converts the connections list to an ArrayList. If you want to
+     * maintain a valid reference to the inner list. Then use the method with an ArrayList.
      */
     public void setConnections(List<AliasedConnection> connections) {
         this.connections = new ArrayList<>(connections);
