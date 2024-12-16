@@ -48,6 +48,8 @@ public class Config implements Serializable {
 
     private static final ConfigCache DEFAULT_CONFIG_CACHE;
 
+    private static final HashMap<File, ConfigCache> PATH_CONFIG_CACHE = new HashMap<>();
+
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
         Security.addProvider(new BouncyCastleProvider());
@@ -1535,7 +1537,13 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(File file) {
-        return ConfigIO.read(file);
+        ConfigCache cachedConfig = PATH_CONFIG_CACHE.get(file);
+        if (cachedConfig != null) {
+            return cachedConfig.getCachedCopy();
+        }
+        Config resultConfig = ConfigIO.read(file);
+        PATH_CONFIG_CACHE.put(file, new ConfigCache(resultConfig.createCopy()));
+        return resultConfig;
     }
 
     public static Config createConfig(InputStream stream) {
