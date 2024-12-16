@@ -87,6 +87,8 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
                 "Forwarding messages ({}): {}",
                 forwardToAlias,
                 getReadableString(receivedMessages));
+        // TODO: use setSoftly methods in perpetrators of ssh messages, so that forwarded messages
+        //  are not tempered
         MessageActionResult result =
                 SendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
         sendMessages = result.getMessageList();

@@ -37,6 +37,9 @@ public final class SendMessageHelper {
 
     public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
         try {
+            // Prepare message
+            message.getHandler(context).getPreparator().prepare();
+
             ProtocolMessage<?> innerMessage = null;
             if (message instanceof DataMessage<?>) {
                 // Serialize data message to ChannelDataMessage
@@ -45,6 +48,7 @@ public final class SendMessageHelper {
                 if (handler instanceof MessageSentHandler) {
                     ((MessageSentHandler) handler).adjustContextAfterMessageSent();
                 }
+                // serialize also prepares the ChannelDataMessage
                 message = context.getDataMessageLayer().serialize((DataMessage<?>) message);
             }
 

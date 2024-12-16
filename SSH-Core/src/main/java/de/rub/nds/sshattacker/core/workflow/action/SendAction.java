@@ -109,7 +109,6 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
-        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
         MessageActionResult result = SendMessageHelper.sendMessages(context, messages.stream());
 
         // Check if all actions that were expected to be sent were actually
