@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -37,9 +38,9 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         int pubkeyLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
         message.setPubkeyLength(pubkeyLength);
         LOGGER.debug("Pubkey length: {}", pubkeyLength);
-        String pubkey = parseByteString(pubkeyLength, StandardCharsets.US_ASCII);
+        byte[] pubkey = parseByteArrayField(pubkeyLength);
         message.setPubkey(pubkey);
-        LOGGER.debug("Pubkey: {}", () -> backslashEscapeString(pubkey));
+        LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
     }
 
     private void parsePubkeyAlgName() {

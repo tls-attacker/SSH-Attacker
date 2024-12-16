@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -41,7 +41,7 @@ public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExt
 
     @Override
     public Preparator<UnknownExtension> getPreparator() {
-        throw new NotImplementedException("UnknownExtensionHandler::getPreparator");
+        return new UnknownExtensionPreparator(context.getChooser(), extension);
     }
 
     @Override

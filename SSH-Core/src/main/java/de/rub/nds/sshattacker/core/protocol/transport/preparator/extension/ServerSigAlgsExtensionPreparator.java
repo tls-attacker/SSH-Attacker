@@ -28,11 +28,10 @@ public class ServerSigAlgsExtensionPreparator
         if (chooser.getContext().isClient()) {
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
-        } else {
-            getObject().setName(Extension.SERVER_SIG_ALGS.getName(), true);
-            getObject()
-                    .setAcceptedPublicKeyAlgorithms(
-                            chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
         }
+        getObject().setName(Extension.SERVER_SIG_ALGS.getName(), true);
+        getObject()
+                .setAcceptedPublicKeyAlgorithms(
+                        chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
     }
 }

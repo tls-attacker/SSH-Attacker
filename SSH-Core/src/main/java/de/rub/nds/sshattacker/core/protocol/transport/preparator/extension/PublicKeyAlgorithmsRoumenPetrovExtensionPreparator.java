@@ -24,10 +24,6 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionPreparator
 
     @Override
     protected void prepareExtensionSpecificContents() {
-        // Hier kannst du spezifische Vorbereitungslogik für die Extension hinzufügen
-        LOGGER.debug("Preparing PublicKeyAlgorithmsRoumenPetrovExtension...");
-
-        // Setze den Wert der Algorithmen aus dem Chooser
         getObject()
                 .setPublicKeyAlgorithms(
                         chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);

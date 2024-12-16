@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
@@ -21,7 +22,7 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     private ModifiableInteger pubkeyAlgNameLength;
     private ModifiableString pubkeyAlgName;
     private ModifiableInteger pubkeyLength;
-    private ModifiableString pubkey;
+    private ModifiableByteArray pubkey;
 
     public UserAuthPkOkMessage() {
         super();
@@ -96,34 +97,30 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         setPubkeyAlgName(pubkeyAlgName, false);
     }
 
-    public ModifiableInteger getPubkeyLength() {
-        return pubkeyLength;
-    }
-
     public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength =
                 ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
     }
 
-    public ModifiableString getPubkey() {
-        return pubkey;
+    public ModifiableInteger getPubkeyLength() {
+        return pubkeyLength;
     }
 
-    public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
+    public void setPubkey(ModifiableByteArray pubkey, boolean adjustLengthField) {
         this.pubkey = pubkey;
         if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPubkeyLength(this.pubkey.getValue().length);
         }
     }
 
-    public void setPubkey(String pubkey, boolean adjustLengthField) {
+    public void setPubkey(byte[] pubkey, boolean adjustLengthField) {
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPubkeyLength(this.pubkey.getValue().length);
         }
     }
 
-    public void setSoftlyPubkey(String pubkey, boolean adjustLengthField, Config config) {
+    public void setSoftlyPubkey(byte[] pubkey, boolean adjustLengthField, Config config) {
         if (this.pubkey == null || this.pubkey.getOriginalValue() == null) {
             this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         }
@@ -131,17 +128,21 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
             if (config.getAlwaysPrepareLengthFields()
                     || pubkeyLength == null
                     || pubkeyLength.getOriginalValue() == null) {
-                setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                setPubkeyLength(this.pubkey.getValue().length);
             }
         }
     }
 
-    public void setPubkey(ModifiableString pubkey) {
+    public void setPubkey(ModifiableByteArray pubkey) {
         setPubkey(pubkey, false);
     }
 
-    public void setPubkey(String pubkey) {
+    public void setPubkey(byte[] pubkey) {
         setPubkey(pubkey, false);
+    }
+
+    public ModifiableByteArray getPubkey() {
+        return pubkey;
     }
 
     @Override
