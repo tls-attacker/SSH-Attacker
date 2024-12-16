@@ -26,5 +26,6 @@ public class UserAuthPasswordMessagePreparator
         getObject().setMethodName(AuthenticationMethod.PASSWORD, true);
         getObject().setChangePassword(false);
         getObject().setPassword(chooser.getConfig().getPassword(), true);
+        getObject().setNewPassword(chooser.getConfig().getPassword(), true);
     }
 }
