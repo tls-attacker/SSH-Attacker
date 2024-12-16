@@ -181,4 +181,16 @@ public abstract class PacketCipher {
             return super.getBytesLeft();
         }
     }
+
+    @Override
+    public String toString() {
+        return "PacketCipher{"
+                + "encryptionAlgorithm="
+                + encryptionAlgorithm
+                + ", macAlgorithm="
+                + macAlgorithm
+                + ", mode="
+                + mode
+                + '}';
+    }
 }

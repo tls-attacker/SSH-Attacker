@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.compressor;
 
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.CompressionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.compressor.compression.Compression;
 import de.rub.nds.sshattacker.core.packet.compressor.compression.DeflateCompression;
@@ -24,7 +25,12 @@ public class PacketCompressor extends Compressor<AbstractPacket> {
 
     @Override
     public void compress(AbstractPacket packet) {
-        packet.setCompressedPayload(compression.compress(packet.getPayload().getValue()));
+        try {
+            packet.setCompressedPayload(compression.compress(packet.getPayload().getValue()));
+        } catch (CompressionException e) {
+            LOGGER.debug("Fallback to no compression due to:", e);
+            packet.setCompressedPayload(packet.getPayload().getValue());
+        }
     }
 
     public void setCompressionAlgorithm(CompressionAlgorithm algorithm) {

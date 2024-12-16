@@ -9,10 +9,10 @@ package de.rub.nds.sshattacker.core.packet.crypto;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +22,6 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SshContext context;
-    private final PacketCipher noneCipher;
 
     public PacketDecryptor(PacketCipher packetCipher, SshContext context) {
         super(packetCipher);
@@ -31,42 +30,31 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
                     "A PacketCipher provided to the PacketDecryptor constructor must be in DECRYPT mode");
         }
         this.context = context;
-        noneCipher = PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT);
     }
 
     @Override
-    public void decrypt(BinaryPacket packet) {
+    public void decrypt(BinaryPacket packet) throws DecryptionException {
         PacketCipher packetCipher = getPacketMostRecentCipher();
         LOGGER.debug("Decrypting binary packet using packet cipher: {}", packetCipher);
         try {
             packet.setSequenceNumber(context.getReadSequenceNumber());
             packetCipher.process(packet);
-        } catch (CryptoException e) {
-            // Set compressedPayload if decryption failed to do so
-            LOGGER.warn("Could not decrypt binary packet. Using {}", noneCipher, e);
-            try {
-                noneCipher.process(packet);
-            } catch (CryptoException ex) {
-                // FIXME Need to set compressedPayload to continue?
-                LOGGER.error("Could not decrypt with {}", noneCipher, ex);
-            }
+        } catch (CryptoException ex) {
+            throw new DecryptionException(
+                    "Could not decrypt binary packet using " + packetCipher, ex);
         }
         context.incrementReadSequenceNumber();
     }
 
     @Override
-    public void decrypt(BlobPacket packet) {
+    public void decrypt(BlobPacket packet) throws DecryptionException {
         PacketCipher packetCipher = getPacketMostRecentCipher();
         LOGGER.debug("Decrypting blob packet using packet cipher: {}", packetCipher);
         try {
             packetCipher.process(packet);
-        } catch (CryptoException e) {
-            LOGGER.warn("Could not decrypt blob packet. Using {}", noneCipher, e);
-            try {
-                noneCipher.process(packet);
-            } catch (CryptoException ex) {
-                LOGGER.error("Could not decrypt with {}", noneCipher, ex);
-            }
+        } catch (CryptoException ex) {
+            throw new DecryptionException(
+                    "Could not decrypt blob packet using " + packetCipher, ex);
         }
     }
 

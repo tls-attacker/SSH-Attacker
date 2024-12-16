@@ -7,16 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.exceptions;
 
-public class DecryptionException extends Exception {
-    public DecryptionException() {
+public class CompressionException extends Exception {
+    public CompressionException() {
         super();
     }
 
-    public DecryptionException(String message) {
+    public CompressionException(String message) {
         super(message);
     }
 
-    public DecryptionException(String message, Throwable cause) {
+    public CompressionException(String message, Throwable cause) {
         super(message, cause);
     }
 }

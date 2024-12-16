@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.crypto;
 
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -18,7 +19,7 @@ public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
         super(packetCipher);
     }
 
-    public void decrypt(AbstractPacket object) {
+    public void decrypt(AbstractPacket object) throws DecryptionException {
         if (object instanceof BinaryPacket) {
             decrypt((BinaryPacket) object);
         } else if (object instanceof BlobPacket) {
@@ -28,7 +29,7 @@ public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
         }
     }
 
-    public abstract void decrypt(BinaryPacket packet);
+    public abstract void decrypt(BinaryPacket packet) throws DecryptionException;
 
-    public abstract void decrypt(BlobPacket packet);
+    public abstract void decrypt(BlobPacket packet) throws DecryptionException;
 }

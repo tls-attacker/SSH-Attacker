@@ -429,12 +429,24 @@ public class Config implements Serializable {
 
     // endregion
 
-    // region general SFTP settings
+    // region general SSH settings
     /**
      * Whether the length fields in the messages should be consistent with their corresponding
      * fields.
      */
     private Boolean alwaysPrepareLengthFields;
+
+    /**
+     * Whether decryption should be omitted if an error occurs during the decryption of a packet.
+     * Otherwise, the packet is not parsed any further
+     */
+    private Boolean fallbackToNoDecryptionOnError;
+
+    /**
+     * Whether decompression should be omitted if an error occurs during the decompression of a
+     * packet. Otherwise, the packet is not parsed any further.
+     */
+    private Boolean fallbackToNoDecompressionOnError;
 
     // endregion
 
@@ -1207,6 +1219,8 @@ public class Config implements Serializable {
 
         // region general SSH Settings
         alwaysPrepareLengthFields = true;
+        fallbackToNoDecryptionOnError = true;
+        fallbackToNoDecompressionOnError = true;
         // endregion
 
         // region Workflow settings initialization
@@ -1443,6 +1457,8 @@ public class Config implements Serializable {
         defaultSubsystemName = other.defaultSubsystemName;
         defaultBreakLength = other.defaultBreakLength;
         alwaysPrepareLengthFields = other.alwaysPrepareLengthFields;
+        fallbackToNoDecryptionOnError = other.fallbackToNoDecryptionOnError;
+        fallbackToNoDecompressionOnError = other.fallbackToNoDecompressionOnError;
         sftpClientVersion = other.sftpClientVersion;
         sftpServerVersion = other.sftpServerVersion;
         sftpNegotiatedVersion = other.sftpNegotiatedVersion;
@@ -2233,12 +2249,29 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
+
+    public Boolean getAlwaysPrepareLengthFields() {
+        return alwaysPrepareLengthFields;
+    }
+
     public void setAlwaysPrepareLengthFields(Boolean alwaysPrepareLengthFields) {
         this.alwaysPrepareLengthFields = alwaysPrepareLengthFields;
     }
 
-    public Boolean getAlwaysPrepareLengthFields() {
-        return alwaysPrepareLengthFields;
+    public Boolean getFallbackToNoDecryptionOnError() {
+        return fallbackToNoDecryptionOnError;
+    }
+
+    public void setFallbackToNoDecryptionOnError(Boolean fallbackToNoDecryptionOnError) {
+        this.fallbackToNoDecryptionOnError = fallbackToNoDecryptionOnError;
+    }
+
+    public Boolean getFallbackToNoDecompressionOnError() {
+        return fallbackToNoDecompressionOnError;
+    }
+
+    public void setFallbackToNoDecompressionOnError(Boolean fallbackToNoDecompressionOnError) {
+        this.fallbackToNoDecompressionOnError = fallbackToNoDecompressionOnError;
     }
 
     // endregion

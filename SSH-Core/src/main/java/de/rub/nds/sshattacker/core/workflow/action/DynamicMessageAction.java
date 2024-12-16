@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -29,8 +28,12 @@ public abstract class DynamicMessageAction extends MessageAction
         @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
         @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayerAction"),
         @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
-        @XmlElement(type = DynamicDelayCompressionAction.class, name = "DynamicDelayCompressionAction"),
-        @XmlElement(type = DynamicExtensionNegotiationAction.class, name = "DynamicExtensionNegotiationAction"),
+        @XmlElement(
+                type = DynamicDelayCompressionAction.class,
+                name = "DynamicDelayCompressionAction"),
+        @XmlElement(
+                type = DynamicExtensionNegotiationAction.class,
+                name = "DynamicExtensionNegotiationAction"),
         @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchangeAction"),
         @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessagesAction"),
         @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessagesAction"),
