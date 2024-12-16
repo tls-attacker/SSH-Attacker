@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
@@ -63,21 +64,27 @@ public class Config implements Serializable {
 
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String clientVersion;
 
     /** Client comment sent alongside protocol and software version */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String clientComment;
 
     /** End-of-message sequence of the clients' VersionExchangeMessage */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String clientEndOfMessageSequence;
 
     /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String serverVersion;
 
     /** Server comment sent alongside protocol and software version */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String serverComment;
 
     /** End-of-message sequence of the servers' VersionExchangeMessage */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String serverEndOfMessageSequence;
 
     // endregion
@@ -337,12 +344,15 @@ public class Config implements Serializable {
     private AuthenticationMethod authenticationMethod;
 
     /** The service name defines the service to start after authentication */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String serviceName;
 
     /** The username used for authentication method password */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String username;
 
     /** The password used for authentication method password */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String password;
 
     /** The List of responses used for UserAuthInfoResponseMessage */
@@ -359,6 +369,7 @@ public class Config implements Serializable {
 
     // region Channel
     /** Fallback for command of ChannelRequestExecMessage */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String channelCommand;
 
     /** Default channel values including local channel id and window size */
@@ -374,12 +385,14 @@ public class Config implements Serializable {
      * Fallback for variableName of ChannelRequestEnvMessage, to change server-allowed environment
      * variables
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultVariableName;
 
     /**
      * Fallback for variableValue of ChannelRequestEnvMessage, to change server-allowed environment
      * variables
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultVariableValue;
 
     /**
@@ -416,9 +429,11 @@ public class Config implements Serializable {
      * Default value of TERM environment variable, to specify the terminal handling of a requested
      * pseudo terminal(pty-req)
      */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultTermEnvVariable;
 
     /** Default name of a predefined subsystem, which should be executed on the remote */
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultSubsystemName;
 
     /**
