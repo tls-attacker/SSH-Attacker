@@ -35,10 +35,13 @@ public final class SendMessageHelper {
         transportHandler.sendData(packetLayer.preparePacket(packet));
     }
 
-    public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
+    public static MessageActionResult sendMessage(
+            SshContext context, ProtocolMessage<?> message, boolean prepareBeforeSending) {
         try {
             // Prepare message
-            message.getHandler(context).getPreparator().prepare();
+            if (prepareBeforeSending) {
+                message.getHandler(context).getPreparator().prepare();
+            }
 
             ProtocolMessage<?> innerMessage = null;
             if (message instanceof DataMessage<?>) {
@@ -48,6 +51,7 @@ public final class SendMessageHelper {
                 if (handler instanceof MessageSentHandler) {
                     ((MessageSentHandler) handler).adjustContextAfterMessageSent();
                 }
+                // TODO: decide if we should pass prepareBeforeSending
                 // serialize also prepares the ChannelDataMessage
                 message = context.getDataMessageLayer().serialize((DataMessage<?>) message);
             }
@@ -78,9 +82,11 @@ public final class SendMessageHelper {
     }
 
     public static MessageActionResult sendMessages(
-            SshContext context, Stream<ProtocolMessage<?>> messageStream) {
+            SshContext context,
+            Stream<ProtocolMessage<?>> messageStream,
+            boolean prepareBeforeSending) {
         return messageStream
-                .map(message -> sendMessage(context, message))
+                .map(message -> sendMessage(context, message, prepareBeforeSending))
                 .reduce(MessageActionResult::merge)
                 .orElse(new MessageActionResult());
     }

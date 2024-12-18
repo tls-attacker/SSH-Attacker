@@ -50,7 +50,7 @@ public final class NetcatWorkflowFactory {
             ChannelDataMessage dataMessage = new ChannelDataMessage();
             dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
-            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
+            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage, false);
         }
     }
 }

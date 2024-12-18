@@ -109,7 +109,8 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
-        MessageActionResult result = SendMessageHelper.sendMessages(context, messages.stream());
+        MessageActionResult result =
+                SendMessageHelper.sendMessages(context, messages.stream(), true);
 
         // Check if all actions that were expected to be sent were actually
         // sent or if some failure occurred.
