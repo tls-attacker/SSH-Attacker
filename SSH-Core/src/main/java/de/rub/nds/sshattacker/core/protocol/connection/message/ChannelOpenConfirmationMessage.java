@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -42,9 +43,18 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         this.senderChannelId = senderChannelId;
     }
 
-    public void setSenderChannelId(int modSenderChannel) {
-        senderChannelId =
-                ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
+    public void setSenderChannelId(int senderChannelId) {
+        this.senderChannelId =
+                ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
+    }
+
+    public void setSoftlySenderChannelId(int senderChannelId, Config config) {
+        if (config.getAlwaysPrepareChannelIds()
+                || this.senderChannelId == null
+                || this.senderChannelId.getOriginalValue() == null) {
+            this.senderChannelId =
+                    ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
+        }
     }
 
     public ModifiableInteger getWindowSize() {

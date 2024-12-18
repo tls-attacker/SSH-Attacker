@@ -447,6 +447,9 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
+    /** Whether the channel IDs in the channel messages should always be prepared */
+    private Boolean alwaysPrepareChannelIds;
+
     /**
      * Whether the length fields in the messages should be consistent with their corresponding
      * fields.
@@ -1235,6 +1238,7 @@ public class Config implements Serializable {
         // endregion
 
         // region general SSH Settings
+        alwaysPrepareChannelIds = true;
         alwaysPrepareLengthFields = true;
         fallbackToNoDecryptionOnError = true;
         fallbackToNoDecompressionOnError = true;
@@ -1473,6 +1477,7 @@ public class Config implements Serializable {
         defaultTermEnvVariable = other.defaultTermEnvVariable;
         defaultSubsystemName = other.defaultSubsystemName;
         defaultBreakLength = other.defaultBreakLength;
+        alwaysPrepareChannelIds = other.alwaysPrepareChannelIds;
         alwaysPrepareLengthFields = other.alwaysPrepareLengthFields;
         fallbackToNoDecryptionOnError = other.fallbackToNoDecryptionOnError;
         fallbackToNoDecompressionOnError = other.fallbackToNoDecompressionOnError;
@@ -2272,6 +2277,14 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
+
+    public Boolean getAlwaysPrepareChannelIds() {
+        return alwaysPrepareChannelIds;
+    }
+
+    public void setAlwaysPrepareChannelIds(Boolean alwaysPrepareChannelIds) {
+        this.alwaysPrepareChannelIds = alwaysPrepareChannelIds;
+    }
 
     public Boolean getAlwaysPrepareLengthFields() {
         return alwaysPrepareLengthFields;

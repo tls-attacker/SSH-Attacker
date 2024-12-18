@@ -53,6 +53,13 @@ public class GlobalRequestOpenSshHostKeysMessage
                 ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
     }
 
+    public void setSoftlyHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
+        if (this.hostKeys == null || this.hostKeys.getOriginalValue() == null) {
+            this.hostKeys =
+                    ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
+        }
+    }
+
     @Override
     public GlobalRequestOpenSshHostKeysMessageHandler getHandler(SshContext context) {
         return new GlobalRequestOpenSshHostKeysMessageHandler(context, this);

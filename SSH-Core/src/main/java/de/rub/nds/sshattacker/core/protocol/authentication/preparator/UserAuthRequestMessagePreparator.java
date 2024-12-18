@@ -29,6 +29,7 @@ public abstract class UserAuthRequestMessagePreparator<T extends UserAuthRequest
     public final void prepareMessageSpecificContents() {
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
+        // Always set correct authentication method -> Don't use soft set
         getObject().setMethodName(authenticationMethod, true);
         prepareUserAuthRequestSpecificContents();
     }

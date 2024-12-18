@@ -21,9 +21,9 @@ public class ChannelRequestWindowChangeMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setWidthColumns(chooser.getConfig().getDefaultTerminalWidthColumns());
-        getObject().setHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
-        getObject().setWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
-        getObject().setHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
+        getObject().setSoftlyWidthColumns(chooser.getConfig().getDefaultTerminalWidthColumns());
+        getObject().setSoftlyHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
+        getObject().setSoftlyWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
+        getObject().setSoftlyHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
     }
 }

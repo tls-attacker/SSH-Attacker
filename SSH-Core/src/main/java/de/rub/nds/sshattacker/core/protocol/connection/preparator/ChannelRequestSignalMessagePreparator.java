@@ -22,6 +22,6 @@ public class ChannelRequestSignalMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSignalName(SignalType.SIGINT, true);
+        getObject().setSoftlySignalName(SignalType.SIGINT, true, chooser.getConfig());
     }
 }

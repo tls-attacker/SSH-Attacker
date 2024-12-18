@@ -20,6 +20,6 @@ public class ChannelDataMessagePreparator extends ChannelMessagePreparator<Chann
     @Override
     public void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject().setData(new byte[100], true);
+        getObject().setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

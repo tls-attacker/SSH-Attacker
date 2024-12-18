@@ -20,9 +20,9 @@ public class ChannelRequestX11MessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSingleConnection(true);
-        getObject().setX11AuthenticationProtocol("", true);
-        getObject().setX11AuthenticationCookie("", true);
-        getObject().setX11ScreenNumber(1);
+        getObject().setSoftlySingleConnection(true);
+        getObject().setSoftlyX11AuthenticationProtocol("", true, chooser.getConfig());
+        getObject().setSoftlyX11AuthenticationCookie("", true, chooser.getConfig());
+        getObject().setSoftlyX11ScreenNumber(1);
     }
 }

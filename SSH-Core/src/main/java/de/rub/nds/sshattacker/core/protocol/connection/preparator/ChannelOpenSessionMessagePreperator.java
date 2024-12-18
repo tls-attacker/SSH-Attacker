@@ -19,6 +19,7 @@ public class ChannelOpenSessionMessagePreperator
 
     @Override
     public void prepareChannelOpenMessageSpecificContents() {
+        // Always set correct channel type -> Don't use soft set
         channel.setChannelType(ChannelType.SESSION);
         getObject().setChannelType(channel.getChannelType(), true);
     }

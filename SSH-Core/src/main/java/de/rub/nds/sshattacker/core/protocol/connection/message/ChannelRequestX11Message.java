@@ -83,6 +83,10 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
         setSingleConnection(Converter.booleanToByte(singleConnection));
     }
 
+    public void setSoftlySingleConnection(boolean singleConnection) {
+        setSoftlySingleConnection(Converter.booleanToByte(singleConnection));
+    }
+
     public ModifiableInteger getX11AuthenticationProtocolLength() {
         return x11AuthenticationProtocolLength;
     }

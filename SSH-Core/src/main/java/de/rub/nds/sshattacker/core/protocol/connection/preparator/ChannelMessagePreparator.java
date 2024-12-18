@@ -63,7 +63,9 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
                     channel.getLocalChannelId().getValue());
         }
-        getObject().setRecipientChannelId(channel.getRemoteChannelId());
+        getObject()
+                .setSoftlyRecipientChannelId(
+                        channel.getRemoteChannelId().getValue(), chooser.getConfig());
     }
 
     protected abstract void prepareChannelMessageSpecificContents();

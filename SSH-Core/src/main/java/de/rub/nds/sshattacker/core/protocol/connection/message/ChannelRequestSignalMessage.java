@@ -99,6 +99,11 @@ public class ChannelRequestSignalMessage
         setSignalName(signalName.toString(), adjustLengthField);
     }
 
+    public void setSoftlySignalName(
+            SignalType signalName, boolean adjustLengthField, Config config) {
+        setSoftlySignalName(signalName.toString(), adjustLengthField, config);
+    }
+
     @Override
     public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
         return new ChannelRequestSignalMessageHandler(context, this);

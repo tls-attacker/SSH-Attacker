@@ -21,7 +21,9 @@ public class ChannelRequestSubsystemMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setWantReply(true);
-        getObject().setSubsystemName(chooser.getConfig().getDefaultSubsystemName(), true);
+        getObject().setSoftlyWantReply(true);
+        getObject()
+                .setSoftlySubsystemName(
+                        chooser.getConfig().getDefaultSubsystemName(), true, chooser.getConfig());
     }
 }

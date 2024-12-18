@@ -109,8 +109,14 @@ public class GlobalRequestCancelTcpIpForwardMessage
         this.portToBind = portToBind;
     }
 
-    public void setPortToBind(Integer portToBind) {
+    public void setPortToBind(int portToBind) {
         this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
+    }
+
+    public void setSoftlyPortToBind(int portToBind) {
+        if (this.portToBind == null || this.portToBind.getOriginalValue() == null) {
+            this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
+        }
     }
 
     @Override

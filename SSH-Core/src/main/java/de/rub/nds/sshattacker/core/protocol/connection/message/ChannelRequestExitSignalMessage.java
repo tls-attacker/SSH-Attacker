@@ -113,6 +113,11 @@ public class ChannelRequestExitSignalMessage
         setSignalName(signalName.toString(), adjustLengthField);
     }
 
+    public void setSoftlySignalName(
+            SignalType signalName, boolean adjustLengthField, Config config) {
+        setSoftlySignalName(signalName.toString(), adjustLengthField, config);
+    }
+
     public ModifiableByte getCoreDump() {
         return coreDump;
     }
@@ -123,6 +128,10 @@ public class ChannelRequestExitSignalMessage
 
     public void setCoreDump(boolean coreDump) {
         setCoreDump(Converter.booleanToByte(coreDump));
+    }
+
+    public void setSoftlyCoreDump(boolean coreDump) {
+        setSoftlyCoreDump(Converter.booleanToByte(coreDump));
     }
 
     public void setSoftlyCoreDump(byte coreDump) {

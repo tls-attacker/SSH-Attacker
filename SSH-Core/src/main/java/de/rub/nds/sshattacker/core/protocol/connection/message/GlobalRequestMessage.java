@@ -124,4 +124,8 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     public void setWantReply(boolean wantReply) {
         setWantReply(Converter.booleanToByte(wantReply));
     }
+
+    public void setSoftlyWantReply(boolean wantReply) {
+        setSoftlyWantReply(Converter.booleanToByte(wantReply));
+    }
 }

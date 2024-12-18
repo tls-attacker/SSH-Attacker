@@ -30,8 +30,9 @@ public abstract class ChannelRequestMessagePreparator<T extends ChannelRequestMe
 
     @Override
     protected final void prepareChannelMessageSpecificContents() {
+        // Always set correct channel request type -> Don't use soft set
         getObject().setRequestType(channelRequestType, true);
-        getObject().setWantReply(false);
+        getObject().setSoftlyWantReply(false);
         prepareChannelRequestMessageSpecificContents();
     }
 

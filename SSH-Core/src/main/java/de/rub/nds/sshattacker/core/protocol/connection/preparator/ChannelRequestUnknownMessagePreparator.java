@@ -20,6 +20,6 @@ public class ChannelRequestUnknownMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setTypeSpecificData(new byte[0]);
+        getObject().setSoftlyTypeSpecificData(new byte[10]);
     }
 }

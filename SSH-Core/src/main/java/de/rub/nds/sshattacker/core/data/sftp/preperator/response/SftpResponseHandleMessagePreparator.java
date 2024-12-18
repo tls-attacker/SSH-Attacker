@@ -21,7 +21,8 @@ public class SftpResponseHandleMessagePreparator
     @Override
     public void prepareResponseSpecificContents() {
         if (getObject().getHandle() == null || getObject().getHandle().getOriginalValue() == null) {
-            // Should be set in SftpManager handleRequestMessage()
+            // Should be set in SftpManager handleRequestMessage() -> Don't use soft set, because
+            // soft set in this case would set
             getObject().setHandle(new byte[100], true);
         }
         // This should not be necessary:

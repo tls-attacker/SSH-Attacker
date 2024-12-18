@@ -22,6 +22,7 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
 
     @Override
     protected final void prepareProtocolMessageContents() {
+        // Always set correct message id -> Don't use soft set
         getObject().setMessageId(messageId);
         prepareMessageSpecificContents();
     }

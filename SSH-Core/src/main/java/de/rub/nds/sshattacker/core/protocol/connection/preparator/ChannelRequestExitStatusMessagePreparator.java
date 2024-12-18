@@ -21,6 +21,6 @@ public class ChannelRequestExitStatusMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setExitStatus(1);
+        getObject().setSoftlyExitStatus(1);
     }
 }

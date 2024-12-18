@@ -36,7 +36,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
                 Optional.ofNullable(getObject().getConfigLocalChannelId())
                         .orElse(chooser.getConfig().getChannelDefaults().getLocalChannelId());
 
-        getObject().setSenderChannelId(localChannelId);
+        getObject().setSoftlySenderChannelId(localChannelId, chooser.getConfig());
         Integer senderChannelId = getObject().getSenderChannelId().getValue();
 
         channel = channelManager.getChannelByLocalId(senderChannelId);
@@ -52,9 +52,9 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         } else {
             channel = channelManager.createPrendingChannel(senderChannelId);
         }
-        getObject().setChannelType(channel.getChannelType(), true);
-        getObject().setWindowSize(channel.getLocalWindowSize());
-        getObject().setPacketSize(32768);
+        getObject().setSoftlyChannelType(channel.getChannelType(), true, chooser.getConfig());
+        getObject().setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
+        getObject().setSoftlyPacketSize(32768);
         prepareChannelOpenMessageSpecificContents();
     }
 

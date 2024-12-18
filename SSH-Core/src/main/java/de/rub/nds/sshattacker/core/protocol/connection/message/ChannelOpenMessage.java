@@ -127,6 +127,15 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
                 ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
     }
 
+    public void setSoftlySenderChannelId(int senderChannelId, Config config) {
+        if (config.getAlwaysPrepareChannelIds()
+                || this.senderChannelId == null
+                || this.senderChannelId.getOriginalValue() == null) {
+            this.senderChannelId =
+                    ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
+        }
+    }
+
     public ModifiableInteger getWindowSize() {
         return windowSize;
     }

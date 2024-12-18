@@ -40,6 +40,14 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
+    public void setSoftlyTypeSpecificData(byte[] typeSpecificData) {
+        if (this.typeSpecificData == null || this.typeSpecificData.getOriginalValue() == null) {
+            this.typeSpecificData =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.typeSpecificData, typeSpecificData);
+        }
+    }
+
     public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
         this.typeSpecificData = typeSpecificData;
     }

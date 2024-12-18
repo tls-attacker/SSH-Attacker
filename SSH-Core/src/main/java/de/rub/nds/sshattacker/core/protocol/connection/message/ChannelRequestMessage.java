@@ -123,4 +123,8 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     public void setWantReply(boolean wantReply) {
         setWantReply(Converter.booleanToByte(wantReply));
     }
+
+    public void setSoftlyWantReply(boolean wantReply) {
+        setSoftlyWantReply(Converter.booleanToByte(wantReply));
+    }
 }

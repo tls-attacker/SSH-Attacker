@@ -42,6 +42,13 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
         this.breakLength = ModifiableVariableFactory.safelySetValue(this.breakLength, breakLength);
     }
 
+    public void setSoftlyBreakLength(int breakLength) {
+        if (this.breakLength == null || this.breakLength.getOriginalValue() == null) {
+            this.breakLength =
+                    ModifiableVariableFactory.safelySetValue(this.breakLength, breakLength);
+        }
+    }
+
     @Override
     public ChannelRequestBreakMessageHandler getHandler(SshContext context) {
         return new ChannelRequestBreakMessageHandler(context, this);

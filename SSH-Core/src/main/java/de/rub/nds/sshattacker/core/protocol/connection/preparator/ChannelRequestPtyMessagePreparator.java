@@ -20,12 +20,14 @@ public class ChannelRequestPtyMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setWantReply(true);
-        getObject().setTermEnvVariable(chooser.getConfig().getDefaultTermEnvVariable(), true);
-        getObject().setWidthCharacters(chooser.getConfig().getDefaultTerminalWidthColumns());
-        getObject().setHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
-        getObject().setWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
-        getObject().setHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
-        getObject().setEncodedTerminalModes(new byte[0], true);
+        getObject().setSoftlyWantReply(true);
+        getObject()
+                .setSoftlyTermEnvVariable(
+                        chooser.getConfig().getDefaultTermEnvVariable(), true, chooser.getConfig());
+        getObject().setSoftlyWidthCharacters(chooser.getConfig().getDefaultTerminalWidthColumns());
+        getObject().setSoftlyHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
+        getObject().setSoftlyWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
+        getObject().setSoftlyHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
+        getObject().setSoftlyEncodedTerminalModes(new byte[0], true, chooser.getConfig());
     }
 }

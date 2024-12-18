@@ -45,6 +45,14 @@ public class ChannelRequestUnknownMessage
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
+    public void setSoftlyTypeSpecificData(byte[] typeSpecificData) {
+        if (this.typeSpecificData == null || this.typeSpecificData.getOriginalValue() == null) {
+            this.typeSpecificData =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.typeSpecificData, typeSpecificData);
+        }
+    }
+
     @Override
     public ChannelRequestUnknownMessageHandler getHandler(SshContext context) {
         return new ChannelRequestUnknownMessageHandler(context, this);
