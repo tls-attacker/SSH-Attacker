@@ -108,7 +108,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyPubKeyAlgorithm(
             String pubKeyAlgorithm, boolean adjustLengthField, Config config) {
-        if (this.pubKeyAlgorithm == null || this.pubKeyAlgorithm.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.pubKeyAlgorithm == null
+                || this.pubKeyAlgorithm.getOriginalValue() == null) {
             this.pubKeyAlgorithm =
                     ModifiableVariableFactory.safelySetValue(this.pubKeyAlgorithm, pubKeyAlgorithm);
         }
@@ -178,7 +180,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.hostKeyBytes == null
+                || this.hostKeyBytes.getOriginalValue() == null) {
             this.hostKeyBytes =
                     ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         }
@@ -231,7 +235,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setSoftlyHostName(String hostName, boolean adjustLengthField, Config config) {
-        if (this.hostName == null || this.hostName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.hostName == null
+                || this.hostName.getOriginalValue() == null) {
             this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
         }
         if (adjustLengthField) {
@@ -289,7 +295,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyClientUserName(
             String clientUserName, boolean adjustLengthField, Config config) {
-        if (this.clientUserName == null || this.clientUserName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.clientUserName == null
+                || this.clientUserName.getOriginalValue() == null) {
             this.clientUserName =
                     ModifiableVariableFactory.safelySetValue(this.clientUserName, clientUserName);
         }
@@ -350,8 +358,14 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
-    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (this.signature == null || this.signature.getOriginalValue() == null) {
+    public void setSoftlySignature(
+            byte[] signature,
+            boolean adjustLengthField,
+            Config config,
+            boolean useAlwaysPrepareOption) {
+        if (useAlwaysPrepareOption && config.getAlwaysPrepareAuthentication()
+                || this.signature == null
+                || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         }
         if (adjustLengthField) {

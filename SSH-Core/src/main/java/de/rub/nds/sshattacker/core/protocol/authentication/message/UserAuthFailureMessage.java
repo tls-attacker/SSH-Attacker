@@ -174,6 +174,10 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
         setPartialSuccess(Converter.booleanToByte(partialSuccess));
     }
 
+    public void setSoftlyPartialSuccess(boolean partialSuccess) {
+        setSoftlyPartialSuccess(Converter.booleanToByte(partialSuccess));
+    }
+
     @Override
     public UserAuthFailureMessageHandler getHandler(SshContext context) {
         return new UserAuthFailureMessageHandler(context, this);

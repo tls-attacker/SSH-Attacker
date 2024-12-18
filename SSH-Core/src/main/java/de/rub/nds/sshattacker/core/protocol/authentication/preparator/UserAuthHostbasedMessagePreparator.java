@@ -38,13 +38,24 @@ public class UserAuthHostbasedMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject().setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
-        getObject().setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
-        Optional<String> hostName =
-                Optional.ofNullable(chooser.getContext().getConnection().getIp());
-        getObject().setHostName(hostName.orElse(AliasedConnection.DEFAULT_IP), true);
+        getObject()
+                .setSoftlyPubKeyAlgorithm(
+                        chooser.getHostKeyAlgorithm().toString(), true, chooser.getConfig());
+        getObject()
+                .setSoftlyHostKeyBytes(
+                        PublicKeyHelper.encode(chooser.getNegotiatedHostKey()),
+                        true,
+                        chooser.getConfig());
+        getObject()
+                .setSoftlyHostName(
+                        Optional.ofNullable(chooser.getContext().getConnection().getIp())
+                                .orElse(AliasedConnection.DEFAULT_IP),
+                        true,
+                        chooser.getConfig());
         // set the username on client machine to the username on remote, specify if needed
-        getObject().setClientUserName(chooser.getConfig().getUsername(), true);
+        getObject()
+                .setSoftlyClientUserName(
+                        chooser.getConfig().getUsername(), true, chooser.getConfig());
         prepareSignature();
     }
 
@@ -90,17 +101,19 @@ public class UserAuthHostbasedMessagePreparator
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
-            getObject().setSignature(signatureOutput.toByteArray(), true);
+            getObject()
+                    .setSoftlySignature(
+                            signatureOutput.toByteArray(), true, chooser.getConfig(), true);
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSignature(new byte[0], true);
+            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig(), false);
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSignature(new byte[0], true);
+            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig(), false);
         }
     }
 }

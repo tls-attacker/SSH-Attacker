@@ -68,6 +68,10 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         setChangePassword(Converter.booleanToByte(changePassword));
     }
 
+    public void setSoftlyChangePassword(boolean changePassword) {
+        setSoftlyChangePassword(Converter.booleanToByte(changePassword));
+    }
+
     public ModifiableInteger getPasswordLength() {
         return passwordLength;
     }
@@ -108,7 +112,9 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setSoftlyPassword(String password, boolean adjustLengthField, Config config) {
-        if (this.password == null || this.password.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.password == null
+                || this.password.getOriginalValue() == null) {
             this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
         }
         if (adjustLengthField) {

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -21,11 +20,8 @@ public class UserAuthPasswordMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject().setUserName(chooser.getConfig().getUsername(), true);
-        getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(AuthenticationMethod.PASSWORD, true);
-        getObject().setChangePassword(false);
-        getObject().setPassword(chooser.getConfig().getPassword(), true);
-        getObject().setNewPassword(chooser.getConfig().getPassword(), true);
+        getObject().setSoftlyChangePassword(false);
+        getObject().setSoftlyPassword(chooser.getConfig().getPassword(), true, chooser.getConfig());
+        getObject().setSoftlyNewPassword("newPassword", true, chooser.getConfig());
     }
 }

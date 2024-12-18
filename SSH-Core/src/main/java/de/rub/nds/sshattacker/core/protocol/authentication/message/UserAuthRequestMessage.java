@@ -172,6 +172,11 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public void setSoftlyServiceName(
+            ServiceType serviceType, boolean adjustLengthField, Config config) {
+        setSoftlyServiceName(serviceType.toString(), adjustLengthField, config);
+    }
+
     public ModifiableInteger getMethodNameLength() {
         return methodNameLength;
     }
@@ -234,5 +239,10 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     public void setMethodName(
             AuthenticationMethod authenticationMethod, boolean adjustLengthField) {
         setMethodName(authenticationMethod.toString(), adjustLengthField);
+    }
+
+    public void setSoftlyMethodName(
+            AuthenticationMethod authenticationMethod, boolean adjustLengthField, Config config) {
+        setSoftlyMethodName(authenticationMethod.toString(), adjustLengthField, config);
     }
 }

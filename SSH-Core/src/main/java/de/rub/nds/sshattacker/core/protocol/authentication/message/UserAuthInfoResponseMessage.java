@@ -95,6 +95,24 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
         this.responseEntries = responseEntries;
     }
 
+    public void setSoftlyResponseEntries(
+            ArrayList<AuthenticationResponseEntry> responseEntries,
+            boolean adjustLengthField,
+            Config config) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.responseEntries == null
+                || this.responseEntries.isEmpty()) {
+            this.responseEntries = responseEntries;
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || responseEntriesCount == null
+                    || responseEntriesCount.getOriginalValue() == null) {
+                setResponseEntriesCount(this.responseEntries.size());
+            }
+        }
+    }
+
     public void addResponseEntry(AuthenticationResponseEntry responseEntry) {
         addResponseEntry(responseEntry, false);
     }

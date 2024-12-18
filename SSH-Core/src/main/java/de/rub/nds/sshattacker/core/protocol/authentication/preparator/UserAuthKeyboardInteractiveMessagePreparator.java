@@ -21,7 +21,7 @@ public class UserAuthKeyboardInteractiveMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject().setLanguageTag("", true);
-        getObject().setSubMethods("pam", true);
+        getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
+        getObject().setSoftlySubMethods("pam", true, chooser.getConfig());
     }
 }

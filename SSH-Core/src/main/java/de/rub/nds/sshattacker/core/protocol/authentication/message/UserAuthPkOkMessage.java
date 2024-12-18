@@ -75,7 +75,9 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
     public void setSoftlyPubkeyAlgName(
             String pubkeyAlgName, boolean adjustLengthField, Config config) {
-        if (this.pubkeyAlgName == null || this.pubkeyAlgName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.pubkeyAlgName == null
+                || this.pubkeyAlgName.getOriginalValue() == null) {
             this.pubkeyAlgName =
                     ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
         }
@@ -120,8 +122,14 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         }
     }
 
-    public void setSoftlyPubkey(byte[] pubkey, boolean adjustLengthField, Config config) {
-        if (this.pubkey == null || this.pubkey.getOriginalValue() == null) {
+    public void setSoftlyPubkey(
+            byte[] pubkey,
+            boolean adjustLengthField,
+            Config config,
+            boolean useAlwaysPrepareOption) {
+        if (useAlwaysPrepareOption && config.getAlwaysPrepareAuthentication()
+                || this.pubkey == null
+                || this.pubkey.getOriginalValue() == null) {
             this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         }
         if (adjustLengthField) {

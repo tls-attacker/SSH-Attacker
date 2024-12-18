@@ -44,6 +44,15 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
                         this.methodSpecificFields, methodSpecificFields);
     }
 
+    public void setSoftlyMethodSpecificFields(byte[] methodSpecificFields) {
+        if (this.methodSpecificFields == null
+                || this.methodSpecificFields.getOriginalValue() == null) {
+            this.methodSpecificFields =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.methodSpecificFields, methodSpecificFields);
+        }
+    }
+
     @Override
     public UserAuthUnknownMessageHandler getHandler(SshContext context) {
         return new UserAuthUnknownMessageHandler(context, this);

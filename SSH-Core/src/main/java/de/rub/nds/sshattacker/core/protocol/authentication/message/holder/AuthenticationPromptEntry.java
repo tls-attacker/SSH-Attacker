@@ -117,6 +117,10 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
         setEcho(Converter.booleanToByte(echo));
     }
 
+    public void setSoftlyEcho(boolean echo) {
+        setSoftlyEcho(Converter.booleanToByte(echo));
+    }
+
     public AuthenticationPromptEntryHandler getHandler(SshContext context) {
         return new AuthenticationPromptEntryHandler(context, this);
     }

@@ -24,12 +24,15 @@ public class UserAuthInfoResponseMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setResponseEntriesCount(0);
         ArrayList<AuthenticationResponseEntry> nextResponses =
                 chooser.getNextPreConfiguredAuthResponses();
 
         if (nextResponses != null) {
-            getObject().setResponseEntries(nextResponses, true);
+            getObject().setSoftlyResponseEntries(nextResponses, true, chooser.getConfig());
+        } else {
+            getObject()
+                    .setSoftlyResponseEntriesCount(
+                            getObject().getResponseEntries().size(), chooser.getConfig());
         }
 
         getObject()

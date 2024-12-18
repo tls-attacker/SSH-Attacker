@@ -73,7 +73,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setSoftlyPubkey(byte[] pubkey, boolean adjustLengthField, Config config) {
-        if (this.pubkey == null || this.pubkey.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.pubkey == null
+                || this.pubkey.getOriginalValue() == null) {
             this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         }
         if (adjustLengthField) {
@@ -126,7 +128,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     public void setSoftlyPubkeyAlgName(
             String pubkeyAlgName, boolean adjustLengthField, Config config) {
-        if (this.pubkeyAlgName == null || this.pubkeyAlgName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.pubkeyAlgName == null
+                || this.pubkeyAlgName.getOriginalValue() == null) {
             this.pubkeyAlgName =
                     ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
         }
@@ -172,6 +176,10 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         setUseSignature(Converter.booleanToByte(useSignature));
     }
 
+    public void setSoftlyUseSignature(boolean useSignature) {
+        setSoftlyUseSignature(Converter.booleanToByte(useSignature));
+    }
+
     public ModifiableByte getUseSignature() {
         return useSignature;
     }
@@ -199,8 +207,14 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         }
     }
 
-    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (this.signature == null || this.signature.getOriginalValue() == null) {
+    public void setSoftlySignature(
+            byte[] signature,
+            boolean adjustLengthField,
+            Config config,
+            boolean useAlwaysPrepareOption) {
+        if (useAlwaysPrepareOption && config.getAlwaysPrepareAuthentication()
+                || this.signature == null
+                || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         }
         if (adjustLengthField) {
