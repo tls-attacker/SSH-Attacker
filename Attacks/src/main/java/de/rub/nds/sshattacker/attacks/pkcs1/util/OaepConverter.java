@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -221,8 +222,10 @@ public final class OaepConverter {
 
             byte[] result = doOaepDecoding(solutionBytes, hashInstance, publicKeyByteLength);
 
-            CONSOLE.debug("Secret with length field as byte array: {}", Arrays.toString(result));
-            CONSOLE.debug("Secret with length field: {}", new BigInteger(result));
+            CONSOLE.debug(
+                    "Secret with length field as byte array: {}",
+                    () -> ArrayConverter.bytesToRawHexString(result));
+            CONSOLE.debug("Secret with length field: {}", () -> new BigInteger(result));
 
             // Cut off length field to get secret as decimal number
             ByteBuffer secretBuffer = ByteBuffer.wrap(result);

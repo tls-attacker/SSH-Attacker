@@ -48,7 +48,7 @@ public class HybridKeyExchangeReplyMessageParser
     private void parseHostKeyBytes() {
         int hostKeyBytesLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         message.setHostKeyBytesLength(hostKeyBytesLength);
-        LOGGER.debug("Host key byte length{}", hostKeyBytesLength);
+        LOGGER.debug("Host key byte length {}", hostKeyBytesLength);
         byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
         message.setHostKeyBytes(hostKeyBytes);
         LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToHexString(hostKeyBytes));
@@ -60,16 +60,33 @@ public class HybridKeyExchangeReplyMessageParser
 
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
-                message.setCombinedKeyShareLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
+                if (length == agreementSize + encapsulationSize) {
+                    message.setPublicKeyLength(agreementSize);
+                    message.setPublicKey(parseByteArrayField(agreementSize));
+                    message.setCombinedKeyShareLength(encapsulationSize);
+                    message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
+                } else {
+                    // TODO: check if it would be better to change encryptSharedSecret() in
+                    //  SntrupKeyExchange
+                    // Parse corrupt message
+                    message.setPublicKeyLength(length);
+                    message.setPublicKey(parseByteArrayField(length));
+                    message.setCombinedKeyShareLength(0);
+                    message.setCombinedKeyShare(new byte[0]);
+                }
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                message.setCombinedKeyShareLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
+                if (length == encapsulationSize + agreementSize) {
+                    message.setCombinedKeyShareLength(encapsulationSize);
+                    message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
+                    message.setPublicKeyLength(agreementSize);
+                    message.setPublicKey(parseByteArrayField(agreementSize));
+                } else {
+                    message.setPublicKeyLength(length);
+                    message.setPublicKey(parseByteArrayField(length));
+                    message.setCombinedKeyShareLength(0);
+                    message.setCombinedKeyShare(new byte[0]);
+                }
                 break;
             default:
                 LOGGER.warn("combiner not supported. Can not update message");

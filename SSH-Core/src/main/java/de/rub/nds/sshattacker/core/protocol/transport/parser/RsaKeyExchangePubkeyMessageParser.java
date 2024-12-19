@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
@@ -37,7 +38,7 @@ public class RsaKeyExchangePubkeyMessageParser
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
         byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
         message.setHostKeyBytes(hostKeyBytes);
-        LOGGER.debug("Host key bytes: {}", hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
     }
 
     private void parseTransientPublicKey() {
@@ -47,7 +48,9 @@ public class RsaKeyExchangePubkeyMessageParser
         LOGGER.debug("Transient public key length: {}", transientPublicKeyBytesLength);
         byte[] transientPublicKeyBytes = parseByteArrayField(transientPublicKeyBytesLength);
         message.setTransientPublicKeyBytes(transientPublicKeyBytes);
-        LOGGER.debug("Transient public key: {}", transientPublicKeyBytes);
+        LOGGER.debug(
+                "Transient public key: {}",
+                () -> ArrayConverter.bytesToRawHexString(transientPublicKeyBytes));
     }
 
     @Override

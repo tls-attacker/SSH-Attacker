@@ -288,7 +288,11 @@ public class SntrupKeyExchange extends KeyEncapsulation {
     public byte[] encryptSharedSecret() {
         if (remotePublicKey == null) {
             LOGGER.warn("RemotePublicKey not set, return BigInteger.valueOf(0)");
-            return new byte[0];
+            // TODO: idea: Use local public key for generating combined key share, instead of
+            //  remote public key, so that the shared secret is not empty
+            encryptedSharedSecret = new byte[0];
+            sharedSecret = new byte[0];
+            return encryptedSharedSecret;
         }
         if (set == SntrupParameterSet.KEM_SNTRUP_4591761) {
             encapsR1(remotePublicKey.getEncoded());

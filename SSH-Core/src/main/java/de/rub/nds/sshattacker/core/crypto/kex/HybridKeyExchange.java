@@ -158,7 +158,8 @@ public class HybridKeyExchange extends KeyExchange {
                             ArrayConverter.bytesToRawHexString(
                                     encode(tmpSharedSecret, algorithm.getDigest())));
         } catch (Exception e) {
-            LOGGER.warn("Could not create the shared secret", e);
+            LOGGER.warn("Could not create the shared secret");
+            LOGGER.debug(e);
         }
     }
 

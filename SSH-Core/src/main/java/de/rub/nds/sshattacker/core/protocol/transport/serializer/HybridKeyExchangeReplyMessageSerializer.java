@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,7 +72,7 @@ public class HybridKeyExchangeReplyMessageSerializer
                 combined = new byte[0];
                 break;
         }
-        LOGGER.debug("Hybrid Key (server): {}", Arrays.toString(combined));
+        LOGGER.debug("Hybrid Key (server): {}", () -> ArrayConverter.bytesToRawHexString(combined));
     }
 
     private void serializeSignature() {

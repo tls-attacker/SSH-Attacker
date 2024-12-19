@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
@@ -26,22 +27,28 @@ public class RsaKeyExchangePubkeyMessageSerializer
         Integer hostKeyBytesLength = message.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
         appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes: {}", message.getHostKeyBytes());
-        appendBytes(message.getHostKeyBytes().getValue());
+
+        byte[] hostKeyBytes = message.getHostKeyBytes().getValue();
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
+        appendBytes(hostKeyBytes);
     }
 
-    private void serializeTransientPublicKey() {
-        LOGGER.debug("Transient public key length: {}", message.getTransientPublicKeyBytesLength());
-        appendInt(
-                message.getTransientPublicKeyBytesLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Transient public key: {}", message.getTransientPublicKeyBytes());
-        appendBytes(message.getTransientPublicKeyBytes().getValue());
+    private void serializeTransientPublicKeyBytes() {
+        Integer transientPublicKeyBytesLength =
+                message.getTransientPublicKeyBytesLength().getValue();
+        LOGGER.debug("Transient public key length: {}", transientPublicKeyBytesLength);
+        appendInt(transientPublicKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+
+        byte[] transientPublicKeyBytes = message.getTransientPublicKeyBytes().getValue();
+        LOGGER.debug(
+                "Transient public key: {}",
+                () -> ArrayConverter.bytesToRawHexString(transientPublicKeyBytes));
+        appendBytes(transientPublicKeyBytes);
     }
 
     @Override
     protected void serializeMessageSpecificContents() {
         serializeHostKeyBytes();
-        serializeTransientPublicKey();
+        serializeTransientPublicKeyBytes();
     }
 }

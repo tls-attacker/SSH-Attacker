@@ -16,14 +16,11 @@ import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.security.Security;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.logging.log4j.LogManager;
@@ -47,13 +44,11 @@ public class CyclicParserSerializerTest {
 
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
-        Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
-        // TODO: Fix HybridKeyExchangeReplyMessagePreparator
-        excludedClasses.add(HybridKeyExchangeReplyMessage.class);
+        // Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
         return new Reflections("de.rub.nds.sshattacker.core")
                 .getSubTypesOf(ProtocolMessage.class).stream()
                         .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
-                        .filter(messageClass -> !excludedClasses.contains(messageClass))
+                        // .filter(messageClass -> !excludedClasses.contains(messageClass))
                         .map(
                                 messageClass ->
                                         DynamicTest.dynamicTest(

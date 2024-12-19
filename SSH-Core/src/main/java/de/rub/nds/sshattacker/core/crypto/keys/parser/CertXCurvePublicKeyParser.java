@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,14 +62,15 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         int nonceLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
-        LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
+        LOGGER.debug("Parsed nonce: {}", () -> ArrayConverter.bytesToRawHexString(nonce));
         publicKey.setNonce(nonce); // Setze Nonce
 
         // 3. Public Key (pk)
         int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed publicKeyLength: {}", publicKeyLength);
         byte[] publicKeyBytes = parseByteArrayField(publicKeyLength);
-        LOGGER.debug("Parsed publicKey: {}", Arrays.toString(publicKeyBytes));
+        LOGGER.debug(
+                "Parsed publicKey: {}", () -> ArrayConverter.bytesToRawHexString(publicKeyBytes));
         publicKey.setCoordinate(publicKeyBytes); // Setze Public Key
 
         // 4. Serial (uint64)
@@ -91,21 +94,19 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         int totalPrincipalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed total principal length: {}", totalPrincipalLength);
 
-        String[] validPrincipals = new String[totalPrincipalLength];
+        LinkedList<String> validPrincipals = new LinkedList<>();
         int bytesProcessed = 0;
-        int principalIndex = 0;
         while (bytesProcessed < totalPrincipalLength) {
             int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
             if (principalLength > 0) {
                 String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
-                validPrincipals[principalIndex++] = principal;
+                validPrincipals.add(principal);
             }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
 
-        // Nur die tatsächlich gesetzten Principals weitergeben
-        String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
-        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+        String[] parsedPrincipals = validPrincipals.toArray(new String[0]);
+        LOGGER.debug("Parsed principals: {}", () -> Arrays.toString(parsedPrincipals));
         publicKey.setValidPrincipals(parsedPrincipals);
 
         // 8. Validity period (uint64 valid after)
@@ -188,7 +189,9 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed signatureKeyLength: {}", signatureKeyLength);
         if (signatureKeyLength > 0) {
             byte[] signatureKey = parseByteArrayField(signatureKeyLength);
-            LOGGER.debug("Parsed signatureKey: {}", Arrays.toString(signatureKey));
+            LOGGER.debug(
+                    "Parsed signatureKey: {}",
+                    () -> ArrayConverter.bytesToRawHexString(signatureKey));
             publicKey.setSignatureKey(signatureKey);
         } else {
             LOGGER.debug("Signature Key field is empty.");
@@ -199,7 +202,8 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
         LOGGER.debug("Parsed signatureLength: {}", signatureLength);
         if (signatureLength > 0) {
             byte[] signature = parseByteArrayField(signatureLength);
-            LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
+            LOGGER.debug(
+                    "Parsed signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
             publicKey.setSignature(signature); // Setze Signatur
         } else {
             LOGGER.debug("Signature field is empty.");

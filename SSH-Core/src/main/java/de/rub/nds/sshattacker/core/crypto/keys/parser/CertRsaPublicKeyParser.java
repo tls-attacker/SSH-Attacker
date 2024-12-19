@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertRsaPublicKey;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +60,7 @@ public class CertRsaPublicKeyParser
         int nonceLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
-        LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
+        LOGGER.debug("Parsed nonce: {}", () -> ArrayConverter.bytesToRawHexString(nonce));
         publicKey.setNonce(nonce);
 
         // Public Exponent (mpint e)
@@ -94,19 +96,19 @@ public class CertRsaPublicKeyParser
         int totalPrincipalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed total principal length: {}", totalPrincipalLength);
 
-        String[] validPrincipals = new String[totalPrincipalLength];
+        LinkedList<String> validPrincipals = new LinkedList<>();
         int bytesProcessed = 0;
-        int principalIndex = 0;
         while (bytesProcessed < totalPrincipalLength) {
             int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
             if (principalLength > 0) {
                 String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
-                validPrincipals[principalIndex++] = principal;
+                validPrincipals.add(principal);
             }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
-        String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
-        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+
+        String[] parsedPrincipals = validPrincipals.toArray(new String[0]);
+        LOGGER.debug("Parsed principals: {}", () -> Arrays.toString(parsedPrincipals));
         publicKey.setValidPrincipals(parsedPrincipals);
 
         // Validity period (uint64 valid after)
@@ -178,14 +180,15 @@ public class CertRsaPublicKeyParser
         int signatureKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed signatureKeyLength: {}", signatureKeyLength);
         byte[] signatureKey = parseByteArrayField(signatureKeyLength);
-        LOGGER.debug("Parsed signatureKey: {}", Arrays.toString(signatureKey));
+        LOGGER.debug(
+                "Parsed signatureKey: {}", () -> ArrayConverter.bytesToRawHexString(signatureKey));
         publicKey.setSignatureKey(signatureKey);
 
         // Signature (string signature)
         int signatureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Parsed signatureLength: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
-        LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
+        LOGGER.debug("Parsed signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
         publicKey.setSignature(signature);
 
         LOGGER.debug("Successfully parsed the RSA Certificate Public Key.");
