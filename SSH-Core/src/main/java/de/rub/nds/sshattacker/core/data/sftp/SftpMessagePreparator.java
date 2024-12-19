@@ -28,7 +28,7 @@ public abstract class SftpMessagePreparator<T extends SftpMessage<T>>
     @Override
     public final void prepareProtocolMessageContents() {
         // Always set correct packet type -> Don't use soft set
-        getObject().setPacketType(packetType);
+        object.setPacketType(packetType);
         prepareMessageSpecificContents();
     }
 

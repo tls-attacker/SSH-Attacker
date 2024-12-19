@@ -36,8 +36,8 @@ public class BlobPacketPreparator extends AbstractPacketPreparator<BlobPacket> {
         LOGGER.debug(
                 "Compressing BlobPacket using {} compression algorithm",
                 compressor.getCompressionAlgorithm());
-        compressor.compress(getObject());
+        compressor.compress(object);
         LOGGER.debug("Encrypting BlobPacket");
-        encryptor.encrypt(getObject());
+        encryptor.encrypt(object);
     }
 }

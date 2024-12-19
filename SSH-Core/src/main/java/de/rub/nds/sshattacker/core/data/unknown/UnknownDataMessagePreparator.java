@@ -17,6 +17,6 @@ public class UnknownDataMessagePreparator extends ProtocolMessagePreparator<Unkn
     }
 
     public void prepareProtocolMessageContents() {
-        getObject().setSoftlyPayload(new byte[0]);
+        object.setSoftlyPayload(new byte[0]);
     }
 }

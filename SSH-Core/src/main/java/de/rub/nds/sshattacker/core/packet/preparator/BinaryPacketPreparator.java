@@ -34,10 +34,10 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
     @Override
     public void prepare() {
         LOGGER.debug("Preparing binary packet computations");
-        getObject().prepareComputations();
+        object.prepareComputations();
         LOGGER.debug("Compressing binary packet");
-        compressor.compress(getObject());
+        compressor.compress(object);
         LOGGER.debug("Encrypting binary packet");
-        encryptor.encrypt(getObject());
+        encryptor.encrypt(object);
     }
 }

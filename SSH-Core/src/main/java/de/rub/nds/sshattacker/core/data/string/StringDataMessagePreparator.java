@@ -17,6 +17,6 @@ public class StringDataMessagePreparator extends ProtocolMessagePreparator<Strin
     }
 
     public void prepareProtocolMessageContents() {
-        getObject().setSoftlyData("ls /");
+        object.setSoftlyData("ls /");
     }
 }

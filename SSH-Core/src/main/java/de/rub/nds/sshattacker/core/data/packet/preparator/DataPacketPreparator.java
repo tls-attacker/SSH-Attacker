@@ -18,6 +18,6 @@ public class DataPacketPreparator extends AbstractDataPacketPreparator<DataPacke
 
     @Override
     public void prepare() {
-        getObject().setLength(getObject().getPayload().getValue().length);
+        object.setLength(object.getPayload().getValue().length);
     }
 }
