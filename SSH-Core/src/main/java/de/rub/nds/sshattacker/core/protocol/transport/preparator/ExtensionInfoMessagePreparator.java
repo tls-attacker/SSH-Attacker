@@ -21,13 +21,12 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
     @Override
     public void prepareMessageSpecificContents() {
         if (chooser.getContext().isClient()) {
-            getObject().setExtensions(chooser.getClientSupportedExtensions(), true);
+            object.setExtensions(chooser.getClientSupportedExtensions(), true);
         } else {
-            getObject().setExtensions(chooser.getServerSupportedExtensions(), true);
+            object.setExtensions(chooser.getServerSupportedExtensions(), true);
         }
 
-        getObject()
-                .getExtensions()
+        object.getExtensions()
                 .forEach(
                         extension ->
                                 extension

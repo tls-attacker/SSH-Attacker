@@ -20,6 +20,6 @@ public class AuthenticationResponseEntryPreparator extends Preparator<Authentica
 
     @Override
     public final void prepare() {
-        getObject().setSoftlyResponse("6d757575", true, chooser.getConfig());
+        object.setSoftlyResponse("6d757575", true, config);
     }
 }

@@ -22,9 +22,10 @@ public class ChannelRequestExitSignalMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSoftlySignalName(SignalType.SIGINT, true, chooser.getConfig());
-        getObject().setSoftlyCoreDump(false);
-        getObject().setSoftlyErrorMessage("", true, chooser.getConfig());
-        getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
+
+        object.setSoftlySignalName(SignalType.SIGINT, true, config);
+        object.setSoftlyCoreDump(false);
+        object.setSoftlyErrorMessage("", true, config);
+        object.setSoftlyLanguageTag("", true, config);
     }
 }

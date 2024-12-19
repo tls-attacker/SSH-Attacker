@@ -27,12 +27,11 @@ public class DhGexKeyExchangeReplyMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         SshContext context = chooser.getContext();
-        DhGexKeyExchangeReplyMessage message = getObject();
-        KeyExchangeUtil.prepareHostKeyMessage(context, message);
+        KeyExchangeUtil.prepareHostKeyMessage(context, object);
         prepareEphemeralPublicKey();
         KeyExchangeUtil.computeSharedSecret(context, chooser.getDhGexKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
@@ -42,7 +41,7 @@ public class DhGexKeyExchangeReplyMessagePreparator
         keyExchange.generateLocalKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
-        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+        object.setSoftlyEphemeralPublicKey(pubKey, true, config);
 
         chooser.getContext().getExchangeHashInputHolder().setDhGexServerPublicKey(pubKey);
     }

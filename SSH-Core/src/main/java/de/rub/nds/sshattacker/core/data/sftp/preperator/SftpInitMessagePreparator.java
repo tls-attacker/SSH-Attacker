@@ -19,23 +19,21 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
     }
 
     public void prepareMessageSpecificContents() {
-        getObject().setSoftlyVersion(chooser.getSftpClientVersion());
-        if (getObject().getExtensions().isEmpty()) {
+        object.setSoftlyVersion(chooser.getSftpClientVersion());
+        if (object.getExtensions().isEmpty()) {
             // Only load default extensions if none are set in the message
             if (chooser.getSftpClientVersion() == 3) {
                 // Only Clients with protocol version 3 should send supported extensions,
                 // to stay compatible with servers that use protocol version 1 or 2
-                getObject().setExtensions(chooser.getSftpClientSupportedExtensions());
+                object.setExtensions(chooser.getSftpClientSupportedExtensions());
             }
         } else {
-            if (chooser.getSftpClientVersion() != 3
-                    && chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-                getObject().getExtensions().clear();
+            if (chooser.getSftpClientVersion() != 3 && config.getRespectSftpNegotiatedVersion()) {
+                object.getExtensions().clear();
             }
         }
 
-        getObject()
-                .getExtensions()
+        object.getExtensions()
                 .forEach(
                         extension ->
                                 extension

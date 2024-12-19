@@ -19,20 +19,17 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
 
     @Override
     public final void prepare() {
-        getObject().setSoftlyFilename("/etc/passwd", true, chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() <= 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            getObject()
-                    .setSoftlyLongName(
-                            "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
-                            true,
-                            chooser.getConfig());
+        object.setSoftlyFilename("/etc/passwd", true, config);
+
+        if (chooser.getSftpNegotiatedVersion() <= 3 || !config.getRespectSftpNegotiatedVersion()) {
+            object.setSoftlyLongName(
+                    "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd", true, config);
         } else {
             // As of version 4 there is no longer a longName field
-            getObject().clearLongName();
+            object.clearLongName();
         }
 
-        getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

@@ -20,122 +20,61 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
 
     @Override
     public void prepareMessageSpecificContents() {
+
         if (chooser.getContext().isClient()) {
-            getObject().setSoftlyCookie(chooser.getClientCookie(), chooser.getConfig());
-            getObject()
-                    .setSoftlyKeyExchangeAlgorithms(
-                            chooser.getClientSupportedKeyExchangeAlgorithms(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyServerHostKeyAlgorithms(
-                            chooser.getClientSupportedHostKeyAlgorithms(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyEncryptionAlgorithmsClientToServer(
-                            chooser.getClientSupportedEncryptionAlgorithmsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyEncryptionAlgorithmsServerToClient(
-                            chooser.getClientSupportedEncryptionAlgorithmsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyMacAlgorithmsClientToServer(
-                            chooser.getClientSupportedMacAlgorithmsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyMacAlgorithmsServerToClient(
-                            chooser.getClientSupportedMacAlgorithmsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsClientToServer(
-                            chooser.getClientSupportedCompressionMethodsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsServerToClient(
-                            chooser.getClientSupportedCompressionMethodsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyLanguagesClientToServer(
-                            chooser.getClientSupportedLanguagesClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyLanguagesServerToClient(
-                            chooser.getClientSupportedLanguagesServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyFirstKeyExchangePacketFollows(
-                            chooser.getClientFirstKeyExchangePacketFollows(), chooser.getConfig());
-            getObject().setSoftlyReserved(chooser.getClientReserved(), chooser.getConfig());
+            object.setSoftlyCookie(chooser.getClientCookie(), config);
+            object.setSoftlyKeyExchangeAlgorithms(
+                    chooser.getClientSupportedKeyExchangeAlgorithms(), true, config);
+            object.setSoftlyServerHostKeyAlgorithms(
+                    chooser.getClientSupportedHostKeyAlgorithms(), true, config);
+            object.setSoftlyEncryptionAlgorithmsClientToServer(
+                    chooser.getClientSupportedEncryptionAlgorithmsClientToServer(), true, config);
+            object.setSoftlyEncryptionAlgorithmsServerToClient(
+                    chooser.getClientSupportedEncryptionAlgorithmsServerToClient(), true, config);
+            object.setSoftlyMacAlgorithmsClientToServer(
+                    chooser.getClientSupportedMacAlgorithmsClientToServer(), true, config);
+            object.setSoftlyMacAlgorithmsServerToClient(
+                    chooser.getClientSupportedMacAlgorithmsServerToClient(), true, config);
+            object.setSoftlyCompressionMethodsClientToServer(
+                    chooser.getClientSupportedCompressionMethodsClientToServer(), true, config);
+            object.setSoftlyCompressionMethodsServerToClient(
+                    chooser.getClientSupportedCompressionMethodsServerToClient(), true, config);
+            object.setSoftlyLanguagesClientToServer(
+                    chooser.getClientSupportedLanguagesClientToServer(), true, config);
+            object.setSoftlyLanguagesServerToClient(
+                    chooser.getClientSupportedLanguagesServerToClient(), true, config);
+            object.setSoftlyFirstKeyExchangePacketFollows(
+                    chooser.getClientFirstKeyExchangePacketFollows(), config);
+            object.setSoftlyReserved(chooser.getClientReserved(), config);
 
-            chooser.getContext().getExchangeHashInputHolder().setClientKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInputHolder().setClientKeyExchangeInit(object);
         } else {
-            getObject().setSoftlyCookie(chooser.getServerCookie(), chooser.getConfig());
-            getObject()
-                    .setSoftlyKeyExchangeAlgorithms(
-                            chooser.getServerSupportedKeyExchangeAlgorithms(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyServerHostKeyAlgorithms(
-                            chooser.getServerSupportedHostKeyAlgorithms(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyEncryptionAlgorithmsClientToServer(
-                            chooser.getServerSupportedEncryptionAlgorithmsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyEncryptionAlgorithmsServerToClient(
-                            chooser.getServerSupportedEncryptionAlgorithmsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyMacAlgorithmsClientToServer(
-                            chooser.getServerSupportedMacAlgorithmsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyMacAlgorithmsServerToClient(
-                            chooser.getServerSupportedMacAlgorithmsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsClientToServer(
-                            chooser.getServerSupportedCompressionMethodsClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsServerToClient(
-                            chooser.getServerSupportedCompressionMethodsServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyLanguagesClientToServer(
-                            chooser.getServerSupportedLanguagesClientToServer(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyLanguagesServerToClient(
-                            chooser.getServerSupportedLanguagesServerToClient(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyFirstKeyExchangePacketFollows(
-                            chooser.getServerFirstKeyExchangePacketFollows(), chooser.getConfig());
-            getObject().setSoftlyReserved(chooser.getServerReserved(), chooser.getConfig());
+            object.setSoftlyCookie(chooser.getServerCookie(), config);
+            object.setSoftlyKeyExchangeAlgorithms(
+                    chooser.getServerSupportedKeyExchangeAlgorithms(), true, config);
+            object.setSoftlyServerHostKeyAlgorithms(
+                    chooser.getServerSupportedHostKeyAlgorithms(), true, config);
+            object.setSoftlyEncryptionAlgorithmsClientToServer(
+                    chooser.getServerSupportedEncryptionAlgorithmsClientToServer(), true, config);
+            object.setSoftlyEncryptionAlgorithmsServerToClient(
+                    chooser.getServerSupportedEncryptionAlgorithmsServerToClient(), true, config);
+            object.setSoftlyMacAlgorithmsClientToServer(
+                    chooser.getServerSupportedMacAlgorithmsClientToServer(), true, config);
+            object.setSoftlyMacAlgorithmsServerToClient(
+                    chooser.getServerSupportedMacAlgorithmsServerToClient(), true, config);
+            object.setSoftlyCompressionMethodsClientToServer(
+                    chooser.getServerSupportedCompressionMethodsClientToServer(), true, config);
+            object.setSoftlyCompressionMethodsServerToClient(
+                    chooser.getServerSupportedCompressionMethodsServerToClient(), true, config);
+            object.setSoftlyLanguagesClientToServer(
+                    chooser.getServerSupportedLanguagesClientToServer(), true, config);
+            object.setSoftlyLanguagesServerToClient(
+                    chooser.getServerSupportedLanguagesServerToClient(), true, config);
+            object.setSoftlyFirstKeyExchangePacketFollows(
+                    chooser.getServerFirstKeyExchangePacketFollows(), config);
+            object.setSoftlyReserved(chooser.getServerReserved(), config);
 
-            chooser.getContext().getExchangeHashInputHolder().setServerKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInputHolder().setServerKeyExchangeInit(object);
         }
     }
 }

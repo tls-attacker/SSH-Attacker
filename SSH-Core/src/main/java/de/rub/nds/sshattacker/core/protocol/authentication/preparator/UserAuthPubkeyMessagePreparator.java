@@ -55,36 +55,35 @@ public class UserAuthPubkeyMessagePreparator
                             chooser.getContext().getSessionID().orElse(new byte[0]).length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(chooser.getContext().getSessionID().orElse(new byte[0]));
-            signatureOutput.write(getObject().getMessageId().getValue());
+            signatureOutput.write(object.getMessageId().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getUserNameLength().getValue(),
+                            object.getUserNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(
-                    getObject().getUserName().getValue().getBytes(StandardCharsets.UTF_8));
+            signatureOutput.write(object.getUserName().getValue().getBytes(StandardCharsets.UTF_8));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getServiceNameLength().getValue(),
+                            object.getServiceNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(
-                    getObject().getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
+                    object.getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             "publickey".getBytes(StandardCharsets.US_ASCII).length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write("publickey".getBytes(StandardCharsets.US_ASCII));
-            signatureOutput.write(getObject().getUseSignature().getValue());
+            signatureOutput.write(object.getUseSignature().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getPubkeyAlgNameLength().getValue(),
+                            object.getPubkeyAlgNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(
-                    getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
+                    object.getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getPubkeyLength().getValue(),
+                            object.getPubkeyLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getPubkey().getValue());
+            signatureOutput.write(object.getPubkey().getValue());
             return SignatureFactory.getSigningSignature(
                             PublicKeyAlgorithm.fromName(pk.getPublicKeyFormat().getName()), pk)
                     .sign(signatureOutput.toByteArray());
@@ -114,14 +113,13 @@ public class UserAuthPubkeyMessagePreparator
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject()
-                                    .getPubkeyAlgName()
+                            object.getPubkeyAlgName()
                                     .getValue()
                                     .getBytes(StandardCharsets.US_ASCII)
                                     .length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
             encodedSignatureOutput.write(
-                    getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
+                    object.getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
                             signatureBlob.length, DataFormatConstants.STRING_SIZE_LENGTH));
@@ -138,19 +136,17 @@ public class UserAuthPubkeyMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject().setSoftlyUseSignature(true);
+        object.setSoftlyUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
+
         if (pk != null) {
-            getObject()
-                    .setSoftlyPubkeyAlgName(
-                            pk.getPublicKeyFormat().getName(), true, chooser.getConfig());
-            getObject().setSoftlyPubkey(PublicKeyHelper.encode(pk), true, chooser.getConfig());
-            getObject()
-                    .setSoftlySignature(getEncodedSignature(pk), true, chooser.getConfig(), true);
+            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
+            object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config);
+            object.setSoftlySignature(getEncodedSignature(pk), true, config, true);
         } else {
-            getObject().setSoftlyPubkeyAlgName("", true, chooser.getConfig());
-            getObject().setSoftlyPubkey(new byte[0], true, chooser.getConfig());
-            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig(), false);
+            object.setSoftlyPubkeyAlgName("", true, config);
+            object.setSoftlyPubkey(new byte[0], true, config);
+            object.setSoftlySignature(new byte[0], true, config, false);
         }
     }
 }

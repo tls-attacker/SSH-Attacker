@@ -21,32 +21,19 @@ public class DelayCompressionExtensionPreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
+
         if (chooser.getContext().isClient()) {
-            getObject()
-                    .setSoftlyCompressionMethodsClientToServer(
-                            chooser.getClientSupportedDelayCompressionMethods(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsServerToClient(
-                            chooser.getClientSupportedDelayCompressionMethods(),
-                            true,
-                            chooser.getConfig());
+            object.setSoftlyCompressionMethodsClientToServer(
+                    chooser.getClientSupportedDelayCompressionMethods(), true, config);
+            object.setSoftlyCompressionMethodsServerToClient(
+                    chooser.getClientSupportedDelayCompressionMethods(), true, config);
 
         } else {
-            getObject()
-                    .setSoftlyCompressionMethodsClientToServer(
-                            chooser.getServerSupportedDelayCompressionMethods(),
-                            true,
-                            chooser.getConfig());
-            getObject()
-                    .setSoftlyCompressionMethodsServerToClient(
-                            chooser.getServerSupportedDelayCompressionMethods(),
-                            true,
-                            chooser.getConfig());
+            object.setSoftlyCompressionMethodsClientToServer(
+                    chooser.getServerSupportedDelayCompressionMethods(), true, config);
+            object.setSoftlyCompressionMethodsServerToClient(
+                    chooser.getServerSupportedDelayCompressionMethods(), true, config);
         }
-        getObject()
-                .setSoftlyCompressionMethodsLength(
-                        getObject().computeCompressionMethodsLength(), chooser.getConfig());
+        object.setSoftlyCompressionMethodsLength(object.computeCompressionMethodsLength(), config);
     }
 }

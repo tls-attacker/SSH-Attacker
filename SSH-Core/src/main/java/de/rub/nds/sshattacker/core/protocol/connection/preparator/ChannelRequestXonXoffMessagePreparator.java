@@ -21,6 +21,6 @@ public class ChannelRequestXonXoffMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSoftlyClientFlowControl(chooser.getConfig().getClientFlowControl());
+        object.setSoftlyClientFlowControl(config.getClientFlowControl());
     }
 }

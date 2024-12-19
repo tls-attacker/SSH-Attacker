@@ -25,13 +25,12 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        EcdhKeyExchangeReplyMessage message = getObject();
         SshContext context = chooser.getContext();
-        KeyExchangeUtil.prepareHostKeyMessage(context, message);
+        KeyExchangeUtil.prepareHostKeyMessage(context, object);
         prepareEphemeralPublicKey();
         KeyExchangeUtil.computeSharedSecret(context, chooser.getEcdhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
@@ -41,7 +40,7 @@ public class EcdhKeyExchangeReplyMessagePreparator
         keyExchange.generateLocalKeyPair();
         byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
 
-        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+        object.setSoftlyEphemeralPublicKey(pubKey, true, config);
 
         chooser.getContext().getExchangeHashInputHolder().setEcdhServerPublicKey(pubKey);
     }

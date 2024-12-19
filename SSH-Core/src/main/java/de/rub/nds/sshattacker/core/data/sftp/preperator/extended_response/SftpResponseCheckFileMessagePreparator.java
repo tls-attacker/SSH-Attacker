@@ -21,8 +21,8 @@ public class SftpResponseCheckFileMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        getObject().setSoftlyUsedHashAlgorithm(HashAlgorithm.MD5, true, chooser.getConfig());
+        object.setSoftlyUsedHashAlgorithm(HashAlgorithm.MD5, true, config);
 
-        getObject().setSoftlyHash(new byte[100]);
+        object.setSoftlyHash(new byte[100]);
     }
 }

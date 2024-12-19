@@ -23,7 +23,7 @@ public abstract class SftpRequestMessagePreparator<T extends SftpRequestMessage<
     @Override
     public void prepareMessageSpecificContents() {
         // Always set correct request id -> Don't use soft set
-        getObject().setRequestId(chooser.getContext().getSftpManager().getNextRequestId());
+        object.setRequestId(chooser.getContext().getSftpManager().getNextRequestId());
         prepareRequestSpecificContents();
     }
 

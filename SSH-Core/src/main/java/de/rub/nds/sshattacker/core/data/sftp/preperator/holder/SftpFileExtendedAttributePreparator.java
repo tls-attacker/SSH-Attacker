@@ -20,8 +20,9 @@ public class SftpFileExtendedAttributePreparator extends Preparator<SftpFileExte
 
     @Override
     public final void prepare() {
-        getObject().setSoftlyType("hello-from@ssh-attacker.de", true, chooser.getConfig());
 
-        getObject().setSoftlyData(new byte[100], true, chooser.getConfig());
+        object.setSoftlyType("hello-from@ssh-attacker.de", true, config);
+
+        object.setSoftlyData(new byte[100], true, config);
     }
 }

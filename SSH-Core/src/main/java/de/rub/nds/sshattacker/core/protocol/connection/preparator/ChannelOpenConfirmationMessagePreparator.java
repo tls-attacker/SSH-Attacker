@@ -31,15 +31,12 @@ public class ChannelOpenConfirmationMessagePreparator
     public void prepareMessageSpecificContents() {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
         ChannelOpenConfirmationMessage toCopy = channelManager.prepareNextOpenConfirm();
-        getObject()
-                .setSoftlyRecipientChannelId(
-                        toCopy.getRecipientChannelId().getValue(), chooser.getConfig());
-        getObject()
-                .setSoftlySenderChannelId(
-                        toCopy.getSenderChannelId().getValue(), chooser.getConfig());
+
+        object.setSoftlyRecipientChannelId(toCopy.getRecipientChannelId().getValue(), config);
+        object.setSoftlySenderChannelId(toCopy.getSenderChannelId().getValue(), config);
 
         Channel channel =
-                channelManager.getChannelByLocalId(getObject().getSenderChannelId().getValue());
+                channelManager.getChannelByLocalId(object.getSenderChannelId().getValue());
 
         if (channel != null) {
             if (channel.isOpen().getValue()) {
@@ -48,12 +45,12 @@ public class ChannelOpenConfirmationMessagePreparator
                         channel.getLocalChannelId().getValue());
             }
 
-            getObject().setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
-            getObject().setSoftlyPacketSize(channel.getLocalPacketSize().getValue());
+            object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
+            object.setSoftlyPacketSize(channel.getLocalPacketSize().getValue());
         } else {
-            ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
-            getObject().setSoftlyWindowSize(channelDefaults.getLocalWindowSize());
-            getObject().setSoftlyPacketSize(channelDefaults.getLocalPacketSize());
+            ChannelDefaults channelDefaults = config.getChannelDefaults();
+            object.setSoftlyWindowSize(channelDefaults.getLocalWindowSize());
+            object.setSoftlyPacketSize(channelDefaults.getLocalPacketSize());
         }
     }
 }

@@ -23,15 +23,15 @@ public class SftpRequestCheckFileNameMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        getObject()
-                .setSoftlyHashAlgorithms(
-                        List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, chooser.getConfig());
+        object.setSoftlyPath("/etc/passwd", true, config);
 
-        getObject().setSoftlyStartOffset(0);
+        object.setSoftlyHashAlgorithms(
+                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, config);
 
-        getObject().setSoftlyLength(100000); // 0 for all data
-        getObject().setSoftlyBlockSize(512); // Should be >= 256
+        object.setSoftlyStartOffset(0);
+
+        object.setSoftlyLength(100000); // 0 for all data
+        object.setSoftlyBlockSize(512); // Should be >= 256
     }
 }

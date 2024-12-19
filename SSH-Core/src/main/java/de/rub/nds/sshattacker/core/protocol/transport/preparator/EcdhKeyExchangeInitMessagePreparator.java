@@ -27,7 +27,7 @@ public class EcdhKeyExchangeInitMessagePreparator
         keyExchange.generateLocalKeyPair();
         byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
 
-        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+        object.setSoftlyEphemeralPublicKey(pubKey, true, config);
 
         chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(pubKey);
     }

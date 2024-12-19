@@ -20,6 +20,6 @@ public class SftpRequestStatVfsMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject().setSoftlyPath("/etc/", true, chooser.getConfig());
+        object.setSoftlyPath("/etc/", true, config);
     }
 }

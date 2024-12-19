@@ -20,14 +20,13 @@ public class SftpVersionMessagePreparator extends SftpMessagePreparator<SftpVers
 
     public void prepareMessageSpecificContents() {
         // Send own server version, but negotiate the version that is the lower if the two
-        getObject().setSoftlyVersion(chooser.getSftpServerVersion());
-        if (getObject().getExtensions().isEmpty()) {
+        object.setSoftlyVersion(chooser.getSftpServerVersion());
+        if (object.getExtensions().isEmpty()) {
             // Only load default extensions if none are set in the message
-            getObject().setExtensions(chooser.getSftpServerSupportedExtensions());
+            object.setExtensions(chooser.getSftpServerSupportedExtensions());
         }
 
-        getObject()
-                .getExtensions()
+        object.getExtensions()
                 .forEach(
                         extension ->
                                 extension

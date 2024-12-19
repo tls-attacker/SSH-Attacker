@@ -20,7 +20,7 @@ public class AuthenticationPromptEntryPreparator extends Preparator<Authenticati
 
     @Override
     public final void prepare() {
-        getObject().setSoftlyPrompt("Response: ", true, chooser.getConfig());
-        getObject().setSoftlyEcho(true);
+        object.setSoftlyPrompt("Response: ", true, config);
+        object.setSoftlyEcho(true);
     }
 }

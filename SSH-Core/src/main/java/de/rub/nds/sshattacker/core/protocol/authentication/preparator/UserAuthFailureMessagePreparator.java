@@ -21,7 +21,7 @@ public class UserAuthFailureMessagePreparator extends SshMessagePreparator<UserA
     @Override
     public void prepareMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject().setSoftlyPossibleAuthenticationMethods("", true, chooser.getConfig());
-        getObject().setSoftlyPartialSuccess(true);
+        object.setSoftlyPossibleAuthenticationMethods("", true, config);
+        object.setSoftlyPartialSuccess(true);
     }
 }

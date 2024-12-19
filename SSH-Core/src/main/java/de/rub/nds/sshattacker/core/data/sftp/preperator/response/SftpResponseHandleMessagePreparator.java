@@ -20,14 +20,12 @@ public class SftpResponseHandleMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getHandle() == null || getObject().getHandle().getOriginalValue() == null) {
+        if (object.getHandle() == null || object.getHandle().getOriginalValue() == null) {
             // Should be set in SftpManager handleRequestMessage() -> Don't use soft set, because
             // soft set in this case would set
-            getObject().setHandle(new byte[100], true);
+            object.setHandle(new byte[100], true);
         }
         // This should not be necessary:
-        getObject()
-                .setSoftlyHandleLength(
-                        getObject().getHandle().getValue().length, chooser.getConfig());
+        object.setSoftlyHandleLength(object.getHandle().getValue().length, config);
     }
 }

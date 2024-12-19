@@ -20,6 +20,6 @@ public class UnimplementedMessagePreparator extends SshMessagePreparator<Unimple
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setSoftlySequenceNumber(Integer.MAX_VALUE);
+        object.setSoftlySequenceNumber(Integer.MAX_VALUE);
     }
 }

@@ -21,6 +21,6 @@ public class SftpRequestSpaceAvailableMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject().setSoftlyPath("/tmp", true, chooser.getConfig());
+        object.setSoftlyPath("/tmp", true, config);
     }
 }

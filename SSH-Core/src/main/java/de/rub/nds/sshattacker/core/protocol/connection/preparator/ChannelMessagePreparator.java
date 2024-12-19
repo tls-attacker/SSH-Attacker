@@ -37,9 +37,10 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
 
     private void prepareChannel() {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
-        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
+
+        ChannelDefaults channelDefaults = config.getChannelDefaults();
         Integer localChannelId =
-                Optional.ofNullable(getObject().getConfigLocalChannelId())
+                Optional.ofNullable(object.getConfigLocalChannelId())
                         .orElse(channelDefaults.getLocalChannelId());
 
         // ChannelMessages should only be sent for an opened channel
@@ -51,8 +52,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                                     LOGGER.warn(
                                             "About to prepare channel message, but no corresponding channel was found or guessed. Creating a new channel from defaults. The other party will not know this channel either.");
                                     Integer remoteChannelId =
-                                            Optional.ofNullable(
-                                                            getObject().getConfigRemoteChannelId())
+                                            Optional.ofNullable(object.getConfigRemoteChannelId())
                                                     .orElse(channelDefaults.getRemoteChannelId());
                                     return channelManager.createNewChannelFromDefaults(
                                             localChannelId, remoteChannelId);
@@ -63,9 +63,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
                     channel.getLocalChannelId().getValue());
         }
-        getObject()
-                .setSoftlyRecipientChannelId(
-                        channel.getRemoteChannelId().getValue(), chooser.getConfig());
+        object.setSoftlyRecipientChannelId(channel.getRemoteChannelId().getValue(), config);
     }
 
     protected abstract void prepareChannelMessageSpecificContents();

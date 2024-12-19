@@ -20,8 +20,9 @@ public class SftpRequestRenameMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        getObject().setSoftlyNewPath("/tmp/passwd-win", true, chooser.getConfig());
+        object.setSoftlyPath("/etc/passwd", true, config);
+
+        object.setSoftlyNewPath("/tmp/passwd-win", true, config);
     }
 }

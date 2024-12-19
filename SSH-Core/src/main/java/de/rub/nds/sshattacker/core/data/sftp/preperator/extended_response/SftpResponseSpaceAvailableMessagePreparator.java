@@ -20,14 +20,14 @@ public class SftpResponseSpaceAvailableMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        getObject().setSoftlyBytesOnDevice(10000000001L);
+        object.setSoftlyBytesOnDevice(10000000001L);
 
-        getObject().setSoftlyUnusedBytesOnDevice(10);
+        object.setSoftlyUnusedBytesOnDevice(10);
 
-        getObject().setSoftlyBytesAvailableToUser(100);
+        object.setSoftlyBytesAvailableToUser(100);
 
-        getObject().setSoftlyUnusedBytesAvailableToUser(10);
+        object.setSoftlyUnusedBytesAvailableToUser(10);
 
-        getObject().setSoftlyBytesPerAllocationUnit(0);
+        object.setSoftlyBytesPerAllocationUnit(0);
     }
 }

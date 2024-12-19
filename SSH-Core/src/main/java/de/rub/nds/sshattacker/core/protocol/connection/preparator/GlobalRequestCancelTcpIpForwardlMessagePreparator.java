@@ -21,7 +21,7 @@ public class GlobalRequestCancelTcpIpForwardlMessagePreparator
 
     @Override
     public void prepareGlobalRequestMessageSpecificContents() {
-        getObject().setSoftlyIpAddressToBind("127.0.0.1", true, chooser.getConfig());
-        getObject().setSoftlyPortToBind(22);
+        object.setSoftlyIpAddressToBind("127.0.0.1", true, config);
+        object.setSoftlyPortToBind(22);
     }
 }

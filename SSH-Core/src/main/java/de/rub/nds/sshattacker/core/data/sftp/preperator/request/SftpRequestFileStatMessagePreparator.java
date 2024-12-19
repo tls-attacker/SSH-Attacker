@@ -22,17 +22,14 @@ public class SftpRequestFileStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject()
-                .setSoftlyHandle(
-                        chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
-                        true,
-                        chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            getObject().setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
+
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
+            object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
-            getObject().clearFlags();
+            object.clearFlags();
         }
     }
 }

@@ -453,9 +453,9 @@ public class Config implements Serializable {
     /** Whether key exchange messages should always be prepared by computations */
     private Boolean alwaysPrepareKex;
 
-    // TODO: Think about an option that reflects the modifications to key exchange messages back to
-    //  the context (including ExchangeHashInputHolder), so that the actually modified keys are used
-    //  in the computations. Would maybe be interesting for fuzzing
+    // TODO: Think about an option that reflects the modifications on the key exchange messages back
+    //  to the context (including ExchangeHashInputHolder), so that the actually modified keys are
+    //  used in the computations. Would maybe be interesting for fuzzing
 
     /**
      * Whether requested service names in kex and authentication messages should always be prepared

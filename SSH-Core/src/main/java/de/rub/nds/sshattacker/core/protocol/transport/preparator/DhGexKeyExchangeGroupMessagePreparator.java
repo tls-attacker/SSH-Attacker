@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
@@ -38,10 +37,8 @@ public class DhGexKeyExchangeGroupMessagePreparator
         BigInteger generator = keyExchange.getGenerator();
         BigInteger modulus = keyExchange.getModulus();
 
-        Config config = chooser.getConfig();
-        DhGexKeyExchangeGroupMessage message = getObject();
-        message.setSoftlyGroupGenerator(generator, true, config);
-        message.setSoftlyGroupModulus(modulus, true, config);
+        object.setSoftlyGroupGenerator(generator, true, config);
+        object.setSoftlyGroupModulus(modulus, true, config);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         inputHolder.setDhGexGroupGenerator(generator);

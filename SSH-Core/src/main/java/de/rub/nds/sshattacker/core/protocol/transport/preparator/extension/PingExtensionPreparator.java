@@ -28,6 +28,6 @@ public class PingExtensionPreparator extends AbstractExtensionPreparator<PingExt
             LOGGER.warn(
                     "Client prepared PingExtension which is supposed to be sent by the server only!");
         }
-        getObject().setSoftlyVersion("0", true, chooser.getConfig());
+        object.setSoftlyVersion("0", true, config);
     }
 }

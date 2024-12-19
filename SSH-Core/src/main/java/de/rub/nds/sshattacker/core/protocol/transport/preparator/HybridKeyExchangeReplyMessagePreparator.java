@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
@@ -38,16 +37,15 @@ public class HybridKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        HybridKeyExchangeReplyMessage message = getObject();
         SshContext context = chooser.getContext();
-        KeyExchangeUtil.prepareHostKeyMessage(context, message);
+        KeyExchangeUtil.prepareHostKeyMessage(context, object);
         prepareHybridKey();
         chooser.getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
                 .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
@@ -61,10 +59,8 @@ public class HybridKeyExchangeReplyMessagePreparator
         byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
 
-        HybridKeyExchangeReplyMessage message = getObject();
-        Config config = chooser.getConfig();
-        message.setSoftlyPublicKey(agreementBytes, true, config);
-        message.setSoftlyCombinedKeyShare(encapsulationBytes, true, config);
+        object.setSoftlyPublicKey(agreementBytes, true, config);
+        object.setSoftlyCombinedKeyShare(encapsulationBytes, true, config);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         switch (combiner) {

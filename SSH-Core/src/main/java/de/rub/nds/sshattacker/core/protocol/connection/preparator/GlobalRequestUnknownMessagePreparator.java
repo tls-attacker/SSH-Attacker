@@ -20,6 +20,6 @@ public class GlobalRequestUnknownMessagePreparator
 
     @Override
     public void prepareGlobalRequestMessageSpecificContents() {
-        getObject().setSoftlyTypeSpecificData(new byte[10]);
+        object.setSoftlyTypeSpecificData(new byte[10]);
     }
 }

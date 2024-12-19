@@ -21,10 +21,10 @@ public class SftpRequestOpenMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setSoftlyPath("/etc/passwd", true, config);
 
-        getObject().setSoftlyPFlags(SftpFileOpenFlag.SSH_FXF_READ);
+        object.setSoftlyPFlags(SftpFileOpenFlag.SSH_FXF_READ);
 
-        getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

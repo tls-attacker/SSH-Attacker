@@ -25,132 +25,120 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
     @Override
     public final void prepare() {
-        getObject()
-                .setSoftlyFlags(
-                        SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
-                        SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID,
-                        SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS,
-                        SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME,
-                        SftpFileAttributeFlag.SSH_FILEXFER_ATTR_EXTENDED);
+        object.setSoftlyFlags(
+                SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
+                SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID,
+                SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS,
+                SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME,
+                SftpFileAttributeFlag.SSH_FILEXFER_ATTR_EXTENDED);
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            getObject().setSoftlyType(SftpFileType.SSH_FILEXFER_TYPE_REGULAR);
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
+            object.setSoftlyType(SftpFileType.SSH_FILEXFER_TYPE_REGULAR);
         } else {
-            getObject().clearType();
+            object.clearType();
         }
 
-        int flags = getObject().getFlags().getValue();
+        int flags = object.getFlags().getValue();
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE)) {
-            getObject().setSoftlySize(0);
+            object.setSoftlySize(0);
         } else {
-            getObject().clearSize();
+            object.clearSize();
         }
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_OWNERGROUP)) {
-                getObject().setSoftlyOwner("ssh-attacker", true, chooser.getConfig());
+                object.setSoftlyOwner("ssh-attacker", true, config);
 
-                getObject().setSoftlyGroup("nds", true, chooser.getConfig());
+                object.setSoftlyGroup("nds", true, config);
             } else {
-                getObject().clearOwner();
-                getObject().clearGroup();
+                object.clearOwner();
+                object.clearGroup();
             }
-            getObject().clearUserId();
-            getObject().clearGroupId();
+            object.clearUserId();
+            object.clearGroupId();
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID)) {
-                getObject().setSoftlyUserId(0);
-                getObject().setSoftlyGroupId(0);
+                object.setSoftlyUserId(0);
+                object.setSoftlyGroupId(0);
             } else {
-                getObject().clearUserId();
-                getObject().clearGroupId();
+                object.clearUserId();
+                object.clearGroupId();
             }
-            getObject().clearOwner();
-            getObject().clearGroup();
+            object.clearOwner();
+            object.clearGroup();
         }
 
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS)) {
-            getObject().setSoftlyPermissions(0);
+            object.setSoftlyPermissions(0);
         } else {
-            getObject().clearPermissions();
+            object.clearPermissions();
         }
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME)) {
-                getObject().setSoftlyAccessTime(0);
+                object.setSoftlyAccessTime(0);
             } else {
-                getObject().clearAccessTime();
+                object.clearAccessTime();
             }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_CREATETIME)) {
-                getObject().setSoftlyCreateTime(0);
+                object.setSoftlyCreateTime(0);
             } else {
-                getObject().clearCreateTime();
+                object.clearCreateTime();
             }
 
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_MODIFYTIME)) {
-                getObject().setSoftlyModifyTime(0);
+                object.setSoftlyModifyTime(0);
             } else {
-                getObject().clearModifyTime();
+                object.clearModifyTime();
             }
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME)) {
-                getObject().setSoftlyAccessTime(0);
-                getObject().setSoftlyModifyTime(0);
+                object.setSoftlyAccessTime(0);
+                object.setSoftlyModifyTime(0);
             } else {
-                getObject().clearAccessTime();
-                getObject().clearModifyTime();
+                object.clearAccessTime();
+                object.clearModifyTime();
             }
-            getObject().clearCreateTime();
+            object.clearCreateTime();
         }
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACL)) {
-                if (getObject().getAclEntries().isEmpty()) {
-                    getObject().addAclEntry(new SftpAclEntry());
+                if (object.getAclEntries().isEmpty()) {
+                    object.addAclEntry(new SftpAclEntry());
                 }
-                getObject()
-                        .setSoftlyAclEntriesCount(
-                                getObject().getAclEntries().size(), chooser.getConfig());
-                getObject()
-                        .getAclEntries()
+                object.setSoftlyAclEntriesCount(object.getAclEntries().size(), config);
+                object.getAclEntries()
                         .forEach(
                                 aclEntry ->
                                         aclEntry.getHandler(chooser.getContext())
                                                 .getPreparator()
                                                 .prepare());
-                getObject()
-                        .setSoftlyAclLength(
-                                DataFormatConstants.UINT32_SIZE
-                                        + getObject().getAclEntries().size()
-                                                * (DataFormatConstants.UINT32_SIZE * 3
-                                                        + DataFormatConstants.STRING_SIZE_LENGTH)
-                                        + getObject().getAclEntries().stream()
-                                                .map(SftpAclEntry::getWhoLength)
-                                                .mapToInt(ModifiableVariable::getValue)
-                                                .sum(),
-                                chooser.getConfig());
+                object.setSoftlyAclLength(
+                        DataFormatConstants.UINT32_SIZE
+                                + object.getAclEntries().size()
+                                        * (DataFormatConstants.UINT32_SIZE * 3
+                                                + DataFormatConstants.STRING_SIZE_LENGTH)
+                                + object.getAclEntries().stream()
+                                        .map(SftpAclEntry::getWhoLength)
+                                        .mapToInt(ModifiableVariable::getValue)
+                                        .sum(),
+                        config);
 
             } else {
-                getObject().clearAcl();
+                object.clearAcl();
             }
         } else {
-            getObject().clearAcl();
+            object.clearAcl();
         }
 
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_EXTENDED)) {
-            if (getObject().getExtendedAttributes().isEmpty()) {
-                getObject().addExtendedAttribute(new SftpFileExtendedAttribute());
+            if (object.getExtendedAttributes().isEmpty()) {
+                object.addExtendedAttribute(new SftpFileExtendedAttribute());
             }
-            getObject()
-                    .setSoftlyExtendedCount(
-                            getObject().getExtendedAttributes().size(), chooser.getConfig());
+            object.setSoftlyExtendedCount(object.getExtendedAttributes().size(), config);
 
-            getObject()
-                    .getExtendedAttributes()
+            object.getExtendedAttributes()
                     .forEach(
                             extendedAttribute ->
                                     extendedAttribute
@@ -158,12 +146,11 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
                                             .getPreparator()
                                             .prepare());
         } else {
-            getObject().clearExtendedAttributes();
+            object.clearExtendedAttributes();
         }
     }
 
     private boolean isFlagSet(int attributes, SftpFileAttributeFlag attribute) {
-        return (attributes & attribute.getValue()) != 0
-                || !chooser.getConfig().getRespectSftpAttributesFlags();
+        return (attributes & attribute.getValue()) != 0 || !config.getRespectSftpAttributesFlags();
     }
 }

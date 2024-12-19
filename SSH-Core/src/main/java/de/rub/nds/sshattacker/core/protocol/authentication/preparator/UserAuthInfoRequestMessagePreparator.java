@@ -22,15 +22,14 @@ public class UserAuthInfoRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setSoftlyUserName("", true, chooser.getConfig());
-        getObject().setSoftlyInstruction("", true, chooser.getConfig());
-        getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
-        getObject()
-                .setSoftlyPromptEntriesCount(
-                        getObject().getPromptEntries().size(), chooser.getConfig());
+        UserAuthInfoRequestMessage message = object;
 
-        getObject()
-                .getPromptEntries()
+        message.setSoftlyUserName("", true, config);
+        message.setSoftlyInstruction("", true, config);
+        message.setSoftlyLanguageTag("", true, config);
+        message.setSoftlyPromptEntriesCount(message.getPromptEntries().size(), config);
+
+        message.getPromptEntries()
                 .forEach(
                         promptEntry ->
                                 promptEntry

@@ -21,6 +21,6 @@ public class SftpResponseAttributesMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

@@ -24,7 +24,7 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
     public void prepareMessageSpecificContents() {
         Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
 
-        getObject().setSoftlyPreferredGroupSize(preferredDhGroupSize, chooser.getConfig());
+        object.setSoftlyPreferredGroupSize(preferredDhGroupSize, config);
 
         chooser.getContext()
                 .getExchangeHashInputHolder()

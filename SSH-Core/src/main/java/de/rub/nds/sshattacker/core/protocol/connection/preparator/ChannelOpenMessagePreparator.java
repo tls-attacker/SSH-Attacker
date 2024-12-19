@@ -33,11 +33,11 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         ChannelManager channelManager = chooser.getContext().getChannelManager();
 
         Integer localChannelId =
-                Optional.ofNullable(getObject().getConfigLocalChannelId())
-                        .orElse(chooser.getConfig().getChannelDefaults().getLocalChannelId());
+                Optional.ofNullable(object.getConfigLocalChannelId())
+                        .orElse(config.getChannelDefaults().getLocalChannelId());
 
-        getObject().setSoftlySenderChannelId(localChannelId, chooser.getConfig());
-        Integer senderChannelId = getObject().getSenderChannelId().getValue();
+        object.setSoftlySenderChannelId(localChannelId, config);
+        Integer senderChannelId = object.getSenderChannelId().getValue();
 
         channel = channelManager.getChannelByLocalId(senderChannelId);
         if (channel != null) {
@@ -52,9 +52,9 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         } else {
             channel = channelManager.createPrendingChannel(senderChannelId);
         }
-        getObject().setSoftlyChannelType(channel.getChannelType(), true, chooser.getConfig());
-        getObject().setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
-        getObject().setSoftlyPacketSize(32768);
+        object.setSoftlyChannelType(channel.getChannelType(), true, config);
+        object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
+        object.setSoftlyPacketSize(32768);
         prepareChannelOpenMessageSpecificContents();
     }
 

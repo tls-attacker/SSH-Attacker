@@ -20,8 +20,9 @@ public class UserAuthPasswordMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject().setSoftlyChangePassword(false);
-        getObject().setSoftlyPassword(chooser.getConfig().getPassword(), true, chooser.getConfig());
-        getObject().setSoftlyNewPassword("newPassword", true, chooser.getConfig());
+        object.setSoftlyChangePassword(false);
+
+        object.setSoftlyPassword(config.getPassword(), true, config);
+        object.setSoftlyNewPassword("newPassword", true, config);
     }
 }

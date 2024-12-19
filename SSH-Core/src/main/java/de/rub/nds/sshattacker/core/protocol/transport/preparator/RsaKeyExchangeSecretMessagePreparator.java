@@ -28,7 +28,7 @@ public class RsaKeyExchangeSecretMessagePreparator
         KeyExchangeUtil.generateSharedSecret(context, chooser.getRsaKeyExchange());
         byte[] encryptedSecret = chooser.getRsaKeyExchange().encryptSharedSecret();
 
-        getObject().setSoftlyEncryptedSecret(encryptedSecret, true, chooser.getConfig());
+        object.setSoftlyEncryptedSecret(encryptedSecret, true, config);
 
         context.getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }

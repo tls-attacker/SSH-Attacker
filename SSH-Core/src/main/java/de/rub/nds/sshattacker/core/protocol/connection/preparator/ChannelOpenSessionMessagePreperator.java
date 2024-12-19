@@ -23,6 +23,6 @@ public class ChannelOpenSessionMessagePreperator
         //  ChannelType as argument
         // Always set correct channel type -> Don't use soft set
         channel.setChannelType(ChannelType.SESSION);
-        getObject().setChannelType(channel.getChannelType(), true);
+        object.setChannelType(channel.getChannelType(), true);
     }
 }

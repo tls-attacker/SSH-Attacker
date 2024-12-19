@@ -19,6 +19,6 @@ public class SftpRequestUnknownMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject().setSoftlyRequestSpecificData(new byte[100]);
+        object.setSoftlyRequestSpecificData(new byte[100]);
     }
 }

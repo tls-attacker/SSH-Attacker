@@ -21,8 +21,9 @@ public class ChannelOpenFailureMessagePreparator
     @Override
     public void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject().setSoftlyReasonCode(Integer.MAX_VALUE);
-        getObject().setSoftlyReason("", true, chooser.getConfig());
-        getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
+        object.setSoftlyReasonCode(Integer.MAX_VALUE);
+
+        object.setSoftlyReason("", true, config);
+        object.setSoftlyLanguageTag("", true, config);
     }
 }

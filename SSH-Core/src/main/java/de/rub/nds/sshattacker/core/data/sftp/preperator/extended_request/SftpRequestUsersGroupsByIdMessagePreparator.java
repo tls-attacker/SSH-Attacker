@@ -22,22 +22,18 @@ public class SftpRequestUsersGroupsByIdMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        if (getObject().getUserIds().isEmpty()) {
-            getObject().addUserId(0);
-            getObject().addUserId(1000);
+        if (object.getUserIds().isEmpty()) {
+            object.addUserId(0);
+            object.addUserId(1000);
         }
-        if (getObject().getGroupIds().isEmpty()) {
-            getObject().addGroupId(0);
+        if (object.getGroupIds().isEmpty()) {
+            object.addGroupId(0);
         }
 
-        getObject()
-                .setSoftlyUserIdsLength(
-                        getObject().getUserIds().size() * DataFormatConstants.UINT32_SIZE,
-                        chooser.getConfig());
+        object.setSoftlyUserIdsLength(
+                object.getUserIds().size() * DataFormatConstants.UINT32_SIZE, config);
 
-        getObject()
-                .setSoftlyGroupIdsLength(
-                        getObject().getGroupIds().size() * DataFormatConstants.UINT32_SIZE,
-                        chooser.getConfig());
+        object.setSoftlyGroupIdsLength(
+                object.getGroupIds().size() * DataFormatConstants.UINT32_SIZE, config);
     }
 }

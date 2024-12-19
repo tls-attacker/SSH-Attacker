@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
@@ -44,10 +43,8 @@ public class HybridKeyExchangeInitMessagePreperator
         byte[] pubKeyEncapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] pubKeyAgreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
 
-        HybridKeyExchangeInitMessage message = getObject();
-        Config config = chooser.getConfig();
-        message.setSoftlyAgreementPublicKey(pubKeyAgreement, true, config);
-        message.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, config);
+        object.setSoftlyAgreementPublicKey(pubKeyAgreement, true, config);
+        object.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, config);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         switch (combiner) {

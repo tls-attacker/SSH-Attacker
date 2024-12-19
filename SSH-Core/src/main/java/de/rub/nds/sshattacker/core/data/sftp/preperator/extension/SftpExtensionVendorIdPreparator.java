@@ -21,20 +21,20 @@ public class SftpExtensionVendorIdPreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
-        getObject().setSoftlyVendorName("NDS RUB", true, chooser.getConfig());
 
-        getObject().setSoftlyProductName("SSH-Attacker", true, chooser.getConfig());
+        object.setSoftlyVendorName("NDS RUB", true, config);
 
-        getObject().setSoftlyProductVersion("1.0", true, chooser.getConfig());
+        object.setSoftlyProductName("SSH-Attacker", true, config);
 
-        getObject().setSoftlyProductBuildNumber(2024);
+        object.setSoftlyProductVersion("1.0", true, config);
 
-        getObject()
-                .setSoftlyVendorStructureLength(
-                        getObject().getVendorNameLength().getValue()
-                                + getObject().getProductNameLength().getValue()
-                                + getObject().getProductVersionLength().getValue()
-                                + DataFormatConstants.UINT64_SIZE,
-                        chooser.getConfig());
+        object.setSoftlyProductBuildNumber(2024);
+
+        object.setSoftlyVendorStructureLength(
+                object.getVendorNameLength().getValue()
+                        + object.getProductNameLength().getValue()
+                        + object.getProductVersionLength().getValue()
+                        + DataFormatConstants.UINT64_SIZE,
+                config);
     }
 }

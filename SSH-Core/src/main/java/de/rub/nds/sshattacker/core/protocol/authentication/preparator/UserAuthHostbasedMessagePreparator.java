@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
@@ -38,53 +39,40 @@ public class UserAuthHostbasedMessagePreparator
 
     @Override
     public void prepareUserAuthRequestSpecificContents() {
-        getObject()
-                .setSoftlyPubKeyAlgorithm(
-                        chooser.getHostKeyAlgorithm().toString(), true, chooser.getConfig());
-        getObject()
-                .setSoftlyHostKeyBytes(
-                        PublicKeyHelper.encode(chooser.getNegotiatedHostKey()),
-                        true,
-                        chooser.getConfig());
-        getObject()
-                .setSoftlyHostName(
-                        Optional.ofNullable(chooser.getContext().getConnection().getIp())
-                                .orElse(AliasedConnection.DEFAULT_IP),
-                        true,
-                        chooser.getConfig());
+
+        object.setSoftlyPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true, config);
+        object.setSoftlyHostKeyBytes(
+                PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true, config);
+        object.setSoftlyHostName(
+                Optional.ofNullable(chooser.getContext().getConnection().getIp())
+                        .orElse(AliasedConnection.DEFAULT_IP),
+                true,
+                config);
         // set the username on client machine to the username on remote, specify if needed
-        getObject()
-                .setSoftlyClientUserName(
-                        chooser.getConfig().getUsername(), true, chooser.getConfig());
-        prepareSignature();
+        object.setSoftlyClientUserName(config.getUsername(), true, config);
+        prepareSignature(config);
     }
 
     public byte[] prepareSignatureInput() {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         chooser.getContext().getSessionID().orElse(new byte[] {})),
-                new byte[] {getObject().getMessageId().getValue()},
-                Converter.stringToLengthPrefixedBinaryString(getObject().getUserName().getValue()),
+                new byte[] {object.getMessageId().getValue()},
+                Converter.stringToLengthPrefixedBinaryString(object.getUserName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getServiceName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getMethodName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getServiceName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getMethodName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getPubKeyAlgorithm().getValue()),
+                        object.getPubKeyAlgorithm().getValue()),
+                Converter.bytesToLengthPrefixedBinaryString(object.getHostKeyBytes().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getHostName().getValue()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        getObject().getHostKeyBytes().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(getObject().getHostName().getValue()),
-                Converter.bytesToLengthPrefixedBinaryString(
-                        getObject()
-                                .getClientUserName()
-                                .getValue()
-                                .getBytes(StandardCharsets.UTF_8)));
+                        object.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
     }
 
-    public void prepareSignature() {
+    public void prepareSignature(Config config) {
         SigningSignature signingSignature;
         PublicKeyAlgorithm publicKeyAlgorithm =
-                PublicKeyAlgorithm.fromName(getObject().getPubKeyAlgorithm().getValue());
+                PublicKeyAlgorithm.fromName(object.getPubKeyAlgorithm().getValue());
         try {
             signingSignature =
                     SignatureFactory.getSigningSignature(
@@ -101,18 +89,17 @@ public class UserAuthHostbasedMessagePreparator
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
-            getObject()
-                    .setSoftlySignature(signatureOutput.toByteArray(), true, chooser.getConfig());
+            object.setSoftlySignature(signatureOutput.toByteArray(), true, config);
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig());
+            object.setSoftlySignature(new byte[0], true, config);
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig());
+            object.setSoftlySignature(new byte[0], true, config);
         }
     }
 }

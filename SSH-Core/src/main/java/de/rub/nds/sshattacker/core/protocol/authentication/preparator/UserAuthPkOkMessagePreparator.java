@@ -23,15 +23,13 @@ public class UserAuthPkOkMessagePreparator extends SshMessagePreparator<UserAuth
     @Override
     public void prepareMessageSpecificContents() {
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
+
         if (pk != null) {
-            getObject()
-                    .setSoftlyPubkeyAlgName(
-                            pk.getPublicKeyFormat().getName(), true, chooser.getConfig());
-            getObject()
-                    .setSoftlyPubkey(PublicKeyHelper.encode(pk), true, chooser.getConfig(), true);
+            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
+            object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config, true);
         } else {
-            getObject().setSoftlyPubkeyAlgName("", true, chooser.getConfig());
-            getObject().setSoftlyPubkey(new byte[0], true, chooser.getConfig(), false);
+            object.setSoftlyPubkeyAlgName("", true, config);
+            object.setSoftlyPubkey(new byte[0], true, config, false);
         }
     }
 }

@@ -20,8 +20,6 @@ public class ChannelRequestExecMessagePreparator
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject()
-                .setSoftlyCommand(
-                        chooser.getConfig().getChannelCommand(), true, chooser.getConfig());
+        object.setSoftlyCommand(config.getChannelCommand(), true, config);
     }
 }

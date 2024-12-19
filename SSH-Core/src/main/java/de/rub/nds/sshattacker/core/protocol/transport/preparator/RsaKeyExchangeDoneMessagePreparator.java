@@ -25,7 +25,7 @@ public class RsaKeyExchangeDoneMessagePreparator
     public void prepareMessageSpecificContents() {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, getObject());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }

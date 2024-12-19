@@ -23,30 +23,28 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        if (getObject().getUserNames().isEmpty()) {
-            getObject().addUserName("ssh");
-            getObject().addUserName("attacker");
+        if (object.getUserNames().isEmpty()) {
+            object.addUserName("ssh");
+            object.addUserName("attacker");
         }
-        if (getObject().getGroupNames().isEmpty()) {
-            getObject().addGroupName("nds");
+        if (object.getGroupNames().isEmpty()) {
+            object.addGroupName("nds");
         }
 
-        getObject()
-                .setSoftlyUserNamesLength(
-                        getObject().getUserNames().size() * DataFormatConstants.UINT32_SIZE
-                                + getObject().getUserNames().stream()
-                                        .map(SftpNameEntry::getNameLength)
-                                        .mapToInt(ModifiableVariable::getValue)
-                                        .sum(),
-                        chooser.getConfig());
+        object.setSoftlyUserNamesLength(
+                object.getUserNames().size() * DataFormatConstants.UINT32_SIZE
+                        + object.getUserNames().stream()
+                                .map(SftpNameEntry::getNameLength)
+                                .mapToInt(ModifiableVariable::getValue)
+                                .sum(),
+                config);
 
-        getObject()
-                .setSoftlyGroupNamesLength(
-                        getObject().getGroupNames().size() * DataFormatConstants.UINT32_SIZE
-                                + getObject().getGroupNames().stream()
-                                        .map(SftpNameEntry::getNameLength)
-                                        .mapToInt(ModifiableVariable::getValue)
-                                        .sum(),
-                        chooser.getConfig());
+        object.setSoftlyGroupNamesLength(
+                object.getGroupNames().size() * DataFormatConstants.UINT32_SIZE
+                        + object.getGroupNames().stream()
+                                .map(SftpNameEntry::getNameLength)
+                                .mapToInt(ModifiableVariable::getValue)
+                                .sum(),
+                config);
     }
 }

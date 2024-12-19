@@ -20,8 +20,8 @@ public class SftpRequestMakeDirMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setSoftlyPath("/tmp/ssh-attacker/", true, chooser.getConfig());
+        object.setSoftlyPath("/tmp/ssh-attacker/", true, config);
 
-        getObject().getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
     }
 }

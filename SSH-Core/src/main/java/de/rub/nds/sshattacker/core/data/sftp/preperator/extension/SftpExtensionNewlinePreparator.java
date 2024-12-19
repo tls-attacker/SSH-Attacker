@@ -20,6 +20,6 @@ public class SftpExtensionNewlinePreparator
 
     @Override
     public void prepareExtensionSpecificContents() {
-        getObject().setSoftlyNewlineSeperator("\n", true, chooser.getConfig());
+        object.setSoftlyNewlineSeperator("\n", true, config);
     }
 }

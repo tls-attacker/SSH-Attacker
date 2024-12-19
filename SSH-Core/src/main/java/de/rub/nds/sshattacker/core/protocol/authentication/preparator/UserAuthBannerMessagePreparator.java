@@ -21,7 +21,8 @@ public class UserAuthBannerMessagePreparator extends SshMessagePreparator<UserAu
     @Override
     public void prepareMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject().setSoftlyMessage("", true, chooser.getConfig());
-        getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
+
+        object.setSoftlyMessage("", true, config);
+        object.setSoftlyLanguageTag("", true, config);
     }
 }

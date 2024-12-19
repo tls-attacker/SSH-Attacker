@@ -23,9 +23,8 @@ public class ChannelExtendedDataMessagePreparator
     @Override
     public void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject()
-                .setSoftlyDataTypeCode(
-                        ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
-        getObject().setSoftlyData(new byte[100], true, chooser.getConfig());
+        object.setSoftlyDataTypeCode(
+                ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
+        object.setSoftlyData(new byte[100], true, config);
     }
 }

@@ -20,6 +20,6 @@ public class SftpResponseUnknownMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents() {
-        getObject().setSoftlyResponseSpecificData(new byte[100]);
+        object.setSoftlyResponseSpecificData(new byte[100]);
     }
 }

@@ -21,6 +21,6 @@ public class SftpRequestHomeDirectoryMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject().setSoftlyUsername("ssh-attacker", true, chooser.getConfig());
+        object.setSoftlyUsername("ssh-attacker", true, config);
     }
 }

@@ -21,10 +21,7 @@ public class SftpRequestFileStatVfsMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject()
-                .setSoftlyHandle(
-                        chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
-                        true,
-                        chooser.getConfig());
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
     }
 }

@@ -21,12 +21,8 @@ public class SftpRequestTextSeekMessagePreparator
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject()
-                .setSoftlyHandle(
-                        chooser.getContext().getSftpManager().getFileHandle(),
-                        true,
-                        chooser.getConfig());
+        object.setSoftlyHandle(chooser.getContext().getSftpManager().getFileHandle(), true, config);
 
-        getObject().setSoftlyLineNumber(0);
+        object.setSoftlyLineNumber(0);
     }
 }

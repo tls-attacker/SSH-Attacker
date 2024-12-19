@@ -21,13 +21,13 @@ public class SftpRequestStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents() {
-        getObject().setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
-            getObject().setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
+        object.setSoftlyPath("/etc/passwd", true, config);
+
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
+            object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
-            getObject().clearFlags();
+            object.clearFlags();
         }
     }
 }

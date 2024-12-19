@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
@@ -35,20 +34,19 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), object);
         prepareTransientPublicKey();
     }
 
     private void prepareTransientPublicKey() {
-        RsaKeyExchangePubkeyMessage message = getObject();
-        Config config = chooser.getConfig();
+
         try {
             RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
             keyExchange.generateTransientKey();
             SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> transientKey =
                     keyExchange.getTransientKey();
 
-            message.setSoftlyTransientPublicKeyBytes(
+            object.setSoftlyTransientPublicKeyBytes(
                     PublicKeyHelper.encode(transientKey), true, config);
 
             chooser.getContext().getExchangeHashInputHolder().setRsaTransientKey(transientKey);
@@ -58,7 +56,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
             LOGGER.warn(
                     "Transient public key preparation failed - workflow will continue but transient public key will be left empty");
             LOGGER.debug(e);
-            message.setSoftlyTransientPublicKeyBytes(new byte[0], true, config);
+            object.setSoftlyTransientPublicKeyBytes(new byte[0], true, config);
             // Using fallback transient key for ExchangeHashInputHolder
             chooser.getContext()
                     .getExchangeHashInputHolder()

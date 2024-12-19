@@ -22,10 +22,10 @@ public class SftpAclEntryPreparator extends Preparator<SftpAclEntry> {
 
     @Override
     public final void prepare() {
-        getObject().setSoftlyType(SftpAceType.ACE4_ACCESS_ALLOWED_ACE_TYPE);
-        getObject().setSoftlyFlags(SftpAceFlag.ACE4_FILE_INHERIT_ACE);
-        getObject().setSoftlyMask(SftpAceMask.ACE4_ADD_FILE);
+        object.setSoftlyType(SftpAceType.ACE4_ACCESS_ALLOWED_ACE_TYPE);
+        object.setSoftlyFlags(SftpAceFlag.ACE4_FILE_INHERIT_ACE);
+        object.setSoftlyMask(SftpAceMask.ACE4_ADD_FILE);
 
-        getObject().setSoftlyWho(chooser.getConfig().getUsername(), true, chooser.getConfig());
+        object.setSoftlyWho(config.getUsername(), true, config);
     }
 }
