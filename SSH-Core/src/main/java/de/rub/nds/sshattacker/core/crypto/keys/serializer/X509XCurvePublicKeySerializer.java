@@ -11,8 +11,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
@@ -102,7 +103,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
     }
 
     /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
-    private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
+    private static ASN1Sequence getDistinguishedNameAsASN1(String dn) {
         if (dn != null && !dn.isEmpty()) {
             try {
                 X500Name x500Name = new X500Name(dn);
@@ -117,11 +118,12 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
     }
 
     /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
-    private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
+    private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
-            String validAfterStr = dateFormat.format(new Date(validAfter * 1000));
-            String validBeforeStr = dateFormat.format(new Date(validBefore * 1000));
+            DateTimeFormatter dateTimeFormatter =
+                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'").withZone(ZoneOffset.UTC);
+            String validAfterStr = dateTimeFormatter.format(Instant.ofEpochSecond(validAfter));
+            String validBeforeStr = dateTimeFormatter.format(Instant.ofEpochSecond(validBefore));
 
             ASN1EncodableVector validityVector = new ASN1EncodableVector();
             validityVector.add(new ASN1GeneralizedTime(validAfterStr));
@@ -134,7 +136,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
     }
 
     /** Utility method to serialize extensions as ASN.1 Extensions. */
-    private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
+    private static Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();

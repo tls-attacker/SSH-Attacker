@@ -45,8 +45,6 @@ public class PassThroughPacket extends AbstractDataPacket {
         return new PassThroughPacketSerializer(this);
     }
 
-    public void prepareComputations() {}
-
     @Override
     public String toString() {
         return "PassThroughPacket";

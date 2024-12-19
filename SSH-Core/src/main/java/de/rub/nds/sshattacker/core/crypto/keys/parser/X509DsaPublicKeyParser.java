@@ -152,7 +152,7 @@ public class X509DsaPublicKeyParser
     }
 
     // Funktion zur Bestimmung des Offsets für den Start des ASN.1-Blocks
-    private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
+    private static int findX509StartIndex(byte[] encodedPublicKeyBytes) {
         int startIndex = 8; // SSH-Header überspringen
         while (startIndex < encodedPublicKeyBytes.length) {
             if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
@@ -166,8 +166,8 @@ public class X509DsaPublicKeyParser
     }
 
     // Extrahiert das vollständige Zertifikat
-    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex)
-            throws Exception {
+    private static X509Certificate extractCertificate(
+            byte[] encodedCertificateBytes, int startIndex) throws Exception {
         if (startIndex >= encodedCertificateBytes.length) {
             LOGGER.error("Start index exceeds the length of the byte array");
             throw new IllegalArgumentException("Start index exceeds the length of the byte array");

@@ -21,7 +21,7 @@ public abstract class SftpMessage<T extends SftpMessage<T>> extends DataMessage<
     }
 
     protected SftpMessage(SftpMessage<T> other) {
-        super();
+        super(other);
         packetType = other.packetType != null ? other.packetType.createCopy() : null;
     }
 

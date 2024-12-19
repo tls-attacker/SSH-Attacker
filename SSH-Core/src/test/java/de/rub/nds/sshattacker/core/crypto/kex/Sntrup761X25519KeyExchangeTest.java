@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class Sntrup761X25519KeyExchangeTest {
 
-    private enum TestMode {
+    public enum TestMode {
         CLIENT,
         SERVER
     }

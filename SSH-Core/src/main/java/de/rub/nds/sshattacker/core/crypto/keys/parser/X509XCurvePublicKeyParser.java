@@ -91,7 +91,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
 
                 boolean[] keyUsage = cert.getKeyUsage();
                 if (keyUsage != null) {
-                    LOGGER.debug("Parsed Key Usage: {}");
+                    LOGGER.debug("Parsed Key Usage:");
                     for (int i = 0; i < keyUsage.length; i++) {
                         LOGGER.debug("  Key Usage {}: {}", i, keyUsage[i]);
                     }
@@ -131,7 +131,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     }
 
     // Find offset for start of ASN.1-block
-    private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
+    private static int findX509StartIndex(byte[] encodedPublicKeyBytes) {
         int startIndex = 8; // SSH-Header überspringen
         while (startIndex < encodedPublicKeyBytes.length) {
             if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
@@ -143,8 +143,8 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     }
 
     // Extract Certificate with BouncyCastle
-    private X509Certificate extractCertificateWithBC(byte[] encodedCertificateBytes, int startIndex)
-            throws Exception {
+    private static X509Certificate extractCertificateWithBC(
+            byte[] encodedCertificateBytes, int startIndex) throws Exception {
         ByteArrayInputStream certInputStream =
                 new ByteArrayInputStream(
                         encodedCertificateBytes,
@@ -156,7 +156,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     }
 
     // Find EdDSA-Curve
-    private NamedEcGroup detectEdCurveGroup(String algorithm) {
+    private static NamedEcGroup detectEdCurveGroup(String algorithm) {
         if (algorithm.equalsIgnoreCase("Ed25519")) {
             return NamedEcGroup.CURVE25519;
         } else if (algorithm.equalsIgnoreCase("Ed448")) {

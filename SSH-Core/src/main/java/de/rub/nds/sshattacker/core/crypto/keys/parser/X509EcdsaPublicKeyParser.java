@@ -129,7 +129,7 @@ public class X509EcdsaPublicKeyParser
                 // Set Extensions, if any
                 HashMap<String, String> extensionsMap = parseExtensions(cert);
                 customX509EcdsaPublicKey.setExtensions(extensionsMap);
-                if (extensionsMap != null && !extensionsMap.isEmpty()) {
+                if (!extensionsMap.isEmpty()) {
                     LOGGER.debug("Parsed Certificate Extensions:");
                     for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
                         LOGGER.debug(
@@ -203,7 +203,7 @@ public class X509EcdsaPublicKeyParser
     // Utility methods for finding the X.509 start index, extracting the certificate, and parsing
     // extensions
 
-    private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
+    private static int findX509StartIndex(byte[] encodedPublicKeyBytes) {
         int startIndex = 8; // Skip SSH header
         while (startIndex < encodedPublicKeyBytes.length) {
             if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
@@ -215,8 +215,8 @@ public class X509EcdsaPublicKeyParser
         throw new IllegalArgumentException("Could not find start of the X.509 certificate.");
     }
 
-    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex)
-            throws Exception {
+    private static X509Certificate extractCertificate(
+            byte[] encodedCertificateBytes, int startIndex) throws Exception {
         ByteArrayInputStream certInputStream =
                 new ByteArrayInputStream(
                         encodedCertificateBytes,
@@ -253,7 +253,7 @@ public class X509EcdsaPublicKeyParser
         }
     }
 
-    private HashMap<String, String> parseExtensions(X509Certificate cert) {
+    private static HashMap<String, String> parseExtensions(X509Certificate cert) {
         HashMap<String, String> extensionsMap = new HashMap<>();
 
         try {
@@ -276,7 +276,7 @@ public class X509EcdsaPublicKeyParser
         return extensionsMap;
     }
 
-    private String bytesToHex(byte[] bytes) {
+    private static String bytesToHex(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : bytes) {
             hexString.append(String.format("%02x", b));
@@ -285,7 +285,7 @@ public class X509EcdsaPublicKeyParser
     }
 
     // Map curve name to NamedEcGroup locally without modifying NamedEcGroup
-    private NamedEcGroup mapCurveNameToNamedEcGroup(String curveName) {
+    private static NamedEcGroup mapCurveNameToNamedEcGroup(String curveName) {
         switch (curveName) {
                 // Required Curves (RFC 5656, Section 10.1)
             case "secp256r1":

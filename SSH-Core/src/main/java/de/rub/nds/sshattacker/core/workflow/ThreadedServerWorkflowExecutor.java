@@ -37,10 +37,10 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private ServerSocket serverSocket;
     private final InetAddress bindAddr;
     private final int bindPort;
-    private List<Socket> sockets = new ArrayList<>();
+    private final List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
     private boolean shutdown = true;
-    protected final ExecutorService pool;
+    private final ExecutorService pool;
 
     public ThreadedServerWorkflowExecutor(State state, ExecutorService pool) {
         super(WorkflowExecutorType.THREADED_SERVER, state);

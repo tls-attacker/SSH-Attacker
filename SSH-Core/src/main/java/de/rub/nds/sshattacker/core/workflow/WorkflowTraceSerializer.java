@@ -57,8 +57,7 @@ public final class WorkflowTraceSerializer {
      * @throws JAXBException Is thrown if the Object cannot be serialized
      * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
-    public static void write(File file, WorkflowTrace workflowTrace)
-            throws FileNotFoundException, JAXBException, IOException {
+    public static void write(File file, WorkflowTrace workflowTrace) throws JAXBException {
         try (FileOutputStream fos = new FileOutputStream(file, true)) {
             write(fos, workflowTrace);
         } catch (IOException ex) {

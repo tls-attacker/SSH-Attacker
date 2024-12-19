@@ -82,6 +82,4 @@ public abstract class AbstractDataPacket extends ModifiableVariableHolder {
 
     public abstract AbstractDataPacketSerializer<? extends AbstractDataPacket>
             getPacketSerializer();
-
-    public abstract void prepareComputations();
 }

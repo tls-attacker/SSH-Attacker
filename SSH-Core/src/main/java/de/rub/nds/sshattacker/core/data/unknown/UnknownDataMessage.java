@@ -21,7 +21,7 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
     }
 
     public UnknownDataMessage(UnknownDataMessage other) {
-        super();
+        super(other);
         payload = other.payload != null ? other.payload.createCopy() : null;
     }
 

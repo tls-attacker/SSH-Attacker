@@ -91,7 +91,7 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    protected void executeAction(SshAction action, State state) throws SkipActionException {
+    protected static void executeAction(SshAction action, State state) throws SkipActionException {
         try {
             action.execute(state);
         } catch (WorkflowExecutionException ex) {

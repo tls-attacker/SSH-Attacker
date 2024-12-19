@@ -62,8 +62,6 @@ public class DataPacket extends AbstractDataPacket {
         return new DataPacketSerializer(this);
     }
 
-    public void prepareComputations() {}
-
     @Override
     public String toString() {
         return "DataPacket{length=" + length + "}";

@@ -21,7 +21,7 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
     }
 
     public StringDataMessage(StringDataMessage other) {
-        super();
+        super(other);
         data = other.data != null ? other.data.createCopy() : null;
     }
 

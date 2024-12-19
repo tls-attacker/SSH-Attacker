@@ -304,7 +304,7 @@ public class State {
                     filteredTrace = getFilteredTraceCopy(workflowTrace);
                 }
                 WorkflowTraceSerializer.write(file, filteredTrace);
-            } catch (JAXBException | IOException ex) {
+            } catch (JAXBException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);
             }

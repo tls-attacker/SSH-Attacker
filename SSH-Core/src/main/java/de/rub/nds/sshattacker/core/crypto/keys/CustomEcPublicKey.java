@@ -66,7 +66,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
                                                 v.getJavaName(),
                                                 publicKey.getParams().getCurve().toString()))
                         .findFirst()
-                        .orElseThrow(CryptoException::new);
+                        .orElseThrow(() -> new CryptoException("Named EC Group not found"));
         this.publicKey =
                 Point.createPoint(
                         publicKey.getW().getAffineX(), publicKey.getW().getAffineY(), group);

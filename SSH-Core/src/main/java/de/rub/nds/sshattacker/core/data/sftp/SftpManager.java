@@ -232,12 +232,10 @@ public class SftpManager {
     public byte[] getFileOrDirectoryHandle() {
         if (!openFileHandles.isEmpty() || !openDirectoryHandles.isEmpty()) {
             int resultIdx = random.nextInt(openFileHandles.size() + openDirectoryHandles.size());
-            if (resultIdx < openFileHandles.size()) {
-                return openFileHandles.get(resultIdx);
-            } else {
+            if (resultIdx >= openFileHandles.size()) {
                 resultIdx -= openFileHandles.size();
-                return openFileHandles.get(resultIdx);
             }
+            return openFileHandles.get(resultIdx);
         }
         return getRandomHandle();
     }
