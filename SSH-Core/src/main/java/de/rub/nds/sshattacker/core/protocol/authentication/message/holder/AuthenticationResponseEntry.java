@@ -83,9 +83,7 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyResponse(String response, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.response == null
-                || this.response.getOriginalValue() == null) {
+        if (this.response == null || this.response.getOriginalValue() == null) {
             this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
         }
         if (adjustLengthField) {
