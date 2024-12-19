@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public final class Converter {
 
     public static <T extends Enum<T>> ModifiableString listOfAlgorithmsToModifiableString(
             List<T> list) {
-        return ModifiableVariableFactory.safelySetValue(null, listOfAlgorithmsToString(list));
+        return ModifiableVariableFactory.safelySetValue(null, listOfNamesToString(list));
     }
 
     public static String joinStringList(List<String> list, char seperator) {
@@ -37,25 +38,61 @@ public final class Converter {
         }
 
         StringBuilder builder = new StringBuilder();
-        for (String listElement : list) {
-            builder.append(seperator).append(listElement);
+        Iterator<String> iterator = list.iterator();
+        boolean hasNext = iterator.hasNext();
+        while (hasNext) {
+            builder.append(iterator.next());
+            hasNext = iterator.hasNext();
+            if (hasNext) {
+                builder.append(seperator);
+            }
         }
-        builder.deleteCharAt(0); // delete first separator before the first element
+
         return builder.toString();
     }
 
-    public static <T extends Enum<T>> String listOfAlgorithmsToString(List<T> list) {
+    public static <T extends Enum<T>> String listOfNamesToString(List<T> list) {
         if (list.isEmpty()) {
             return "";
         }
 
         StringBuilder builder = new StringBuilder();
-        list.forEach(
-                element ->
-                        builder.append(CharConstants.ALGORITHM_SEPARATOR)
-                                .append(element.toString()));
-        builder.deleteCharAt(0); // delete first separator before the first element
+
+        Iterator<T> iterator = list.iterator();
+        boolean hasNext = iterator.hasNext();
+        while (hasNext) {
+            builder.append(iterator.next().toString());
+            hasNext = iterator.hasNext();
+            if (hasNext) {
+                builder.append(CharConstants.NAME_LIST_SEPARATOR);
+            }
+        }
+
         return builder.toString();
+    }
+
+    public static String listOfNameStringsToString(List<String> list) {
+        if (list.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        Iterator<String> iterator = list.iterator();
+        boolean hasNext = iterator.hasNext();
+        while (hasNext) {
+            builder.append(iterator.next());
+            hasNext = iterator.hasNext();
+            if (hasNext) {
+                builder.append(CharConstants.NAME_LIST_SEPARATOR);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    public static String listOfNamesToString(String[] list) {
+        return String.join(CharConstants.NAME_LIST_SEPARATOR, list);
     }
 
     /**
@@ -68,8 +105,7 @@ public final class Converter {
      * @return stream of strings
      */
     private static Stream<String> nameListStringToStringStream(String nameListString) {
-        return Arrays.stream(
-                nameListString.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)));
+        return Arrays.stream(nameListString.split(CharConstants.NAME_LIST_SEPARATOR));
     }
 
     /**
@@ -82,7 +118,7 @@ public final class Converter {
      * @return list of strings
      */
     public static List<String> nameListStringToStringList(String nameListString) {
-        return nameListStringToStringStream(nameListString).collect(Collectors.toList());
+        return Arrays.asList(nameListString.split(CharConstants.NAME_LIST_SEPARATOR));
     }
 
     /**

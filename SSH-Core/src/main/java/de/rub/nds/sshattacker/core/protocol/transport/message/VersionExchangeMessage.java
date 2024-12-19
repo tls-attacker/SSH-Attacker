@@ -49,6 +49,12 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
     }
 
+    public void setSoftlyVersion(String version) {
+        if (this.version == null || this.version.getOriginalValue() == null) {
+            this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
+        }
+    }
+
     public ModifiableString getComment() {
         return comment;
     }
@@ -59,6 +65,12 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     public void setComment(String comment) {
         this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
+    }
+
+    public void setSoftlyComment(String comment) {
+        if (this.comment == null || this.comment.getOriginalValue() == null) {
+            this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
+        }
     }
 
     public String getIdentification() {
@@ -78,6 +90,15 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
         this.endOfMessageSequence =
                 ModifiableVariableFactory.safelySetValue(
                         this.endOfMessageSequence, endOfMessageSequence);
+    }
+
+    public void setSoftlyEndOfMessageSequence(String endOfMessageSequence) {
+        if (this.endOfMessageSequence == null
+                || this.endOfMessageSequence.getOriginalValue() == null) {
+            this.endOfMessageSequence =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.endOfMessageSequence, endOfMessageSequence);
+        }
     }
 
     @Override

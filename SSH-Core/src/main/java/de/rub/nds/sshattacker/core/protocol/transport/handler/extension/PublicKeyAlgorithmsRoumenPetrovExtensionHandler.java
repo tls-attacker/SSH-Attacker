@@ -21,17 +21,15 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
         extends AbstractExtensionHandler<PublicKeyAlgorithmsRoumenPetrovExtension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private SshContext context;
 
     public PublicKeyAlgorithmsRoumenPetrovExtensionHandler(
             SshContext context, PublicKeyAlgorithmsRoumenPetrovExtension extension) {
         super(context, extension);
-        this.context = context;
     }
 
     @Override
     public void adjustContext() {
-        String acceptedAlgorithms = this.extension.getAcceptedPublicKeyAlgorithms().getValue();
+        String acceptedAlgorithms = extension.getPublicKeyAlgorithms().getValue();
 
         if (acceptedAlgorithms != null) {
             LOGGER.debug(

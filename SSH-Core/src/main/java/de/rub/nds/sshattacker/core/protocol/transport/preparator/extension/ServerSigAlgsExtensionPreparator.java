@@ -19,7 +19,7 @@ public class ServerSigAlgsExtensionPreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerSigAlgsExtensionPreparator(Chooser chooser, ServerSigAlgsExtension extension) {
-        super(chooser, extension);
+        super(chooser, extension, Extension.SERVER_SIG_ALGS);
     }
 
     @Override
@@ -29,9 +29,10 @@ public class ServerSigAlgsExtensionPreparator
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         }
-        getObject().setName(Extension.SERVER_SIG_ALGS.getName(), true);
         getObject()
-                .setAcceptedPublicKeyAlgorithms(
-                        chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
+                .setSoftlyAcceptedPublicKeyAlgorithms(
+                        chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
+                        true,
+                        chooser.getConfig());
     }
 }

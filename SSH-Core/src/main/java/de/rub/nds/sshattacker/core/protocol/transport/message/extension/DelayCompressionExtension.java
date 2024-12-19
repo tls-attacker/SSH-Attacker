@@ -11,14 +11,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.DelayCompressionExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DelayCompressionExtension extends AbstractExtension<DelayCompressionExtension> {
 
@@ -77,6 +76,16 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
         this.compressionMethodsLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.compressionMethodsLength, compressionMethodsLength);
+    }
+
+    public void setSoftlyCompressionMethodsLength(int compressionMethodsLength, Config config) {
+        if (config.getAlwaysPrepareLengthFields()
+                || this.compressionMethodsLength == null
+                || this.compressionMethodsLength.getOriginalValue() == null) {
+            this.compressionMethodsLength =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.compressionMethodsLength, compressionMethodsLength);
+        }
     }
 
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
@@ -145,13 +154,15 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     }
 
     public void setSoftlyCompressionMethodsClientToServer(
-            String compressionMethodsClientToServer, boolean adjustLengthField, Config config) {
+            List<CompressionMethod> compressionMethodsClientToServer,
+            boolean adjustLengthField,
+            Config config) {
         if (this.compressionMethodsClientToServer == null
                 || this.compressionMethodsClientToServer.getOriginalValue() == null) {
             this.compressionMethodsClientToServer =
                     ModifiableVariableFactory.safelySetValue(
                             this.compressionMethodsClientToServer,
-                            compressionMethodsClientToServer);
+                            Converter.listOfNamesToString(compressionMethodsClientToServer));
         }
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
@@ -168,19 +179,14 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
 
     public void setCompressionMethodsClientToServer(
             String[] compressionMethodsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsClientToServer);
-        setCompressionMethodsClientToServer(nameList, adjustLengthField);
+        setCompressionMethodsClientToServer(
+                Converter.listOfNamesToString(compressionMethodsClientToServer), adjustLengthField);
     }
 
     public void setCompressionMethodsClientToServer(
             List<CompressionMethod> compressionMethodsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                compressionMethodsClientToServer.stream()
-                        .map(CompressionMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionMethodsClientToServer(nameList, adjustLengthField);
+        setCompressionMethodsClientToServer(
+                Converter.listOfNamesToString(compressionMethodsClientToServer), adjustLengthField);
     }
 
     public ModifiableInteger getCompressionMethodsServerToClientLength() {
@@ -249,13 +255,15 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     }
 
     public void setSoftlyCompressionMethodsServerToClient(
-            String compressionMethodsServerToClient, boolean adjustLengthField, Config config) {
+            List<CompressionMethod> compressionMethodsServerToClient,
+            boolean adjustLengthField,
+            Config config) {
         if (this.compressionMethodsServerToClient == null
                 || this.compressionMethodsServerToClient.getOriginalValue() == null) {
             this.compressionMethodsServerToClient =
                     ModifiableVariableFactory.safelySetValue(
                             this.compressionMethodsServerToClient,
-                            compressionMethodsServerToClient);
+                            Converter.listOfNamesToString(compressionMethodsServerToClient));
         }
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
@@ -272,19 +280,14 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
 
     public void setCompressionMethodsServerToClient(
             String[] compressionMethodsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsServerToClient);
-        setCompressionMethodsServerToClient(nameList, adjustLengthField);
+        setCompressionMethodsServerToClient(
+                Converter.listOfNamesToString(compressionMethodsServerToClient), adjustLengthField);
     }
 
     public void setCompressionMethodsServerToClient(
             List<CompressionMethod> compressionMethodsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                compressionMethodsServerToClient.stream()
-                        .map(CompressionMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionMethodsServerToClient(nameList, adjustLengthField);
+        setCompressionMethodsServerToClient(
+                Converter.listOfNamesToString(compressionMethodsServerToClient), adjustLengthField);
     }
 
     public int computeCompressionMethodsLength() {

@@ -447,6 +447,14 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
+    /** Whether kex exchange init messages should always be prepared with configured values */
+    private Boolean alwaysPrepareKexInit;
+
+    /**
+     * Whether requested service names in kex and authentication messages should always be prepared
+     */
+    private Boolean alwaysPrepareServiceNames;
+
     /**
      * Whether authentication related data in the authentication messages should always be prepared
      */
@@ -1243,6 +1251,8 @@ public class Config implements Serializable {
         // endregion
 
         // region general SSH Settings
+        alwaysPrepareKexInit = true;
+        alwaysPrepareServiceNames = true;
         alwaysPrepareAuthentication = true;
         alwaysPrepareChannelIds = true;
         alwaysPrepareLengthFields = true;
@@ -1483,6 +1493,8 @@ public class Config implements Serializable {
         defaultTermEnvVariable = other.defaultTermEnvVariable;
         defaultSubsystemName = other.defaultSubsystemName;
         defaultBreakLength = other.defaultBreakLength;
+        alwaysPrepareKexInit = other.alwaysPrepareKexInit;
+        alwaysPrepareServiceNames = other.alwaysPrepareServiceNames;
         alwaysPrepareAuthentication = other.alwaysPrepareAuthentication;
         alwaysPrepareChannelIds = other.alwaysPrepareChannelIds;
         alwaysPrepareLengthFields = other.alwaysPrepareLengthFields;
@@ -2284,6 +2296,21 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
+    public Boolean getAlwaysPrepareKexInit() {
+        return alwaysPrepareKexInit;
+    }
+
+    public void setAlwaysPrepareKexInit(Boolean alwaysPrepareKexInit) {
+        this.alwaysPrepareKexInit = alwaysPrepareKexInit;
+    }
+
+    public Boolean getAlwaysPrepareServiceNames() {
+        return alwaysPrepareServiceNames;
+    }
+
+    public void setAlwaysPrepareServiceNames(Boolean alwaysPrepareServiceNames) {
+        this.alwaysPrepareServiceNames = alwaysPrepareServiceNames;
+    }
 
     public Boolean getAlwaysPrepareAuthentication() {
         return alwaysPrepareAuthentication;

@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInit
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.util.Arrays;
 import java.util.List;
 
 public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchangeInitMessage> {
@@ -66,15 +65,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             message.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setServerSupportedLanguagesClientToServer(
-                    Arrays.asList(
-                            message.getLanguagesClientToServer()
-                                    .getValue()
-                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+                    Converter.nameListStringToStringList(
+                            message.getLanguagesClientToServer().getValue()));
             context.setServerSupportedLanguagesServerToClient(
-                    Arrays.asList(
-                            message.getLanguagesServerToClient()
-                                    .getValue()
-                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+                    Converter.nameListStringToStringList(
+                            message.getLanguagesServerToClient().getValue()));
             context.setServerReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
@@ -124,15 +119,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             message.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setClientSupportedLanguagesClientToServer(
-                    Arrays.asList(
-                            message.getLanguagesClientToServer()
-                                    .getValue()
-                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+                    Converter.nameListStringToStringList(
+                            message.getLanguagesClientToServer().getValue()));
             context.setClientSupportedLanguagesServerToClient(
-                    Arrays.asList(
-                            message.getLanguagesServerToClient()
-                                    .getValue()
-                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+                    Converter.nameListStringToStringList(
+                            message.getLanguagesServerToClient().getValue()));
             context.setClientReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setClientKeyExchangeInit(message);

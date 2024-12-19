@@ -25,18 +25,18 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionSerializer
 
     @Override
     protected void serializeExtensionValue() {
-        LOGGER.debug("Serializing PublicKeyAlgorithmsRoumenPetrovExtension...");
         serializePublicKeyAlgorithmsLength();
         serializePublicKeyAlgorithms();
     }
 
     private void serializePublicKeyAlgorithmsLength() {
-        appendInt(
-                extension.getPublicKeyAlgorithmsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        Integer publicKeyAlgorithmsLength = extension.getPublicKeyAlgorithmsLength().getValue();
+        LOGGER.debug("Public key algorithms length: {}", publicKeyAlgorithmsLength);
+        appendInt(publicKeyAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     private void serializePublicKeyAlgorithms() {
+        LOGGER.debug("Public key algorithms: {}", extension.getPublicKeyAlgorithms().getValue());
         appendString(extension.getPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 }

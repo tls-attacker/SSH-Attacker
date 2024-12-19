@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationResponseEntry extends ModifiableVariableHolder {

@@ -21,11 +21,9 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
     @Override
     public void prepareMessageSpecificContents() {
         if (chooser.getContext().isClient()) {
-            getObject().setExtensionCount(chooser.getClientSupportedExtensions().size());
-            getObject().setExtensions(chooser.getClientSupportedExtensions());
+            getObject().setExtensions(chooser.getClientSupportedExtensions(), true);
         } else {
-            getObject().setExtensionCount(chooser.getServerSupportedExtensions().size());
-            getObject().setExtensions(chooser.getServerSupportedExtensions());
+            getObject().setExtensions(chooser.getServerSupportedExtensions(), true);
         }
 
         getObject()

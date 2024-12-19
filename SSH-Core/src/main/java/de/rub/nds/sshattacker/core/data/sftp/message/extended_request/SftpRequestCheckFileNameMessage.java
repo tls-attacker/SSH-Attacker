@@ -12,13 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.HashAlgorithm;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCheckFileNameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SftpRequestCheckFileNameMessage
         extends SftpRequestExtendedWithPathMessage<SftpRequestCheckFileNameMessage> {
@@ -100,10 +99,11 @@ public class SftpRequestCheckFileNameMessage
     }
 
     public void setSoftlyHashAlgorithms(
-            String hashAlgorithms, boolean adjustLengthField, Config config) {
+            List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField, Config config) {
         if (this.hashAlgorithms == null || this.hashAlgorithms.getOriginalValue() == null) {
             this.hashAlgorithms =
-                    ModifiableVariableFactory.safelySetValue(this.hashAlgorithms, hashAlgorithms);
+                    ModifiableVariableFactory.safelySetValue(
+                            this.hashAlgorithms, Converter.listOfNamesToString(hashAlgorithms));
         }
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
@@ -116,25 +116,11 @@ public class SftpRequestCheckFileNameMessage
     }
 
     public void setHashAlgorithms(String[] hashAlgorithms, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, hashAlgorithms);
-        setHashAlgorithms(nameList, adjustLengthField);
+        setHashAlgorithms(Converter.listOfNamesToString(hashAlgorithms), adjustLengthField);
     }
 
     public void setHashAlgorithms(List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                hashAlgorithms.stream()
-                        .map(HashAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setHashAlgorithms(nameList, adjustLengthField);
-    }
-
-    public void setSoftlyHashAlgorithms(
-            List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField, Config config) {
-        String nameList =
-                hashAlgorithms.stream()
-                        .map(HashAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setSoftlyHashAlgorithms(nameList, adjustLengthField, config);
+        setHashAlgorithms(Converter.listOfNamesToString(hashAlgorithms), adjustLengthField);
     }
 
     public ModifiableLong getStartOffset() {

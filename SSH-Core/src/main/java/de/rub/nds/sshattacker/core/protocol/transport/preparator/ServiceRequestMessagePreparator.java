@@ -20,6 +20,8 @@ public class ServiceRequestMessagePreparator extends SshMessagePreparator<Servic
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setServiceName(chooser.getConfig().getServiceName(), true);
+        getObject()
+                .setSoftlyServiceName(
+                        chooser.getConfig().getServiceName(), true, chooser.getConfig());
     }
 }

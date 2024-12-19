@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestReadLinkMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.request.SftpRequestReadLinkMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.request.SftpRequestReadLinkMessagePreparator;

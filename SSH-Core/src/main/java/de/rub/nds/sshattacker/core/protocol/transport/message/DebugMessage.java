@@ -69,6 +69,10 @@ public class DebugMessage extends SshMessage<DebugMessage> {
         setAlwaysDisplay(Converter.booleanToByte(alwaysDisplay));
     }
 
+    public void setSoftlyAlwaysDisplay(boolean alwaysDisplay) {
+        setSoftlyAlwaysDisplay(Converter.booleanToByte(alwaysDisplay));
+    }
+
     public ModifiableInteger getMessageLength() {
         return messageLength;
     }

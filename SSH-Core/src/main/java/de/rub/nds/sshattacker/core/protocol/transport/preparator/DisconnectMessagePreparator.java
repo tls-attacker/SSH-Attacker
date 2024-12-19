@@ -21,18 +21,19 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
 
     @Override
     public void prepareMessageSpecificContents() {
-        // TODO save values in config
-        getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
-        getObject().setDescription("Test", true);
-        getObject().setLanguageTag("", true);
-
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
-            getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
+            getObject().setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
             getObject()
-                    .setDescription(
+                    .setSoftlyDescription(
                             "No common compression algorithm found in delay-compression extension!",
-                            true);
-            getObject().setLanguageTag("", true);
+                            true,
+                            chooser.getConfig());
+            getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
+        } else {
+            // TODO save values in config
+            getObject().setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
+            getObject().setSoftlyDescription("Test", true, chooser.getConfig());
+            getObject().setSoftlyLanguageTag("", true, chooser.getConfig());
         }
     }
 }

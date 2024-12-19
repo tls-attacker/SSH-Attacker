@@ -20,6 +20,6 @@ public class UnknownMessagePreparator extends SshMessagePreparator<UnknownMessag
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setPayload(new byte[0]);
+        getObject().setSoftlyPayload(new byte[0]);
     }
 }

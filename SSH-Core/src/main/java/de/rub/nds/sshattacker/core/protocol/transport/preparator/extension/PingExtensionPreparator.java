@@ -18,7 +18,7 @@ public class PingExtensionPreparator extends AbstractExtensionPreparator<PingExt
     private static final Logger LOGGER = LogManager.getLogger();
 
     public PingExtensionPreparator(Chooser chooser, PingExtension extension) {
-        super(chooser, extension);
+        super(chooser, extension, Extension.PING_OPENSSH_COM);
     }
 
     @Override
@@ -28,7 +28,6 @@ public class PingExtensionPreparator extends AbstractExtensionPreparator<PingExt
             LOGGER.warn(
                     "Client prepared PingExtension which is supposed to be sent by the server only!");
         }
-        getObject().setName(Extension.PING_OPENSSH_COM.getName(), true);
-        getObject().setVersion("0", true);
+        getObject().setSoftlyVersion("0", true, chooser.getConfig());
     }
 }

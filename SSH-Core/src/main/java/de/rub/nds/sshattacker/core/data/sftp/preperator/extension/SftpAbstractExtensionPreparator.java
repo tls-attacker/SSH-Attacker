@@ -17,11 +17,6 @@ public abstract class SftpAbstractExtensionPreparator<E extends SftpAbstractExte
 
     private final String extensionName;
 
-    protected SftpAbstractExtensionPreparator(Chooser chooser, E extension) {
-        super(chooser, extension);
-        extensionName = null;
-    }
-
     protected SftpAbstractExtensionPreparator(
             Chooser chooser, E extension, SftpExtension extensionName) {
         this(chooser, extension, extensionName.getName());

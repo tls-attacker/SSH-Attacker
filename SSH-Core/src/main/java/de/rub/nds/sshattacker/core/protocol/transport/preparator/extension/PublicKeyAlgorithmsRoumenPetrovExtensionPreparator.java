@@ -7,25 +7,24 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
+import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PublicKeyAlgorithmsRoumenPetrovExtensionPreparator
         extends AbstractExtensionPreparator<PublicKeyAlgorithmsRoumenPetrovExtension> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public PublicKeyAlgorithmsRoumenPetrovExtensionPreparator(
             Chooser chooser, PublicKeyAlgorithmsRoumenPetrovExtension extension) {
-        super(chooser, extension);
+        super(chooser, extension, Extension.PUBLICKEY_ALGORITHMS_ROUMENPETROV);
     }
 
     @Override
     protected void prepareExtensionSpecificContents() {
         getObject()
-                .setPublicKeyAlgorithms(
-                        chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
+                .setSoftlyPublicKeyAlgorithms(
+                        chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
+                        true,
+                        chooser.getConfig());
     }
 }

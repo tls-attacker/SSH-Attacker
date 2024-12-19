@@ -67,6 +67,10 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         setReasonCode(reason.getId());
     }
 
+    public void setSoftlyReasonCode(DisconnectReason reason) {
+        setSoftlyReasonCode(reason.getId());
+    }
+
     public ModifiableInteger getDescriptionLength() {
         return descriptionLength;
     }

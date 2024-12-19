@@ -96,7 +96,9 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setSoftlyUserName(String userName, boolean adjustLengthField, Config config) {
-        if (this.userName == null || this.userName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.userName == null
+                || this.userName.getOriginalValue() == null) {
             this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
         }
         if (adjustLengthField) {
@@ -154,7 +156,9 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
-        if (this.serviceName == null || this.serviceName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareServiceNames()
+                || this.serviceName == null
+                || this.serviceName.getOriginalValue() == null) {
             this.serviceName =
                     ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
         }

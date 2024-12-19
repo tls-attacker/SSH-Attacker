@@ -44,6 +44,12 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
+    public void setSoftlyPayload(byte[] payload) {
+        if (this.payload == null || this.payload.getOriginalValue() == null) {
+            this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+        }
+    }
+
     @Override
     public String toCompactString() {
         if (messageId != null && messageId.getValue() != null) {

@@ -84,7 +84,9 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
     }
 
     public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
-        if (this.serviceName == null || this.serviceName.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareServiceNames()
+                || this.serviceName == null
+                || this.serviceName.getOriginalValue() == null) {
             this.serviceName =
                     ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
         }

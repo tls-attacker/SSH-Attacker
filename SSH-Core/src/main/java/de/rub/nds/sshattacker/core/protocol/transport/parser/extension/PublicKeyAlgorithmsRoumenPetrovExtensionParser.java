@@ -38,11 +38,9 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionParser
     }
 
     private void parsePublicKeyAlgorithmsLength() {
-        extension.setPublicKeyAlgorithmsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Public key algorithms length: {}",
-                extension.getPublicKeyAlgorithmsLength().getValue());
+        int publicKeyAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        extension.setPublicKeyAlgorithmsLength(publicKeyAlgorithmsLength);
+        LOGGER.debug("Public key algorithms length: {}", publicKeyAlgorithmsLength);
     }
 
     private void parsePublicKeyAlgorithms() {

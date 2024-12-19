@@ -14,13 +14,11 @@ public class SftpExtensionUnknownPreparator
         extends SftpAbstractExtensionPreparator<SftpExtensionUnknown> {
 
     public SftpExtensionUnknownPreparator(Chooser chooser, SftpExtensionUnknown extension) {
-        super(chooser, extension);
+        super(chooser, extension, "hello-from@ssh-attacker.de");
     }
 
     @Override
     public void prepareExtensionSpecificContents() {
-        getObject().setSoftlyName("hello-from@ssh-attacker.de", true, chooser.getConfig());
-
         getObject().setSoftlyValue(new byte[100], true, chooser.getConfig());
     }
 }

@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import jakarta.xml.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationPromptEntry extends ModifiableVariableHolder {

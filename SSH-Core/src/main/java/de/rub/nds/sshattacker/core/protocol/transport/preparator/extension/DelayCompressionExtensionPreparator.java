@@ -16,33 +16,37 @@ public class DelayCompressionExtensionPreparator
 
     public DelayCompressionExtensionPreparator(
             Chooser chooser, DelayCompressionExtension extension) {
-        super(chooser, extension);
+        super(chooser, extension, Extension.DELAY_COMPRESSION);
     }
 
     @Override
     public void prepareExtensionSpecificContents() {
         if (chooser.getContext().isClient()) {
-            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()
-                    .setCompressionMethodsClientToServer(
-                            chooser.getClientSupportedDelayCompressionMethods(), true);
+                    .setSoftlyCompressionMethodsClientToServer(
+                            chooser.getClientSupportedDelayCompressionMethods(),
+                            true,
+                            chooser.getConfig());
             getObject()
-                    .setCompressionMethodsServerToClient(
-                            chooser.getClientSupportedDelayCompressionMethods(), true);
+                    .setSoftlyCompressionMethodsServerToClient(
+                            chooser.getClientSupportedDelayCompressionMethods(),
+                            true,
+                            chooser.getConfig());
 
-            getObject().setCompressionMethodsLength(getObject().computeCompressionMethodsLength());
-            chooser.getContext().setDelayCompressionExtensionSent(true);
         } else {
-            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()
-                    .setCompressionMethodsClientToServer(
-                            chooser.getServerSupportedDelayCompressionMethods(), true);
+                    .setSoftlyCompressionMethodsClientToServer(
+                            chooser.getServerSupportedDelayCompressionMethods(),
+                            true,
+                            chooser.getConfig());
             getObject()
-                    .setCompressionMethodsServerToClient(
-                            chooser.getServerSupportedDelayCompressionMethods(), true);
-            getObject().setCompressionMethodsLength(getObject().computeCompressionMethodsLength());
-
-            chooser.getContext().setDelayCompressionExtensionSent(true);
+                    .setSoftlyCompressionMethodsServerToClient(
+                            chooser.getServerSupportedDelayCompressionMethods(),
+                            true,
+                            chooser.getConfig());
         }
+        getObject()
+                .setSoftlyCompressionMethodsLength(
+                        getObject().computeCompressionMethodsLength(), chooser.getConfig());
     }
 }

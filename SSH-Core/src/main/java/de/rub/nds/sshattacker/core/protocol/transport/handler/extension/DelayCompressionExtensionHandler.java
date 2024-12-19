@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.DelayCompressionExtensionPreparator;
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DelayCompressionExtensionHandler
-        extends AbstractExtensionHandler<DelayCompressionExtension> {
+        extends AbstractExtensionHandler<DelayCompressionExtension> implements MessageSentHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -60,6 +61,11 @@ public class DelayCompressionExtensionHandler
         // set in context
         context.setSelectedDelayCompressionMethod(commonCompressionMethod);
         context.setDelayCompressionExtensionReceived(true);
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        context.setDelayCompressionExtensionSent(true);
     }
 
     @Override

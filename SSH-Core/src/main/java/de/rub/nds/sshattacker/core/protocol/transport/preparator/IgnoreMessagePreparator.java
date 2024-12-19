@@ -21,6 +21,6 @@ public class IgnoreMessagePreparator extends SshMessagePreparator<IgnoreMessage>
     @Override
     public void prepareMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        getObject().setData(new byte[0], true);
+        getObject().setSoftlyData(new byte[10], true, chooser.getConfig());
     }
 }

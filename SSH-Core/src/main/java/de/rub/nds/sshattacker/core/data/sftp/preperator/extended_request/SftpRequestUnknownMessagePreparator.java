@@ -14,15 +14,11 @@ public class SftpRequestUnknownMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestUnknownMessage> {
 
     public SftpRequestUnknownMessagePreparator(Chooser chooser, SftpRequestUnknownMessage message) {
-        super(chooser, message, "");
+        super(chooser, message, "hello-from@ssh-attacker.de");
     }
 
     @Override
     public void prepareRequestExtendedSpecificContents() {
-        getObject()
-                .setSoftlyExtendedRequestName(
-                        "hello-from@ssh-attacker.de", true, chooser.getConfig());
-
         getObject().setSoftlyRequestSpecificData(new byte[100]);
     }
 }

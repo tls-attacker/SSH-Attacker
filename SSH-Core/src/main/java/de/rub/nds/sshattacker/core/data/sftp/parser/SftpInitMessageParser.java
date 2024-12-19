@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
 
 public class SftpInitMessageParser extends SftpHandshakeMessageParser<SftpInitMessage> {
 

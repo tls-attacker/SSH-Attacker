@@ -13,14 +13,12 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
@@ -136,18 +134,14 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     public void setPossibleAuthenticationMethods(
             String[] possibleAuthenticationMethods, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, possibleAuthenticationMethods);
-        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+        setPossibleAuthenticationMethods(
+                Converter.listOfNamesToString(possibleAuthenticationMethods), adjustLengthField);
     }
 
     public void setPossibleAuthenticationMethods(
             List<AuthenticationMethod> possibleAuthenticationMethods, boolean adjustLengthField) {
-        String nameList =
-                possibleAuthenticationMethods.stream()
-                        .map(AuthenticationMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+        setPossibleAuthenticationMethods(
+                Converter.listOfNamesToString(possibleAuthenticationMethods), adjustLengthField);
     }
 
     public ModifiableByte getPartialSuccess() {
