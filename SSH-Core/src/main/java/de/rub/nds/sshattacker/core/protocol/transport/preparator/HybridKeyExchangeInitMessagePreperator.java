@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
@@ -35,34 +36,35 @@ public class HybridKeyExchangeInitMessagePreperator
 
     @Override
     public void prepareMessageSpecificContents() {
-        LOGGER.info("Negotiated Hybrid Key Exchange: {}", chooser.getKeyExchangeAlgorithm());
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
-
         agreement.generateLocalKeyPair();
         encapsulation.generateLocalKeyPair();
+        byte[] pubKeyEncapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
+        byte[] pubKeyAgreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
 
-        byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
-        byte[] pubKagreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
+        HybridKeyExchangeInitMessage message = getObject();
+        Config config = chooser.getConfig();
+        message.setSoftlyAgreementPublicKey(pubKeyAgreement, true, config);
+        message.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, config);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 inputHolder.setHybridClientPublicKey(
-                        KeyExchangeUtil.concatenateHybridKeys(pubKagreement, pubKencapsulation));
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                pubKeyAgreement, pubKeyEncapsulation));
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 inputHolder.setHybridClientPublicKey(
-                        KeyExchangeUtil.concatenateHybridKeys(pubKencapsulation, pubKagreement));
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                pubKeyEncapsulation, pubKeyAgreement));
                 break;
             default:
                 LOGGER.warn(
                         "Unsupported combiner {}, continue without updating ExchangeHashInputHolder",
                         combiner);
         }
-
-        getObject().setAgreementPublicKey(pubKagreement, true);
-        getObject().setEncapsulationPublicKey(pubKencapsulation, true);
     }
 }

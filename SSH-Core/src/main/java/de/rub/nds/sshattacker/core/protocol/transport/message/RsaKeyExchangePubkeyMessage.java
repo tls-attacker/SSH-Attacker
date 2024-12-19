@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
         implements HostKeyMessage {
@@ -113,7 +112,9 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.hostKeyBytes == null
+                || this.hostKeyBytes.getOriginalValue() == null) {
             this.hostKeyBytes =
                     ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         }
@@ -179,7 +180,8 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     public void setSoftlyTransientPublicKeyBytes(
             byte[] transientPublicKeyBytes, boolean adjustLengthField, Config config) {
-        if (this.transientPublicKeyBytes == null
+        if (config.getAlwaysPrepareKex()
+                || this.transientPublicKeyBytes == null
                 || this.transientPublicKeyBytes.getOriginalValue() == null) {
             this.transientPublicKeyBytes =
                     ModifiableVariableFactory.safelySetValue(
@@ -195,11 +197,11 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     public BigInteger getModulus() {
-        return ((RSAPublicKey) getTransientPublicKey().getPublicKey()).getModulus();
+        return getTransientPublicKey().getPublicKey().getModulus();
     }
 
     public BigInteger getPublicExponent() {
-        return ((RSAPublicKey) getTransientPublicKey().getPublicKey()).getPublicExponent();
+        return getTransientPublicKey().getPublicKey().getPublicExponent();
     }
 
     @Override

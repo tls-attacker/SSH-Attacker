@@ -109,7 +109,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.hostKeyBytes == null
+                || this.hostKeyBytes.getOriginalValue() == null) {
             this.hostKeyBytes =
                     ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         }
@@ -167,7 +169,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     public void setSoftlyEphemeralPublicKey(
             byte[] ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        if (this.ephemeralPublicKey == null || this.ephemeralPublicKey.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.ephemeralPublicKey == null
+                || this.ephemeralPublicKey.getOriginalValue() == null) {
             this.ephemeralPublicKey =
                     ModifiableVariableFactory.safelySetValue(
                             this.ephemeralPublicKey, ephemeralPublicKey);
@@ -229,7 +233,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
     }
 
     public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (this.signature == null || this.signature.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.signature == null
+                || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         }
         if (adjustLengthField) {

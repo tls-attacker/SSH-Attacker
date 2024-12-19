@@ -194,7 +194,6 @@ public final class ExchangeHash {
             throw new MissingExchangeHashInputException("[Common] Server host key missing");
         }
         // Avoid log spam by adjusting the log level of the key exchange init message serializer
-        //noinspection LoggerInitializedWithForeignClass
         Level oldLevel = LogManager.getLogger(KeyExchangeInitMessageSerializer.class).getLevel();
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), Level.OFF);
         byte[] prefix =

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -51,8 +52,10 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                 ModifiableVariableFactory.safelySetValue(this.minimalGroupSize, minimalGroupSize);
     }
 
-    public void setSoftlyMinimalGroupSize(int minimalGroupSize) {
-        if (this.minimalGroupSize == null || this.minimalGroupSize.getOriginalValue() == null) {
+    public void setSoftlyMinimalGroupSize(int minimalGroupSize, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.minimalGroupSize == null
+                || this.minimalGroupSize.getOriginalValue() == null) {
             this.minimalGroupSize =
                     ModifiableVariableFactory.safelySetValue(
                             this.minimalGroupSize, minimalGroupSize);
@@ -73,8 +76,10 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                         this.preferredGroupSize, preferredGroupSize);
     }
 
-    public void setSoftlyPreferredGroupSize(int preferredGroupSize) {
-        if (this.preferredGroupSize == null || this.preferredGroupSize.getOriginalValue() == null) {
+    public void setSoftlyPreferredGroupSize(int preferredGroupSize, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.preferredGroupSize == null
+                || this.preferredGroupSize.getOriginalValue() == null) {
             this.preferredGroupSize =
                     ModifiableVariableFactory.safelySetValue(
                             this.preferredGroupSize, preferredGroupSize);
@@ -94,8 +99,10 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                 ModifiableVariableFactory.safelySetValue(this.maximalGroupSize, maximalGroupSize);
     }
 
-    public void setSoftlyMaximalGroupSize(int maximalGroupSize) {
-        if (this.maximalGroupSize == null || this.maximalGroupSize.getOriginalValue() == null) {
+    public void setSoftlyMaximalGroupSize(int maximalGroupSize, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.maximalGroupSize == null
+                || this.maximalGroupSize.getOriginalValue() == null) {
             this.maximalGroupSize =
                     ModifiableVariableFactory.safelySetValue(
                             this.maximalGroupSize, maximalGroupSize);

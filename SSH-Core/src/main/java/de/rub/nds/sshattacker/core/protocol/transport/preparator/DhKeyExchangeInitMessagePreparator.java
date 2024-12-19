@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeInitMessage> {
@@ -24,11 +25,10 @@ public class DhKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setDhClientPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
+        BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
-        getObject()
-                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
+        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+
+        chooser.getContext().getExchangeHashInputHolder().setDhClientPublicKey(pubKey);
     }
 }

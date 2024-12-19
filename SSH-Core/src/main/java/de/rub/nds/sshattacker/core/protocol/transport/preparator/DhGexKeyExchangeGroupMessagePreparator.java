@@ -7,12 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeGroupMessage> {
@@ -24,12 +26,6 @@ public class DhGexKeyExchangeGroupMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        selectGroupParameters();
-        updateExchangeHashWithGroupParameters();
-        prepareGroupParameters();
-    }
-
-    private void selectGroupParameters() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         if (chooser.getContext().isOldGroupRequestReceived()) {
             keyExchange.selectGroup(chooser.getPreferredDhGroupSize());
@@ -39,18 +35,16 @@ public class DhGexKeyExchangeGroupMessagePreparator
                     chooser.getPreferredDhGroupSize(),
                     chooser.getMaximalDhGroupSize());
         }
-    }
+        BigInteger generator = keyExchange.getGenerator();
+        BigInteger modulus = keyExchange.getModulus();
 
-    private void updateExchangeHashWithGroupParameters() {
-        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
+        Config config = chooser.getConfig();
+        DhGexKeyExchangeGroupMessage message = getObject();
+        message.setSoftlyGroupGenerator(generator, true, config);
+        message.setSoftlyGroupModulus(modulus, true, config);
+
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        inputHolder.setDhGexGroupGenerator(keyExchange.getGenerator());
-        inputHolder.setDhGexGroupModulus(keyExchange.getModulus());
-    }
-
-    private void prepareGroupParameters() {
-        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        getObject().setGroupGenerator(keyExchange.getGenerator(), true);
-        getObject().setGroupModulus(keyExchange.getModulus(), true);
+        inputHolder.setDhGexGroupGenerator(generator);
+        inputHolder.setDhGexGroupModulus(modulus);
     }
 }

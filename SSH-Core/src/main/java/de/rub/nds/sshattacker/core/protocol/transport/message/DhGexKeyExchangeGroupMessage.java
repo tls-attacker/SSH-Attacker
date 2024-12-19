@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -82,6 +83,23 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
         }
     }
 
+    public void setSoftlyGroupModulus(
+            BigInteger groupModulus, boolean adjustLengthField, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.groupModulus == null
+                || this.groupModulus.getOriginalValue() == null) {
+            this.groupModulus =
+                    ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || groupModulusLength == null
+                    || groupModulusLength.getOriginalValue() == null) {
+                setGroupModulusLength(this.groupModulus.getValue().toByteArray().length);
+            }
+        }
+    }
+
     public ModifiableInteger getGroupGeneratorLength() {
         return groupGeneratorLength;
     }
@@ -120,6 +138,23 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
                 ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
         if (adjustLengthField) {
             setGroupGeneratorLength(this.groupGenerator.getValue().toByteArray().length);
+        }
+    }
+
+    public void setSoftlyGroupGenerator(
+            BigInteger groupGenerator, boolean adjustLengthField, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.groupGenerator == null
+                || this.groupGenerator.getOriginalValue() == null) {
+            this.groupGenerator =
+                    ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || groupGeneratorLength == null
+                    || groupGeneratorLength.getOriginalValue() == null) {
+                setGroupGeneratorLength(this.groupGenerator.getValue().toByteArray().length);
+            }
         }
     }
 

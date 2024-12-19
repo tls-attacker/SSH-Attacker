@@ -78,7 +78,9 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
 
     public void setSoftlyEncryptedSecret(
             byte[] encryptedSecret, boolean adjustLengthField, Config config) {
-        if (this.encryptedSecret == null || this.encryptedSecret.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.encryptedSecret == null
+                || this.encryptedSecret.getOriginalValue() == null) {
             this.encryptedSecret =
                     ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
         }

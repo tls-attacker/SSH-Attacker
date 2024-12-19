@@ -447,8 +447,15 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
-    /** Whether kex exchange init messages should always be prepared with configured values */
+    /** Whether key exchange init messages should always be prepared with configured values */
     private Boolean alwaysPrepareKexInit;
+
+    /** Whether key exchange messages should always be prepared by computations */
+    private Boolean alwaysPrepareKex;
+
+    // TODO: Think about an option that reflects the modifications to key exchange messages back to
+    //  the context (including ExchangeHashInputHolder), so that the actually modified keys are used
+    //  in the computations. Would maybe be interesting for fuzzing
 
     /**
      * Whether requested service names in kex and authentication messages should always be prepared
@@ -1252,6 +1259,7 @@ public class Config implements Serializable {
 
         // region general SSH Settings
         alwaysPrepareKexInit = true;
+        alwaysPrepareKex = true;
         alwaysPrepareServiceNames = true;
         alwaysPrepareAuthentication = true;
         alwaysPrepareChannelIds = true;
@@ -1494,6 +1502,7 @@ public class Config implements Serializable {
         defaultSubsystemName = other.defaultSubsystemName;
         defaultBreakLength = other.defaultBreakLength;
         alwaysPrepareKexInit = other.alwaysPrepareKexInit;
+        alwaysPrepareKex = other.alwaysPrepareKex;
         alwaysPrepareServiceNames = other.alwaysPrepareServiceNames;
         alwaysPrepareAuthentication = other.alwaysPrepareAuthentication;
         alwaysPrepareChannelIds = other.alwaysPrepareChannelIds;
@@ -2302,6 +2311,14 @@ public class Config implements Serializable {
 
     public void setAlwaysPrepareKexInit(Boolean alwaysPrepareKexInit) {
         this.alwaysPrepareKexInit = alwaysPrepareKexInit;
+    }
+
+    public Boolean getAlwaysPrepareKex() {
+        return alwaysPrepareKex;
+    }
+
+    public void setAlwaysPrepareKex(Boolean alwaysPrepareKex) {
+        this.alwaysPrepareKex = alwaysPrepareKex;
     }
 
     public Boolean getAlwaysPrepareServiceNames() {

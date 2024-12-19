@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -47,8 +48,10 @@ public class DhGexKeyExchangeOldRequestMessage
                         this.preferredGroupSize, preferredGroupSize);
     }
 
-    public void setSoftlyPreferredGroupSize(int preferredGroupSize) {
-        if (this.preferredGroupSize == null || this.preferredGroupSize.getOriginalValue() == null) {
+    public void setSoftlyPreferredGroupSize(int preferredGroupSize, Config config) {
+        if (config.getAlwaysPrepareKex()
+                || this.preferredGroupSize == null
+                || this.preferredGroupSize.getOriginalValue() == null) {
             this.preferredGroupSize =
                     ModifiableVariableFactory.safelySetValue(
                             this.preferredGroupSize, preferredGroupSize);

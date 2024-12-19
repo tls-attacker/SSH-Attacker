@@ -45,7 +45,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     protected void serializeBytes() {
         try {
             // Step 1: Add additional bytes at the beginning
-            byte[] prefix = new byte[] {0x30, (byte) 0x82}; // Example: exact bytes from server
+            byte[] prefix = {0x30, (byte) 0x82}; // Example: exact bytes from server
             appendBytes(prefix);
 
             // Step 2: Create the ASN.1 vector for the entire certificate
@@ -128,7 +128,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize Distinguished Names (DN) in ASN.1 format. */
-    private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
+    private static ASN1Sequence getDistinguishedNameAsASN1(String dn) {
         if (dn == null || dn.trim().isEmpty()) {
             throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
         }
@@ -141,7 +141,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to reverse the order of Distinguished Name components. */
-    private String reverseDistinguishedName(String dn) {
+    private static String reverseDistinguishedName(String dn) {
         return Arrays.stream(dn.split(","))
                 .map(String::trim)
                 .collect(
@@ -154,7 +154,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize the validity period in ASN.1 format. */
-    private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
+    private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
             ASN1GeneralizedTime notBefore = new ASN1GeneralizedTime(new Date(validAfter));
             ASN1GeneralizedTime notAfter = new ASN1GeneralizedTime(new Date(validBefore));
@@ -170,7 +170,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize Extensions in ASN.1 format. */
-    private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
+    private static Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
@@ -216,7 +216,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to convert an extension from String to byte array. */
-    private byte[] parseExtensionValue(String value) {
+    private static byte[] parseExtensionValue(String value) {
         if (value.startsWith("[")) {
             value = value.replaceAll("[\\[\\]\\s]", "");
             String[] byteValues = value.split(",");
@@ -231,7 +231,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to convert a hex string into a byte array. */
-    private byte[] hexStringToByteArray(String s) {
+    private static byte[] hexStringToByteArray(String s) {
         if (s.length() % 2 != 0) {
             throw new IllegalArgumentException("Hex string must have an even length");
         }
@@ -247,8 +247,8 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize a BigInteger (mpint) in SSH format. */
-    private void appendBigInteger(ASN1EncodableVector vector, BigInteger value, int length) {
-        if (value.bitLength() > (length * 8)) {
+    private static void appendBigInteger(ASN1EncodableVector vector, BigInteger value, int length) {
+        if (value.bitLength() > length * 8) {
             throw new IllegalArgumentException("mpint too large");
         }
         byte[] mpintBytes = value.toByteArray();
@@ -256,7 +256,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize integer values. */
-    private void appendInt(ASN1EncodableVector vector, int value, int length) {
+    private static void appendInt(ASN1EncodableVector vector, int value, int length) {
         byte[] intBytes = new byte[length];
         for (int i = length - 1; i >= 0; i--) {
             intBytes[i] = (byte) (value & 0xFF);

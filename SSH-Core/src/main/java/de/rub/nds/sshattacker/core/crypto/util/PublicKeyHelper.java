@@ -214,7 +214,7 @@ public final class PublicKeyHelper {
     private static boolean isX509Format(byte[] encodedPublicKeyBytes) {
         try {
             int startIndex = findX509StartIndex(encodedPublicKeyBytes);
-            return (startIndex >= 0);
+            return startIndex >= 0;
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -276,7 +276,7 @@ public final class PublicKeyHelper {
     public static SshPublicKey<?, ?> parse(
             PublicKeyFormat expectedKeyFormat, byte[] encodedPublicKeyBytes) {
         SshPublicKey<?, ?> publicKey = parse(encodedPublicKeyBytes);
-        if (!(publicKey instanceof SshPublicKey)) {
+        if (publicKey == null) {
             throw new IllegalArgumentException("Parsed key is not of expected type SshPublicKey.");
         }
         if (publicKey.getPublicKeyFormat() != expectedKeyFormat) {

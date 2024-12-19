@@ -85,7 +85,9 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     }
 
     public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (this.signature == null || this.signature.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.signature == null
+                || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         }
         if (adjustLengthField) {

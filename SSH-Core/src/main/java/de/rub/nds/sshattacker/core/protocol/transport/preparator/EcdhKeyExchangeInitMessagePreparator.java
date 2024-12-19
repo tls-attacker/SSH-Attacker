@@ -25,9 +25,10 @@ public class EcdhKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
-        chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(encodedPublicKey);
+        byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
 
-        getObject().setEphemeralPublicKey(encodedPublicKey, true);
+        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+
+        chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(pubKey);
     }
 }

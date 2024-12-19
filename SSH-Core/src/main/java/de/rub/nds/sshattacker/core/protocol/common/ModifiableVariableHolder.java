@@ -17,7 +17,6 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class ModifiableVariableHolder implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();

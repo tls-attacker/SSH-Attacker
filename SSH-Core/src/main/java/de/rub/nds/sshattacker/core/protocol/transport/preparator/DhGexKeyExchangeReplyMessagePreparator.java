@@ -12,7 +12,9 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class DhGexKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeReplyMessage> {
@@ -24,23 +26,24 @@ public class DhGexKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        SshContext context = chooser.getContext();
+        DhGexKeyExchangeReplyMessage message = getObject();
+        KeyExchangeUtil.prepareHostKeyMessage(context, message);
         prepareEphemeralPublicKey();
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getDhGexKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeSharedSecret(context, chooser.getDhGexKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(context);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.setSessionId(context);
+        KeyExchangeUtil.generateKeySet(context);
     }
 
     private void prepareEphemeralPublicKey() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateLocalKeyPair();
-        getObject()
-                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
-        // Update exchange hash with local public key
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
+        BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
+
+        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+
+        chooser.getContext().getExchangeHashInputHolder().setDhGexServerPublicKey(pubKey);
     }
 }

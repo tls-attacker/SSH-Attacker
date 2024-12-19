@@ -114,7 +114,9 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (this.hostKeyBytes == null || this.hostKeyBytes.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.hostKeyBytes == null
+                || this.hostKeyBytes.getOriginalValue() == null) {
             this.hostKeyBytes =
                     ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         }
@@ -163,7 +165,9 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setSoftlyPublicKey(byte[] publicKey, boolean adjustLengthField, Config config) {
-        if (this.publicKey == null || this.publicKey.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.publicKey == null
+                || this.publicKey.getOriginalValue() == null) {
             this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
         }
         if (adjustLengthField) {
@@ -213,7 +217,9 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
 
     public void setSoftlyCombinedKeyShare(
             byte[] combinedKeyShare, boolean adjustLengthField, Config config) {
-        if (this.combinedKeyShare == null || this.combinedKeyShare.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.combinedKeyShare == null
+                || this.combinedKeyShare.getOriginalValue() == null) {
             this.combinedKeyShare =
                     ModifiableVariableFactory.safelySetValue(
                             this.combinedKeyShare, combinedKeyShare);
@@ -275,7 +281,9 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (this.signature == null || this.signature.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.signature == null
+                || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         }
         if (adjustLengthField) {

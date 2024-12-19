@@ -107,7 +107,9 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     public void setSoftlyAgreementPublicKey(
             byte[] agreementPublicKey, boolean adjustLengthField, Config config) {
-        if (this.agreementPublicKey == null || this.agreementPublicKey.getOriginalValue() == null) {
+        if (config.getAlwaysPrepareKex()
+                || this.agreementPublicKey == null
+                || this.agreementPublicKey.getOriginalValue() == null) {
             this.agreementPublicKey =
                     ModifiableVariableFactory.safelySetValue(
                             this.agreementPublicKey, agreementPublicKey);
@@ -167,7 +169,8 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     public void setSoftlyEncapsulationPublicKey(
             byte[] encapsulationPublicKey, boolean adjustLengthField, Config config) {
-        if (this.encapsulationPublicKey == null
+        if (config.getAlwaysPrepareKex()
+                || this.encapsulationPublicKey == null
                 || this.encapsulationPublicKey.getOriginalValue() == null) {
             this.encapsulationPublicKey =
                     ModifiableVariableFactory.safelySetValue(

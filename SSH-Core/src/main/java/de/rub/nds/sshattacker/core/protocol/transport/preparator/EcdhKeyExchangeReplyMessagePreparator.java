@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.*;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeReplyMessagePreparator
@@ -24,24 +25,24 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        EcdhKeyExchangeReplyMessage message = getObject();
+        SshContext context = chooser.getContext();
+        KeyExchangeUtil.prepareHostKeyMessage(context, message);
         prepareEphemeralPublicKey();
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getEcdhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeSharedSecret(context, chooser.getEcdhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(context);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.setSessionId(context);
+        KeyExchangeUtil.generateKeySet(context);
     }
 
     private void prepareEphemeralPublicKey() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        getObject()
-                .setEphemeralPublicKey(
-                        keyExchange.getLocalKeyPair().getPublicKey().getEncoded(), true);
-        // Update exchange hash with local public key
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getEncoded());
+        byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
+
+        getObject().setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+
+        chooser.getContext().getExchangeHashInputHolder().setEcdhServerPublicKey(pubKey);
     }
 }

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -23,13 +24,19 @@ public class DhGexKeyExchangeRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        inputHolder.setDhGexMinimalGroupSize(chooser.getMinimalDhGroupSize());
-        inputHolder.setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        inputHolder.setDhGexMaximalGroupSize(chooser.getMaximalDhGroupSize());
+        Integer minimalDhGroupSize = chooser.getMinimalDhGroupSize();
+        Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
+        Integer maximalDhGroupSize = chooser.getMaximalDhGroupSize();
 
-        getObject().setMinimalGroupSize(chooser.getMinimalDhGroupSize());
-        getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        getObject().setMaximalGroupSize(chooser.getMaximalDhGroupSize());
+        Config config = chooser.getConfig();
+        DhGexKeyExchangeRequestMessage message = getObject();
+        message.setSoftlyMinimalGroupSize(minimalDhGroupSize, config);
+        message.setSoftlyPreferredGroupSize(preferredDhGroupSize, config);
+        message.setSoftlyMaximalGroupSize(maximalDhGroupSize, config);
+
+        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        inputHolder.setDhGexMinimalGroupSize(minimalDhGroupSize);
+        inputHolder.setDhGexPreferredGroupSize(preferredDhGroupSize);
+        inputHolder.setDhGexMaximalGroupSize(maximalDhGroupSize);
     }
 }

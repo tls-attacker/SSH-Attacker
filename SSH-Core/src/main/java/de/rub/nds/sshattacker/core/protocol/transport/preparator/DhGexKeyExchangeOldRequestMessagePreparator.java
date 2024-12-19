@@ -22,9 +22,12 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
+        Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
+
+        getObject().setSoftlyPreferredGroupSize(preferredDhGroupSize, chooser.getConfig());
+
         chooser.getContext()
                 .getExchangeHashInputHolder()
-                .setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());
+                .setDhGexPreferredGroupSize(preferredDhGroupSize);
     }
 }

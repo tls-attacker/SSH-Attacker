@@ -358,12 +358,8 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
-    public void setSoftlySignature(
-            byte[] signature,
-            boolean adjustLengthField,
-            Config config,
-            boolean useAlwaysPrepareOption) {
-        if (useAlwaysPrepareOption && config.getAlwaysPrepareAuthentication()
+    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
+        if (config.getAlwaysPrepareAuthentication()
                 || this.signature == null
                 || this.signature.getOriginalValue() == null) {
             this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);

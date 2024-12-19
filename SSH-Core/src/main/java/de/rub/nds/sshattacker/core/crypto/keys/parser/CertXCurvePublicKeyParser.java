@@ -136,9 +136,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
                 criticalOptionsMap.put(optionName, optionValue);
                 LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
                 bytesParsed +=
-                        optionNameLength
-                                + optionValueLength
-                                + (2 * DataFormatConstants.UINT32_SIZE);
+                        optionNameLength + optionValueLength + 2 * DataFormatConstants.UINT32_SIZE;
             }
         }
         publicKey.setCriticalOptions(criticalOptionsMap); // Setze Critical Options
@@ -162,7 +160,7 @@ public class CertXCurvePublicKeyParser extends Parser<SshPublicKey<CustomCertXCu
                 bytesParsed +=
                         extensionNameLength
                                 + extensionValueLength
-                                + (2 * DataFormatConstants.UINT32_SIZE);
+                                + 2 * DataFormatConstants.UINT32_SIZE;
             }
         }
         publicKey.setExtensions(extensionsMap); // Setze Extensions

@@ -102,18 +102,17 @@ public class UserAuthHostbasedMessagePreparator
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
             getObject()
-                    .setSoftlySignature(
-                            signatureOutput.toByteArray(), true, chooser.getConfig(), true);
+                    .setSoftlySignature(signatureOutput.toByteArray(), true, chooser.getConfig());
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig(), false);
+            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig());
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig(), false);
+            getObject().setSoftlySignature(new byte[0], true, chooser.getConfig());
         }
     }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeSecretMessagePreparator
@@ -23,13 +24,12 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.generateSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
-        prepareEncryptedSecret();
-    }
-
-    private void prepareEncryptedSecret() {
+        SshContext context = chooser.getContext();
+        KeyExchangeUtil.generateSharedSecret(context, chooser.getRsaKeyExchange());
         byte[] encryptedSecret = chooser.getRsaKeyExchange().encryptSharedSecret();
-        getObject().setEncryptedSecret(encryptedSecret, true);
-        chooser.getContext().getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
+
+        getObject().setSoftlyEncryptedSecret(encryptedSecret, true, chooser.getConfig());
+
+        context.getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }
 }
