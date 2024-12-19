@@ -16,7 +16,7 @@ public class ChannelRequestAuthAgentMessagePreparator
 
     public ChannelRequestAuthAgentMessagePreparator(
             Chooser chooser, ChannelRequestAuthAgentMessage message) {
-        super(chooser, message, ChannelRequestType.AUTH_AGENT_REQ_OPENSSH_COM);
+        super(chooser, message, ChannelRequestType.AUTH_AGENT_REQ_OPENSSH_COM, true);
     }
 
     @Override

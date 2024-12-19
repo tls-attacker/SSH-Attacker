@@ -15,12 +15,11 @@ public class ChannelRequestPtyMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestPtyMessage> {
 
     public ChannelRequestPtyMessagePreparator(Chooser chooser, ChannelRequestPtyMessage message) {
-        super(chooser, message, ChannelRequestType.PTY_REQ);
+        super(chooser, message, ChannelRequestType.PTY_REQ, true);
     }
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSoftlyWantReply(true);
         getObject()
                 .setSoftlyTermEnvVariable(
                         chooser.getConfig().getDefaultTermEnvVariable(), true, chooser.getConfig());

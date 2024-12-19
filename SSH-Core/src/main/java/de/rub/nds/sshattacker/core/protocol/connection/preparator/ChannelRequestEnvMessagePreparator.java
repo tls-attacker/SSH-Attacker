@@ -15,12 +15,11 @@ public class ChannelRequestEnvMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestEnvMessage> {
 
     public ChannelRequestEnvMessagePreparator(Chooser chooser, ChannelRequestEnvMessage message) {
-        super(chooser, message, ChannelRequestType.ENV);
+        super(chooser, message, ChannelRequestType.ENV, true);
     }
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSoftlyWantReply(true);
         getObject()
                 .setSoftlyVariableName(
                         chooser.getConfig().getDefaultVariableName(), true, chooser.getConfig());

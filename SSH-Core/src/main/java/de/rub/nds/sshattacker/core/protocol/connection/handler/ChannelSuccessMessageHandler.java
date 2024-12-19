@@ -31,6 +31,8 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
 
     @Override
     public void adjustContext() {
+        // TODO: This only works if wantReply is true, add a way to set the channel type also if
+        //  wantReply is false -> In the handlers of channel request messages
         Integer recipientChannelId = message.getRecipientChannelId().getValue();
         Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
         if (channel != null) {

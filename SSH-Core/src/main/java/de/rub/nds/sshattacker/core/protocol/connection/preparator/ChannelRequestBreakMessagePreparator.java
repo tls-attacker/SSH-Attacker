@@ -16,7 +16,7 @@ public class ChannelRequestBreakMessagePreparator
 
     public ChannelRequestBreakMessagePreparator(
             Chooser chooser, ChannelRequestBreakMessage message) {
-        super(chooser, message, ChannelRequestType.BREAK);
+        super(chooser, message, ChannelRequestType.BREAK, true);
     }
 
     @Override

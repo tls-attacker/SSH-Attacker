@@ -15,7 +15,7 @@ public class ChannelRequestExecMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestExecMessage> {
 
     public ChannelRequestExecMessagePreparator(Chooser chooser, ChannelRequestExecMessage message) {
-        super(chooser, message, ChannelRequestType.EXEC);
+        super(chooser, message, ChannelRequestType.EXEC, true);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class ChannelRequestX11MessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestX11Message> {
 
     public ChannelRequestX11MessagePreparator(Chooser chooser, ChannelRequestX11Message message) {
-        super(chooser, message, ChannelRequestType.X11_REQ);
+        super(chooser, message, ChannelRequestType.X11_REQ, true);
     }
 
     @Override

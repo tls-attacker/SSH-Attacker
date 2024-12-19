@@ -16,12 +16,11 @@ public class ChannelRequestSubsystemMessagePreparator
 
     public ChannelRequestSubsystemMessagePreparator(
             Chooser chooser, ChannelRequestSubsystemMessage message) {
-        super(chooser, message, ChannelRequestType.SUBSYSTEM);
+        super(chooser, message, ChannelRequestType.SUBSYSTEM, true);
     }
 
     @Override
     public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSoftlyWantReply(true);
         getObject()
                 .setSoftlySubsystemName(
                         chooser.getConfig().getDefaultSubsystemName(), true, chooser.getConfig());
