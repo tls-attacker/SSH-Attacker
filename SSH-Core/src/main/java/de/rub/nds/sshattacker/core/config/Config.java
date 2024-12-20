@@ -16,7 +16,9 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
+import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPromptEntries;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponseEntries;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
@@ -358,13 +360,18 @@ public class Config implements Serializable {
     private String password;
 
     /** The List of responses used for UserAuthInfoResponseMessage */
-    @XmlElement(name = "preConfiguredAuthResponse")
     @XmlElementWrapper
+    @XmlElement(name = "preConfiguredAuthResponse")
     private ArrayList<AuthenticationResponseEntries> preConfiguredAuthResponses;
 
-    /** The List of user keys for public key authentication */
-    @XmlElement(name = "userKey")
+    /** The List of prompts used for UserAuthInfoRequestMessage */
     @XmlElementWrapper
+    @XmlElement(name = "preConfiguredAuthPrompt")
+    private ArrayList<AuthenticationPromptEntries> preConfiguredAuthPrompts;
+
+    /** The List of user keys for public key authentication */
+    @XmlElementWrapper
+    @XmlElement(name = "userKey")
     private ArrayList<SshPublicKey<?, ?>> userKeys;
 
     // endregion
@@ -1108,6 +1115,11 @@ public class Config implements Serializable {
         preConfiguredAuthResponses.add(
                 new AuthenticationResponseEntries(preConfiguredAuthResponse2));
 
+        preConfiguredAuthPrompts = new ArrayList<>();
+        ArrayList<AuthenticationPromptEntry> preConfiguredAuthPrompt1 = new ArrayList<>();
+        preConfiguredAuthPrompt1.add(new AuthenticationPromptEntry("Response: ", true));
+        preConfiguredAuthPrompts.add(new AuthenticationPromptEntries(preConfiguredAuthPrompt1));
+
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
         // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f
         // key.pem >
@@ -1480,6 +1492,12 @@ public class Config implements Serializable {
             preConfiguredAuthResponses = new ArrayList<>(other.preConfiguredAuthResponses.size());
             for (AuthenticationResponseEntries item : other.preConfiguredAuthResponses) {
                 preConfiguredAuthResponses.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.preConfiguredAuthPrompts != null) {
+            preConfiguredAuthPrompts = new ArrayList<>(other.preConfiguredAuthPrompts.size());
+            for (AuthenticationPromptEntries item : other.preConfiguredAuthPrompts) {
+                preConfiguredAuthPrompts.add(item != null ? item.createCopy() : null);
             }
         }
         if (other.userKeys != null) {
@@ -2158,6 +2176,10 @@ public class Config implements Serializable {
         return preConfiguredAuthResponses;
     }
 
+    public ArrayList<AuthenticationPromptEntries> getPreConfiguredAuthPrompts() {
+        return preConfiguredAuthPrompts;
+    }
+
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
@@ -2183,6 +2205,11 @@ public class Config implements Serializable {
     public void setPreConfiguredAuthResponses(
             ArrayList<AuthenticationResponseEntries> preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
+    }
+
+    public void setPreConfiguredAuthPrompts(
+            ArrayList<AuthenticationPromptEntries> preConfiguredAuthPrompts) {
+        this.preConfiguredAuthPrompts = preConfiguredAuthPrompts;
     }
 
     public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {

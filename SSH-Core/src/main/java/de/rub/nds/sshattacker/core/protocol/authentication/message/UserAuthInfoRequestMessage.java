@@ -273,6 +273,24 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         this.promptEntries = promptEntries;
     }
 
+    public void setSoftlyPromptEntries(
+            ArrayList<AuthenticationPromptEntry> promptEntries,
+            boolean adjustLengthField,
+            Config config) {
+        if (config.getAlwaysPrepareAuthentication()
+                || this.promptEntries == null
+                || this.promptEntries.isEmpty()) {
+            this.promptEntries = promptEntries;
+        }
+        if (adjustLengthField) {
+            if (config.getAlwaysPrepareLengthFields()
+                    || promptEntriesCount == null
+                    || promptEntriesCount.getOriginalValue() == null) {
+                setPromptEntriesCount(this.promptEntries.size());
+            }
+        }
+    }
+
     public void addPromptEntry(AuthenticationPromptEntry promptEntry) {
         addPromptEntry(promptEntry, false);
     }

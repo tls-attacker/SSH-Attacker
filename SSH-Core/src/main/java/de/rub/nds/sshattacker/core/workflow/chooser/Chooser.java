@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -257,6 +258,8 @@ public abstract class Chooser {
     public abstract AuthenticationMethod getAuthenticationMethod();
 
     public abstract ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses();
+
+    public abstract ArrayList<AuthenticationPromptEntry> getNextPreConfiguredAuthPrompts();
 
     // endregion
 

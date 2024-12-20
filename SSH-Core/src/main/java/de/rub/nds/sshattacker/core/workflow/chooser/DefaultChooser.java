@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
@@ -1028,11 +1029,26 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses() {
-        int nextIndex = context.getNextPreConfiguredAuthResponsIndex();
+        int nextIndex = context.getNextPreConfiguredAuthResponsesIndex();
         if (nextIndex < config.getPreConfiguredAuthResponses().size()) {
             ArrayList<AuthenticationResponseEntry> result =
                     config.getPreConfiguredAuthResponses().get(nextIndex).getResponseEntries();
-            context.setNextPreConfiguredAuthResponsIndex(nextIndex + 1);
+            context.setNextPreConfiguredAuthResponsesIndex(nextIndex + 1);
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * @return The next pre-configured authentication prompt
+     */
+    @Override
+    public ArrayList<AuthenticationPromptEntry> getNextPreConfiguredAuthPrompts() {
+        int nextIndex = context.getNextPreConfiguredAuthPromptsIndex();
+        if (nextIndex < config.getPreConfiguredAuthPrompts().size()) {
+            ArrayList<AuthenticationPromptEntry> result =
+                    config.getPreConfiguredAuthPrompts().get(nextIndex).getPromptEntries();
+            context.setNextPreConfiguredAuthPromptsIndex(nextIndex + 1);
             return result;
         }
         return null;

@@ -9,8 +9,10 @@ package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.ArrayList;
 
 public class UserAuthInfoRequestMessagePreparator
         extends SshMessagePreparator<UserAuthInfoRequestMessage> {
@@ -25,7 +27,15 @@ public class UserAuthInfoRequestMessagePreparator
         object.setSoftlyUserName("", true, config);
         object.setSoftlyInstruction("", true, config);
         object.setSoftlyLanguageTag("", true, config);
-        object.setSoftlyPromptEntriesCount(object.getPromptEntries().size(), config);
+
+        ArrayList<AuthenticationPromptEntry> nextPrompts =
+                chooser.getNextPreConfiguredAuthPrompts();
+
+        if (nextPrompts != null) {
+            object.setSoftlyPromptEntries(nextPrompts, true, config);
+        } else {
+            object.setSoftlyPromptEntriesCount(object.getPromptEntries().size(), config);
+        }
 
         object.getPromptEntries()
                 .forEach(

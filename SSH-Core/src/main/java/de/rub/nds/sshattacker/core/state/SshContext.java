@@ -337,8 +337,9 @@ public class SshContext {
     // endregion
 
     // region Authentication
-    private int nextPreConfiguredAuthResponsIndex;
+    private int nextPreConfiguredAuthResponsesIndex;
 
+    private int nextPreConfiguredAuthPromptsIndex;
     // endregion
 
     // region Connection Protocol
@@ -424,7 +425,8 @@ public class SshContext {
         readSequenceNumber = 0;
         handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
 
-        nextPreConfiguredAuthResponsIndex = 0;
+        nextPreConfiguredAuthResponsesIndex = 0;
+        nextPreConfiguredAuthPromptsIndex = 0;
 
         channelManager = new ChannelManager(this);
         sftpManager = new SftpManager(this);
@@ -1220,12 +1222,20 @@ public class SshContext {
 
     // region for Authentication
 
-    public int getNextPreConfiguredAuthResponsIndex() {
-        return nextPreConfiguredAuthResponsIndex;
+    public int getNextPreConfiguredAuthResponsesIndex() {
+        return nextPreConfiguredAuthResponsesIndex;
     }
 
-    public void setNextPreConfiguredAuthResponsIndex(int nextPreConfiguredAuthResponsIndex) {
-        this.nextPreConfiguredAuthResponsIndex = nextPreConfiguredAuthResponsIndex;
+    public void setNextPreConfiguredAuthResponsesIndex(int nextPreConfiguredAuthResponsesIndex) {
+        this.nextPreConfiguredAuthResponsesIndex = nextPreConfiguredAuthResponsesIndex;
+    }
+
+    public int getNextPreConfiguredAuthPromptsIndex() {
+        return nextPreConfiguredAuthPromptsIndex;
+    }
+
+    public void setNextPreConfiguredAuthPromptsIndex(int nextPreConfiguredAuthPromptsIndex) {
+        this.nextPreConfiguredAuthPromptsIndex = nextPreConfiguredAuthPromptsIndex;
     }
 
     // endregion
