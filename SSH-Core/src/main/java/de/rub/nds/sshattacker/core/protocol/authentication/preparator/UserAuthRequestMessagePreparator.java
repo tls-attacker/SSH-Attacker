@@ -27,11 +27,11 @@ public abstract class UserAuthRequestMessagePreparator<T extends UserAuthRequest
 
     @Override
     public final void prepareMessageSpecificContents() {
-        prepareUserAuthRequestSpecificContents();
         object.setSoftlyUserName(config.getUsername(), true, config);
         object.setSoftlyServiceName(ServiceType.SSH_CONNECTION, true, config);
         // Always set correct authentication method -> Don't use soft set
         object.setMethodName(authenticationMethod, true);
+        prepareUserAuthRequestSpecificContents();
     }
 
     public abstract void prepareUserAuthRequestSpecificContents();
