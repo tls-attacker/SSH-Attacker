@@ -31,7 +31,7 @@ public class AuthenticationPromptEntrySerializer extends Serializer<Authenticati
     private void serializeEcho() {
         byte echo = authenticationPromptEntry.getEcho().getValue();
         LOGGER.debug("Echo: {}", echo);
-        appendInt(echo, DataFormatConstants.UINT32_SIZE);
+        appendByte(echo);
     }
 
     private void serializePrompt() {
