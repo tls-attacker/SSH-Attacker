@@ -17,11 +17,8 @@ import de.rub.nds.sshattacker.core.constants.SftpAceType;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpAclEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.nio.charset.StandardCharsets;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class SftpAclEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger type;

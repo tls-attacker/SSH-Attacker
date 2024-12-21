@@ -10,8 +10,6 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
@@ -30,7 +28,6 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
  * X25519 / X448 key exchange.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class XCurveEcPrivateKey extends CustomPrivateKey {
 
     private NamedEcGroup group;

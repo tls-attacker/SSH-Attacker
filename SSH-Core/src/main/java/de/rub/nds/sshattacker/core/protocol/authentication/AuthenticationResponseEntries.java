@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.*;
 
 /** Helper class for pre-configured AuthenticationResponseEntries */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationResponseEntries implements Serializable {
 

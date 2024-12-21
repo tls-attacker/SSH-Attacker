@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.*;
 
 /** Helper class for pre-configured AuthenticationPromptEntries */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationPromptEntries implements Serializable {
 

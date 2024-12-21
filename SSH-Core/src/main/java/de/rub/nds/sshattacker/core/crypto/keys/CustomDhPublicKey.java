@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPublicKey;
@@ -17,7 +15,6 @@ import javax.crypto.spec.DHParameterSpec;
 
 /** A serializable diffie-hellman public key used in the DH key exchange. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     // Group parameters

@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import java.util.*;
 
@@ -18,7 +16,6 @@ import java.util.*;
  * SSH Action bound to a single connection/SSH context. This should be the default abstract base
  * class for most actions. Provides automatic fallback to default context alias.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends SshAction {
 
     @XmlAttribute(name = "onConnection")

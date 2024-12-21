@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class SftpFileAttributes extends ModifiableVariableHolder {
 
     private ModifiableInteger flags;

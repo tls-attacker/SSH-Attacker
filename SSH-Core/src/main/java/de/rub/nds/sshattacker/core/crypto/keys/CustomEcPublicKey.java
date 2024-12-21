@@ -12,8 +12,6 @@ import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
@@ -30,7 +28,6 @@ import java.util.Objects;
  * A serializable elliptic curve public key used in various EC-based algorithms like ECDH and ECDSA.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     protected Point publicKey; // Public key as Point

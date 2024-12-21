@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.security.PrivateKey;
 
 /**
@@ -14,6 +16,7 @@ import java.security.PrivateKey;
  * overrides the getFormat() and getEncoded() methods of the PrivateKey interface to return null (no
  * encoding support).
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPrivateKey implements PrivateKey {
 
     protected CustomPrivateKey() {

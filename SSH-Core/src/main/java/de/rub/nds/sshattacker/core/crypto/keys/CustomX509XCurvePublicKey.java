@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -24,7 +22,6 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
 /** A serializable ED25519/ED448 X.509 public key used in certificates (X509-SSH-Ed25519). */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomX509XCurvePublicKey extends CustomPublicKey {
 
     private NamedEcGroup group; // Named group (Ed25519 or Ed448)

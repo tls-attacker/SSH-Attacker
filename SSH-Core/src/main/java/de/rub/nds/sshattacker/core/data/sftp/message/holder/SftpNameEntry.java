@@ -14,11 +14,8 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpNameEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.nio.charset.StandardCharsets;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class SftpNameEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger nameLength;

@@ -19,7 +19,6 @@ import de.rub.nds.sshattacker.core.util.Converter;
 import jakarta.xml.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationPromptEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger promptLength;
