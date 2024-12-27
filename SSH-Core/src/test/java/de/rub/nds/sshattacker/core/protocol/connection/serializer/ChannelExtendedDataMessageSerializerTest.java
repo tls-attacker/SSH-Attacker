@@ -49,8 +49,8 @@ public class ChannelExtendedDataMessageSerializerTest {
         msg.setDataTypeCode(providedDataType.getDataTypeCode());
         msg.setData(providedPayload, true);
         ChannelExtendedDataMessageSerializer serializer =
-                new ChannelExtendedDataMessageSerializer(msg);
+                new ChannelExtendedDataMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

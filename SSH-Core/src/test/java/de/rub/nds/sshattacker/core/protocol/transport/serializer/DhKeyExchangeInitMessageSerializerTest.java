@@ -65,8 +65,8 @@ public class DhKeyExchangeInitMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_KEXDH_INIT);
         msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
         msg.setEphemeralPublicKey(providedEphemeralPublicKey);
-        DhKeyExchangeInitMessageSerializer serializer = new DhKeyExchangeInitMessageSerializer(msg);
+        DhKeyExchangeInitMessageSerializer serializer = new DhKeyExchangeInitMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

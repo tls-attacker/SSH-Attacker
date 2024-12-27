@@ -42,8 +42,8 @@ public class ChannelDataMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_DATA);
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setData(providedPayload, true);
-        ChannelDataMessageSerializer serializer = new ChannelDataMessageSerializer(msg);
+        ChannelDataMessageSerializer serializer = new ChannelDataMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

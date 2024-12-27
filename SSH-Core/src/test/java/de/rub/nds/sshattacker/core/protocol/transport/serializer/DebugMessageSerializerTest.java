@@ -47,8 +47,8 @@ public class DebugMessageSerializerTest {
         msg.setAlwaysDisplay(providedAlwaysDisplay);
         msg.setMessage(providedMessage, true);
         msg.setLanguageTag(providedLanguageTag, true);
-        DebugMessageSerializer serializer = new DebugMessageSerializer(msg);
+        DebugMessageSerializer serializer = new DebugMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

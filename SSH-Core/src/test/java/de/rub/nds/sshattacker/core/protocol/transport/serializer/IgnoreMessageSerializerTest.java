@@ -39,8 +39,8 @@ public class IgnoreMessageSerializerTest {
         IgnoreMessage msg = new IgnoreMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_IGNORE);
         msg.setData(providedData, true);
-        IgnoreMessageSerializer serializer = new IgnoreMessageSerializer(msg);
+        IgnoreMessageSerializer serializer = new IgnoreMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

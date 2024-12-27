@@ -66,8 +66,8 @@ public class DhGexKeyExchangeRequestMessageSerializerTest {
         msg.setPreferredGroupSize(providedPreferredGroupSize);
         msg.setMaximalGroupSize(providedMaximalGroupSize);
         DhGexKeyExchangeRequestMessageSerializer serializer =
-                new DhGexKeyExchangeRequestMessageSerializer(msg);
+                new DhGexKeyExchangeRequestMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

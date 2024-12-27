@@ -39,8 +39,8 @@ public class GlobalRequestSuccessMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_REQUEST_SUCCESS);
         msg.setResponseSpecificData(responseSpecificData);
         GlobalRequestSuccessMessageSerializer serializer =
-                new GlobalRequestSuccessMessageSerializer(msg);
+                new GlobalRequestSuccessMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

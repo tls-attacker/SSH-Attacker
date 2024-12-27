@@ -35,8 +35,8 @@ public class StringDataMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, String providedPayload) {
         StringDataMessage msg = new StringDataMessage();
         msg.setData(providedPayload);
-        StringDataMessageSerializer serializer = new StringDataMessageSerializer(msg);
+        StringDataMessageSerializer serializer = new StringDataMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

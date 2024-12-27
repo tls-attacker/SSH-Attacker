@@ -62,9 +62,8 @@ public class DelayCompressionExtensionSerializerTest {
                 providedCompressionMethodsServerToClientLength);
         extension.setCompressionMethodsServerToClient(providedCompressionMethodsServerToClient);
 
-        DelayCompressionExtensionSerializer serializer =
-                new DelayCompressionExtensionSerializer(extension);
+        DelayCompressionExtensionSerializer serializer = new DelayCompressionExtensionSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(extension));
     }
 }

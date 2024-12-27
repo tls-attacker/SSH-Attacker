@@ -19,6 +19,6 @@ public class NewKeysMessageSerializerTest {
     public void testSerialize() {
         NewKeysMessage msg = new NewKeysMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_NEWKEYS);
-        assertArrayEquals(new byte[] {21}, new NewKeysMessageSerializer(msg).serialize());
+        assertArrayEquals(new byte[] {21}, new NewKeysMessageSerializer().serialize(msg));
     }
 }

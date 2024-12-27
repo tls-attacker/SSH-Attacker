@@ -39,8 +39,8 @@ public class UnimplementedMessageSerializerTest {
         UnimplementedMessage msg = new UnimplementedMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
         msg.setSequenceNumber(providedSequenceNumber);
-        UnimplementedMessageSerializer serializer = new UnimplementedMessageSerializer(msg);
+        UnimplementedMessageSerializer serializer = new UnimplementedMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

@@ -41,7 +41,7 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
 
     @Override
     public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(byte[] array) {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array, 0);
+        return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array);
     }
 
     @Override
