@@ -43,10 +43,7 @@ public class SftpAclEntryHandler implements Handler<SftpAclEntry> {
         return new SftpAclEntryParser(array, startPosition);
     }
 
-    @Override
-    public SftpAclEntryPreparator getPreparator() {
-        return new SftpAclEntryPreparator(context.getChooser(), aclEntry);
-    }
+    public static final SftpAclEntryPreparator PREPARATOR = new SftpAclEntryPreparator();
 
     @Override
     public SftpAclEntrySerializer getSerializer() {

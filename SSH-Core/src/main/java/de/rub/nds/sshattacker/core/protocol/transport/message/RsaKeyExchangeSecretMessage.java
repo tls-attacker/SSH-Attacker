@@ -12,9 +12,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeSecretMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecretMessage> {
 
@@ -94,7 +94,12 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     }
 
     @Override
-    public SshMessageHandler<RsaKeyExchangeSecretMessage> getHandler(SshContext context) {
+    public RsaKeyExchangeSecretMessageHandler getHandler(SshContext context) {
         return new RsaKeyExchangeSecretMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangeSecretMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

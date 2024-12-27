@@ -43,11 +43,8 @@ public class SftpExtensionHomeDirectoryHandler
                 SftpExtensionHomeDirectory::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionHomeDirectory> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.HOME_DIRECTORY);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionHomeDirectory> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.HOME_DIRECTORY);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionHomeDirectory> getSerializer() {

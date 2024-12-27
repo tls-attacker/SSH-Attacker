@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public abstract class SftpMessageHandler<T extends SftpMessage<T>>
@@ -26,9 +26,6 @@ public abstract class SftpMessageHandler<T extends SftpMessage<T>>
 
     @Override
     public abstract SftpMessageParser<T> getParser(byte[] array, int startPosition);
-
-    @Override
-    public abstract SftpMessagePreparator<T> getPreparator();
 
     @Override
     public abstract SftpMessageSerializer<T> getSerializer();

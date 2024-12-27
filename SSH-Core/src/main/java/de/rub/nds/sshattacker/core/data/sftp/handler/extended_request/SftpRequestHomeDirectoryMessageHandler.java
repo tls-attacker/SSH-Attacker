@@ -36,10 +36,8 @@ public class SftpRequestHomeDirectoryMessageHandler
         return new SftpRequestHomeDirectoryMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestHomeDirectoryMessagePreparator getPreparator() {
-        return new SftpRequestHomeDirectoryMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestHomeDirectoryMessagePreparator PREPARATOR =
+            new SftpRequestHomeDirectoryMessagePreparator();
 
     @Override
     public SftpRequestHomeDirectoryMessageSerializer getSerializer() {

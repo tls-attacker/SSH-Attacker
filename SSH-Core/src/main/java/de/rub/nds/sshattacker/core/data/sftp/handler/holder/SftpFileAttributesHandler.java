@@ -43,10 +43,8 @@ public class SftpFileAttributesHandler implements Handler<SftpFileAttributes> {
         return new SftpFileAttributesParser(array, startPosition, context.getChooser());
     }
 
-    @Override
-    public SftpFileAttributesPreparator getPreparator() {
-        return new SftpFileAttributesPreparator(context.getChooser(), attributes);
-    }
+    public static final SftpFileAttributesPreparator PREPARATOR =
+            new SftpFileAttributesPreparator();
 
     @Override
     public SftpFileAttributesSerializer getSerializer() {

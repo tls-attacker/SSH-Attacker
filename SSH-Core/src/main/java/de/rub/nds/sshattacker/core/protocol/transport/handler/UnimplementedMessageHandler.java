@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnimplementedMessagePreparator;
@@ -39,10 +39,8 @@ public class UnimplementedMessageHandler extends SshMessageHandler<Unimplemented
         return new UnimplementedMessageParser(array, startPosition);
     }
 
-    @Override
-    public UnimplementedMessagePreparator getPreparator() {
-        return new UnimplementedMessagePreparator(context.getChooser(), message);
-    }
+    public static final UnimplementedMessagePreparator PREPARATOR =
+            new UnimplementedMessagePreparator();
 
     @Override
     public UnimplementedMessageSerializer getSerializer() {

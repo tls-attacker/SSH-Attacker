@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
@@ -171,5 +172,10 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     @Override
     public ChannelOpenFailureMessageHandler getHandler(SshContext context) {
         return new ChannelOpenFailureMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

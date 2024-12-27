@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRealPathMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestRealPathMessage
         extends SftpRequestWithPathMessage<SftpRequestRealPathMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestRealPathMessage
     @Override
     public SftpRequestRealPathMessageHandler getHandler(SshContext context) {
         return new SftpRequestRealPathMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestRealPathMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

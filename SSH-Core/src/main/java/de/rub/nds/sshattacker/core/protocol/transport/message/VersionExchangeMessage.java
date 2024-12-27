@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
 
@@ -104,6 +105,11 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     @Override
     public VersionExchangeMessageHandler getHandler(SshContext context) {
         return new VersionExchangeMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        VersionExchangeMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

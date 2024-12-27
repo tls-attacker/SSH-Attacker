@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnimplementedMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
@@ -54,5 +55,10 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
     @Override
     public UnimplementedMessageHandler getHandler(SshContext context) {
         return new UnimplementedMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnimplementedMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

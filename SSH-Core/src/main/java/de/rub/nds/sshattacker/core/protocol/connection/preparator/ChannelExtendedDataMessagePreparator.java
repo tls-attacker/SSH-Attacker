@@ -15,16 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelExtendedDataMessagePreparator
         extends ChannelMessagePreparator<ChannelExtendedDataMessage> {
 
-    public ChannelExtendedDataMessagePreparator(
-            Chooser chooser, ChannelExtendedDataMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
+    public ChannelExtendedDataMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents() {
+    public void prepareChannelMessageSpecificContents(
+            ChannelExtendedDataMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
         object.setSoftlyDataTypeCode(
                 ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
-        object.setSoftlyData(new byte[100], true, config);
+        object.setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

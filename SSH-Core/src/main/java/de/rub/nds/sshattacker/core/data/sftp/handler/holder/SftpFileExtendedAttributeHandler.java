@@ -44,10 +44,8 @@ public class SftpFileExtendedAttributeHandler implements Handler<SftpFileExtende
         return new SftpFileExtendedAttributeParser(array, startPosition);
     }
 
-    @Override
-    public SftpFileExtendedAttributePreparator getPreparator() {
-        return new SftpFileExtendedAttributePreparator(context.getChooser(), attribute);
-    }
+    public static final SftpFileExtendedAttributePreparator PREPARATOR =
+            new SftpFileExtendedAttributePreparator();
 
     @Override
     public SftpFileExtendedAttributeSerializer getSerializer() {

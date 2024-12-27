@@ -13,12 +13,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpNameEntryPreparator extends Preparator<SftpNameEntry> {
 
-    public SftpNameEntryPreparator(Chooser chooser, SftpNameEntry nameEntry) {
-        super(chooser, nameEntry);
-    }
-
     @Override
-    public final void prepare() {
-        object.setSoftlyName("ssh-attacker", true, config);
+    public final void prepare(SftpNameEntry object, Chooser chooser) {
+        object.setSoftlyName("ssh-attacker", true, chooser.getConfig());
     }
 }

@@ -32,12 +32,14 @@ public class PassThroughPacket extends AbstractDataPacket {
         return new PassThroughPacket(this);
     }
 
-    public PassThroughPacketPreparator getPacketPreparator(Chooser chooser) {
-        return new PassThroughPacketPreparator(chooser, this);
-    }
-
     public PassThroughPacketParser getPacketParser(byte[] array, int startPosition) {
         return new PassThroughPacketParser(array, startPosition);
+    }
+
+    public static final PassThroughPacketPreparator PREPARATOR = new PassThroughPacketPreparator();
+
+    public void prepare(Chooser chooser) {
+        PREPARATOR.prepare(this, chooser);
     }
 
     @Override

@@ -39,10 +39,8 @@ public class SftpExtensionVendorIdHandler
         return new SftpExtensionVendorIdParser(array, startPosition);
     }
 
-    @Override
-    public SftpExtensionVendorIdPreparator getPreparator() {
-        return new SftpExtensionVendorIdPreparator(context.getChooser(), extension);
-    }
+    public static final SftpExtensionVendorIdPreparator PREPARATOR =
+            new SftpExtensionVendorIdPreparator();
 
     @Override
     public SftpExtensionVendorIdSerializer getSerializer() {

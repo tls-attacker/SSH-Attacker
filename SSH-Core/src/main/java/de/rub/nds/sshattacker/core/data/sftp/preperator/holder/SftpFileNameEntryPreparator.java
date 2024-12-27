@@ -7,29 +7,28 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.holder;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
 
-    public SftpFileNameEntryPreparator(Chooser chooser, SftpFileNameEntry nameEntry) {
-        super(chooser, nameEntry);
-    }
-
     @Override
-    public final void prepare() {
-
+    public final void prepare(SftpFileNameEntry object, Chooser chooser) {
+        Config config = chooser.getConfig();
         object.setSoftlyFilename("/etc/passwd", true, config);
 
-        if (chooser.getSftpNegotiatedVersion() <= 3 || !config.getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() <= 3
+                || !config.getRespectSftpNegotiatedVersion()) {
             object.setSoftlyLongName(
-                    "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd", true, config);
+                    "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
+                    true, config);
         } else {
             // As of version 4 there is no longer a longName field
             object.clearLongName();
         }
 
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().prepare(chooser);
     }
 }

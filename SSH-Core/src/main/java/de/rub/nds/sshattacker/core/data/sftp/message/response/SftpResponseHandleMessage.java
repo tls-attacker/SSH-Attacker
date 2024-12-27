@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseHandleMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseHandleMessage> {
 
@@ -100,5 +101,10 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     @Override
     public SftpResponseHandleMessageHandler getHandler(SshContext context) {
         return new SftpResponseHandleMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseHandleMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

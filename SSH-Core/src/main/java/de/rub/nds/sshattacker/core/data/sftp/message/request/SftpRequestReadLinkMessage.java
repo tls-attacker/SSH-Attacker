@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestReadLinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestReadLinkMessage
         extends SftpRequestWithPathMessage<SftpRequestReadLinkMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestReadLinkMessage
     @Override
     public SftpRequestReadLinkMessageHandler getHandler(SshContext context) {
         return new SftpRequestReadLinkMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestReadLinkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

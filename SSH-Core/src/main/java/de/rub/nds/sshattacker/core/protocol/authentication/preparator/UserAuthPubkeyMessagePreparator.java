@@ -8,7 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
@@ -26,8 +29,8 @@ public class UserAuthPubkeyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPubkeyMessagePreparator(Chooser chooser, UserAuthPubkeyMessage message) {
-        super(chooser, message, AuthenticationMethod.PUBLICKEY);
+    public UserAuthPubkeyMessagePreparator() {
+        super(AuthenticationMethod.PUBLICKEY);
     }
 
     /* RFC 4252 section 7
@@ -42,7 +45,8 @@ public class UserAuthPubkeyMessagePreparator
     boolean   TRUE
     string    public key algorithm name
     string    public key to be used for authentication */
-    private byte[] getSignatureBlob(SshPublicKey<?, ?> pk) {
+    private static byte[] getSignatureBlob(
+            UserAuthPubkeyMessage object, Chooser chooser, SshPublicKey<?, ?> pk) {
 
         // generate the byte array for signing
         // message ID should always be '50'
@@ -107,9 +111,10 @@ public class UserAuthPubkeyMessagePreparator
     Signatures are encoded as follows:
     string   "ecdsa-sha2-[identifier]"
     string   ecdsa_signature_blob */
-    private byte[] getEncodedSignature(SshPublicKey<?, ?> pk) {
+    private static byte[] getEncodedSignature(
+            UserAuthPubkeyMessage object, Chooser chooser, SshPublicKey<?, ?> pk) {
         try {
-            byte[] signatureBlob = getSignatureBlob(pk);
+            byte[] signatureBlob = getSignatureBlob(object, chooser, pk);
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
@@ -135,14 +140,18 @@ public class UserAuthPubkeyMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
+    public void prepareUserAuthRequestSpecificContents(
+            UserAuthPubkeyMessage object, Chooser chooser) {
         object.setSoftlyUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
 
+        Config config = chooser.getConfig();
         if (pk != null) {
-            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
+            object.setSoftlyPubkeyAlgName(
+                    pk.getPublicKeyFormat().getName(), true, config);
             object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config);
-            object.setSoftlySignature(getEncodedSignature(pk), true, config, true);
+            object.setSoftlySignature(
+                    getEncodedSignature(object, chooser, pk), true, config, true);
         } else {
             object.setSoftlyPubkeyAlgName("", true, config);
             object.setSoftlyPubkey(new byte[0], true, config);

@@ -11,9 +11,6 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeSecretMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeSecretMessagePreparator;
@@ -63,23 +60,20 @@ public class RsaKeyExchangeSecretMessageHandler
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array) {
+    public RsaKeyExchangeSecretMessageParser getParser(byte[] array) {
         return new RsaKeyExchangeSecretMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(
-            byte[] array, int startPosition) {
+    public RsaKeyExchangeSecretMessageParser getParser(byte[] array, int startPosition) {
         return new RsaKeyExchangeSecretMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<RsaKeyExchangeSecretMessage> getPreparator() {
-        return new RsaKeyExchangeSecretMessagePreparator(context.getChooser(), message);
-    }
+    public static final RsaKeyExchangeSecretMessagePreparator PREPARATOR =
+            new RsaKeyExchangeSecretMessagePreparator();
 
     @Override
-    public SshMessageSerializer<RsaKeyExchangeSecretMessage> getSerializer() {
+    public RsaKeyExchangeSecretMessageSerializer getSerializer() {
         return new RsaKeyExchangeSecretMessageSerializer(message);
     }
 }

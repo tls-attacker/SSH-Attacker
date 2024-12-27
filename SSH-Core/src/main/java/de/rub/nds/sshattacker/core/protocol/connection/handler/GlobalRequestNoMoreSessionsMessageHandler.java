@@ -39,10 +39,8 @@ public class GlobalRequestNoMoreSessionsMessageHandler
         return new GlobalRequestNoMoreSessionsMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestNoMoreSessionsMessagePreparator getPreparator() {
-        return new GlobalRequestNoMoreSessionsMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestNoMoreSessionsMessagePreparator PREPARATOR =
+            new GlobalRequestNoMoreSessionsMessagePreparator();
 
     @Override
     public GlobalRequestNoMoreSessionsMessageSerializer getSerializer() {

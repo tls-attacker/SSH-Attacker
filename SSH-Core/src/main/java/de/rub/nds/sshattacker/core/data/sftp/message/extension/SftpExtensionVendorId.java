@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionVendorIdHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVendorId> {
@@ -272,5 +273,10 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     @Override
     public SftpExtensionVendorIdHandler getHandler(SshContext context) {
         return new SftpExtensionVendorIdHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionVendorIdHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionLimitsHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionLimits extends SftpExtensionWithVersion<SftpExtensionLimits> {
 
@@ -28,5 +29,10 @@ public class SftpExtensionLimits extends SftpExtensionWithVersion<SftpExtensionL
     @Override
     public SftpExtensionLimitsHandler getHandler(SshContext context) {
         return new SftpExtensionLimitsHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionLimitsHandler.PREPARATOR.prepare(this, chooser);
     }
 }

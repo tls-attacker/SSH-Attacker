@@ -14,10 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestLimitsMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestLimitsMessage> {
 
-    public SftpRequestLimitsMessagePreparator(Chooser chooser, SftpRequestLimitsMessage message) {
-        super(chooser, message, SftpExtension.LIMITS);
+    public SftpRequestLimitsMessagePreparator() {
+        super(SftpExtension.LIMITS);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {}
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestLimitsMessage object, Chooser chooser) {}
 }

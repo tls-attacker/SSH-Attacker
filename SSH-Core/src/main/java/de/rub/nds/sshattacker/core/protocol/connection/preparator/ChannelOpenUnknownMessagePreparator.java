@@ -13,12 +13,9 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelOpenUnknownMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenUnknownMessage> {
 
-    public ChannelOpenUnknownMessagePreparator(Chooser chooser, ChannelOpenUnknownMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareChannelOpenMessageSpecificContents() {
+    public void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenUnknownMessage object, Chooser chooser) {
         object.setSoftlyTypeSpecificData(new byte[10]);
     }
 }

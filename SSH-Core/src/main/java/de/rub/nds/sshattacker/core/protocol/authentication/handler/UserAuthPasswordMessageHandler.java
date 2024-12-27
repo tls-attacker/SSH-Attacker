@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPassw
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPasswordMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPasswordMessage> {
@@ -30,19 +30,17 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
     }
 
     @Override
-    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array) {
+    public UserAuthPasswordMessageParser getParser(byte[] array) {
         return new UserAuthPasswordMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array, int startPosition) {
+    public UserAuthPasswordMessageParser getParser(byte[] array, int startPosition) {
         return new UserAuthPasswordMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthPasswordMessagePreparator getPreparator() {
-        return new UserAuthPasswordMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthPasswordMessagePreparator PREPARATOR =
+            new UserAuthPasswordMessagePreparator();
 
     @Override
     public UserAuthPasswordMessageSerializer getSerializer() {

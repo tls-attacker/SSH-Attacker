@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyFileMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestCopyFileMessage
@@ -139,5 +140,10 @@ public class SftpRequestCopyFileMessage
     @Override
     public SftpRequestCopyFileMessageHandler getHandler(SshContext context) {
         return new SftpRequestCopyFileMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestCopyFileMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

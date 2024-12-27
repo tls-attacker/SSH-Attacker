@@ -35,10 +35,8 @@ public class SftpRequestSymbolicLinkMessageHandler
         return new SftpRequestSymbolicLinkMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestSymbolicLinkMessagePreparator getPreparator() {
-        return new SftpRequestSymbolicLinkMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestSymbolicLinkMessagePreparator PREPARATOR =
+            new SftpRequestSymbolicLinkMessagePreparator();
 
     @Override
     public SftpRequestSymbolicLinkMessageSerializer getSerializer() {

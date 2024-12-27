@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeOldRequestMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
@@ -40,20 +39,17 @@ public class DhGexKeyExchangeOldRequestMessageHandler
     }
 
     @Override
-    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(byte[] array) {
+    public DhGexKeyExchangeOldRequestMessageParser getParser(byte[] array) {
         return new DhGexKeyExchangeOldRequestMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(
-            byte[] array, int startPosition) {
+    public DhGexKeyExchangeOldRequestMessageParser getParser(byte[] array, int startPosition) {
         return new DhGexKeyExchangeOldRequestMessageParser(array, startPosition);
     }
 
-    @Override
-    public DhGexKeyExchangeOldRequestMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeOldRequestMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhGexKeyExchangeOldRequestMessagePreparator PREPARATOR =
+            new DhGexKeyExchangeOldRequestMessagePreparator();
 
     @Override
     public DhGexKeyExchangeOldRequestMessageSerializer getSerializer() {

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelEofMessagePreparator;
@@ -39,10 +39,7 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
         return new ChannelEofMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelEofMessagePreparator getPreparator() {
-        return new ChannelEofMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelEofMessagePreparator PREPARATOR = new ChannelEofMessagePreparator();
 
     @Override
     public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {

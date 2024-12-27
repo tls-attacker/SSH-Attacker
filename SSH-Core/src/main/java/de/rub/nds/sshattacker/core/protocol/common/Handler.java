@@ -13,8 +13,6 @@ public interface Handler<T> {
 
     Parser<T> getParser(byte[] array, int startPosition);
 
-    Preparator<T> getPreparator();
-
     Serializer<T> getSerializer();
 
     void adjustContext();

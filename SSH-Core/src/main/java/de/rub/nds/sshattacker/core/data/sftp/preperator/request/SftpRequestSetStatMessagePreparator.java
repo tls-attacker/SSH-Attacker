@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestSetStatMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestSetStatMessage> {
 
-    public SftpRequestSetStatMessagePreparator(Chooser chooser, SftpRequestSetStatMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_SETSTAT);
+    public SftpRequestSetStatMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_SETSTAT);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/tmp/ssh-attacker", true, config);
+    public void prepareRequestSpecificContents(SftpRequestSetStatMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
 
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().prepare(chooser);
     }
 }

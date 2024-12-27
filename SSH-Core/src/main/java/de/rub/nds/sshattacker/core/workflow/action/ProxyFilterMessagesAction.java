@@ -114,17 +114,16 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     public static UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
         UserAuthPubkeyMessage newPubkeyMessage = new UserAuthPubkeyMessage();
         UserAuthPubkeyMessagePreparator forwardContextPreparator =
-                new UserAuthPubkeyMessagePreparator(forwardToCtx.getChooser(), newPubkeyMessage);
-        forwardContextPreparator.prepare();
+                new UserAuthPubkeyMessagePreparator();
+        forwardContextPreparator.prepare(newPubkeyMessage, forwardToCtx.getChooser());
         return newPubkeyMessage;
     }
 
     public static UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
         UserAuthHostbasedMessage newHostbasedMessage = new UserAuthHostbasedMessage();
         UserAuthHostbasedMessagePreparator forwardContextPreparator =
-                new UserAuthHostbasedMessagePreparator(
-                        forwardToCtx.getChooser(), newHostbasedMessage);
-        forwardContextPreparator.prepare();
+                new UserAuthHostbasedMessagePreparator();
+        forwardContextPreparator.prepare(newHostbasedMessage, forwardToCtx.getChooser());
         return newHostbasedMessage;
     }
 }

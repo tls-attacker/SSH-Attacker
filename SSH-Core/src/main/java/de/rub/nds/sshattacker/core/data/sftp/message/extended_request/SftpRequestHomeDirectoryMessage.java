@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestHomeDirectoryMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestHomeDirectoryMessage
@@ -91,5 +92,10 @@ public class SftpRequestHomeDirectoryMessage
     @Override
     public SftpRequestHomeDirectoryMessageHandler getHandler(SshContext context) {
         return new SftpRequestHomeDirectoryMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestHomeDirectoryMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

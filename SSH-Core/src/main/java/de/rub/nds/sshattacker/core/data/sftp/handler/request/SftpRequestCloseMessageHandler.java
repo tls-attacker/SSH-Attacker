@@ -34,10 +34,8 @@ public class SftpRequestCloseMessageHandler
         return new SftpRequestCloseMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestCloseMessagePreparator getPreparator() {
-        return new SftpRequestCloseMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestCloseMessagePreparator PREPARATOR =
+            new SftpRequestCloseMessagePreparator();
 
     @Override
     public SftpRequestCloseMessageSerializer getSerializer() {

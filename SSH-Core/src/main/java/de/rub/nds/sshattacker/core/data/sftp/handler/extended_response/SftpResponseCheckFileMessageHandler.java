@@ -36,10 +36,8 @@ public class SftpResponseCheckFileMessageHandler
         return new SftpResponseCheckFileMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpResponseCheckFileMessagePreparator getPreparator() {
-        return new SftpResponseCheckFileMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpResponseCheckFileMessagePreparator PREPARATOR =
+            new SftpResponseCheckFileMessagePreparator();
 
     @Override
     public SftpResponseCheckFileMessageSerializer getSerializer() {

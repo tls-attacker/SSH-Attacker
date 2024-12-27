@@ -14,13 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestReadLinkMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestReadLinkMessage> {
 
-    public SftpRequestReadLinkMessagePreparator(
-            Chooser chooser, SftpRequestReadLinkMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_READLINK);
+    public SftpRequestReadLinkMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_READLINK);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/bin/python3", true, config);
+    public void prepareRequestSpecificContents(SftpRequestReadLinkMessage object, Chooser chooser) {
+        object.setSoftlyPath("/bin/python3", true, chooser.getConfig());
     }
 }

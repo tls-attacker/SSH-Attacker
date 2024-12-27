@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.UnknownExtensionPreparator;
@@ -39,10 +38,7 @@ public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExt
         return new UnknownExtensionParser(array, startPosition);
     }
 
-    @Override
-    public Preparator<UnknownExtension> getPreparator() {
-        return new UnknownExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final UnknownExtensionPreparator PREPARATOR = new UnknownExtensionPreparator();
 
     @Override
     public UnknownExtensionSerializer getSerializer() {

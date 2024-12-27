@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
 import de.rub.nds.sshattacker.core.data.sftp.handler.SftpUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
 
@@ -63,5 +64,10 @@ public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
     @Override
     public SftpUnknownMessageHandler getHandler(SshContext context) {
         return new SftpUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -36,10 +36,8 @@ public class SftpRequestSpaceAvailableMessageHandler
         return new SftpRequestSpaceAvailableMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestSpaceAvailableMessagePreparator getPreparator() {
-        return new SftpRequestSpaceAvailableMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestSpaceAvailableMessagePreparator PREPARATOR =
+            new SftpRequestSpaceAvailableMessagePreparator();
 
     @Override
     public SftpRequestSpaceAvailableMessageSerializer getSerializer() {

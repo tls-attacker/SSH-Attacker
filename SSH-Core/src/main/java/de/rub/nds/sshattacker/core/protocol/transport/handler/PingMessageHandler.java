@@ -45,10 +45,7 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
         return new PingMessageParser(array, startPosition);
     }
 
-    @Override
-    public PingMessagePreparator getPreparator() {
-        return new PingMessagePreparator(context.getChooser(), message);
-    }
+    public static final PingMessagePreparator PREPARATOR = new PingMessagePreparator();
 
     @Override
     public PingMessageSerializer getSerializer() {

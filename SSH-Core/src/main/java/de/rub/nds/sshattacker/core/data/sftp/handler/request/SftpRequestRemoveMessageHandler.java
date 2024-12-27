@@ -34,10 +34,8 @@ public class SftpRequestRemoveMessageHandler
         return new SftpRequestRemoveMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestRemoveMessagePreparator getPreparator() {
-        return new SftpRequestRemoveMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestRemoveMessagePreparator PREPARATOR =
+            new SftpRequestRemoveMessagePreparator();
 
     @Override
     public SftpRequestRemoveMessageSerializer getSerializer() {

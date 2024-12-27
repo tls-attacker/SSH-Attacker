@@ -11,18 +11,18 @@ import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExten
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public abstract class SftpAbstractExtensionHandler<E extends SftpAbstractExtension<E>>
-        implements Handler<E> {
+public abstract class SftpAbstractExtensionHandler<T extends SftpAbstractExtension<T>>
+        implements Handler<T> {
 
     protected final SshContext context;
 
-    protected final E extension;
+    protected final T extension;
 
     protected SftpAbstractExtensionHandler(SshContext context) {
         this(context, null);
     }
 
-    protected SftpAbstractExtensionHandler(SshContext context, E extension) {
+    protected SftpAbstractExtensionHandler(SshContext context, T extension) {
         super();
         this.context = context;
         this.extension = extension;

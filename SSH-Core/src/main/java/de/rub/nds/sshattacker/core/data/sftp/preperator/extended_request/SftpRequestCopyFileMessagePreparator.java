@@ -14,17 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestCopyFileMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestCopyFileMessage> {
 
-    public SftpRequestCopyFileMessagePreparator(
-            Chooser chooser, SftpRequestCopyFileMessage message) {
-        super(chooser, message, SftpExtension.COPY_FILE);
+    public SftpRequestCopyFileMessagePreparator() {
+        super(SftpExtension.COPY_FILE);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestCopyFileMessage object, Chooser chooser) {
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        object.setSoftlyPath("/etc/passwd", true, config);
-
-        object.setSoftlyDestinationPath("/tmp/passwd", true, config);
+        object.setSoftlyDestinationPath("/tmp/passwd", true, chooser.getConfig());
 
         object.setSoftlyOverwriteDestination(true);
     }

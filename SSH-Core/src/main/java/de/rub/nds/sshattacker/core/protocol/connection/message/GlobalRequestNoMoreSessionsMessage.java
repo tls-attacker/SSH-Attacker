@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestNoMoreSessionsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestNoMoreSessionsMessage
         extends GlobalRequestMessage<GlobalRequestNoMoreSessionsMessage> {
@@ -29,5 +30,10 @@ public class GlobalRequestNoMoreSessionsMessage
     @Override
     public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {
         return new GlobalRequestNoMoreSessionsMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestNoMoreSessionsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

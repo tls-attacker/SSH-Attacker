@@ -35,10 +35,8 @@ public class SftpRequestReadLinkMessageHandler
         return new SftpRequestReadLinkMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestReadLinkMessagePreparator getPreparator() {
-        return new SftpRequestReadLinkMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestReadLinkMessagePreparator PREPARATOR =
+            new SftpRequestReadLinkMessagePreparator();
 
     @Override
     public SftpRequestReadLinkMessageSerializer getSerializer() {

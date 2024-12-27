@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlType;
 
 @XmlType(namespace = "ssh-attacker")
@@ -55,9 +54,6 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     public void setSoftlyMessageId(MessageIdConstant messageId) {
         setSoftlyMessageId(messageId.getId());
     }
-
-    @Override
-    public abstract SshMessageHandler<T> getHandler(SshContext context);
 
     @Override
     public String toCompactString() {

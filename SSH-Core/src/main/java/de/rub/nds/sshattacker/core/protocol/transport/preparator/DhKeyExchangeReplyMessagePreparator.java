@@ -19,15 +19,15 @@ import java.math.BigInteger;
 public class DhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeReplyMessage> {
 
-    public DhKeyExchangeReplyMessagePreparator(Chooser chooser, DhKeyExchangeReplyMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXDH_REPLY);
+    public DhKeyExchangeReplyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXDH_REPLY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(DhKeyExchangeReplyMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);
-        prepareEphemeralPublicKey();
+        prepareEphemeralPublicKey(object, chooser);
         KeyExchangeUtil.computeSharedSecret(context, chooser.getDhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
@@ -35,12 +35,13 @@ public class DhKeyExchangeReplyMessagePreparator
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void prepareEphemeralPublicKey() {
+    private static void prepareEphemeralPublicKey(
+            DhKeyExchangeReplyMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
-        object.setSoftlyEphemeralPublicKey(pubKey, true, config);
+        object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
 
         chooser.getContext().getExchangeHashInputHolder().setDhServerPublicKey(pubKey);
     }

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
@@ -43,10 +43,7 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
         return new AsciiMessageParser(array, startPosition);
     }
 
-    @Override
-    public ProtocolMessagePreparator<AsciiMessage> getPreparator() {
-        return new AsciiMessagePreparator(context.getChooser(), message);
-    }
+    public static final AsciiMessagePreparator PREPARATOR = new AsciiMessagePreparator();
 
     @Override
     public AsciiMessageSerializer getSerializer() {

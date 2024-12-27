@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
@@ -17,13 +18,13 @@ import java.util.ArrayList;
 public class UserAuthInfoRequestMessagePreparator
         extends SshMessagePreparator<UserAuthInfoRequestMessage> {
 
-    public UserAuthInfoRequestMessagePreparator(
-            Chooser chooser, UserAuthInfoRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST);
+    public UserAuthInfoRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(UserAuthInfoRequestMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
         object.setSoftlyUserName("", true, config);
         object.setSoftlyInstruction("", true, config);
         object.setSoftlyLanguageTag("", true, config);
@@ -34,15 +35,10 @@ public class UserAuthInfoRequestMessagePreparator
         if (nextPrompts != null) {
             object.setSoftlyPromptEntries(nextPrompts, true, config);
         } else {
-            object.setSoftlyPromptEntriesCount(object.getPromptEntries().size(), config);
+            object.setSoftlyPromptEntriesCount(
+                    object.getPromptEntries().size(), config);
         }
 
-        object.getPromptEntries()
-                .forEach(
-                        promptEntry ->
-                                promptEntry
-                                        .getHandler(chooser.getContext())
-                                        .getPreparator()
-                                        .prepare());
+        object.getPromptEntries().forEach(promptEntry -> promptEntry.prepare(chooser));
     }
 }

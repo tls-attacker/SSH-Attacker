@@ -15,16 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseStatusMessagePreparator
         extends SftpResponseMessagePreparator<SftpResponseStatusMessage> {
 
-    public SftpResponseStatusMessagePreparator(Chooser chooser, SftpResponseStatusMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_STATUS);
+    public SftpResponseStatusMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_STATUS);
     }
 
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(SftpResponseStatusMessage object, Chooser chooser) {
         object.setSoftlyStatusCode(SftpStatusCode.SSH_FX_OK);
 
-        object.setSoftlyErrorMessage("SSH-Attacker sagt NEIN!", true, config);
+        object.setSoftlyErrorMessage("SSH-Attacker sagt NEIN!", true, chooser.getConfig());
 
-        object.setSoftlyLanguageTag("de", true, config);
+        object.setSoftlyLanguageTag("de", true, chooser.getConfig());
     }
 }

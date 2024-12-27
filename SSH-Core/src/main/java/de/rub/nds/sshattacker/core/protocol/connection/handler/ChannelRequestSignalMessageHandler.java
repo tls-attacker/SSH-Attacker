@@ -54,10 +54,8 @@ public class ChannelRequestSignalMessageHandler
         return new ChannelRequestSignalMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestSignalMessagePreparator getPreparator() {
-        return new ChannelRequestSignalMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestSignalMessagePreparator PREPARATOR =
+            new ChannelRequestSignalMessagePreparator();
 
     @Override
     public ChannelRequestSignalMessageSerializer getSerializer() {

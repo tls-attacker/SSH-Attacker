@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,14 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestPtyMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestPtyMessage> {
 
-    public ChannelRequestPtyMessagePreparator(Chooser chooser, ChannelRequestPtyMessage message) {
-        super(chooser, message, ChannelRequestType.PTY_REQ, true);
+    public ChannelRequestPtyMessagePreparator() {
+        super(ChannelRequestType.PTY_REQ, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-
-        object.setSoftlyTermEnvVariable(config.getDefaultTermEnvVariable(), true, config);
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestPtyMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
+        object.setSoftlyTermEnvVariable(
+                config.getDefaultTermEnvVariable(), true, config);
         object.setSoftlyWidthCharacters(config.getDefaultTerminalWidthColumns());
         object.setSoftlyHeightRows(config.getDefaultTerminalHeightRows());
         object.setSoftlyWidthPixels(config.getDefaultTerminalWidthPixels());

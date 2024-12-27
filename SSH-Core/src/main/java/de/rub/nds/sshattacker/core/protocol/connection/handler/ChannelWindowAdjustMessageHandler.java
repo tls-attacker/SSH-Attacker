@@ -7,7 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
@@ -73,10 +74,8 @@ public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<Channel
         return new ChannelWindowAdjustMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelWindowAdjustMessagePreparator getPreparator() {
-        return new ChannelWindowAdjustMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelWindowAdjustMessagePreparator PREPARATOR =
+            new ChannelWindowAdjustMessagePreparator();
 
     @Override
     public ChannelWindowAdjustMessageSerializer getSerializer() {

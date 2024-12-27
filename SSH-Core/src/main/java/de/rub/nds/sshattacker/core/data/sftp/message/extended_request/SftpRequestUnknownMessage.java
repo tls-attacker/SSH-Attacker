@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestUnknownMessage
         extends SftpRequestExtendedMessage<SftpRequestUnknownMessage> {
@@ -58,5 +59,10 @@ public class SftpRequestUnknownMessage
     @Override
     public SftpRequestUnknownMessageHandler getHandler(SshContext context) {
         return new SftpRequestUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -43,10 +43,7 @@ public class PingExtensionHandler extends AbstractExtensionHandler<PingExtension
         return new PingExtensionParser(array, startPosition);
     }
 
-    @Override
-    public PingExtensionPreparator getPreparator() {
-        return new PingExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final PingExtensionPreparator PREPARATOR = new PingExtensionPreparator();
 
     @Override
     public PingExtensionSerializer getSerializer() {

@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends SshMessage<DebugMessage> {
@@ -184,5 +185,10 @@ public class DebugMessage extends SshMessage<DebugMessage> {
     @Override
     public DebugMessageHandler getHandler(SshContext context) {
         return new DebugMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DebugMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

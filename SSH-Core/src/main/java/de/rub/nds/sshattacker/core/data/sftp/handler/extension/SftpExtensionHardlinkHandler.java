@@ -42,11 +42,8 @@ public class SftpExtensionHardlinkHandler
                 SftpExtensionHardlink::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionHardlink> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.HARDLINK_OPENSSH_COM);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionHardlink> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.HARDLINK_OPENSSH_COM);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionHardlink> getSerializer() {

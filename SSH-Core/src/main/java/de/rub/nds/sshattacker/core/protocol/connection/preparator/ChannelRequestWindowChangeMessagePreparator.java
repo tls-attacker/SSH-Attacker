@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,14 +15,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestWindowChangeMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestWindowChangeMessage> {
 
-    public ChannelRequestWindowChangeMessagePreparator(
-            Chooser chooser, ChannelRequestWindowChangeMessage message) {
-        super(chooser, message, ChannelRequestType.WINDOW_CHANGE, false);
+    public ChannelRequestWindowChangeMessagePreparator() {
+        super(ChannelRequestType.WINDOW_CHANGE, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestWindowChangeMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
         object.setSoftlyWidthColumns(config.getDefaultTerminalWidthColumns());
         object.setSoftlyHeightRows(config.getDefaultTerminalHeightRows());
         object.setSoftlyWidthPixels(config.getDefaultTerminalWidthPixels());

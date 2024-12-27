@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestMakeDirMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestMakeDirMessage> {
 
-    public SftpRequestMakeDirMessagePreparator(Chooser chooser, SftpRequestMakeDirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_MKDIR);
+    public SftpRequestMakeDirMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_MKDIR);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/tmp/ssh-attacker/", true, config);
+    public void prepareRequestSpecificContents(SftpRequestMakeDirMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp/ssh-attacker/", true, chooser.getConfig());
 
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().prepare(chooser);
     }
 }

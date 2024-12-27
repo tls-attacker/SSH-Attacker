@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestVendorIdMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestVendorIdMessage
@@ -243,5 +244,10 @@ public class SftpRequestVendorIdMessage
     @Override
     public SftpRequestVendorIdMessageHandler getHandler(SshContext context) {
         return new SftpRequestVendorIdMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestVendorIdMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

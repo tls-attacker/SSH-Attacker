@@ -36,10 +36,8 @@ public class SftpRequestGetTempFolderMessageHandler
         return new SftpRequestGetTempFolderMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestGetTempFolderMessagePreparator getPreparator() {
-        return new SftpRequestGetTempFolderMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestGetTempFolderMessagePreparator PREPARATOR =
+            new SftpRequestGetTempFolderMessagePreparator();
 
     @Override
     public SftpRequestGetTempFolderMessageSerializer getSerializer() {

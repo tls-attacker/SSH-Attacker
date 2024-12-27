@@ -36,10 +36,8 @@ public class SftpRequestHardlinkMessageHandler
         return new SftpRequestHardlinkMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestHardlinkMessagePreparator getPreparator() {
-        return new SftpRequestHardlinkMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestHardlinkMessagePreparator PREPARATOR =
+            new SftpRequestHardlinkMessagePreparator();
 
     @Override
     public SftpRequestHardlinkMessageSerializer getSerializer() {

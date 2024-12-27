@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
         extends ModifiableVariableHolder {
@@ -118,6 +119,8 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     }
 
     public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
+
+    public abstract void prepare(Chooser chooser);
 
     public abstract String toCompactString();
 }

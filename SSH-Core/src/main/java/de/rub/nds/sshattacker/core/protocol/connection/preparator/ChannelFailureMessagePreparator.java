@@ -14,10 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelFailureMessagePreparator
         extends ChannelMessagePreparator<ChannelFailureMessage> {
 
-    public ChannelFailureMessagePreparator(Chooser chooser, ChannelFailureMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_FAILURE);
+    public ChannelFailureMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_FAILURE);
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents() {}
+    public void prepareChannelMessageSpecificContents(
+            ChannelFailureMessage object, Chooser chooser) {}
 }

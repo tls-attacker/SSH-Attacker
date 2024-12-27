@@ -14,16 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestHardlinkMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestHardlinkMessage> {
 
-    public SftpRequestHardlinkMessagePreparator(
-            Chooser chooser, SftpRequestHardlinkMessage message) {
-        super(chooser, message, SftpExtension.HARDLINK_OPENSSH_COM);
+    public SftpRequestHardlinkMessagePreparator() {
+        super(SftpExtension.HARDLINK_OPENSSH_COM);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestHardlinkMessage object, Chooser chooser) {
 
-        object.setSoftlyPath("/etc/passwd", true, config);
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        object.setSoftlyNewPath("/etc/passwd-new", true, config);
+        object.setSoftlyNewPath("/etc/passwd-new", true, chooser.getConfig());
     }
 }

@@ -34,10 +34,8 @@ public class SftpRequestReadDirMessageHandler
         return new SftpRequestReadDirMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestReadDirMessagePreparator getPreparator() {
-        return new SftpRequestReadDirMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestReadDirMessagePreparator PREPARATOR =
+            new SftpRequestReadDirMessagePreparator();
 
     @Override
     public SftpRequestReadDirMessageSerializer getSerializer() {

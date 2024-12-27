@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
 
@@ -115,5 +116,10 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     @Override
     public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
         return new ChannelExtendedDataMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelExtendedDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

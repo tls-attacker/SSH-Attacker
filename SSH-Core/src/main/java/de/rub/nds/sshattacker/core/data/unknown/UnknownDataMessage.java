@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.data.DataMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
 
@@ -56,5 +57,10 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
     @Override
     public UnknownDataMessageHandler getHandler(SshContext context) {
         return new UnknownDataMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnknownDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -10,7 +10,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import jakarta.xml.bind.annotation.XmlAttribute;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * SSH Action bound to a single connection/SSH context. This should be the default abstract base

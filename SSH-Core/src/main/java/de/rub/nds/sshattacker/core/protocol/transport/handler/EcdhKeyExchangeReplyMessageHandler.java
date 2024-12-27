@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
@@ -56,10 +56,8 @@ public class EcdhKeyExchangeReplyMessageHandler
         return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
     }
 
-    @Override
-    public EcdhKeyExchangeReplyMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
+    public static final EcdhKeyExchangeReplyMessagePreparator PREPARATOR =
+            new EcdhKeyExchangeReplyMessagePreparator();
 
     @Override
     public EcdhKeyExchangeReplyMessageSerializer getSerializer() {

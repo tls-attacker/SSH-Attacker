@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionFileSyncHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionFileSync extends SftpExtensionWithVersion<SftpExtensionFileSync> {
 
@@ -28,5 +29,10 @@ public class SftpExtensionFileSync extends SftpExtensionWithVersion<SftpExtensio
     @Override
     public SftpExtensionFileSyncHandler getHandler(SshContext context) {
         return new SftpExtensionFileSyncHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionFileSyncHandler.PREPARATOR.prepare(this, chooser);
     }
 }

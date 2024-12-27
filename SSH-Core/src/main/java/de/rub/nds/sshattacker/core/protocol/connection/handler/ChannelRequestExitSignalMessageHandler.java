@@ -54,10 +54,8 @@ public class ChannelRequestExitSignalMessageHandler
         return new ChannelRequestExitSignalMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestExitSignalMessagePreparator getPreparator() {
-        return new ChannelRequestExitSignalMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestExitSignalMessagePreparator PREPARATOR =
+            new ChannelRequestExitSignalMessagePreparator();
 
     @Override
     public ChannelRequestExitSignalMessageSerializer getSerializer() {

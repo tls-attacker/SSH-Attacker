@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeDoneMessagePreparator;
@@ -37,22 +34,20 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array) {
+    public RsaKeyExchangeDoneMessageParser getParser(byte[] array) {
         return new RsaKeyExchangeDoneMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array, int startPosition) {
+    public RsaKeyExchangeDoneMessageParser getParser(byte[] array, int startPosition) {
         return new RsaKeyExchangeDoneMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<RsaKeyExchangeDoneMessage> getPreparator() {
-        return new RsaKeyExchangeDoneMessagePreparator(context.getChooser(), message);
-    }
+    public static final RsaKeyExchangeDoneMessagePreparator PREPARATOR =
+            new RsaKeyExchangeDoneMessagePreparator();
 
     @Override
-    public SshMessageSerializer<RsaKeyExchangeDoneMessage> getSerializer() {
+    public RsaKeyExchangeDoneMessageSerializer getSerializer() {
         return new RsaKeyExchangeDoneMessageSerializer(message);
     }
 }

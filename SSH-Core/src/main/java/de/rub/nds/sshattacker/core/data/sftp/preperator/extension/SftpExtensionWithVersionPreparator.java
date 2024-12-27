@@ -14,13 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpExtensionWithVersionPreparator<T extends SftpExtensionWithVersion<T>>
         extends SftpAbstractExtensionPreparator<T> {
 
-    public SftpExtensionWithVersionPreparator(
-            Chooser chooser, T extension, SftpExtension extensionName) {
-        super(chooser, extension, extensionName);
+    public SftpExtensionWithVersionPreparator(SftpExtension extensionName) {
+        super(extensionName);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-        object.setSoftlyVersion("1", true, config);
+    public void prepareExtensionSpecificContents(T object, Chooser chooser) {
+        object.setSoftlyVersion("1", true, chooser.getConfig());
     }
 }

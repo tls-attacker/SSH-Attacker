@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.SftpInitMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.SftpInitMessagePreparator;
@@ -49,10 +49,7 @@ public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> 
         return new SftpInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpInitMessagePreparator getPreparator() {
-        return new SftpInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpInitMessagePreparator PREPARATOR = new SftpInitMessagePreparator();
 
     @Override
     public SftpInitMessageSerializer getSerializer() {

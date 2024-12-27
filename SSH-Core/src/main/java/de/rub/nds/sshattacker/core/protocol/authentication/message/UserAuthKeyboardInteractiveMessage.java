@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthKeyboardInteractiveMessage
@@ -154,5 +155,10 @@ public class UserAuthKeyboardInteractiveMessage
     @Override
     public UserAuthKeyboardInteractiveMessageHandler getHandler(SshContext context) {
         return new UserAuthKeyboardInteractiveMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthKeyboardInteractiveMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

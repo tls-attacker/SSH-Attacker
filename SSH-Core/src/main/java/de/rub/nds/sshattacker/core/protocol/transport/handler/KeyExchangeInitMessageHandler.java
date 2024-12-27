@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
@@ -240,10 +240,8 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         return new KeyExchangeInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public KeyExchangeInitMessagePreparator getPreparator() {
-        return new KeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final KeyExchangeInitMessagePreparator PREPARATOR =
+            new KeyExchangeInitMessagePreparator();
 
     @Override
     public KeyExchangeInitMessageSerializer getSerializer() {

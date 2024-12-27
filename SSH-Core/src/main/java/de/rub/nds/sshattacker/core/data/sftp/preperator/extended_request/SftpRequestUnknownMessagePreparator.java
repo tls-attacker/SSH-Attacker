@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestUnknownMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestUnknownMessage> {
 
-    public SftpRequestUnknownMessagePreparator(Chooser chooser, SftpRequestUnknownMessage message) {
-        super(chooser, message, "hello-from@ssh-attacker.de");
+    public SftpRequestUnknownMessagePreparator() {
+        super("hello-from@ssh-attacker.de");
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestUnknownMessage object, Chooser chooser) {
         object.setSoftlyRequestSpecificData(new byte[100]);
     }
 }

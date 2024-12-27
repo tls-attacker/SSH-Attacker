@@ -18,18 +18,20 @@ public class ServerSigAlgsExtensionPreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerSigAlgsExtensionPreparator(Chooser chooser, ServerSigAlgsExtension extension) {
-        super(chooser, extension, Extension.SERVER_SIG_ALGS);
+    public ServerSigAlgsExtensionPreparator() {
+        super(Extension.SERVER_SIG_ALGS);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
+    public void prepareExtensionSpecificContents(ServerSigAlgsExtension object, Chooser chooser) {
         // sending server-sig-algs extension is not allowed when acting as client
         if (chooser.getContext().isClient()) {
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         }
         object.setSoftlyAcceptedPublicKeyAlgorithms(
-                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true, config);
+                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
+                true,
+                chooser.getConfig());
     }
 }

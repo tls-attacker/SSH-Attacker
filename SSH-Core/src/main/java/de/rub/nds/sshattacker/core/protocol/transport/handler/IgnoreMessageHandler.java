@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.IgnoreMessagePreparator;
@@ -37,10 +37,7 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
         return new IgnoreMessageParser(array, startPosition);
     }
 
-    @Override
-    public IgnoreMessagePreparator getPreparator() {
-        return new IgnoreMessagePreparator(context.getChooser(), message);
-    }
+    public static final IgnoreMessagePreparator PREPARATOR = new IgnoreMessagePreparator();
 
     @Override
     public IgnoreMessageSerializer getSerializer() {

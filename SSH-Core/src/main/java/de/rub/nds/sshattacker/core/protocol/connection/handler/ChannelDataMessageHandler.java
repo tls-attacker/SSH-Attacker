@@ -37,10 +37,8 @@ public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMess
         return new ChannelDataMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelDataMessagePreparator getPreparator() {
-        return new ChannelDataMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelDataMessagePreparator PREPARATOR =
+            new ChannelDataMessagePreparator();
 
     @Override
     public ChannelDataMessageSerializer getSerializer() {

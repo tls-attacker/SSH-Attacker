@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownMessage extends SshMessage<UnknownMessage> {
 
@@ -61,5 +62,10 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
     @Override
     public UnknownMessageHandler getHandler(SshContext context) {
         return new UnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

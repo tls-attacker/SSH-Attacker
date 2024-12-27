@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRemoveDirMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestRemoveDirMessage
         extends SftpRequestWithPathMessage<SftpRequestRemoveDirMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestRemoveDirMessage
     @Override
     public SftpRequestRemoveDirMessageHandler getHandler(SshContext context) {
         return new SftpRequestRemoveDirMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestRemoveDirMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

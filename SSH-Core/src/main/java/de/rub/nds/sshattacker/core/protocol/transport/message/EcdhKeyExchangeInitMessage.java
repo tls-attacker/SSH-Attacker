@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMessage> {
 
@@ -103,5 +104,10 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
     @Override
     public EcdhKeyExchangeInitMessageHandler getHandler(SshContext context) {
         return new EcdhKeyExchangeInitMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        EcdhKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

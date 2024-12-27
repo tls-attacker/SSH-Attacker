@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpVersionMessagePreparator extends SftpMessagePreparator<SftpVersionMessage> {
 
-    public SftpVersionMessagePreparator(Chooser chooser, SftpVersionMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_VERSION);
+    public SftpVersionMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_VERSION);
     }
 
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(SftpVersionMessage object, Chooser chooser) {
         // Send own server version, but negotiate the version that is the lower if the two
         object.setSoftlyVersion(chooser.getSftpServerVersion());
         if (object.getExtensions().isEmpty()) {
@@ -26,12 +26,6 @@ public class SftpVersionMessagePreparator extends SftpMessagePreparator<SftpVers
             object.setExtensions(chooser.getSftpServerSupportedExtensions());
         }
 
-        object.getExtensions()
-                .forEach(
-                        extension ->
-                                extension
-                                        .getHandler(chooser.getContext())
-                                        .getPreparator()
-                                        .prepare());
+        object.getExtensions().forEach(extension -> extension.prepare(chooser));
     }
 }

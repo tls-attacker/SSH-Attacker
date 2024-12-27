@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
@@ -88,5 +89,10 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
     @Override
     public ChannelDataMessageHandler getHandler(SshContext context) {
         return new ChannelDataMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

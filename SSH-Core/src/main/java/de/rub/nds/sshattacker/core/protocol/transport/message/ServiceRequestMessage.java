@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
@@ -107,5 +108,10 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
     @Override
     public ServiceRequestMessageHandler getHandler(SshContext context) {
         return new ServiceRequestMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ServiceRequestMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

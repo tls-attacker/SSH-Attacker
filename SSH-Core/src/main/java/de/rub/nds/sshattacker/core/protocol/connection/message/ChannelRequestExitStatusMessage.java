@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestExitStatusMessage
         extends ChannelRequestMessage<ChannelRequestExitStatusMessage> {
@@ -52,5 +53,10 @@ public class ChannelRequestExitStatusMessage
     @Override
     public ChannelRequestExitStatusMessageHandler getHandler(SshContext context) {
         return new ChannelRequestExitStatusMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestExitStatusMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

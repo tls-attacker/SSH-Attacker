@@ -36,10 +36,8 @@ public class SftpResponseUsersGroupsByIdMessageHandler
         return new SftpResponseUsersGroupsByIdMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpResponseUsersGroupsByIdMessagePreparator getPreparator() {
-        return new SftpResponseUsersGroupsByIdMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpResponseUsersGroupsByIdMessagePreparator PREPARATOR =
+            new SftpResponseUsersGroupsByIdMessagePreparator();
 
     @Override
     public SftpResponseUsersGroupsByIdMessageSerializer getSerializer() {

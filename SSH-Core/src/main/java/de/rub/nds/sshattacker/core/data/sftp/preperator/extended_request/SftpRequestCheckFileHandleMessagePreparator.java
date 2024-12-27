@@ -16,18 +16,18 @@ import java.util.List;
 public class SftpRequestCheckFileHandleMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestCheckFileHandleMessage> {
 
-    public SftpRequestCheckFileHandleMessagePreparator(
-            Chooser chooser, SftpRequestCheckFileHandleMessage message) {
-        super(chooser, message, SftpExtension.CHECK_FILE_HANDLE);
+    public SftpRequestCheckFileHandleMessagePreparator() {
+        super(SftpExtension.CHECK_FILE_HANDLE);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-
-        object.setSoftlyHandle(chooser.getContext().getSftpManager().getFileHandle(), true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestCheckFileHandleMessage object, Chooser chooser) {
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
 
         object.setSoftlyHashAlgorithms(
-                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, config);
+                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, chooser.getConfig());
 
         object.setSoftlyStartOffset(0);
 

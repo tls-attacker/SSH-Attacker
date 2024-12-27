@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequestUnknownMessage> {
 
@@ -55,5 +56,10 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
     @Override
     public GlobalRequestUnknownMessageHandler getHandler(SshContext context) {
         return new GlobalRequestUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

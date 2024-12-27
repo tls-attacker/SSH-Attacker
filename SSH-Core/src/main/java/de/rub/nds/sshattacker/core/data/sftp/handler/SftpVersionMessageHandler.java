@@ -49,10 +49,8 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
         return new SftpVersionMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpVersionMessagePreparator getPreparator() {
-        return new SftpVersionMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpVersionMessagePreparator PREPARATOR =
+            new SftpVersionMessagePreparator();
 
     @Override
     public SftpVersionMessageSerializer getSerializer() {

@@ -8,7 +8,10 @@
 package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
+import de.rub.nds.sshattacker.core.constants.CipherMode;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;

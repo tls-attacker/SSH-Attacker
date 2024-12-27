@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenSshHostKeysMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysMessagePreparator;
@@ -30,23 +30,20 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
     public void adjustContext() {}
 
     @Override
-    public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(byte[] array) {
+    public GlobalRequestOpenSshHostKeysMessageParser getParser(byte[] array) {
         return new GlobalRequestOpenSshHostKeysMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(
-            byte[] array, int startPosition) {
+    public GlobalRequestOpenSshHostKeysMessageParser getParser(byte[] array, int startPosition) {
         return new GlobalRequestOpenSshHostKeysMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<GlobalRequestOpenSshHostKeysMessage> getPreparator() {
-        return new GlobalRequestOpenSshHostKeysMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestOpenSshHostKeysMessagePreparator PREPARATOR =
+            new GlobalRequestOpenSshHostKeysMessagePreparator();
 
     @Override
-    public SshMessageSerializer<GlobalRequestOpenSshHostKeysMessage> getSerializer() {
+    public GlobalRequestOpenSshHostKeysMessageSerializer getSerializer() {
         return new GlobalRequestOpenSshHostKeysMessageSerializer(message);
     }
 }

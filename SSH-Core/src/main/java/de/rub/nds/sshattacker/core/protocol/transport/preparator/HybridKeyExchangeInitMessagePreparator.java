@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
@@ -20,21 +19,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HybridKeyExchangeInitMessagePreperator
+public class HybridKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeInitMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private final HybridKeyExchangeCombiner combiner;
 
-    public HybridKeyExchangeInitMessagePreperator(
-            Chooser chooser,
-            HybridKeyExchangeInitMessage message,
-            HybridKeyExchangeCombiner combiner) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_HBR_INIT);
-        this.combiner = combiner;
+    public HybridKeyExchangeInitMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_HBR_INIT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            HybridKeyExchangeInitMessage object, Chooser chooser) {
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
@@ -43,11 +38,11 @@ public class HybridKeyExchangeInitMessagePreperator
         byte[] pubKeyEncapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] pubKeyAgreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
 
-        object.setSoftlyAgreementPublicKey(pubKeyAgreement, true, config);
-        object.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, config);
+        object.setSoftlyAgreementPublicKey(pubKeyAgreement, true, chooser.getConfig());
+        object.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, chooser.getConfig());
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        switch (combiner) {
+        switch (chooser.getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 inputHolder.setHybridClientPublicKey(
                         KeyExchangeUtil.concatenateHybridKeys(
@@ -60,8 +55,7 @@ public class HybridKeyExchangeInitMessagePreperator
                 break;
             default:
                 LOGGER.warn(
-                        "Unsupported combiner {}, continue without updating ExchangeHashInputHolder",
-                        combiner);
+                        "Combiner is not supported, continue without updating ExchangeHashInputHolder");
         }
     }
 }

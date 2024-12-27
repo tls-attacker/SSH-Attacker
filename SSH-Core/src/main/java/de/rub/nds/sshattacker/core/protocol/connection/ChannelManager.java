@@ -13,7 +13,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfir
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

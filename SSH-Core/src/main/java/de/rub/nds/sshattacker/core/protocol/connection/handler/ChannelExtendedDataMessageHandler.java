@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelExtendedDataMessagePreparator;
@@ -41,10 +41,8 @@ public class ChannelExtendedDataMessageHandler
         return new ChannelExtendedDataMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelExtendedDataMessagePreparator getPreparator() {
-        return new ChannelExtendedDataMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelExtendedDataMessagePreparator PREPARATOR =
+            new ChannelExtendedDataMessagePreparator();
 
     @Override
     public ChannelExtendedDataMessageSerializer getSerializer() {

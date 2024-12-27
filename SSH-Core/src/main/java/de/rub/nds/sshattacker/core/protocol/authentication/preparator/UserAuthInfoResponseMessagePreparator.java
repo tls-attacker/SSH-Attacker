@@ -17,28 +17,23 @@ import java.util.ArrayList;
 public class UserAuthInfoResponseMessagePreparator
         extends SshMessagePreparator<UserAuthInfoResponseMessage> {
 
-    public UserAuthInfoResponseMessagePreparator(
-            Chooser chooser, UserAuthInfoResponseMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE);
+    public UserAuthInfoResponseMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            UserAuthInfoResponseMessage object, Chooser chooser) {
         ArrayList<AuthenticationResponseEntry> nextResponses =
                 chooser.getNextPreConfiguredAuthResponses();
 
         if (nextResponses != null) {
-            object.setSoftlyResponseEntries(nextResponses, true, config);
+            object.setSoftlyResponseEntries(nextResponses, true, chooser.getConfig());
         } else {
-            object.setSoftlyResponseEntriesCount(object.getResponseEntries().size(), config);
+            object.setSoftlyResponseEntriesCount(
+                    object.getResponseEntries().size(), chooser.getConfig());
         }
 
-        object.getResponseEntries()
-                .forEach(
-                        responseEntry ->
-                                responseEntry
-                                        .getHandler(chooser.getContext())
-                                        .getPreparator()
-                                        .prepare());
+        object.getResponseEntries().forEach(responseEntry -> responseEntry.prepare(chooser));
     }
 }

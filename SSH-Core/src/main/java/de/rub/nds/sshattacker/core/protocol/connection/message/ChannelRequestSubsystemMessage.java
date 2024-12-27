@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSubsystemMessage
@@ -100,5 +101,10 @@ public class ChannelRequestSubsystemMessage
     @Override
     public ChannelRequestSubsystemMessageHandler getHandler(SshContext context) {
         return new ChannelRequestSubsystemMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestSubsystemMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

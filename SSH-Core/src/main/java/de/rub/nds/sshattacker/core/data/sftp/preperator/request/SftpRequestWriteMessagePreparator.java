@@ -14,17 +14,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestWriteMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestWriteMessage> {
 
-    public SftpRequestWriteMessagePreparator(Chooser chooser, SftpRequestWriteMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_WRITE);
+    public SftpRequestWriteMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_WRITE);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-
-        object.setSoftlyHandle(chooser.getContext().getSftpManager().getFileHandle(), true, config);
+    public void prepareRequestSpecificContents(SftpRequestWriteMessage object, Chooser chooser) {
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
 
         object.setSoftlyOffset(0);
 
-        object.setSoftlyData(new byte[100], true, config);
+        object.setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

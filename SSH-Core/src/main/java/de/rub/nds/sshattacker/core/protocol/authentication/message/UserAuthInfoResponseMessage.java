@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.Authen
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -128,6 +129,11 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
     @Override
     public UserAuthInfoResponseMessageHandler getHandler(SshContext context) {
         return new UserAuthInfoResponseMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthInfoResponseMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

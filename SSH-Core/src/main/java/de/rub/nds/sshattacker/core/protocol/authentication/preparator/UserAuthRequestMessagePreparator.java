@@ -19,20 +19,19 @@ public abstract class UserAuthRequestMessagePreparator<T extends UserAuthRequest
 
     private final AuthenticationMethod authenticationMethod;
 
-    protected UserAuthRequestMessagePreparator(
-            Chooser chooser, T message, AuthenticationMethod authenticationMethod) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
+    protected UserAuthRequestMessagePreparator(AuthenticationMethod authenticationMethod) {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
         this.authenticationMethod = authenticationMethod;
     }
 
     @Override
-    public final void prepareMessageSpecificContents() {
-        object.setSoftlyUserName(config.getUsername(), true, config);
-        object.setSoftlyServiceName(ServiceType.SSH_CONNECTION, true, config);
+    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+        object.setSoftlyUserName(chooser.getConfig().getUsername(), true, chooser.getConfig());
+        object.setSoftlyServiceName(ServiceType.SSH_CONNECTION, true, chooser.getConfig());
         // Always set correct authentication method -> Don't use soft set
         object.setMethodName(authenticationMethod, true);
-        prepareUserAuthRequestSpecificContents();
+        prepareUserAuthRequestSpecificContents(object, chooser);
     }
 
-    public abstract void prepareUserAuthRequestSpecificContents();
+    public abstract void prepareUserAuthRequestSpecificContents(T object, Chooser chooser);
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.*;
+import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestTextSeekMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestTextSeekMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestTextSeekMessagePreparator;
@@ -41,10 +41,8 @@ public class SftpRequestTextSeekMessageHandler
         return new SftpRequestTextSeekMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestTextSeekMessagePreparator getPreparator() {
-        return new SftpRequestTextSeekMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestTextSeekMessagePreparator PREPARATOR =
+            new SftpRequestTextSeekMessagePreparator();
 
     @Override
     public SftpRequestTextSeekMessageSerializer getSerializer() {

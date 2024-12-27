@@ -36,10 +36,8 @@ public class SftpRequestFileStatVfsMessageHandler
         return new SftpRequestFileStatVfsMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestFileStatVfsMessagePreparator getPreparator() {
-        return new SftpRequestFileStatVfsMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestFileStatVfsMessagePreparator PREPARATOR =
+            new SftpRequestFileStatVfsMessagePreparator();
 
     @Override
     public SftpRequestFileStatVfsMessageSerializer getSerializer() {

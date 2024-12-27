@@ -39,10 +39,8 @@ public class SftpExtensionUnknownHandler
         return new SftpExtensionUnknownParser(array, startPosition);
     }
 
-    @Override
-    public SftpExtensionUnknownPreparator getPreparator() {
-        return new SftpExtensionUnknownPreparator(context.getChooser(), extension);
-    }
+    public static final SftpExtensionUnknownPreparator PREPARATOR =
+            new SftpExtensionUnknownPreparator();
 
     @Override
     public SftpExtensionUnknownSerializer getSerializer() {

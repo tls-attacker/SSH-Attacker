@@ -14,14 +14,10 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseCheckFileMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseCheckFileMessage> {
 
-    public SftpResponseCheckFileMessagePreparator(
-            Chooser chooser, SftpResponseCheckFileMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
-        object.setSoftlyUsedHashAlgorithm(HashAlgorithm.MD5, true, config);
+    public void prepareResponseSpecificContents(
+            SftpResponseCheckFileMessage object, Chooser chooser) {
+        object.setSoftlyUsedHashAlgorithm(HashAlgorithm.MD5, true, chooser.getConfig());
 
         object.setSoftlyHash(new byte[100]);
     }

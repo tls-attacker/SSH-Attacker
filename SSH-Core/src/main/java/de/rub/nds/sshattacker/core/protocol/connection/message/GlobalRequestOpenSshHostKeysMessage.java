@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestOpenSshHostKeysMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class GlobalRequestOpenSshHostKeysMessage
@@ -63,6 +64,11 @@ public class GlobalRequestOpenSshHostKeysMessage
     @Override
     public GlobalRequestOpenSshHostKeysMessageHandler getHandler(SshContext context) {
         return new GlobalRequestOpenSshHostKeysMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestOpenSshHostKeysMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     /**

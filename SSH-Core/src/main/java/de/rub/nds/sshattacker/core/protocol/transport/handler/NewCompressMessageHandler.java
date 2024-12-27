@@ -51,10 +51,8 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
         return new NewCompressMessageParser(array, startPosition);
     }
 
-    @Override
-    public NewCompressMessagePreparator getPreparator() {
-        return new NewCompressMessagePreparator(context.getChooser(), message);
-    }
+    public static final NewCompressMessagePreparator PREPARATOR =
+            new NewCompressMessagePreparator();
 
     @Override
     public NewCompressMessageSerializer getSerializer() {

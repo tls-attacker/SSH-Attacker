@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestLinkSetStatMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestLinkSetStatMessage> {
 
-    public SftpRequestLinkSetStatMessagePreparator(
-            Chooser chooser, SftpRequestLinkSetStatMessage message) {
-        super(chooser, message, SftpExtension.L_SET_STAT);
+    public SftpRequestLinkSetStatMessagePreparator() {
+        super(SftpExtension.L_SET_STAT);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-        object.setSoftlyPath("/bin/python3", true, config);
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestLinkSetStatMessage object, Chooser chooser) {
+        object.setSoftlyPath("/bin/python3", true, chooser.getConfig());
+        object.getAttributes().prepare(chooser);
     }
 }

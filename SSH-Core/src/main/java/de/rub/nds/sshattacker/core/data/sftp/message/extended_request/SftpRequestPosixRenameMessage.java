@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestPosixRenameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestPosixRenameMessage
@@ -93,5 +94,10 @@ public class SftpRequestPosixRenameMessage
     @Override
     public SftpRequestPosixRenameMessageHandler getHandler(SshContext context) {
         return new SftpRequestPosixRenameMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestPosixRenameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

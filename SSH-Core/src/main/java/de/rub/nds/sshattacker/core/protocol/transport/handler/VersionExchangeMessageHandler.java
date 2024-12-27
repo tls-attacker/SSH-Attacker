@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
@@ -47,10 +47,8 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         return new VersionExchangeMessageParser(array, startPosition);
     }
 
-    @Override
-    public VersionExchangeMessagePreparator getPreparator() {
-        return new VersionExchangeMessagePreparator(context.getChooser(), message);
-    }
+    public static final VersionExchangeMessagePreparator PREPARATOR =
+            new VersionExchangeMessagePreparator();
 
     @Override
     public VersionExchangeMessageSerializer getSerializer() {

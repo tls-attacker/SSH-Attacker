@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestReadDirMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestReadDirMessage
         extends SftpRequestWithHandleMessage<SftpRequestReadDirMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestReadDirMessage
     @Override
     public SftpRequestReadDirMessageHandler getHandler(SshContext context) {
         return new SftpRequestReadDirMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestReadDirMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

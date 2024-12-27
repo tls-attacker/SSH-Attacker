@@ -39,10 +39,8 @@ public class SftpExtensionNewlineHandler
         return new SftpExtensionNewlineParser(array, startPosition);
     }
 
-    @Override
-    public SftpExtensionNewlinePreparator getPreparator() {
-        return new SftpExtensionNewlinePreparator(context.getChooser(), extension);
-    }
+    public static final SftpExtensionNewlinePreparator PREPARATOR =
+            new SftpExtensionNewlinePreparator();
 
     @Override
     public SftpExtensionNewlineSerializer getSerializer() {

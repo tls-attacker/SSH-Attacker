@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestUsersGroupsByIdMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpIdEntry;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -107,7 +108,7 @@ public class SftpRequestUsersGroupsByIdMessage
     }
 
     public void addUserId(int userId) {
-        userIds.add(new SftpIdEntry(ModifiableVariableFactory.safelySetValue(null, userId)));
+        userIds.add(new SftpIdEntry(new ModifiableInteger(userId)));
     }
 
     public void addUserId(ModifiableInteger userId) {
@@ -160,7 +161,7 @@ public class SftpRequestUsersGroupsByIdMessage
     }
 
     public void addGroupId(int groupId) {
-        groupIds.add(new SftpIdEntry(ModifiableVariableFactory.safelySetValue(null, groupId)));
+        groupIds.add(new SftpIdEntry(new ModifiableInteger(groupId)));
     }
 
     public void addGroupId(ModifiableInteger groupId) {
@@ -174,5 +175,10 @@ public class SftpRequestUsersGroupsByIdMessage
     @Override
     public SftpRequestUsersGroupsByIdMessageHandler getHandler(SshContext context) {
         return new SftpRequestUsersGroupsByIdMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestUsersGroupsByIdMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

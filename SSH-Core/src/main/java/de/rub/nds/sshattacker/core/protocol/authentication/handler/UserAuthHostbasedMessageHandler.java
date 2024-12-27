@@ -10,7 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.crypto.signature.*;
+import de.rub.nds.sshattacker.core.crypto.signature.RawSignature;
+import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
+import de.rub.nds.sshattacker.core.crypto.signature.SignatureParser;
+import de.rub.nds.sshattacker.core.crypto.signature.VerifyingSignature;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
@@ -93,10 +96,8 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         return new UserAuthHostbasedMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthHostbasedMessagePreparator getPreparator() {
-        return new UserAuthHostbasedMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthHostbasedMessagePreparator PREPARATOR =
+            new UserAuthHostbasedMessagePreparator();
 
     @Override
     public UserAuthHostbasedMessageSerializer getSerializer() {

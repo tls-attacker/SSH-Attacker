@@ -14,13 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestRealPathMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestRealPathMessage> {
 
-    public SftpRequestRealPathMessagePreparator(
-            Chooser chooser, SftpRequestRealPathMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_REALPATH);
+    public SftpRequestRealPathMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_REALPATH);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/tmp/../etc/./passwd", true, config);
+    public void prepareRequestSpecificContents(SftpRequestRealPathMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp/../etc/./passwd", true, chooser.getConfig());
     }
 }

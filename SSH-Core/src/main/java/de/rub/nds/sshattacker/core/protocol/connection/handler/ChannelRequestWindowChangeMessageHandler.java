@@ -53,10 +53,8 @@ public class ChannelRequestWindowChangeMessageHandler
         return new ChannelRequestWindowChangeMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestWindowChangeMessagePreparator getPreparator() {
-        return new ChannelRequestWindowChangeMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestWindowChangeMessagePreparator PREPARATOR =
+            new ChannelRequestWindowChangeMessagePreparator();
 
     @Override
     public ChannelRequestWindowChangeMessageSerializer getSerializer() {

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.data.DataMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class StringDataMessage extends DataMessage<StringDataMessage> {
 
@@ -56,5 +57,10 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
     @Override
     public StringDataMessageHandler getHandler(SshContext context) {
         return new StringDataMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        StringDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

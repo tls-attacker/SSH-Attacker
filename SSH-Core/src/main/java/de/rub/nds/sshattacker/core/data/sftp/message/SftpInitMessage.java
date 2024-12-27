@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.SftpInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpInitMessage extends SftpHandshakeMessage<SftpInitMessage> {
 
@@ -28,5 +29,10 @@ public class SftpInitMessage extends SftpHandshakeMessage<SftpInitMessage> {
     @Override
     public SftpInitMessageHandler getHandler(SshContext context) {
         return new SftpInitMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

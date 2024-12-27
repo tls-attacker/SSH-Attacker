@@ -11,14 +11,7 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.util.JAXBSource;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +46,7 @@ public final class WorkflowTraceSerializer {
      *
      * @param file File to which the WorkflowTrace should be written
      * @param workflowTrace WorkflowTrace that should be written
-     * @throws FileNotFoundException Is thrown if the File cannot be found
      * @throws JAXBException Is thrown if the Object cannot be serialized
-     * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
     public static void write(File file, WorkflowTrace workflowTrace) throws JAXBException {
         try (FileOutputStream fos = new FileOutputStream(file, true)) {

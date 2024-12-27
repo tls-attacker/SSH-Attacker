@@ -35,10 +35,8 @@ public class SftpRequestRealPathMessageHandler
         return new SftpRequestRealPathMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestRealPathMessagePreparator getPreparator() {
-        return new SftpRequestRealPathMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestRealPathMessagePreparator PREPARATOR =
+            new SftpRequestRealPathMessagePreparator();
 
     @Override
     public SftpRequestRealPathMessageSerializer getSerializer() {

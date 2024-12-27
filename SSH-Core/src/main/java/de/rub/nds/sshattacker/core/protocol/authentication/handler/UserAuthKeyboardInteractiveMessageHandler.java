@@ -40,10 +40,8 @@ public class UserAuthKeyboardInteractiveMessageHandler
         return new UserAuthKeyboardInteractiveMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthKeyboardInteractiveMessagePreparator getPreparator() {
-        return new UserAuthKeyboardInteractiveMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthKeyboardInteractiveMessagePreparator PREPARATOR =
+            new UserAuthKeyboardInteractiveMessagePreparator();
 
     @Override
     public UserAuthKeyboardInteractiveMessageSerializer getSerializer() {

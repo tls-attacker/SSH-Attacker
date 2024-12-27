@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -156,5 +157,10 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     @Override
     public ServerSigAlgsExtensionHandler getHandler(SshContext context) {
         return new ServerSigAlgsExtensionHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ServerSigAlgsExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
 }

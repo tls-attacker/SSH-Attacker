@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailureMessage> {
 
@@ -29,5 +30,10 @@ public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailure
     @Override
     public GlobalRequestFailureMessageHandler getHandler(SshContext context) {
         return new GlobalRequestFailureMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

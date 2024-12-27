@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -1202,5 +1203,10 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     @Override
     public KeyExchangeInitMessageHandler getHandler(SshContext context) {
         return new KeyExchangeInitMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        KeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

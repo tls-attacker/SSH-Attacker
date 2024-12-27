@@ -14,16 +14,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestSymbolicLinkMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestSymbolicLinkMessage> {
 
-    public SftpRequestSymbolicLinkMessagePreparator(
-            Chooser chooser, SftpRequestSymbolicLinkMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_SYMLINK);
+    public SftpRequestSymbolicLinkMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_SYMLINK);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(
+            SftpRequestSymbolicLinkMessage object, Chooser chooser) {
+        object.setSoftlyPath("/bin/sh", true, chooser.getConfig());
 
-        object.setSoftlyPath("/bin/sh", true, config);
-
-        object.setSoftlyTargetPath("/tmp/ssh-attacker-sh", true, config);
+        object.setSoftlyTargetPath("/tmp/ssh-attacker-sh", true, chooser.getConfig());
     }
 }

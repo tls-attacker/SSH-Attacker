@@ -43,11 +43,8 @@ public class SftpExtensionMakeTempFolderHandler
                 SftpExtensionMakeTempFolder::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionMakeTempFolder> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.MAKE_TEMP_FOLDER);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionMakeTempFolder> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.MAKE_TEMP_FOLDER);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionMakeTempFolder> getSerializer() {

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
@@ -25,21 +24,17 @@ public class HybridKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final HybridKeyExchangeCombiner combiner;
 
-    public HybridKeyExchangeReplyMessagePreparator(
-            Chooser chooser,
-            HybridKeyExchangeReplyMessage message,
-            HybridKeyExchangeCombiner combiner) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_HBR_REPLY);
-        this.combiner = combiner;
+    public HybridKeyExchangeReplyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_HBR_REPLY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            HybridKeyExchangeReplyMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);
-        prepareHybridKey();
+        prepareHybridKey(object, chooser);
         chooser.getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
@@ -50,7 +45,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void prepareHybridKey() {
+    private static void prepareHybridKey(HybridKeyExchangeReplyMessage object, Chooser chooser) {
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
@@ -59,11 +54,11 @@ public class HybridKeyExchangeReplyMessagePreparator
         byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
 
-        object.setSoftlyPublicKey(agreementBytes, true, config);
-        object.setSoftlyCombinedKeyShare(encapsulationBytes, true, config);
+        object.setSoftlyPublicKey(agreementBytes, true, chooser.getConfig());
+        object.setSoftlyCombinedKeyShare(encapsulationBytes, true, chooser.getConfig());
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        switch (combiner) {
+        switch (chooser.getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 inputHolder.setHybridServerPublicKey(
                         KeyExchangeUtil.concatenateHybridKeys(agreementBytes, encapsulationBytes));
@@ -73,7 +68,7 @@ public class HybridKeyExchangeReplyMessagePreparator
                         KeyExchangeUtil.concatenateHybridKeys(encapsulationBytes, agreementBytes));
                 break;
             default:
-                LOGGER.warn("combiner is not supported. Can not set Hybrid Key.");
+                LOGGER.warn("Combiner is not supported. Can not set Hybrid Key.");
                 break;
         }
     }

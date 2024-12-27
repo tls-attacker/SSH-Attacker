@@ -40,10 +40,8 @@ public class ServerSigAlgsExtensionHandler
         return new ServerSigAlgsExtensionParser(array, startPosition);
     }
 
-    @Override
-    public ServerSigAlgsExtensionPreparator getPreparator() {
-        return new ServerSigAlgsExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final ServerSigAlgsExtensionPreparator PREPARATOR =
+            new ServerSigAlgsExtensionPreparator();
 
     @Override
     public ServerSigAlgsExtensionSerializer getSerializer() {

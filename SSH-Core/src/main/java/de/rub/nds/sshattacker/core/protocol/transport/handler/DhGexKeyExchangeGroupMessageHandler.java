@@ -10,8 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
@@ -58,13 +56,11 @@ public class DhGexKeyExchangeGroupMessageHandler
         return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator() {
-        return new DhGexKeyExchangeGroupMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhGexKeyExchangeGroupMessagePreparator PREPARATOR =
+            new DhGexKeyExchangeGroupMessagePreparator();
 
     @Override
-    public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer() {
+    public DhGexKeyExchangeGroupMessageSerializer getSerializer() {
         return new DhGexKeyExchangeGroupMessageSerializer(message);
     }
 }

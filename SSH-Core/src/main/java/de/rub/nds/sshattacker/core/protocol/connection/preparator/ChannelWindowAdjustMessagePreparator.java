@@ -14,17 +14,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelWindowAdjustMessagePreparator
         extends ChannelMessagePreparator<ChannelWindowAdjustMessage> {
 
-    public ChannelWindowAdjustMessagePreparator(
-            Chooser chooser, ChannelWindowAdjustMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+    public ChannelWindowAdjustMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents() {
-
-        object.setSoftlyRecipientChannelId(channel.getRemoteChannelId().getValue(), config);
+    public void prepareChannelMessageSpecificContents(
+            ChannelWindowAdjustMessage object, Chooser chooser) {
+        object.setSoftlyRecipientChannelId(
+                channel.getRemoteChannelId().getValue(), chooser.getConfig());
         object.setSoftlyBytesToAdd(
-                config.getChannelDefaults().getLocalWindowSize()
+                chooser.getConfig().getChannelDefaults().getLocalWindowSize()
                         - channel.getLocalWindowSize().getValue());
     }
 }

@@ -11,17 +11,17 @@ import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class GlobalRequestCancelTcpIpForwardlMessagePreparator
+public class GlobalRequestCancelTcpIpForwardMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestCancelTcpIpForwardMessage> {
 
-    public GlobalRequestCancelTcpIpForwardlMessagePreparator(
-            Chooser chooser, GlobalRequestCancelTcpIpForwardMessage message) {
-        super(chooser, message, GlobalRequestType.CANCEL_TCPIP_FORWARD);
+    public GlobalRequestCancelTcpIpForwardMessagePreparator() {
+        super(GlobalRequestType.CANCEL_TCPIP_FORWARD);
     }
 
     @Override
-    public void prepareGlobalRequestMessageSpecificContents() {
-        object.setSoftlyIpAddressToBind("127.0.0.1", true, config);
+    public void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestCancelTcpIpForwardMessage object, Chooser chooser) {
+        object.setSoftlyIpAddressToBind("127.0.0.1", true, chooser.getConfig());
         object.setSoftlyPortToBind(22);
     }
 }

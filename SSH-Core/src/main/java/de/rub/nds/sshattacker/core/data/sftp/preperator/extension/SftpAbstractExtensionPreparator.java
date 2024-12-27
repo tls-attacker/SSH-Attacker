@@ -12,28 +12,27 @@ import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExten
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public abstract class SftpAbstractExtensionPreparator<E extends SftpAbstractExtension<E>>
-        extends Preparator<E> {
+public abstract class SftpAbstractExtensionPreparator<T extends SftpAbstractExtension<T>>
+        extends Preparator<T> {
 
     private final String extensionName;
 
-    protected SftpAbstractExtensionPreparator(
-            Chooser chooser, E extension, SftpExtension extensionName) {
-        this(chooser, extension, extensionName.getName());
+    protected SftpAbstractExtensionPreparator(SftpExtension extensionName) {
+        this(extensionName.getName());
     }
 
-    protected SftpAbstractExtensionPreparator(Chooser chooser, E extension, String extensionName) {
-        super(chooser, extension);
+    protected SftpAbstractExtensionPreparator(String extensionName) {
+        super();
         this.extensionName = extensionName;
     }
 
     @Override
-    public void prepare() {
+    public void prepare(T object, Chooser chooser) {
         if (extensionName != null) {
-            object.setSoftlyName(extensionName, true, config);
+            object.setSoftlyName(extensionName, true, chooser.getConfig());
         }
-        prepareExtensionSpecificContents();
+        prepareExtensionSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareExtensionSpecificContents();
+    protected abstract void prepareExtensionSpecificContents(T object, Chooser chooser);
 }

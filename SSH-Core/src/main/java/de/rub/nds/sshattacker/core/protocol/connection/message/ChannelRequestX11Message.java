@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelRequestX11Message> {
@@ -261,5 +262,10 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     @Override
     public ChannelRequestX11MessageHandler getHandler(SshContext context) {
         return new ChannelRequestX11MessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestX11MessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

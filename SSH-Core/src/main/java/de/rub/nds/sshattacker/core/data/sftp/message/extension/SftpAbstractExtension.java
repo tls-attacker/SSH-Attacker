@@ -15,9 +15,10 @@ import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpAbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public abstract class SftpAbstractExtension<E extends SftpAbstractExtension<E>>
+public abstract class SftpAbstractExtension<T extends SftpAbstractExtension<T>>
         extends ModifiableVariableHolder {
 
     protected ModifiableInteger nameLength;
@@ -28,14 +29,14 @@ public abstract class SftpAbstractExtension<E extends SftpAbstractExtension<E>>
         super();
     }
 
-    protected SftpAbstractExtension(SftpAbstractExtension<E> other) {
+    protected SftpAbstractExtension(SftpAbstractExtension<T> other) {
         super(other);
         nameLength = other.nameLength != null ? other.nameLength.createCopy() : null;
         name = other.name != null ? other.name.createCopy() : null;
     }
 
     @Override
-    public abstract SftpAbstractExtension<E> createCopy();
+    public abstract SftpAbstractExtension<T> createCopy();
 
     public ModifiableInteger getNameLength() {
         return nameLength;
@@ -96,5 +97,7 @@ public abstract class SftpAbstractExtension<E extends SftpAbstractExtension<E>>
         setName(extension.getName(), adjustLengthField);
     }
 
-    public abstract SftpAbstractExtensionHandler<E> getHandler(SshContext context);
+    public abstract SftpAbstractExtensionHandler<T> getHandler(SshContext context);
+
+    public abstract void prepare(Chooser chooser);
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeReplyMessagePreparator;
@@ -56,10 +56,8 @@ public class DhGexKeyExchangeReplyMessageHandler
         return new DhGexKeyExchangeReplyMessageParser(array, startPosition);
     }
 
-    @Override
-    public DhGexKeyExchangeReplyMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhGexKeyExchangeReplyMessagePreparator PREPARATOR =
+            new DhGexKeyExchangeReplyMessagePreparator();
 
     @Override
     public DhGexKeyExchangeReplyMessageSerializer getSerializer() {

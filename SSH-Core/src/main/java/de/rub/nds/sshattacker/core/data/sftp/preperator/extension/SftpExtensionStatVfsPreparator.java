@@ -14,13 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpExtensionStatVfsPreparator
         extends SftpExtensionWithVersionPreparator<SftpExtensionStatVfs> {
 
-    public SftpExtensionStatVfsPreparator(
-            Chooser chooser, SftpExtensionStatVfs extension, SftpExtension extensionName) {
-        super(chooser, extension, extensionName);
+    public SftpExtensionStatVfsPreparator() {
+        super(SftpExtension.F_STAT_VFS_OPENSSH_COM);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-        object.setSoftlyVersion("2", true, config);
+    public void prepareExtensionSpecificContents(SftpExtensionStatVfs object, Chooser chooser) {
+        object.setSoftlyVersion("2", true, chooser.getConfig());
     }
 }

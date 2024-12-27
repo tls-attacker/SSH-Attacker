@@ -13,12 +13,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpExtensionUnknownPreparator
         extends SftpAbstractExtensionPreparator<SftpExtensionUnknown> {
 
-    public SftpExtensionUnknownPreparator(Chooser chooser, SftpExtensionUnknown extension) {
-        super(chooser, extension, "hello-from@ssh-attacker.de");
+    public SftpExtensionUnknownPreparator() {
+        super("hello-from@ssh-attacker.de");
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-        object.setSoftlyValue(new byte[100], true, config);
+    public void prepareExtensionSpecificContents(SftpExtensionUnknown object, Chooser chooser) {
+        object.setSoftlyValue(new byte[100], true, chooser.getConfig());
     }
 }

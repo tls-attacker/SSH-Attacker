@@ -16,18 +16,17 @@ import java.util.List;
 public class SftpRequestCheckFileNameMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestCheckFileNameMessage> {
 
-    public SftpRequestCheckFileNameMessagePreparator(
-            Chooser chooser, SftpRequestCheckFileNameMessage message) {
-        super(chooser, message, SftpExtension.CHECK_FILE_NAME);
+    public SftpRequestCheckFileNameMessagePreparator() {
+        super(SftpExtension.CHECK_FILE_NAME);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-
-        object.setSoftlyPath("/etc/passwd", true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestCheckFileNameMessage object, Chooser chooser) {
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
         object.setSoftlyHashAlgorithms(
-                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, config);
+                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, chooser.getConfig());
 
         object.setSoftlyStartOffset(0);
 

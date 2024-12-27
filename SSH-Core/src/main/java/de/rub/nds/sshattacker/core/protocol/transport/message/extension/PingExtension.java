@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PingExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class PingExtension extends AbstractExtension<PingExtension> {
@@ -91,5 +92,10 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     @Override
     public PingExtensionHandler getHandler(SshContext context) {
         return new PingExtensionHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PingExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
 }

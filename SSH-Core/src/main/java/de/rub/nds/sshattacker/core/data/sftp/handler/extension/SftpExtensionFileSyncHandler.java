@@ -42,11 +42,8 @@ public class SftpExtensionFileSyncHandler
                 SftpExtensionFileSync::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionFileSync> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.F_SYNC_OPENSSH_COM);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionFileSync> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.F_SYNC_OPENSSH_COM);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionFileSync> getSerializer() {

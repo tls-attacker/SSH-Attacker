@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.constants.ChannelDataType;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
@@ -85,22 +85,20 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
     }
 
     @Override
-    public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array) {
+    public ChannelSuccessMessageParser getParser(byte[] array) {
         return new ChannelSuccessMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array, int startPosition) {
+    public ChannelSuccessMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelSuccessMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<ChannelSuccessMessage> getPreparator() {
-        return new ChannelSuccessMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelSuccessMessagePreparator PREPARATOR =
+            new ChannelSuccessMessagePreparator();
 
     @Override
-    public SshMessageSerializer<ChannelSuccessMessage> getSerializer() {
+    public ChannelMessageSerializer<ChannelSuccessMessage> getSerializer() {
         return new ChannelMessageSerializer<>(message);
     }
 }

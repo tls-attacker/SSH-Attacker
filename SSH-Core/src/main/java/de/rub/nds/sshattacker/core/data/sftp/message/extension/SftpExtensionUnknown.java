@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionUnknownHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnknown> {
 
@@ -89,5 +90,10 @@ public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnk
     @Override
     public SftpExtensionUnknownHandler getHandler(SshContext context) {
         return new SftpExtensionUnknownHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionUnknownHandler.PREPARATOR.prepare(this, chooser);
     }
 }

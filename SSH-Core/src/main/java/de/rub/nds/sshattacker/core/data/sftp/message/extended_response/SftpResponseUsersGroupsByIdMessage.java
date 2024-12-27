@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpRespo
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -118,7 +119,7 @@ public class SftpResponseUsersGroupsByIdMessage
     }
 
     public void addUserName(String userName) {
-        userNames.add(new SftpNameEntry(ModifiableVariableFactory.safelySetValue(null, userName)));
+        userNames.add(new SftpNameEntry(new ModifiableString(userName)));
     }
 
     public ModifiableInteger getGroupNamesLength() {
@@ -172,12 +173,16 @@ public class SftpResponseUsersGroupsByIdMessage
     }
 
     public void addGroupName(String groupName) {
-        groupNames.add(
-                new SftpNameEntry(ModifiableVariableFactory.safelySetValue(null, groupName)));
+        groupNames.add(new SftpNameEntry(new ModifiableString(groupName)));
     }
 
     @Override
     public SftpResponseUsersGroupsByIdMessageHandler getHandler(SshContext context) {
         return new SftpResponseUsersGroupsByIdMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseUsersGroupsByIdMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

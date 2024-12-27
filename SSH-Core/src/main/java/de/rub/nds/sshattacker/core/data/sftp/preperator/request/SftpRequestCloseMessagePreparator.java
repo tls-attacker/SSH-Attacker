@@ -14,13 +14,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestCloseMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestCloseMessage> {
 
-    public SftpRequestCloseMessagePreparator(Chooser chooser, SftpRequestCloseMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_CLOSE);
+    public SftpRequestCloseMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_CLOSE);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(SftpRequestCloseMessage object, Chooser chooser) {
         object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                true,
+                chooser.getConfig());
     }
 }

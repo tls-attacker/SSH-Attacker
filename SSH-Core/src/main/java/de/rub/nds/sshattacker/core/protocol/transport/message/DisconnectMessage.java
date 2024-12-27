@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessage extends SshMessage<DisconnectMessage> {
@@ -186,5 +187,10 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     @Override
     public DisconnectMessageHandler getHandler(SshContext context) {
         return new DisconnectMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DisconnectMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

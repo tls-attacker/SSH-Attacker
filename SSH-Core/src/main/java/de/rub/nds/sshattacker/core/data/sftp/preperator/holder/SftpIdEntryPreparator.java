@@ -13,12 +13,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpIdEntryPreparator extends Preparator<SftpIdEntry> {
 
-    public SftpIdEntryPreparator(Chooser chooser, SftpIdEntry idEntry) {
-        super(chooser, idEntry);
-    }
-
     @Override
-    public final void prepare() {
+    public final void prepare(SftpIdEntry object, Chooser chooser) {
         object.setSoftlyId(1000);
     }
 }

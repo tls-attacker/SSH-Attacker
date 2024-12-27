@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.packet.preparator;
 
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,26 +16,13 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final AbstractPacketEncryptor encryptor;
-    private final PacketCompressor compressor;
-
-    public BinaryPacketPreparator(
-            Chooser chooser,
-            BinaryPacket binaryPacket,
-            AbstractPacketEncryptor encryptor,
-            PacketCompressor compressor) {
-        super(chooser, binaryPacket);
-        this.encryptor = encryptor;
-        this.compressor = compressor;
-    }
-
     @Override
-    public void prepare() {
+    public void preparePacketContents(BinaryPacket object, Chooser chooser) {
         LOGGER.debug("Preparing binary packet computations");
         object.prepareComputations();
         LOGGER.debug("Compressing binary packet");
-        compressor.compress(object);
+        chooser.getContext().getPacketLayer().getCompressor().compress(object);
         LOGGER.debug("Encrypting binary packet");
-        encryptor.encrypt(object);
+        chooser.getContext().getPacketLayer().getEncryptor().encrypt(object);
     }
 }

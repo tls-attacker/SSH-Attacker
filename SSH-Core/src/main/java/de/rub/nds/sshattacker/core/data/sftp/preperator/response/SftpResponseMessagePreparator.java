@@ -15,16 +15,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public abstract class SftpResponseMessagePreparator<T extends SftpResponseMessage<T>>
         extends SftpMessagePreparator<T> {
 
-    protected SftpResponseMessagePreparator(
-            Chooser chooser, T message, SftpPacketTypeConstant packetType) {
-        super(chooser, message, packetType);
+    protected SftpResponseMessagePreparator(SftpPacketTypeConstant packetType) {
+        super(packetType);
     }
 
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(T object, Chooser chooser) {
         // Request identifier should be set by SftpManager in handleRequestMessage()
         object.setSoftlyRequestId(chooser.getContext().getSftpManager().getNextRequestId());
-        prepareResponseSpecificContents();
+        prepareResponseSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareResponseSpecificContents();
+    protected abstract void prepareResponseSpecificContents(T object, Chooser chooser);
 }

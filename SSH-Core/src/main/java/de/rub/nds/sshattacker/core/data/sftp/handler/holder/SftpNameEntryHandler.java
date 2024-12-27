@@ -43,10 +43,7 @@ public class SftpNameEntryHandler implements Handler<SftpNameEntry> {
         return new SftpNameEntryParser(array, startPosition);
     }
 
-    @Override
-    public SftpNameEntryPreparator getPreparator() {
-        return new SftpNameEntryPreparator(context.getChooser(), nameEntry);
-    }
+    public static final SftpNameEntryPreparator PREPARATOR = new SftpNameEntryPreparator();
 
     @Override
     public SftpNameEntrySerializer getSerializer() {

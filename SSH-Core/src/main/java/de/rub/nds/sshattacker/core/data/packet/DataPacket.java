@@ -49,12 +49,14 @@ public class DataPacket extends AbstractDataPacket {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
-    public DataPacketPreparator getPacketPreparator(Chooser chooser) {
-        return new DataPacketPreparator(chooser, this);
-    }
-
     public DataPacketParser getPacketParser(byte[] array, int startPosition) {
         return new DataPacketParser(array, startPosition);
+    }
+
+    public static final DataPacketPreparator PREPARATOR = new DataPacketPreparator();
+
+    public void prepare(Chooser chooser) {
+        PREPARATOR.prepare(this, chooser);
     }
 
     @Override

@@ -16,19 +16,19 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseUsersGroupsByIdMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseUsersGroupsByIdMessage> {
 
-    public SftpResponseUsersGroupsByIdMessagePreparator(
-            Chooser chooser, SftpResponseUsersGroupsByIdMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(
+            SftpResponseUsersGroupsByIdMessage object, Chooser chooser) {
         if (object.getUserNames().isEmpty()) {
             object.addUserName("ssh");
             object.addUserName("attacker");
+        } else {
+            object.getUserNames().forEach(userName -> userName.prepare(chooser));
         }
         if (object.getGroupNames().isEmpty()) {
             object.addGroupName("nds");
+        } else {
+            object.getGroupNames().forEach(groupName -> groupName.prepare(chooser));
         }
 
         object.setSoftlyUserNamesLength(
@@ -37,7 +37,7 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
                                 .map(SftpNameEntry::getNameLength)
                                 .mapToInt(ModifiableVariable::getValue)
                                 .sum(),
-                config);
+                chooser.getConfig());
 
         object.setSoftlyGroupNamesLength(
                 object.getGroupNames().size() * DataFormatConstants.UINT32_SIZE
@@ -45,6 +45,6 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
                                 .map(SftpNameEntry::getNameLength)
                                 .mapToInt(ModifiableVariable::getValue)
                                 .sum(),
-                config);
+                chooser.getConfig());
     }
 }

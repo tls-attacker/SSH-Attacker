@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DebugMessagePreparator;
@@ -52,10 +52,7 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
         return new DebugMessageParser(array, startPosition);
     }
 
-    @Override
-    public DebugMessagePreparator getPreparator() {
-        return new DebugMessagePreparator(context.getChooser(), message);
-    }
+    public static final DebugMessagePreparator PREPARATOR = new DebugMessagePreparator();
 
     @Override
     public DebugMessageSerializer getSerializer() {

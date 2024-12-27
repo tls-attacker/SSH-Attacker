@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBanne
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBannerMessage> {
@@ -39,10 +39,8 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
         return new UserAuthBannerMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthBannerMessagePreparator getPreparator() {
-        return new UserAuthBannerMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthBannerMessagePreparator PREPARATOR =
+            new UserAuthBannerMessagePreparator();
 
     @Override
     public UserAuthBannerMessageSerializer getSerializer() {

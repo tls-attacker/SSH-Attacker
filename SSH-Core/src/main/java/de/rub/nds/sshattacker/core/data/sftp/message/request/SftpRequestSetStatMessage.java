@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSetStatM
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class SftpRequestSetStatMessage
@@ -44,6 +45,11 @@ public class SftpRequestSetStatMessage
     @Override
     public SftpRequestSetStatMessageHandler getHandler(SshContext context) {
         return new SftpRequestSetStatMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestSetStatMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

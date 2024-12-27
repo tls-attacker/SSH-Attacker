@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestFileSyncMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestFileSyncMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestFileSyncMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestFileSyncMessage
     @Override
     public SftpRequestFileSyncMessageHandler getHandler(SshContext context) {
         return new SftpRequestFileSyncMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestFileSyncMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

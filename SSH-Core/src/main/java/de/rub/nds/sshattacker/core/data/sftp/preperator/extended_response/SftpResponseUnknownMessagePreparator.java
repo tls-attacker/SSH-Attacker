@@ -13,13 +13,9 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseUnknownMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseUnknownMessage> {
 
-    public SftpResponseUnknownMessagePreparator(
-            Chooser chooser, SftpResponseUnknownMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(
+            SftpResponseUnknownMessage object, Chooser chooser) {
         object.setSoftlyResponseSpecificData(new byte[100]);
     }
 }

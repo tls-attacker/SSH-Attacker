@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseNameMe
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -104,6 +105,11 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     @Override
     public SftpResponseNameMessageHandler getHandler(SshContext context) {
         return new SftpResponseNameMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseNameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

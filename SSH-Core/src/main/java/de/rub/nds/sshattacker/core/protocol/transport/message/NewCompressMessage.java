@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.NewCompressMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class NewCompressMessage extends SshMessage<NewCompressMessage> {
 
@@ -29,5 +30,10 @@ public class NewCompressMessage extends SshMessage<NewCompressMessage> {
     @Override
     public NewCompressMessageHandler getHandler(SshContext context) {
         return new NewCompressMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        NewCompressMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

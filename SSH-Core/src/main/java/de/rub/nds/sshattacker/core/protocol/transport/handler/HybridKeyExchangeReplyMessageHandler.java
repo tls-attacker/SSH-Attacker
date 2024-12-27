@@ -10,9 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeReplyMessagePreparator;
@@ -88,15 +85,14 @@ public class HybridKeyExchangeReplyMessageHandler
     }
 
     @Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
+    public HybridKeyExchangeReplyMessageParser getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(
                 array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
     }
 
     @Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
-            byte[] array, int startPosition) {
+    public HybridKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(
                 array,
@@ -106,15 +102,11 @@ public class HybridKeyExchangeReplyMessageHandler
                 kex.getCiphertextLength());
     }
 
-    @Override
-    public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessagePreparator(
-                context.getChooser(), message, kex.getCombiner());
-    }
+    public static final HybridKeyExchangeReplyMessagePreparator PREPARATOR =
+            new HybridKeyExchangeReplyMessagePreparator();
 
     @Override
-    public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
+    public HybridKeyExchangeReplyMessageSerializer getSerializer() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageSerializer(message, kex.getCombiner());
     }

@@ -36,8 +36,5 @@ public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> imple
     public abstract ProtocolMessageParser<T> getParser(byte[] array, int startPosition);
 
     @Override
-    public abstract ProtocolMessagePreparator<T> getPreparator();
-
-    @Override
     public abstract ProtocolMessageSerializer<T> getSerializer();
 }

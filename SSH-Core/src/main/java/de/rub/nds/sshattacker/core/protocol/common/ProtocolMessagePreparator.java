@@ -12,14 +12,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage<T>>
         extends Preparator<T> {
 
-    protected ProtocolMessagePreparator(Chooser chooser, T message) {
-        super(chooser, message);
+    protected ProtocolMessagePreparator() {
+        super();
     }
 
     @Override
-    public final void prepare() {
-        prepareProtocolMessageContents();
+    public final void prepare(T object, Chooser chooser) {
+        prepareProtocolMessageContents(object, chooser);
     }
 
-    protected abstract void prepareProtocolMessageContents();
+    protected abstract void prepareProtocolMessageContents(T object, Chooser chooser);
 }

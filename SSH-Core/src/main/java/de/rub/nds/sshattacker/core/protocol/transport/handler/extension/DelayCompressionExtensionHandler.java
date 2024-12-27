@@ -78,10 +78,8 @@ public class DelayCompressionExtensionHandler
         return new DelayCompressionExtensionParser(array, startPosition);
     }
 
-    @Override
-    public DelayCompressionExtensionPreparator getPreparator() {
-        return new DelayCompressionExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final DelayCompressionExtensionPreparator PREPARATOR =
+            new DelayCompressionExtensionPreparator();
 
     @Override
     public DelayCompressionExtensionSerializer getSerializer() {

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestWindowChangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestWindowChangeMessage
         extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> {
@@ -117,5 +118,10 @@ public class ChannelRequestWindowChangeMessage
     @Override
     public ChannelRequestWindowChangeMessageHandler getHandler(SshContext context) {
         return new ChannelRequestWindowChangeMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestWindowChangeMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

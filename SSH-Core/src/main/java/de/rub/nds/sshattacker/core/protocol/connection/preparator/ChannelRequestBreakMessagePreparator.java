@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestBreakMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestBreakMessage> {
 
-    public ChannelRequestBreakMessagePreparator(
-            Chooser chooser, ChannelRequestBreakMessage message) {
-        super(chooser, message, ChannelRequestType.BREAK, true);
+    public ChannelRequestBreakMessagePreparator() {
+        super(ChannelRequestType.BREAK, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        object.setSoftlyBreakLength(config.getDefaultBreakLength());
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestBreakMessage object, Chooser chooser) {
+        object.setSoftlyBreakLength(chooser.getConfig().getDefaultBreakLength());
     }
 }

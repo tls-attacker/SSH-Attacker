@@ -14,10 +14,10 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class NewCompressMessagePreparator extends SshMessagePreparator<NewCompressMessage> {
 
-    public NewCompressMessagePreparator(Chooser chooser, NewCompressMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_NEWCOMPRESS);
+    public NewCompressMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_NEWCOMPRESS);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    public void prepareMessageSpecificContents(NewCompressMessage object, Chooser chooser) {}
 }

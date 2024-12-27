@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestCancelTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestCancelTcpIpForwardMessage
@@ -122,5 +123,10 @@ public class GlobalRequestCancelTcpIpForwardMessage
     @Override
     public GlobalRequestCancelTcpIpForwardMessageHandler getHandler(SshContext context) {
         return new GlobalRequestCancelTcpIpForwardMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestCancelTcpIpForwardMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

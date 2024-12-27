@@ -15,18 +15,19 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestFileStatMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestFileStatMessage> {
 
-    public SftpRequestFileStatMessagePreparator(
-            Chooser chooser, SftpRequestFileStatMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_FSTAT);
+    public SftpRequestFileStatMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_FSTAT);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-
+    public void prepareRequestSpecificContents(SftpRequestFileStatMessage object, Chooser chooser) {
         object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                true,
+                chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() > 3
+                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
             object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             object.clearFlags();

@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PongMessagePreparator extends SshMessagePreparator<PongMessage> {
 
-    public PongMessagePreparator(Chooser chooser, PongMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_PONG);
+    public PongMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_PONG);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        object.setSoftlyData(new byte[0], true, config);
+    public void prepareMessageSpecificContents(PongMessage object, Chooser chooser) {
+        object.setSoftlyData(new byte[0], true, chooser.getConfig());
     }
 }

@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
@@ -250,5 +251,10 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
     @Override
     public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
         return new EcdhKeyExchangeReplyMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        EcdhKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 public enum SftpPacketTypeConstant {
     /*

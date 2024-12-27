@@ -14,16 +14,18 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestFileSetStatMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestFileSetStatMessage> {
 
-    public SftpRequestFileSetStatMessagePreparator(
-            Chooser chooser, SftpRequestFileSetStatMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_FSETSTAT);
+    public SftpRequestFileSetStatMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_FSETSTAT);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(
+            SftpRequestFileSetStatMessage object, Chooser chooser) {
         object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                true,
+                chooser.getConfig());
 
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().prepare(chooser);
     }
 }

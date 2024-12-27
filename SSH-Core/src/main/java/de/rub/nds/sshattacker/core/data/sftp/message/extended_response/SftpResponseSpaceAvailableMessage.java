@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseSpaceAvailableMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseSpaceAvailableMessage
         extends SftpResponseMessage<SftpResponseSpaceAvailableMessage> {
@@ -164,5 +165,10 @@ public class SftpResponseSpaceAvailableMessage
     @Override
     public SftpResponseSpaceAvailableMessageHandler getHandler(SshContext context) {
         return new SftpResponseSpaceAvailableMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseSpaceAvailableMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

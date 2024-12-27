@@ -45,10 +45,8 @@ public class EcdhKeyExchangeInitMessageHandler
         return new EcdhKeyExchangeInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public EcdhKeyExchangeInitMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final EcdhKeyExchangeInitMessagePreparator PREPARATOR =
+            new EcdhKeyExchangeInitMessagePreparator();
 
     @Override
     public EcdhKeyExchangeInitMessageSerializer getSerializer() {

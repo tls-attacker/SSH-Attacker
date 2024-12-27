@@ -13,12 +13,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseLimitsMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseLimitsMessage> {
 
-    public SftpResponseLimitsMessagePreparator(Chooser chooser, SftpResponseLimitsMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(SftpResponseLimitsMessage object, Chooser chooser) {
         object.setSoftlyMaximumPacketLength(100000);
 
         object.setSoftlyMaximumReadLength(0);

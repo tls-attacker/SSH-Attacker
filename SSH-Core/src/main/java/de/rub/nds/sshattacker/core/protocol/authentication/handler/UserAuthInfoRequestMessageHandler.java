@@ -39,10 +39,8 @@ public class UserAuthInfoRequestMessageHandler
         return new UserAuthInfoRequestMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthInfoRequestMessagePreparator getPreparator() {
-        return new UserAuthInfoRequestMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthInfoRequestMessagePreparator PREPARATOR =
+            new UserAuthInfoRequestMessagePreparator();
 
     @Override
     public UserAuthInfoRequestMessageSerializer getSerializer() {

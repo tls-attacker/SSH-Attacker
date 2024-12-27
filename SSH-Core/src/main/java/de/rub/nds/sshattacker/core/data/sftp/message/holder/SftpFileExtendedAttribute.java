@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileExtendedAttributeHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
@@ -145,5 +146,9 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
 
     public SftpFileExtendedAttributeHandler getHandler(SshContext context) {
         return new SftpFileExtendedAttributeHandler(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        SftpFileExtendedAttributeHandler.PREPARATOR.prepare(this, chooser);
     }
 }

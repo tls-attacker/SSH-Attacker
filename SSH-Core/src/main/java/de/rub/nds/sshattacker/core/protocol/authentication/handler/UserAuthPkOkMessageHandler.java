@@ -12,8 +12,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPkOkMe
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPkOkMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPkOkMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMessage> {
@@ -39,13 +37,11 @@ public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMe
         return new UserAuthPkOkMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<UserAuthPkOkMessage> getPreparator() {
-        return new UserAuthPkOkMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthPkOkMessagePreparator PREPARATOR =
+            new UserAuthPkOkMessagePreparator();
 
     @Override
-    public SshMessageSerializer<UserAuthPkOkMessage> getSerializer() {
+    public UserAuthPkOkMessageSerializer getSerializer() {
         return new UserAuthPkOkMessageSerializer(message);
     }
 }

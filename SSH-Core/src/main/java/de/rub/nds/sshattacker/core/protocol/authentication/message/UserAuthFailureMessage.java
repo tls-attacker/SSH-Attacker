@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailu
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -175,5 +176,10 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
     @Override
     public UserAuthFailureMessageHandler getHandler(SshContext context) {
         return new UserAuthFailureMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

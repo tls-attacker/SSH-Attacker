@@ -16,16 +16,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpAclEntryPreparator extends Preparator<SftpAclEntry> {
 
-    public SftpAclEntryPreparator(Chooser chooser, SftpAclEntry aclEntry) {
-        super(chooser, aclEntry);
-    }
-
     @Override
-    public final void prepare() {
+    public final void prepare(SftpAclEntry object, Chooser chooser) {
         object.setSoftlyType(SftpAceType.ACE4_ACCESS_ALLOWED_ACE_TYPE);
         object.setSoftlyFlags(SftpAceFlag.ACE4_FILE_INHERIT_ACE);
         object.setSoftlyMask(SftpAceMask.ACE4_ADD_FILE);
 
-        object.setSoftlyWho(config.getUsername(), true, config);
+        object.setSoftlyWho(chooser.getConfig().getUsername(), true, chooser.getConfig());
     }
 }

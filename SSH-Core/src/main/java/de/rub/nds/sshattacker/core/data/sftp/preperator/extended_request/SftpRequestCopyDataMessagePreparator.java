@@ -14,22 +14,22 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestCopyDataMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestCopyDataMessage> {
 
-    public SftpRequestCopyDataMessagePreparator(
-            Chooser chooser, SftpRequestCopyDataMessage message) {
-        super(chooser, message, SftpExtension.COPY_DATA);
+    public SftpRequestCopyDataMessagePreparator() {
+        super(SftpExtension.COPY_DATA);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-
-        object.setSoftlyHandle(chooser.getContext().getSftpManager().getFileHandle(), true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestCopyDataMessage object, Chooser chooser) {
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
 
         object.setSoftlyReadFromOffset(0);
 
         object.setSoftlyReadDataLength(1000000);
 
         object.setSoftlyWriteToHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, config);
+                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
 
         object.setSoftlyWriteToOffset(0);
     }

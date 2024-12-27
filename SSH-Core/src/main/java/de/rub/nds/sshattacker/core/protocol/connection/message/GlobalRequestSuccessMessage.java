@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccessMessage> {
 
@@ -49,5 +50,10 @@ public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccess
     @Override
     public GlobalRequestSuccessMessageHandler getHandler(SshContext context) {
         return new GlobalRequestSuccessMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

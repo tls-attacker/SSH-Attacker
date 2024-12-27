@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenSessionMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSessionMessage> {
 
@@ -28,5 +29,10 @@ public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSes
     @Override
     public ChannelOpenSessionMessageHandler getHandler(SshContext context) {
         return new ChannelOpenSessionMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenSessionMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

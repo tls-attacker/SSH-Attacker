@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostb
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHostbasedMessage>
@@ -376,5 +377,10 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     @Override
     public UserAuthHostbasedMessageHandler getHandler(SshContext context) {
         return new UserAuthHostbasedMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthHostbasedMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

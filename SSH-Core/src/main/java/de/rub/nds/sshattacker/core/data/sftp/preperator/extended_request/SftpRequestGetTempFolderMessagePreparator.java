@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestGetTempFolderMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestGetTempFolderMessage> {
 
-    public SftpRequestGetTempFolderMessagePreparator(
-            Chooser chooser, SftpRequestGetTempFolderMessage message) {
-        super(chooser, message, SftpExtension.GET_TEMP_FOLDER);
+    public SftpRequestGetTempFolderMessagePreparator() {
+        super(SftpExtension.GET_TEMP_FOLDER);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {}
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestGetTempFolderMessage object, Chooser chooser) {}
 }

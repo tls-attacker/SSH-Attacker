@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestXonXoffMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestXonXoffMessage> {
 
-    public ChannelRequestXonXoffMessagePreparator(
-            Chooser chooser, ChannelRequestXonXoffMessage message) {
-        super(chooser, message, ChannelRequestType.XON_XOFF, false);
+    public ChannelRequestXonXoffMessagePreparator() {
+        super(ChannelRequestType.XON_XOFF, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        object.setSoftlyClientFlowControl(config.getClientFlowControl());
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestXonXoffMessage object, Chooser chooser) {
+        object.setSoftlyClientFlowControl(chooser.getConfig().getClientFlowControl());
     }
 }

@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.holder.AuthenticationResponseEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.*;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class AuthenticationResponseEntry extends ModifiableVariableHolder {
@@ -96,5 +96,9 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
 
     public AuthenticationResponseEntryHandler getHandler(SshContext context) {
         return new AuthenticationResponseEntryHandler(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        AuthenticationResponseEntryHandler.PREPARATOR.prepare(this, chooser);
     }
 }

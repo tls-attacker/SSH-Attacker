@@ -14,19 +14,18 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestVendorIdMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestVendorIdMessage> {
 
-    public SftpRequestVendorIdMessagePreparator(
-            Chooser chooser, SftpRequestVendorIdMessage message) {
-        super(chooser, message, SftpExtension.VENDOR_ID);
+    public SftpRequestVendorIdMessagePreparator() {
+        super(SftpExtension.VENDOR_ID);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestVendorIdMessage object, Chooser chooser) {
+        object.setSoftlyVendorName("NDS RUB", true, chooser.getConfig());
 
-        object.setSoftlyVendorName("NDS RUB", true, config);
+        object.setSoftlyProductName("SSH-Attacker", true, chooser.getConfig());
 
-        object.setSoftlyProductName("SSH-Attacker", true, config);
-
-        object.setSoftlyProductVersion("1.0", true, config);
+        object.setSoftlyProductVersion("1.0", true, chooser.getConfig());
 
         object.setSoftlyProductBuildNumber(2024);
     }

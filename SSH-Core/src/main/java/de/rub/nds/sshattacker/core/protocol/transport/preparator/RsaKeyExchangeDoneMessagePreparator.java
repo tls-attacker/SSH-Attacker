@@ -17,12 +17,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class RsaKeyExchangeDoneMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeDoneMessage> {
 
-    public RsaKeyExchangeDoneMessagePreparator(Chooser chooser, RsaKeyExchangeDoneMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_DONE);
+    public RsaKeyExchangeDoneMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_DONE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(RsaKeyExchangeDoneMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);

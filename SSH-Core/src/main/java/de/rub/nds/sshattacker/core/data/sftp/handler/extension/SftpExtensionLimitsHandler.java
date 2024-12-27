@@ -40,11 +40,8 @@ public class SftpExtensionLimitsHandler extends SftpAbstractExtensionHandler<Sft
         return new SftpExtensionWithVersionParser<>(SftpExtensionLimits::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionLimits> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.LIMITS);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionLimits> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.LIMITS);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionLimits> getSerializer() {

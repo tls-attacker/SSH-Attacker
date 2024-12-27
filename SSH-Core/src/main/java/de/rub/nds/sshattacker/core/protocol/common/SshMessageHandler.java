@@ -26,8 +26,5 @@ public abstract class SshMessageHandler<T extends SshMessage<T>> extends Protoco
     public abstract SshMessageParser<T> getParser(byte[] array, int startPosition);
 
     @Override
-    public abstract SshMessagePreparator<T> getPreparator();
-
-    @Override
     public abstract SshMessageSerializer<T> getSerializer();
 }

@@ -22,18 +22,20 @@ public class ChannelOpenConfirmationMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessagePreparator(
-            Chooser chooser, ChannelOpenConfirmationMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
+    public ChannelOpenConfirmationMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            ChannelOpenConfirmationMessage object, Chooser chooser) {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
         ChannelOpenConfirmationMessage toCopy = channelManager.prepareNextOpenConfirm();
 
-        object.setSoftlyRecipientChannelId(toCopy.getRecipientChannelId().getValue(), config);
-        object.setSoftlySenderChannelId(toCopy.getSenderChannelId().getValue(), config);
+        object.setSoftlyRecipientChannelId(
+                toCopy.getRecipientChannelId().getValue(), chooser.getConfig());
+        object.setSoftlySenderChannelId(
+                toCopy.getSenderChannelId().getValue(), chooser.getConfig());
 
         Channel channel =
                 channelManager.getChannelByLocalId(object.getSenderChannelId().getValue());
@@ -48,7 +50,7 @@ public class ChannelOpenConfirmationMessagePreparator
             object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
             object.setSoftlyPacketSize(channel.getLocalPacketSize().getValue());
         } else {
-            ChannelDefaults channelDefaults = config.getChannelDefaults();
+            ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
             object.setSoftlyWindowSize(channelDefaults.getLocalWindowSize());
             object.setSoftlyPacketSize(channelDefaults.getLocalPacketSize());
         }

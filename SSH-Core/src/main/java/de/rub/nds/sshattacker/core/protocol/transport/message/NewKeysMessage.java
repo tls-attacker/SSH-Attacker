@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.NewKeysMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
@@ -29,5 +30,10 @@ public class NewKeysMessage extends SshMessage<NewKeysMessage> {
     @Override
     public NewKeysMessageHandler getHandler(SshContext context) {
         return new NewKeysMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        NewKeysMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

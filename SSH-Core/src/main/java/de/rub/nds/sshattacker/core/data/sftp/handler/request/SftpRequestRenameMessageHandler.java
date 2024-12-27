@@ -34,10 +34,8 @@ public class SftpRequestRenameMessageHandler
         return new SftpRequestRenameMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestRenameMessagePreparator getPreparator() {
-        return new SftpRequestRenameMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestRenameMessagePreparator PREPARATOR =
+            new SftpRequestRenameMessagePreparator();
 
     @Override
     public SftpRequestRenameMessageSerializer getSerializer() {

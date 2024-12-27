@@ -14,15 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestRenameMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestRenameMessage> {
 
-    public SftpRequestRenameMessagePreparator(Chooser chooser, SftpRequestRenameMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_RENAME);
+    public SftpRequestRenameMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_RENAME);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(SftpRequestRenameMessage object, Chooser chooser) {
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        object.setSoftlyPath("/etc/passwd", true, config);
-
-        object.setSoftlyNewPath("/tmp/passwd-win", true, config);
+        object.setSoftlyNewPath("/tmp/passwd-win", true, chooser.getConfig());
     }
 }

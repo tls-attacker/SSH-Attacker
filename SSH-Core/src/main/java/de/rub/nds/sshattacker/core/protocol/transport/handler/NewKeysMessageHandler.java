@@ -11,7 +11,8 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
@@ -150,10 +151,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         return new NewKeysMessageParser(array, startPosition);
     }
 
-    @Override
-    public NewKeysMessagePreparator getPreparator() {
-        return new NewKeysMessagePreparator(context.getChooser(), message);
-    }
+    public static final NewKeysMessagePreparator PREPARATOR = new NewKeysMessagePreparator();
 
     @Override
     public NewKeysMessageSerializer getSerializer() {

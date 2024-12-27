@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailu
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFailureMessage> {
@@ -39,10 +39,8 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
         return new UserAuthFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthFailureMessagePreparator getPreparator() {
-        return new UserAuthFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthFailureMessagePreparator PREPARATOR =
+            new UserAuthFailureMessagePreparator();
 
     @Override
     public UserAuthFailureMessageSerializer getSerializer() {

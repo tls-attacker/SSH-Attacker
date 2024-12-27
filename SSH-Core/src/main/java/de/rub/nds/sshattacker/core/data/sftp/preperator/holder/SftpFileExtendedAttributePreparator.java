@@ -13,16 +13,10 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpFileExtendedAttributePreparator extends Preparator<SftpFileExtendedAttribute> {
 
-    public SftpFileExtendedAttributePreparator(
-            Chooser chooser, SftpFileExtendedAttribute attribute) {
-        super(chooser, attribute);
-    }
-
     @Override
-    public final void prepare() {
+    public final void prepare(SftpFileExtendedAttribute object, Chooser chooser) {
+        object.setSoftlyType("hello-from@ssh-attacker.de", true, chooser.getConfig());
 
-        object.setSoftlyType("hello-from@ssh-attacker.de", true, config);
-
-        object.setSoftlyData(new byte[100], true, config);
+        object.setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

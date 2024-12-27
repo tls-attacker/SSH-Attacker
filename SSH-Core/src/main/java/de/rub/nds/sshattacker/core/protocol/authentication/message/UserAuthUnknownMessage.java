@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnknownMessage> {
     private ModifiableByteArray methodSpecificFields;
@@ -56,5 +57,10 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
     @Override
     public UserAuthUnknownMessageHandler getHandler(SshContext context) {
         return new UserAuthUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

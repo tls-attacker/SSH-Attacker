@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestRenameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpRequestRenameMessage> {
@@ -92,5 +93,10 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     @Override
     public SftpRequestRenameMessageHandler getHandler(SshContext context) {
         return new SftpRequestRenameMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestRenameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

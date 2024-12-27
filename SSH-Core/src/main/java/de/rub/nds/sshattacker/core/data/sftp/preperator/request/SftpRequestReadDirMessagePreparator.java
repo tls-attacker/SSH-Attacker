@@ -14,13 +14,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestReadDirMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestReadDirMessage> {
 
-    public SftpRequestReadDirMessagePreparator(Chooser chooser, SftpRequestReadDirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_READDIR);
+    public SftpRequestReadDirMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_READDIR);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(SftpRequestReadDirMessage object, Chooser chooser) {
         object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getDirectoryHandle(), true, config);
+                chooser.getContext().getSftpManager().getDirectoryHandle(),
+                true,
+                chooser.getConfig());
     }
 }

@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseDataMessagePreparator
         extends SftpResponseMessagePreparator<SftpResponseDataMessage> {
 
-    public SftpResponseDataMessagePreparator(Chooser chooser, SftpResponseDataMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_DATA);
+    public SftpResponseDataMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_DATA);
     }
 
     @Override
-    public void prepareResponseSpecificContents() {
-        object.setSoftlyData(new byte[100], true, config);
+    public void prepareResponseSpecificContents(SftpResponseDataMessage object, Chooser chooser) {
+        object.setSoftlyData(new byte[100], true, chooser.getConfig());
     }
 }

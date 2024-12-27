@@ -14,14 +14,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestTextSeekMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestTextSeekMessage> {
 
-    public SftpRequestTextSeekMessagePreparator(
-            Chooser chooser, SftpRequestTextSeekMessage message) {
-        super(chooser, message, SftpExtension.TEXT_SEEK);
+    public SftpRequestTextSeekMessagePreparator() {
+        super(SftpExtension.TEXT_SEEK);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-        object.setSoftlyHandle(chooser.getContext().getSftpManager().getFileHandle(), true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestTextSeekMessage object, Chooser chooser) {
+        object.setSoftlyHandle(
+                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
 
         object.setSoftlyLineNumber(0);
     }

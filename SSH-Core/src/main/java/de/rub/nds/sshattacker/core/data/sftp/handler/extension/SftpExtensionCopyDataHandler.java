@@ -42,11 +42,8 @@ public class SftpExtensionCopyDataHandler
                 SftpExtensionCopyData::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionCopyData> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.COPY_DATA);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionCopyData> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.COPY_DATA);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionCopyData> getSerializer() {

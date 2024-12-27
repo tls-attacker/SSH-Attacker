@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSymbolicLinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestSymbolicLinkMessage
@@ -98,5 +99,10 @@ public class SftpRequestSymbolicLinkMessage
     @Override
     public SftpRequestSymbolicLinkMessageHandler getHandler(SshContext context) {
         return new SftpRequestSymbolicLinkMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestSymbolicLinkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

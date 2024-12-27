@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelFailureMessageParser;
@@ -55,10 +55,8 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
         return new ChannelFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelFailureMessagePreparator getPreparator() {
-        return new ChannelFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelFailureMessagePreparator PREPARATOR =
+            new ChannelFailureMessagePreparator();
 
     @Override
     public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {

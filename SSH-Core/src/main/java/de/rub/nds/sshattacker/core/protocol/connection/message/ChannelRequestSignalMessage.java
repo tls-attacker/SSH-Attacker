@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSignalMessage
@@ -107,5 +108,10 @@ public class ChannelRequestSignalMessage
     @Override
     public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
         return new ChannelRequestSignalMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestSignalMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthFailureMessagePreparator extends SshMessagePreparator<UserAuthFailureMessage> {
 
-    public UserAuthFailureMessagePreparator(Chooser chooser, UserAuthFailureMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
+    public UserAuthFailureMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(UserAuthFailureMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        object.setSoftlyPossibleAuthenticationMethods("", true, config);
+        object.setSoftlyPossibleAuthenticationMethods("", true, chooser.getConfig());
         object.setSoftlyPartialSuccess(true);
     }
 }

@@ -14,18 +14,18 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseHandleMessagePreparator
         extends SftpResponseMessagePreparator<SftpResponseHandleMessage> {
 
-    public SftpResponseHandleMessagePreparator(Chooser chooser, SftpResponseHandleMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_HANDLE);
+    public SftpResponseHandleMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_HANDLE);
     }
 
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(SftpResponseHandleMessage object, Chooser chooser) {
         if (object.getHandle() == null || object.getHandle().getOriginalValue() == null) {
             // Should be set in SftpManager handleRequestMessage() -> Don't use soft set, because
             // soft set in this case would set
             object.setHandle(new byte[100], true);
         }
         // This should not be necessary:
-        object.setSoftlyHandleLength(object.getHandle().getValue().length, config);
+        object.setSoftlyHandleLength(object.getHandle().getValue().length, chooser.getConfig());
     }
 }

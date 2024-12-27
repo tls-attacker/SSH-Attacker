@@ -16,20 +16,21 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthPkOkMessagePreparator extends SshMessagePreparator<UserAuthPkOkMessage> {
 
-    public UserAuthPkOkMessagePreparator(Chooser chooser, UserAuthPkOkMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_PK_OK);
+    public UserAuthPkOkMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_PK_OK);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(UserAuthPkOkMessage object, Chooser chooser) {
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
 
         if (pk != null) {
-            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
-            object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config, true);
+            object.setSoftlyPubkeyAlgName(
+                    pk.getPublicKeyFormat().getName(), true, chooser.getConfig());
+            object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, chooser.getConfig(), true);
         } else {
-            object.setSoftlyPubkeyAlgName("", true, config);
-            object.setSoftlyPubkey(new byte[0], true, config, false);
+            object.setSoftlyPubkeyAlgName("", true, chooser.getConfig());
+            object.setSoftlyPubkey(new byte[0], true, chooser.getConfig(), false);
         }
     }
 }

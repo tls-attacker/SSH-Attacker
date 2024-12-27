@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponseUnknownMessage> {
     private ModifiableByteArray responseSpecificData;
@@ -57,5 +58,10 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
     @Override
     public SftpResponseUnknownMessageHandler getHandler(SshContext context) {
         return new SftpResponseUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

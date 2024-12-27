@@ -9,11 +9,7 @@ package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;

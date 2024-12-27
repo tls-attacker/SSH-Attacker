@@ -34,10 +34,8 @@ public class SftpRequestWriteMessageHandler
         return new SftpRequestWriteMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestWriteMessagePreparator getPreparator() {
-        return new SftpRequestWriteMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestWriteMessagePreparator PREPARATOR =
+            new SftpRequestWriteMessagePreparator();
 
     @Override
     public SftpRequestWriteMessageSerializer getSerializer() {

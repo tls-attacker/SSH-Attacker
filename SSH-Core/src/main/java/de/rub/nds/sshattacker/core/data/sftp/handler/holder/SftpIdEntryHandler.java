@@ -43,10 +43,7 @@ public class SftpIdEntryHandler implements Handler<SftpIdEntry> {
         return new SftpIdEntryParser(array, startPosition);
     }
 
-    @Override
-    public SftpIdEntryPreparator getPreparator() {
-        return new SftpIdEntryPreparator(context.getChooser(), idEntry);
-    }
+    public static final SftpIdEntryPreparator PREPARATOR = new SftpIdEntryPreparator();
 
     @Override
     public SftpIdEntrySerializer getSerializer() {

@@ -14,9 +14,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeReplyMessage>
@@ -253,5 +254,10 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
     @Override
     public DhGexKeyExchangeReplyMessageHandler getHandler(SshContext context) {
         return new DhGexKeyExchangeReplyMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhGexKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

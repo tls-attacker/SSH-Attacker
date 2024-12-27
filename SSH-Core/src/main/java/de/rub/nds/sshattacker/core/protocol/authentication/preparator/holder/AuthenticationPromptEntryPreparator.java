@@ -13,14 +13,9 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class AuthenticationPromptEntryPreparator extends Preparator<AuthenticationPromptEntry> {
 
-    public AuthenticationPromptEntryPreparator(
-            Chooser chooser, AuthenticationPromptEntry authenticationPromptEntry) {
-        super(chooser, authenticationPromptEntry);
-    }
-
     @Override
-    public final void prepare() {
-        object.setSoftlyPrompt("Response: ", true, config);
+    public final void prepare(AuthenticationPromptEntry object, Chooser chooser) {
+        object.setSoftlyPrompt("Response: ", true, chooser.getConfig());
         object.setSoftlyEcho(true);
     }
 }

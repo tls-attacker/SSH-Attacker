@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestCloseMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRequestCloseMessage> {
 
@@ -28,5 +29,10 @@ public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRe
     @Override
     public SftpRequestCloseMessageHandler getHandler(SshContext context) {
         return new SftpRequestCloseMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestCloseMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

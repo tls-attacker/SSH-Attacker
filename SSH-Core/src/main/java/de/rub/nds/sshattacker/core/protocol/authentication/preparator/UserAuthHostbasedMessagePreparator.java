@@ -33,27 +33,30 @@ public class UserAuthHostbasedMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthHostbasedMessagePreparator(Chooser chooser, UserAuthHostbasedMessage message) {
-        super(chooser, message, AuthenticationMethod.HOST_BASED);
+    public UserAuthHostbasedMessagePreparator() {
+        super(AuthenticationMethod.HOST_BASED);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
+    public void prepareUserAuthRequestSpecificContents(
+            UserAuthHostbasedMessage object, Chooser chooser) {
 
-        object.setSoftlyPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true, config);
+        Config config = chooser.getConfig();
+        object.setSoftlyPubKeyAlgorithm(
+                chooser.getHostKeyAlgorithm().toString(), true, config);
         object.setSoftlyHostKeyBytes(
                 PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true, config);
         object.setSoftlyHostName(
                 Optional.ofNullable(chooser.getContext().getConnection().getIp())
                         .orElse(AliasedConnection.DEFAULT_IP),
-                true,
-                config);
+                true, config);
         // set the username on client machine to the username on remote, specify if needed
-        object.setSoftlyClientUserName(config.getUsername(), true, config);
-        prepareSignature(config);
+        object.setSoftlyClientUserName(
+                config.getUsername(), true, config);
+        prepareSignature(object, chooser);
     }
 
-    public byte[] prepareSignatureInput() {
+    public static byte[] prepareSignatureInput(UserAuthHostbasedMessage object, Chooser chooser) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         chooser.getContext().getSessionID().orElse(new byte[] {})),
@@ -69,7 +72,7 @@ public class UserAuthHostbasedMessagePreparator
                         object.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
     }
 
-    public void prepareSignature(Config config) {
+    public static void prepareSignature(UserAuthHostbasedMessage object, Chooser chooser) {
         SigningSignature signingSignature;
         PublicKeyAlgorithm publicKeyAlgorithm =
                 PublicKeyAlgorithm.fromName(object.getPubKeyAlgorithm().getValue());
@@ -84,22 +87,22 @@ public class UserAuthHostbasedMessagePreparator
                             signatureEncoding.getName().length(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(prepareSignatureInput());
+            byte[] rawSignature = signingSignature.sign(prepareSignatureInput(object, chooser));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
-            object.setSoftlySignature(signatureOutput.toByteArray(), true, config);
+            object.setSoftlySignature(signatureOutput.toByteArray(), true, chooser.getConfig());
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            object.setSoftlySignature(new byte[0], true, config);
+            object.setSoftlySignature(new byte[0], true, chooser.getConfig());
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            object.setSoftlySignature(new byte[0], true, config);
+            object.setSoftlySignature(new byte[0], true, chooser.getConfig());
         }
     }
 }

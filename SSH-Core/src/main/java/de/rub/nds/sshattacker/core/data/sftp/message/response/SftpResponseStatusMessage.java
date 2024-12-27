@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseStatusMessage> {
@@ -186,5 +187,10 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     @Override
     public SftpResponseStatusMessageHandler getHandler(SshContext context) {
         return new SftpResponseStatusMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseStatusMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

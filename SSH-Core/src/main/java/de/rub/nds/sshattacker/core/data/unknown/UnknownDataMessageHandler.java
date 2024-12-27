@@ -38,10 +38,8 @@ public class UnknownDataMessageHandler extends ProtocolMessageHandler<UnknownDat
         return new UnknownDataMessageParser(array, startPosition);
     }
 
-    @Override
-    public UnknownDataMessagePreparator getPreparator() {
-        return new UnknownDataMessagePreparator(context.getChooser(), message);
-    }
+    public static final UnknownDataMessagePreparator PREPARATOR =
+            new UnknownDataMessagePreparator();
 
     @Override
     public UnknownDataMessageSerializer getSerializer() {

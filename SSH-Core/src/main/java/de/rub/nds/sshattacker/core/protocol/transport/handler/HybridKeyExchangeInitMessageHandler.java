@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeInitMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -85,12 +85,8 @@ public class HybridKeyExchangeInitMessageHandler
                 kex.getPkEncapsulationLength());
     }
 
-    @Override
-    public HybridKeyExchangeInitMessagePreperator getPreparator() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessagePreperator(
-                context.getChooser(), message, kex.getCombiner());
-    }
+    public static final HybridKeyExchangeInitMessagePreparator PREPARATOR =
+            new HybridKeyExchangeInitMessagePreparator();
 
     @Override
     public HybridKeyExchangeInitMessageSerializer getSerializer() {

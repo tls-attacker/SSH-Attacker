@@ -25,20 +25,20 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
 
     protected Channel channel;
 
-    protected ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
-        super(chooser, message, messageId);
+    protected ChannelMessagePreparator(MessageIdConstant messageId) {
+        super(messageId);
     }
 
     @Override
-    public final void prepareMessageSpecificContents() {
-        prepareChannel();
-        prepareChannelMessageSpecificContents();
+    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+        prepareChannel(object, chooser);
+        prepareChannelMessageSpecificContents(object, chooser);
     }
 
-    private void prepareChannel() {
+    private void prepareChannel(T object, Chooser chooser) {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
 
-        ChannelDefaults channelDefaults = config.getChannelDefaults();
+        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
         Integer localChannelId =
                 Optional.ofNullable(object.getConfigLocalChannelId())
                         .orElse(channelDefaults.getLocalChannelId());
@@ -63,8 +63,9 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
                     channel.getLocalChannelId().getValue());
         }
-        object.setSoftlyRecipientChannelId(channel.getRemoteChannelId().getValue(), config);
+        object.setSoftlyRecipientChannelId(
+                channel.getRemoteChannelId().getValue(), chooser.getConfig());
     }
 
-    protected abstract void prepareChannelMessageSpecificContents();
+    protected abstract void prepareChannelMessageSpecificContents(T object, Chooser chooser);
 }

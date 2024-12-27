@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpExtensionNewlinePreparator
         extends SftpAbstractExtensionPreparator<SftpExtensionNewline> {
 
-    public SftpExtensionNewlinePreparator(Chooser chooser, SftpExtensionNewline extension) {
-        super(chooser, extension, SftpExtension.NEWLINE);
+    public SftpExtensionNewlinePreparator() {
+        super(SftpExtension.NEWLINE);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-        object.setSoftlyNewlineSeperator("\n", true, config);
+    public void prepareExtensionSpecificContents(SftpExtensionNewline object, Chooser chooser) {
+        object.setSoftlyNewlineSeperator("\n", true, chooser.getConfig());
     }
 }

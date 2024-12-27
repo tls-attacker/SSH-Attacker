@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -14,13 +15,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyExchangeInitMessage> {
 
-    public KeyExchangeInitMessagePreparator(Chooser chooser, KeyExchangeInitMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXINIT);
+    public KeyExchangeInitMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXINIT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-
+    public void prepareMessageSpecificContents(KeyExchangeInitMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
         if (chooser.getContext().isClient()) {
             object.setSoftlyCookie(chooser.getClientCookie(), config);
             object.setSoftlyKeyExchangeAlgorithms(
@@ -28,17 +29,23 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
             object.setSoftlyServerHostKeyAlgorithms(
                     chooser.getClientSupportedHostKeyAlgorithms(), true, config);
             object.setSoftlyEncryptionAlgorithmsClientToServer(
-                    chooser.getClientSupportedEncryptionAlgorithmsClientToServer(), true, config);
+                    chooser.getClientSupportedEncryptionAlgorithmsClientToServer(),
+                    true, config);
             object.setSoftlyEncryptionAlgorithmsServerToClient(
-                    chooser.getClientSupportedEncryptionAlgorithmsServerToClient(), true, config);
+                    chooser.getClientSupportedEncryptionAlgorithmsServerToClient(),
+                    true, config);
             object.setSoftlyMacAlgorithmsClientToServer(
-                    chooser.getClientSupportedMacAlgorithmsClientToServer(), true, config);
+                    chooser.getClientSupportedMacAlgorithmsClientToServer(),
+                    true, config);
             object.setSoftlyMacAlgorithmsServerToClient(
-                    chooser.getClientSupportedMacAlgorithmsServerToClient(), true, config);
+                    chooser.getClientSupportedMacAlgorithmsServerToClient(),
+                    true, config);
             object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getClientSupportedCompressionMethodsClientToServer(), true, config);
+                    chooser.getClientSupportedCompressionMethodsClientToServer(),
+                    true, config);
             object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getClientSupportedCompressionMethodsServerToClient(), true, config);
+                    chooser.getClientSupportedCompressionMethodsServerToClient(),
+                    true, config);
             object.setSoftlyLanguagesClientToServer(
                     chooser.getClientSupportedLanguagesClientToServer(), true, config);
             object.setSoftlyLanguagesServerToClient(
@@ -55,17 +62,23 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
             object.setSoftlyServerHostKeyAlgorithms(
                     chooser.getServerSupportedHostKeyAlgorithms(), true, config);
             object.setSoftlyEncryptionAlgorithmsClientToServer(
-                    chooser.getServerSupportedEncryptionAlgorithmsClientToServer(), true, config);
+                    chooser.getServerSupportedEncryptionAlgorithmsClientToServer(),
+                    true, config);
             object.setSoftlyEncryptionAlgorithmsServerToClient(
-                    chooser.getServerSupportedEncryptionAlgorithmsServerToClient(), true, config);
+                    chooser.getServerSupportedEncryptionAlgorithmsServerToClient(),
+                    true, config);
             object.setSoftlyMacAlgorithmsClientToServer(
-                    chooser.getServerSupportedMacAlgorithmsClientToServer(), true, config);
+                    chooser.getServerSupportedMacAlgorithmsClientToServer(),
+                    true, config);
             object.setSoftlyMacAlgorithmsServerToClient(
-                    chooser.getServerSupportedMacAlgorithmsServerToClient(), true, config);
+                    chooser.getServerSupportedMacAlgorithmsServerToClient(),
+                    true, config);
             object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getServerSupportedCompressionMethodsClientToServer(), true, config);
+                    chooser.getServerSupportedCompressionMethodsClientToServer(),
+                    true, config);
             object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getServerSupportedCompressionMethodsServerToClient(), true, config);
+                    chooser.getServerSupportedCompressionMethodsServerToClient(),
+                    true, config);
             object.setSoftlyLanguagesClientToServer(
                     chooser.getServerSupportedLanguagesClientToServer(), true, config);
             object.setSoftlyLanguagesServerToClient(

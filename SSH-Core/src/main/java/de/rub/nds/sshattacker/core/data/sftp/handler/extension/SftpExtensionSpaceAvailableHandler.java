@@ -43,11 +43,8 @@ public class SftpExtensionSpaceAvailableHandler
                 SftpExtensionSpaceAvailable::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionSpaceAvailable> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.SPACE_AVAILABLE);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionSpaceAvailable> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.SPACE_AVAILABLE);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionSpaceAvailable> getSerializer() {

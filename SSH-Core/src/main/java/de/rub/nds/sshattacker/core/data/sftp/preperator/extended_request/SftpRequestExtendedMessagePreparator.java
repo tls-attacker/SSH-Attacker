@@ -18,23 +18,21 @@ public abstract class SftpRequestExtendedMessagePreparator<T extends SftpRequest
 
     private final String extendedRequestName;
 
-    protected SftpRequestExtendedMessagePreparator(
-            Chooser chooser, T message, SftpExtension extendedRequestName) {
-        this(chooser, message, extendedRequestName.getName());
+    protected SftpRequestExtendedMessagePreparator(SftpExtension extendedRequestName) {
+        this(extendedRequestName.getName());
     }
 
-    protected SftpRequestExtendedMessagePreparator(
-            Chooser chooser, T message, String extendedRequestName) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_EXTENDED);
+    protected SftpRequestExtendedMessagePreparator(String extendedRequestName) {
+        super(SftpPacketTypeConstant.SSH_FXP_EXTENDED);
         this.extendedRequestName = extendedRequestName;
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
+    public void prepareRequestSpecificContents(T object, Chooser chooser) {
         // Always set correct extended request name -> Don't use soft set
         object.setExtendedRequestName(extendedRequestName, true);
-        prepareRequestExtendedSpecificContents();
+        prepareRequestExtendedSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareRequestExtendedSpecificContents();
+    protected abstract void prepareRequestExtendedSpecificContents(T object, Chooser chooser);
 }

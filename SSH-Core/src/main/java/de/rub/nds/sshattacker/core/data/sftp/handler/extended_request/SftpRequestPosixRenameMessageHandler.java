@@ -36,10 +36,8 @@ public class SftpRequestPosixRenameMessageHandler
         return new SftpRequestPosixRenameMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestPosixRenameMessagePreparator getPreparator() {
-        return new SftpRequestPosixRenameMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestPosixRenameMessagePreparator PREPARATOR =
+            new SftpRequestPosixRenameMessagePreparator();
 
     @Override
     public SftpRequestPosixRenameMessageSerializer getSerializer() {

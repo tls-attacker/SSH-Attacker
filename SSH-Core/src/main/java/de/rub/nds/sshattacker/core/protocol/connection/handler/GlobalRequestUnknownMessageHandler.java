@@ -39,10 +39,8 @@ public class GlobalRequestUnknownMessageHandler
         return new GlobalRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestUnknownMessagePreparator getPreparator() {
-        return new GlobalRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestUnknownMessagePreparator PREPARATOR =
+            new GlobalRequestUnknownMessagePreparator();
 
     @Override
     public GlobalRequestUnknownMessageSerializer getSerializer() {

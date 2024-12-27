@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage> {
@@ -241,5 +242,10 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     @Override
     public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
         return new UserAuthPubkeyMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

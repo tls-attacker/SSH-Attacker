@@ -14,13 +14,9 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseStatVfsMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseStatVfsMessage> {
 
-    public SftpResponseStatVfsMessagePreparator(
-            Chooser chooser, SftpResponseStatVfsMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(
+            SftpResponseStatVfsMessage object, Chooser chooser) {
         object.setSoftlyBlockSize(32);
         object.setSoftlyFundamentalBlockSize(32);
         object.setSoftlyCountBlocks(11608687979080L);

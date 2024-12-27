@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpUnknownMessagePreparator extends SftpMessagePreparator<SftpUnknownMessage> {
 
-    public SftpUnknownMessagePreparator(Chooser chooser, SftpUnknownMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.UNKNOWN);
+    public SftpUnknownMessagePreparator() {
+        super(SftpPacketTypeConstant.UNKNOWN);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(SftpUnknownMessage object, Chooser chooser) {
         object.setSoftlyPayload(new byte[0]);
     }
 }

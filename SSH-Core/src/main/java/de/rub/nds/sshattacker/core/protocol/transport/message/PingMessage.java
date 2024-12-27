@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PingMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PingMessage extends SshMessage<PingMessage> {
 
@@ -89,5 +90,10 @@ public class PingMessage extends SshMessage<PingMessage> {
     @Override
     public PingMessageHandler getHandler(SshContext context) {
         return new PingMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PingMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

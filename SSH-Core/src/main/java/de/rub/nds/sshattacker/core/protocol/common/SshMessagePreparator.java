@@ -15,17 +15,17 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
 
     private final MessageIdConstant messageId;
 
-    protected SshMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
-        super(chooser, message);
+    protected SshMessagePreparator(MessageIdConstant messageId) {
+        super();
         this.messageId = messageId;
     }
 
     @Override
-    protected final void prepareProtocolMessageContents() {
+    protected final void prepareProtocolMessageContents(T object, Chooser chooser) {
         // Always set correct message id -> Don't use soft set
         object.setMessageId(messageId);
-        prepareMessageSpecificContents();
+        prepareMessageSpecificContents(object, chooser);
     }
 
-    public abstract void prepareMessageSpecificContents();
+    public abstract void prepareMessageSpecificContents(T object, Chooser chooser);
 }

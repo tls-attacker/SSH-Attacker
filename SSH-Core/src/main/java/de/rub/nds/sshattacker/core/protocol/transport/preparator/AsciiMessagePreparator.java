@@ -12,12 +12,9 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class AsciiMessagePreparator extends ProtocolMessagePreparator<AsciiMessage> {
-    public AsciiMessagePreparator(Chooser chooser, AsciiMessage message) {
-        super(chooser, message);
-    }
 
     @Override
-    public void prepareProtocolMessageContents() {
+    public void prepareProtocolMessageContents(AsciiMessage object, Chooser chooser) {
         object.setSoftlyText(""); // TODO: Add a way to set this via configuration.
         if (chooser.getContext().isClient()) {
             object.setSoftlyEndOfMessageSequence(chooser.getClientEndOfMessageSequence());

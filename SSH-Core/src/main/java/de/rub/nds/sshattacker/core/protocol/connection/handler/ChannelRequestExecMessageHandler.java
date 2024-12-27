@@ -7,7 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExecMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
@@ -41,19 +42,17 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     }
 
     @Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array) {
+    public ChannelRequestExecMessageParser getParser(byte[] array) {
         return new ChannelRequestExecMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array, int startPosition) {
+    public ChannelRequestExecMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestExecMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestExecMessagePreparator getPreparator() {
-        return new ChannelRequestExecMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestExecMessagePreparator PREPARATOR =
+            new ChannelRequestExecMessagePreparator();
 
     @Override
     public ChannelRequestExecMessageSerializer getSerializer() {

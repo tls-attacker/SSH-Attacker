@@ -36,10 +36,8 @@ public class SftpResponseUnknownMessageHandler
         return new SftpResponseUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpResponseUnknownMessagePreparator getPreparator() {
-        return new SftpResponseUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpResponseUnknownMessagePreparator PREPARATOR =
+            new SftpResponseUnknownMessagePreparator();
 
     @Override
     public SftpResponseUnknownMessageSerializer getSerializer() {

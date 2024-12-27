@@ -51,10 +51,8 @@ public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRe
         return new ChannelRequestEnvMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestEnvMessagePreparator getPreparator() {
-        return new ChannelRequestEnvMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestEnvMessagePreparator PREPARATOR =
+            new ChannelRequestEnvMessagePreparator();
 
     @Override
     public ChannelRequestEnvMessageSerializer getSerializer() {

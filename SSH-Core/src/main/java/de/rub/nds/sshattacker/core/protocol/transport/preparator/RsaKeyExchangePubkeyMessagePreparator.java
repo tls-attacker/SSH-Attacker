@@ -27,18 +27,18 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangePubkeyMessagePreparator(
-            Chooser chooser, RsaKeyExchangePubkeyMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
+    public RsaKeyExchangePubkeyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            RsaKeyExchangePubkeyMessage object, Chooser chooser) {
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), object);
-        prepareTransientPublicKey();
+        prepareTransientPublicKey(object, chooser);
     }
 
-    private void prepareTransientPublicKey() {
+    private void prepareTransientPublicKey(RsaKeyExchangePubkeyMessage object, Chooser chooser) {
 
         try {
             RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
@@ -47,7 +47,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
                     keyExchange.getTransientKey();
 
             object.setSoftlyTransientPublicKeyBytes(
-                    PublicKeyHelper.encode(transientKey), true, config);
+                    PublicKeyHelper.encode(transientKey), true, chooser.getConfig());
 
             chooser.getContext().getExchangeHashInputHolder().setRsaTransientKey(transientKey);
         } catch (CryptoException | IllegalArgumentException | ParserException e) {
@@ -56,11 +56,11 @@ public class RsaKeyExchangePubkeyMessagePreparator
             LOGGER.warn(
                     "Transient public key preparation failed - workflow will continue but transient public key will be left empty");
             LOGGER.debug(e);
-            object.setSoftlyTransientPublicKeyBytes(new byte[0], true, config);
+            object.setSoftlyTransientPublicKeyBytes(new byte[0], true, chooser.getConfig());
             // Using fallback transient key for ExchangeHashInputHolder
             chooser.getContext()
                     .getExchangeHashInputHolder()
-                    .setRsaTransientKey(config.getFallbackRsaTransientPublicKey());
+                    .setRsaTransientKey(chooser.getConfig().getFallbackRsaTransientPublicKey());
         }
     }
 }

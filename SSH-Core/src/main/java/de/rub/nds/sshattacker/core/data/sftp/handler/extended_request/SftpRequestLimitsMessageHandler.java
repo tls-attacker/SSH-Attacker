@@ -35,10 +35,8 @@ public class SftpRequestLimitsMessageHandler
         return new SftpRequestLimitsMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestLimitsMessagePreparator getPreparator() {
-        return new SftpRequestLimitsMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestLimitsMessagePreparator PREPARATOR =
+            new SftpRequestLimitsMessagePreparator();
 
     @Override
     public SftpRequestLimitsMessageSerializer getSerializer() {

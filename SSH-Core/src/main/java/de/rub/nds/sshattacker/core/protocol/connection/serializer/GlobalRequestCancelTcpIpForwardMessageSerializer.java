@@ -13,12 +13,12 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GlobalRequestCancelTcpIpForwardlMessageSerializer
+public class GlobalRequestCancelTcpIpForwardMessageSerializer
         extends GlobalRequestMessageSerializer<GlobalRequestCancelTcpIpForwardMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestCancelTcpIpForwardlMessageSerializer(
+    public GlobalRequestCancelTcpIpForwardMessageSerializer(
             GlobalRequestCancelTcpIpForwardMessage message) {
         super(message);
     }

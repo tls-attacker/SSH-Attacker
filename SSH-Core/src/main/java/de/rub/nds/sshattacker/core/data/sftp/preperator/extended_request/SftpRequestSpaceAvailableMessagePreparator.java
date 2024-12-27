@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestSpaceAvailableMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestSpaceAvailableMessage> {
 
-    public SftpRequestSpaceAvailableMessagePreparator(
-            Chooser chooser, SftpRequestSpaceAvailableMessage message) {
-        super(chooser, message, SftpExtension.SPACE_AVAILABLE);
+    public SftpRequestSpaceAvailableMessagePreparator() {
+        super(SftpExtension.SPACE_AVAILABLE);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-        object.setSoftlyPath("/tmp", true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestSpaceAvailableMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp", true, chooser.getConfig());
     }
 }

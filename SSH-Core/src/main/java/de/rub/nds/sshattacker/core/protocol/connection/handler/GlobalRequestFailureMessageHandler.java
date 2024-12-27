@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestFailureMessagePreparator;
@@ -41,10 +41,8 @@ public class GlobalRequestFailureMessageHandler
         return new GlobalRequestFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestFailureMessagePreparator getPreparator() {
-        return new GlobalRequestFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestFailureMessagePreparator PREPARATOR =
+            new GlobalRequestFailureMessagePreparator();
 
     @Override
     public GlobalRequestFailureMessageSerializer getSerializer() {

@@ -14,14 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class PublicKeyAlgorithmsRoumenPetrovExtensionPreparator
         extends AbstractExtensionPreparator<PublicKeyAlgorithmsRoumenPetrovExtension> {
 
-    public PublicKeyAlgorithmsRoumenPetrovExtensionPreparator(
-            Chooser chooser, PublicKeyAlgorithmsRoumenPetrovExtension extension) {
-        super(chooser, extension, Extension.PUBLICKEY_ALGORITHMS_ROUMENPETROV);
+    public PublicKeyAlgorithmsRoumenPetrovExtensionPreparator() {
+        super(Extension.PUBLICKEY_ALGORITHMS_ROUMENPETROV);
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    protected void prepareExtensionSpecificContents(
+            PublicKeyAlgorithmsRoumenPetrovExtension object, Chooser chooser) {
         object.setSoftlyPublicKeyAlgorithms(
-                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true, config);
+                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
+                true,
+                chooser.getConfig());
     }
 }

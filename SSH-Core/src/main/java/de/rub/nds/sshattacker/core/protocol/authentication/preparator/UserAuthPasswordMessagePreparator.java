@@ -14,15 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthPasswordMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthPasswordMessage> {
 
-    public UserAuthPasswordMessagePreparator(Chooser chooser, UserAuthPasswordMessage message) {
-        super(chooser, message, AuthenticationMethod.PASSWORD);
+    public UserAuthPasswordMessagePreparator() {
+        super(AuthenticationMethod.PASSWORD);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
+    public void prepareUserAuthRequestSpecificContents(
+            UserAuthPasswordMessage object, Chooser chooser) {
         object.setSoftlyChangePassword(false);
 
-        object.setSoftlyPassword(config.getPassword(), true, config);
-        object.setSoftlyNewPassword("newPassword", true, config);
+        object.setSoftlyPassword(chooser.getConfig().getPassword(), true, chooser.getConfig());
+        object.setSoftlyNewPassword("newPassword", true, chooser.getConfig());
     }
 }

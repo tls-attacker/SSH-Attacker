@@ -34,10 +34,8 @@ public class SftpRequestMakeDirMessageHandler
         return new SftpRequestMakeDirMessageParser(array, startPosition, context.getChooser());
     }
 
-    @Override
-    public SftpRequestMakeDirMessagePreparator getPreparator() {
-        return new SftpRequestMakeDirMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestMakeDirMessagePreparator PREPARATOR =
+            new SftpRequestMakeDirMessagePreparator();
 
     @Override
     public SftpRequestMakeDirMessageSerializer getSerializer() {

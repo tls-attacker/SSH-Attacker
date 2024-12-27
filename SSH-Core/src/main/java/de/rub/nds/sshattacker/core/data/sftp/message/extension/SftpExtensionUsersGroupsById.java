@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionUsersGroupsByIdHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionUsersGroupsById
         extends SftpExtensionWithVersion<SftpExtensionUsersGroupsById> {
@@ -29,5 +30,10 @@ public class SftpExtensionUsersGroupsById
     @Override
     public SftpExtensionUsersGroupsByIdHandler getHandler(SshContext context) {
         return new SftpExtensionUsersGroupsByIdHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionUsersGroupsByIdHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -35,10 +35,8 @@ public class SftpResponseAttributesMessageHandler
         return new SftpResponseAttributesMessageParser(array, startPosition, context.getChooser());
     }
 
-    @Override
-    public SftpResponseAttributesMessagePreparator getPreparator() {
-        return new SftpResponseAttributesMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpResponseAttributesMessagePreparator PREPARATOR =
+            new SftpResponseAttributesMessagePreparator();
 
     @Override
     public SftpResponseAttributesMessageSerializer getSerializer() {

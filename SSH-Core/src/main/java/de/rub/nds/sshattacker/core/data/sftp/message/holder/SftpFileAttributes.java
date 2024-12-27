@@ -19,7 +19,10 @@ import de.rub.nds.sshattacker.core.constants.SftpFileType;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileAttributesHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.*;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -317,10 +320,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         }
     }
 
-    public SftpFileAttributesHandler getHandler(SshContext context) {
-        return new SftpFileAttributesHandler(context, this);
-    }
-
     // SFTP v4
 
     public ModifiableByte getType() {
@@ -559,6 +558,14 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         if (adjustLengthField) {
             setAclEntriesCount(aclEntries.size());
         }
+    }
+
+    public SftpFileAttributesHandler getHandler(SshContext context) {
+        return new SftpFileAttributesHandler(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        SftpFileAttributesHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

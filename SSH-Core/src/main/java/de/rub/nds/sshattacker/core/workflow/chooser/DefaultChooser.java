@@ -20,7 +20,9 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.Authen
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

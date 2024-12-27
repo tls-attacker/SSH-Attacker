@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseAttributesMessagePreparator
         extends SftpResponseMessagePreparator<SftpResponseAttributesMessage> {
 
-    public SftpResponseAttributesMessagePreparator(
-            Chooser chooser, SftpResponseAttributesMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_ATTRS);
+    public SftpResponseAttributesMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_ATTRS);
     }
 
     @Override
-    public void prepareResponseSpecificContents() {
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+    public void prepareResponseSpecificContents(
+            SftpResponseAttributesMessage object, Chooser chooser) {
+        object.getAttributes().prepare(chooser);
     }
 }

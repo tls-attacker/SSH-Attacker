@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequestExecMessage> {
@@ -90,5 +91,10 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     @Override
     public ChannelRequestExecMessageHandler getHandler(SshContext context) {
         return new ChannelRequestExecMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestExecMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

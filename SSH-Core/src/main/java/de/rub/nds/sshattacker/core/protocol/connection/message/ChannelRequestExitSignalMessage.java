@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
@@ -263,5 +264,10 @@ public class ChannelRequestExitSignalMessage
     @Override
     public ChannelRequestExitSignalMessageHandler getHandler(SshContext context) {
         return new ChannelRequestExitSignalMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestExitSignalMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

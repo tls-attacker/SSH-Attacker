@@ -35,10 +35,8 @@ public class SftpRequestRemoveDirMessageHandler
         return new SftpRequestRemoveDirMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestRemoveDirMessagePreparator getPreparator() {
-        return new SftpRequestRemoveDirMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestRemoveDirMessagePreparator PREPARATOR =
+            new SftpRequestRemoveDirMessagePreparator();
 
     @Override
     public SftpRequestRemoveDirMessageSerializer getSerializer() {

@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
@@ -149,15 +147,15 @@ public class BinaryPacket extends AbstractPacket {
     }
 
     @Override
-    public BinaryPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-        return new BinaryPacketPreparator(chooser, this, encryptor, compressor);
-    }
-
-    @Override
     public BinaryPacketParser getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
         return new BinaryPacketParser(array, startPosition, activeDecryptCipher, sequenceNumber);
+    }
+
+    public static final BinaryPacketPreparator PREPARATOR = new BinaryPacketPreparator();
+
+    public void prepare(Chooser chooser) {
+        PREPARATOR.prepare(this, chooser);
     }
 
     @Override

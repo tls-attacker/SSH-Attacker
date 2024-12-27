@@ -12,10 +12,6 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PassThroughPacketPreparator extends AbstractDataPacketPreparator<PassThroughPacket> {
 
-    public PassThroughPacketPreparator(Chooser chooser, PassThroughPacket passThroughPacket) {
-        super(chooser, passThroughPacket);
-    }
-
     @Override
-    public void prepare() {}
+    public void prepare(PassThroughPacket object, Chooser chooser) {}
 }

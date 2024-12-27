@@ -16,21 +16,21 @@ public abstract class SftpMessagePreparator<T extends SftpMessage<T>>
 
     private final Byte packetType;
 
-    protected SftpMessagePreparator(Chooser chooser, T message, SftpPacketTypeConstant packetType) {
-        this(chooser, message, packetType.getId());
+    protected SftpMessagePreparator(SftpPacketTypeConstant packetType) {
+        this(packetType.getId());
     }
 
-    protected SftpMessagePreparator(Chooser chooser, T message, byte packetType) {
-        super(chooser, message);
+    protected SftpMessagePreparator(byte packetType) {
+        super();
         this.packetType = packetType;
     }
 
     @Override
-    public final void prepareProtocolMessageContents() {
+    public final void prepareProtocolMessageContents(T object, Chooser chooser) {
         // Always set correct packet type -> Don't use soft set
         object.setPacketType(packetType);
-        prepareMessageSpecificContents();
+        prepareMessageSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareMessageSpecificContents();
+    protected abstract void prepareMessageSpecificContents(T object, Chooser chooser);
 }

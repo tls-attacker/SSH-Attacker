@@ -10,12 +10,11 @@ package de.rub.nds.sshattacker.core.data.sftp.preperator.extended_response;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.response.SftpResponseMessagePreparator;
-import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class SftpResponseExtendedMessagePreparator<T extends SftpResponseMessage<T>>
         extends SftpResponseMessagePreparator<T> {
 
-    protected SftpResponseExtendedMessagePreparator(Chooser chooser, T message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_EXTENDED_REPLY);
+    protected SftpResponseExtendedMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_EXTENDED_REPLY);
     }
 }

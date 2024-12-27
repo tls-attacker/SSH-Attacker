@@ -135,7 +135,7 @@ public class DataMessageLayer {
 
         // Create and prepare ChannelDataMessage
         ChannelDataMessage resultMessage = new ChannelDataMessage();
-        resultMessage.getHandler(context).getPreparator().prepare();
+        resultMessage.prepare(context.getChooser());
 
         // Set prepared and serialized packet as data of ChannelDataMessage
         resultMessage.setData(packetLayer.preparePacket(packet), true);

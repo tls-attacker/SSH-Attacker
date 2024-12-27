@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionMakeTempFolderHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionMakeTempFolder
         extends SftpExtensionWithVersion<SftpExtensionMakeTempFolder> {
@@ -29,5 +30,10 @@ public class SftpExtensionMakeTempFolder
     @Override
     public SftpExtensionMakeTempFolderHandler getHandler(SshContext context) {
         return new SftpExtensionMakeTempFolderHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionMakeTempFolderHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -18,13 +18,13 @@ import java.math.BigInteger;
 public class DhGexKeyExchangeGroupMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeGroupMessage> {
 
-    public DhGexKeyExchangeGroupMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeGroupMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_GROUP);
+    public DhGexKeyExchangeGroupMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_GROUP);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            DhGexKeyExchangeGroupMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         if (chooser.getContext().isOldGroupRequestReceived()) {
             keyExchange.selectGroup(chooser.getPreferredDhGroupSize());
@@ -37,8 +37,8 @@ public class DhGexKeyExchangeGroupMessagePreparator
         BigInteger generator = keyExchange.getGenerator();
         BigInteger modulus = keyExchange.getModulus();
 
-        object.setSoftlyGroupGenerator(generator, true, config);
-        object.setSoftlyGroupModulus(modulus, true, config);
+        object.setSoftlyGroupGenerator(generator, true, chooser.getConfig());
+        object.setSoftlyGroupModulus(modulus, true, chooser.getConfig());
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         inputHolder.setDhGexGroupGenerator(generator);

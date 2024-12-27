@@ -42,11 +42,8 @@ public class SftpExtensionExpandPathHandler
                 SftpExtensionExpandPath::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionExpandPath> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.EXPAND_PATH);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionExpandPath> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.EXPAND_PATH);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionExpandPath> getSerializer() {

@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.PublicKeyAlgorithmsRoumenPetrovExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.PublicKeyAlgorithmsRoumenPetrovExtensionPreparator;
@@ -52,14 +50,11 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
         return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array, startPosition);
     }
 
-    @Override
-    public Preparator<PublicKeyAlgorithmsRoumenPetrovExtension> getPreparator() {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionPreparator(
-                context.getChooser(), extension);
-    }
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionPreparator PREPARATOR =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionPreparator();
 
     @Override
-    public Serializer<PublicKeyAlgorithmsRoumenPetrovExtension> getSerializer() {
+    public PublicKeyAlgorithmsRoumenPetrovExtensionSerializer getSerializer() {
         return new PublicKeyAlgorithmsRoumenPetrovExtensionSerializer(extension);
     }
 }

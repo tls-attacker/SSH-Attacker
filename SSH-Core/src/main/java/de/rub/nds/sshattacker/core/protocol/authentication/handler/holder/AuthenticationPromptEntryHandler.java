@@ -44,11 +44,8 @@ public class AuthenticationPromptEntryHandler implements Handler<AuthenticationP
         return new AuthenticationPromptEntryParser(array, startPosition);
     }
 
-    @Override
-    public AuthenticationPromptEntryPreparator getPreparator() {
-        return new AuthenticationPromptEntryPreparator(
-                context.getChooser(), authenticationPromptEntry);
-    }
+    public static final AuthenticationPromptEntryPreparator PREPARATOR =
+            new AuthenticationPromptEntryPreparator();
 
     @Override
     public AuthenticationPromptEntrySerializer getSerializer() {

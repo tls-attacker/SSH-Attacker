@@ -11,14 +11,12 @@ import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelOpenSessionMessagePreperator
+public class ChannelOpenSessionMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenSessionMessage> {
-    public ChannelOpenSessionMessagePreperator(Chooser chooser, ChannelOpenSessionMessage message) {
-        super(chooser, message);
-    }
 
     @Override
-    public void prepareChannelOpenMessageSpecificContents() {
+    public void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenSessionMessage object, Chooser chooser) {
         // TODO: I think it would be better to do this in ChannelOpenMessagePreparator, and pass
         //  ChannelType as argument
         // Always set correct channel type -> Don't use soft set

@@ -13,13 +13,9 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpResponseSpaceAvailableMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseSpaceAvailableMessage> {
 
-    public SftpResponseSpaceAvailableMessagePreparator(
-            Chooser chooser, SftpResponseSpaceAvailableMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareResponseSpecificContents() {
+    public void prepareResponseSpecificContents(
+            SftpResponseSpaceAvailableMessage object, Chooser chooser) {
         object.setSoftlyBytesOnDevice(10000000001L);
 
         object.setSoftlyUnusedBytesOnDevice(10);

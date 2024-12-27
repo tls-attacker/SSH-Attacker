@@ -12,25 +12,25 @@ import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public abstract class AbstractExtensionPreparator<E extends AbstractExtension<E>>
-        extends Preparator<E> {
+public abstract class AbstractExtensionPreparator<T extends AbstractExtension<T>>
+        extends Preparator<T> {
 
     private final String extensionName;
 
-    protected AbstractExtensionPreparator(Chooser chooser, E extension, Extension extensionName) {
-        this(chooser, extension, extensionName.getName());
+    protected AbstractExtensionPreparator(Extension extensionName) {
+        this(extensionName.getName());
     }
 
-    protected AbstractExtensionPreparator(Chooser chooser, E extension, String extensionName) {
-        super(chooser, extension);
+    protected AbstractExtensionPreparator(String extensionName) {
+        super();
         this.extensionName = extensionName;
     }
 
     @Override
-    public void prepare() {
-        object.setSoftlyName(extensionName, true, config);
-        prepareExtensionSpecificContents();
+    public void prepare(T object, Chooser chooser) {
+        object.setSoftlyName(extensionName, true, chooser.getConfig());
+        prepareExtensionSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareExtensionSpecificContents();
+    protected abstract void prepareExtensionSpecificContents(T object, Chooser chooser);
 }

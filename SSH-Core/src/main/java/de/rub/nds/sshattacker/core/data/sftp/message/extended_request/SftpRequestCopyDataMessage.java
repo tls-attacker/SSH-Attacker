@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestCopyDataMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestCopyDataMessage> {
@@ -166,5 +167,10 @@ public class SftpRequestCopyDataMessage
     @Override
     public SftpRequestCopyDataMessageHandler getHandler(SshContext context) {
         return new SftpRequestCopyDataMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestCopyDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

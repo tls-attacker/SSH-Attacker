@@ -37,10 +37,8 @@ public class UserAuthPubkeyMessageHandler extends SshMessageHandler<UserAuthPubk
         return new UserAuthPubkeyMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthPubkeyMessagePreparator getPreparator() {
-        return new UserAuthPubkeyMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthPubkeyMessagePreparator PREPARATOR =
+            new UserAuthPubkeyMessagePreparator();
 
     @Override
     public UserAuthPubkeyMessageSerializer getSerializer() {

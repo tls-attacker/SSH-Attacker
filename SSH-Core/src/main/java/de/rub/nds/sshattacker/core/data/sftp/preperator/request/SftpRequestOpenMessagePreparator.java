@@ -15,16 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestOpenMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestOpenMessage> {
 
-    public SftpRequestOpenMessagePreparator(Chooser chooser, SftpRequestOpenMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_OPEN);
+    public SftpRequestOpenMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_OPEN);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/etc/passwd", true, config);
+    public void prepareRequestSpecificContents(SftpRequestOpenMessage object, Chooser chooser) {
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
         object.setSoftlyPFlags(SftpFileOpenFlag.SSH_FXF_READ);
 
-        object.getAttributes().getHandler(chooser.getContext()).getPreparator().prepare();
+        object.getAttributes().prepare(chooser);
     }
 }

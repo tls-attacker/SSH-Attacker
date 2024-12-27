@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
@@ -89,5 +90,10 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
     @Override
     public UnknownExtensionHandler getHandler(SshContext context) {
         return new UnknownExtensionHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnknownExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
 }

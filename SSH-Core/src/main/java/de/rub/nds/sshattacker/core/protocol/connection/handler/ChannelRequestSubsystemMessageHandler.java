@@ -51,10 +51,8 @@ public class ChannelRequestSubsystemMessageHandler
         return new ChannelRequestSubsystemMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestSubsystemMessagePreparator getPreparator() {
-        return new ChannelRequestSubsystemMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestSubsystemMessagePreparator PREPARATOR =
+            new ChannelRequestSubsystemMessagePreparator();
 
     @Override
     public ChannelRequestSubsystemMessageSerializer getSerializer() {

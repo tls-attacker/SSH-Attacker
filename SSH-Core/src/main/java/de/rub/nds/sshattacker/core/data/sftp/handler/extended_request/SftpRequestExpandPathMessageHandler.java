@@ -36,10 +36,8 @@ public class SftpRequestExpandPathMessageHandler
         return new SftpRequestExpandPathMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestExpandPathMessagePreparator getPreparator() {
-        return new SftpRequestExpandPathMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestExpandPathMessagePreparator PREPARATOR =
+            new SftpRequestExpandPathMessagePreparator();
 
     @Override
     public SftpRequestExpandPathMessageSerializer getSerializer() {

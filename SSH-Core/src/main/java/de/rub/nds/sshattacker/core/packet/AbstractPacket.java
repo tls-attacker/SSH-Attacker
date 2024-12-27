@@ -11,10 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
-import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -111,8 +108,7 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public abstract AbstractPacketPreparator<? extends AbstractPacket> getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor);
+    public abstract void prepare(Chooser chooser);
 
     public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber);

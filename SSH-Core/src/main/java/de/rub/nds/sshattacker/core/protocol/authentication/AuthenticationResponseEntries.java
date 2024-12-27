@@ -8,9 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.authentication;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
 
 /** Helper class for pre-configured AuthenticationResponseEntries */
 @XmlAccessorType(XmlAccessType.FIELD)

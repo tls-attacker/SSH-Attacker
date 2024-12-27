@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
@@ -42,23 +39,20 @@ public class RsaKeyExchangePubkeyMessageHandler
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(byte[] array) {
+    public RsaKeyExchangePubkeyMessageParser getParser(byte[] array) {
         return new RsaKeyExchangePubkeyMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(
-            byte[] array, int startPosition) {
+    public RsaKeyExchangePubkeyMessageParser getParser(byte[] array, int startPosition) {
         return new RsaKeyExchangePubkeyMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator() {
-        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
-    }
+    public static final RsaKeyExchangePubkeyMessagePreparator PREPARATOR =
+            new RsaKeyExchangePubkeyMessagePreparator();
 
     @Override
-    public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
+    public RsaKeyExchangePubkeyMessageSerializer getSerializer() {
         return new RsaKeyExchangePubkeyMessageSerializer(message);
     }
 }

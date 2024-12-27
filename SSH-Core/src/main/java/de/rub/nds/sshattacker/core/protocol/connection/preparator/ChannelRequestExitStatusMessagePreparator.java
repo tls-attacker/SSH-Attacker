@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestExitStatusMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestExitStatusMessage> {
 
-    public ChannelRequestExitStatusMessagePreparator(
-            Chooser chooser, ChannelRequestExitStatusMessage message) {
-        super(chooser, message, ChannelRequestType.EXIT_STATUS, false);
+    public ChannelRequestExitStatusMessagePreparator() {
+        super(ChannelRequestType.EXIT_STATUS, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestExitStatusMessage object, Chooser chooser) {
         object.setSoftlyExitStatus(1);
     }
 }

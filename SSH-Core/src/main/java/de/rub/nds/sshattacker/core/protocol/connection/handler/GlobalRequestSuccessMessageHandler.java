@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestSuccessMessagePreparator;
@@ -32,23 +32,20 @@ public class GlobalRequestSuccessMessageHandler
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(byte[] array) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array) {
         return new GlobalRequestSuccessMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(
-            byte[] array, int startPosition) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array, int startPosition) {
         return new GlobalRequestSuccessMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<GlobalRequestSuccessMessage> getPreparator() {
-        return new GlobalRequestSuccessMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestSuccessMessagePreparator PREPARATOR =
+            new GlobalRequestSuccessMessagePreparator();
 
     @Override
-    public SshMessageSerializer<GlobalRequestSuccessMessage> getSerializer() {
+    public GlobalRequestSuccessMessageSerializer getSerializer() {
         return new GlobalRequestSuccessMessageSerializer(message);
     }
 }

@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.data.packet.parser.AbstractDataPacketParser;
-import de.rub.nds.sshattacker.core.data.packet.preparator.AbstractDataPacketPreparator;
 import de.rub.nds.sshattacker.core.data.packet.serializer.AbstractDataPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -74,8 +73,7 @@ public abstract class AbstractDataPacket extends ModifiableVariableHolder {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public abstract AbstractDataPacketPreparator<? extends AbstractDataPacket> getPacketPreparator(
-            Chooser chooser);
+    public abstract void prepare(Chooser chooser);
 
     public abstract AbstractDataPacketParser<? extends AbstractDataPacket> getPacketParser(
             byte[] array, int startPosition);

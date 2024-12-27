@@ -17,18 +17,18 @@ import java.math.BigInteger;
 public class DhGexKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeInitMessage> {
 
-    public DhGexKeyExchangeInitMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeInitMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
+    public DhGexKeyExchangeInitMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            DhGexKeyExchangeInitMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateLocalKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
-        object.setSoftlyEphemeralPublicKey(pubKey, true, config);
+        object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
 
         chooser.getContext().getExchangeHashInputHolder().setDhGexClientPublicKey(pubKey);
     }

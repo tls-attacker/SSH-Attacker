@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpIdEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpIdEntry extends ModifiableVariableHolder {
 
@@ -56,5 +57,9 @@ public class SftpIdEntry extends ModifiableVariableHolder {
 
     public SftpIdEntryHandler getHandler(SshContext context) {
         return new SftpIdEntryHandler(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        SftpIdEntryHandler.PREPARATOR.prepare(this, chooser);
     }
 }

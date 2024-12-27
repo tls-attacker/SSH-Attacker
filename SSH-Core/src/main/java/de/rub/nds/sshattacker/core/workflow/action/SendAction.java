@@ -16,11 +16,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlElement;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

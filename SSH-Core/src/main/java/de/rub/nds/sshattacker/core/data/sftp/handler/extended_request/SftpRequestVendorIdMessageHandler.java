@@ -36,10 +36,8 @@ public class SftpRequestVendorIdMessageHandler
         return new SftpRequestVendorIdMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestVendorIdMessagePreparator getPreparator() {
-        return new SftpRequestVendorIdMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestVendorIdMessagePreparator PREPARATOR =
+            new SftpRequestVendorIdMessagePreparator();
 
     @Override
     public SftpRequestVendorIdMessageSerializer getSerializer() {

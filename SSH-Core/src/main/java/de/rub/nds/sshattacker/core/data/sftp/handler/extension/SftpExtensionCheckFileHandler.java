@@ -41,11 +41,8 @@ public class SftpExtensionCheckFileHandler
                 SftpExtensionCheckFile::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionCheckFile> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.CHECK_FILE);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionCheckFile> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.CHECK_FILE);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionCheckFile> getSerializer() {

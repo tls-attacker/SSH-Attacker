@@ -45,10 +45,7 @@ public class PongMessageHandler extends SshMessageHandler<PongMessage> {
         return new PongMessageParser(array, startPosition);
     }
 
-    @Override
-    public PongMessagePreparator getPreparator() {
-        return new PongMessagePreparator(context.getChooser(), message);
-    }
+    public static final PongMessagePreparator PREPARATOR = new PongMessagePreparator();
 
     @Override
     public PongMessageSerializer getSerializer() {

@@ -13,13 +13,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class AuthenticationResponseEntryPreparator extends Preparator<AuthenticationResponseEntry> {
 
-    public AuthenticationResponseEntryPreparator(
-            Chooser chooser, AuthenticationResponseEntry authenticationResponseEntry) {
-        super(chooser, authenticationResponseEntry);
-    }
-
     @Override
-    public final void prepare() {
-        object.setSoftlyResponse("6d757575", true, config);
+    public final void prepare(AuthenticationResponseEntry object, Chooser chooser) {
+        object.setSoftlyResponse("6d757575", true, chooser.getConfig());
     }
 }

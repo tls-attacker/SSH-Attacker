@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.AsciiMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 /**
  * A generic text message sent via the Blob message layer.
@@ -84,6 +85,11 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     @Override
     public AsciiMessageHandler getHandler(SshContext context) {
         return new AsciiMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        AsciiMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

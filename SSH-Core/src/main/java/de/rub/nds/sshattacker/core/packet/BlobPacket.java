@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BlobPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
@@ -31,15 +29,15 @@ public class BlobPacket extends AbstractPacket {
     }
 
     @Override
-    public BlobPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-        return new BlobPacketPreparator(chooser, this, encryptor, compressor);
-    }
-
-    @Override
     public BlobPacketParser getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
         return new BlobPacketParser(array, startPosition);
+    }
+
+    public static final BlobPacketPreparator PREPARATOR = new BlobPacketPreparator();
+
+    public void prepare(Chooser chooser) {
+        PREPARATOR.prepare(this, chooser);
     }
 
     @Override

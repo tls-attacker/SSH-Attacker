@@ -44,11 +44,8 @@ public class AuthenticationResponseEntryHandler implements Handler<Authenticatio
         return new AuthenticationResponseEntryParser(array, startPosition);
     }
 
-    @Override
-    public AuthenticationResponseEntryPreparator getPreparator() {
-        return new AuthenticationResponseEntryPreparator(
-                context.getChooser(), authenticationResponseEntry);
-    }
+    public static final AuthenticationResponseEntryPreparator PREPARATOR =
+            new AuthenticationResponseEntryPreparator();
 
     @Override
     public AuthenticationResponseEntrySerializer getSerializer() {

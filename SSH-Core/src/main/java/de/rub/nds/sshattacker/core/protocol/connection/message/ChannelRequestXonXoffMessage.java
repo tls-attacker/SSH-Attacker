@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestXonXoffMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestXonXoffMessage
         extends ChannelRequestMessage<ChannelRequestXonXoffMessage> {
@@ -61,5 +62,10 @@ public class ChannelRequestXonXoffMessage
     @Override
     public ChannelRequestXonXoffMessageHandler getHandler(SshContext context) {
         return new ChannelRequestXonXoffMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestXonXoffMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

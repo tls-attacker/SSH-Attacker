@@ -15,17 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public abstract class SftpRequestMessagePreparator<T extends SftpRequestMessage<T>>
         extends SftpMessagePreparator<T> {
 
-    protected SftpRequestMessagePreparator(
-            Chooser chooser, T message, SftpPacketTypeConstant packetType) {
-        super(chooser, message, packetType);
+    protected SftpRequestMessagePreparator(SftpPacketTypeConstant packetType) {
+        super(packetType);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(T object, Chooser chooser) {
         // Always set correct request id -> Don't use soft set
         object.setRequestId(chooser.getContext().getSftpManager().getNextRequestId());
-        prepareRequestSpecificContents();
+        prepareRequestSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareRequestSpecificContents();
+    protected abstract void prepareRequestSpecificContents(T object, Chooser chooser);
 }

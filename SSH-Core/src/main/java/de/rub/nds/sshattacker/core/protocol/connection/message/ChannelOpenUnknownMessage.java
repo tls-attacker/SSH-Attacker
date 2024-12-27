@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnknownMessage> {
 
@@ -55,5 +56,10 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
     @Override
     public ChannelOpenUnknownMessageHandler getHandler(SshContext context) {
         return new ChannelOpenUnknownMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

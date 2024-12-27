@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnimplementedMessagePreparator extends SshMessagePreparator<UnimplementedMessage> {
 
-    public UnimplementedMessagePreparator(Chooser chooser, UnimplementedMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
+    public UnimplementedMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(UnimplementedMessage object, Chooser chooser) {
         object.setSoftlySequenceNumber(Integer.MAX_VALUE);
     }
 }

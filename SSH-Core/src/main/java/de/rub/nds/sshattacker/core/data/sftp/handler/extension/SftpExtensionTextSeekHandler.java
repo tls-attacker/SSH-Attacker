@@ -42,11 +42,8 @@ public class SftpExtensionTextSeekHandler
                 SftpExtensionTextSeek::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionTextSeek> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.TEXT_SEEK);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionTextSeek> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.TEXT_SEEK);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionTextSeek> getSerializer() {

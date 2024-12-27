@@ -14,16 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestPosixRenameMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestPosixRenameMessage> {
 
-    public SftpRequestPosixRenameMessagePreparator(
-            Chooser chooser, SftpRequestPosixRenameMessage message) {
-        super(chooser, message, SftpExtension.POSIX_RENAME_OPENSSH_COM);
+    public SftpRequestPosixRenameMessagePreparator() {
+        super(SftpExtension.POSIX_RENAME_OPENSSH_COM);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestPosixRenameMessage object, Chooser chooser) {
 
-        object.setSoftlyPath("/etc/passwd", true, config);
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        object.setSoftlyNewPath("/etc/passwd-new", true, config);
+        object.setSoftlyNewPath("/etc/passwd-new", true, chooser.getConfig());
     }
 }

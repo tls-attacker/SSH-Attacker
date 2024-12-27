@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.constants.HashAlgorithm;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCheckFileHandleMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -181,5 +182,10 @@ public class SftpRequestCheckFileHandleMessage
     @Override
     public SftpRequestCheckFileHandleMessageHandler getHandler(SshContext context) {
         return new SftpRequestCheckFileHandleMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestCheckFileHandleMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

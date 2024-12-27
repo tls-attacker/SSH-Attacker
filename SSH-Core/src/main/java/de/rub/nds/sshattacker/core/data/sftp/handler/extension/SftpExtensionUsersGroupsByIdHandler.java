@@ -43,11 +43,8 @@ public class SftpExtensionUsersGroupsByIdHandler
                 SftpExtensionUsersGroupsById::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionUsersGroupsById> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.USERS_GROUPS_BY_ID);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionUsersGroupsById>
+            PREPARATOR = new SftpExtensionWithVersionPreparator<>(SftpExtension.USERS_GROUPS_BY_ID);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionUsersGroupsById> getSerializer() {

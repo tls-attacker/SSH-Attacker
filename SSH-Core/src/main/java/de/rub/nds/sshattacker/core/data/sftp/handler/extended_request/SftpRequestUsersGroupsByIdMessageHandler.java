@@ -36,10 +36,8 @@ public class SftpRequestUsersGroupsByIdMessageHandler
         return new SftpRequestUsersGroupsByIdMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestUsersGroupsByIdMessagePreparator getPreparator() {
-        return new SftpRequestUsersGroupsByIdMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestUsersGroupsByIdMessagePreparator PREPARATOR =
+            new SftpRequestUsersGroupsByIdMessagePreparator();
 
     @Override
     public SftpRequestUsersGroupsByIdMessageSerializer getSerializer() {

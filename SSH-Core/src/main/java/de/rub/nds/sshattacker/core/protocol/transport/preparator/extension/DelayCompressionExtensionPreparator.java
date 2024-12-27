@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,14 +15,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class DelayCompressionExtensionPreparator
         extends AbstractExtensionPreparator<DelayCompressionExtension> {
 
-    public DelayCompressionExtensionPreparator(
-            Chooser chooser, DelayCompressionExtension extension) {
-        super(chooser, extension, Extension.DELAY_COMPRESSION);
+    public DelayCompressionExtensionPreparator() {
+        super(Extension.DELAY_COMPRESSION);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-
+    public void prepareExtensionSpecificContents(
+            DelayCompressionExtension object, Chooser chooser) {
+        Config config = chooser.getConfig();
         if (chooser.getContext().isClient()) {
             object.setSoftlyCompressionMethodsClientToServer(
                     chooser.getClientSupportedDelayCompressionMethods(), true, config);
@@ -34,6 +35,7 @@ public class DelayCompressionExtensionPreparator
             object.setSoftlyCompressionMethodsServerToClient(
                     chooser.getServerSupportedDelayCompressionMethods(), true, config);
         }
-        object.setSoftlyCompressionMethodsLength(object.computeCompressionMethodsLength(), config);
+        object.setSoftlyCompressionMethodsLength(
+                object.computeCompressionMethodsLength(), config);
     }
 }

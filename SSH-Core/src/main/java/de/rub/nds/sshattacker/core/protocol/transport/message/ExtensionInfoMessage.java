@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ExtensionInfoMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -98,6 +99,11 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @Override
     public ExtensionInfoMessageHandler getHandler(SshContext context) {
         return new ExtensionInfoMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ExtensionInfoMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestExpandPathMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestExpandPathMessage> {
 
-    public SftpRequestExpandPathMessagePreparator(
-            Chooser chooser, SftpRequestExpandPathMessage message) {
-        super(chooser, message, SftpExtension.EXPAND_PATH);
+    public SftpRequestExpandPathMessagePreparator() {
+        super(SftpExtension.EXPAND_PATH);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-        object.setSoftlyPath("~/.config/passwd", true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestExpandPathMessage object, Chooser chooser) {
+        object.setSoftlyPath("~/.chooser.getConfig()/passwd", true, chooser.getConfig());
     }
 }

@@ -34,10 +34,8 @@ public class SftpRequestSetStatMessageHandler
         return new SftpRequestSetStatMessageParser(array, startPosition, context.getChooser());
     }
 
-    @Override
-    public SftpRequestSetStatMessagePreparator getPreparator() {
-        return new SftpRequestSetStatMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestSetStatMessagePreparator PREPARATOR =
+            new SftpRequestSetStatMessagePreparator();
 
     @Override
     public SftpRequestSetStatMessageSerializer getSerializer() {

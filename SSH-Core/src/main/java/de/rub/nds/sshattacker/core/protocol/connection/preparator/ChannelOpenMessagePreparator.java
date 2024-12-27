@@ -24,19 +24,19 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
 
     protected Channel channel;
 
-    protected ChannelOpenMessagePreparator(Chooser chooser, T message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
+    protected ChannelOpenMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(T object, Chooser chooser) {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
 
         Integer localChannelId =
                 Optional.ofNullable(object.getConfigLocalChannelId())
-                        .orElse(config.getChannelDefaults().getLocalChannelId());
+                        .orElse(chooser.getConfig().getChannelDefaults().getLocalChannelId());
 
-        object.setSoftlySenderChannelId(localChannelId, config);
+        object.setSoftlySenderChannelId(localChannelId, chooser.getConfig());
         Integer senderChannelId = object.getSenderChannelId().getValue();
 
         channel = channelManager.getChannelByLocalId(senderChannelId);
@@ -52,11 +52,11 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         } else {
             channel = channelManager.createPrendingChannel(senderChannelId);
         }
-        object.setSoftlyChannelType(channel.getChannelType(), true, config);
+        object.setSoftlyChannelType(channel.getChannelType(), true, chooser.getConfig());
         object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
         object.setSoftlyPacketSize(32768);
-        prepareChannelOpenMessageSpecificContents();
+        prepareChannelOpenMessageSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareChannelOpenMessageSpecificContents();
+    protected abstract void prepareChannelOpenMessageSpecificContents(T object, Chooser chooser);
 }

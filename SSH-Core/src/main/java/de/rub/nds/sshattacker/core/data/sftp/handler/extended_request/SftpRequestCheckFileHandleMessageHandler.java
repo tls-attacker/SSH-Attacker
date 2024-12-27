@@ -36,10 +36,8 @@ public class SftpRequestCheckFileHandleMessageHandler
         return new SftpRequestCheckFileHandleMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestCheckFileHandleMessagePreparator getPreparator() {
-        return new SftpRequestCheckFileHandleMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestCheckFileHandleMessagePreparator PREPARATOR =
+            new SftpRequestCheckFileHandleMessagePreparator();
 
     @Override
     public SftpRequestCheckFileHandleMessageSerializer getSerializer() {

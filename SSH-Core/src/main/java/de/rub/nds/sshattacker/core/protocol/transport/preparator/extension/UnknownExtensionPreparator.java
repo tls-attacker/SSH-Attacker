@@ -12,12 +12,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownExtensionPreparator extends AbstractExtensionPreparator<UnknownExtension> {
 
-    public UnknownExtensionPreparator(Chooser chooser, UnknownExtension extension) {
-        super(chooser, extension, "hello-from@ssh-attacker.de");
+    public UnknownExtensionPreparator() {
+        super("hello-from@ssh-attacker.de");
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-        object.setSoftlyValue(new byte[100], true, config);
+    public void prepareExtensionSpecificContents(UnknownExtension object, Chooser chooser) {
+        object.setSoftlyValue(new byte[100], true, chooser.getConfig());
     }
 }

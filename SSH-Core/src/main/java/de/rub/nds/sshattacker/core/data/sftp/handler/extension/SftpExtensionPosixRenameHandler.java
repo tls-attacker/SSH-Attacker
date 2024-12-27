@@ -42,11 +42,8 @@ public class SftpExtensionPosixRenameHandler
                 SftpExtensionPosixRename::new, array, startPosition);
     }
 
-    @Override
-    public SftpExtensionWithVersionPreparator<SftpExtensionPosixRename> getPreparator() {
-        return new SftpExtensionWithVersionPreparator<>(
-                context.getChooser(), extension, SftpExtension.POSIX_RENAME_OPENSSH_COM);
-    }
+    public static final SftpExtensionWithVersionPreparator<SftpExtensionPosixRename> PREPARATOR =
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.POSIX_RENAME_OPENSSH_COM);
 
     @Override
     public SftpExtensionWithVersionSerializer<SftpExtensionPosixRename> getSerializer() {

@@ -51,10 +51,8 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
         return new ChannelRequestPtyMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestPtyMessagePreparator getPreparator() {
-        return new ChannelRequestPtyMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestPtyMessagePreparator PREPARATOR =
+            new ChannelRequestPtyMessagePreparator();
 
     @Override
     public ChannelRequestPtyMessageSerializer getSerializer() {

@@ -52,10 +52,8 @@ public class ChannelRequestShellMessageHandler extends SshMessageHandler<Channel
         return new ChannelRequestShellMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestShellMessagePreparator getPreparator() {
-        return new ChannelRequestShellMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestShellMessagePreparator PREPARATOR =
+            new ChannelRequestShellMessagePreparator();
 
     @Override
     public ChannelRequestShellMessageSerializer getSerializer() {

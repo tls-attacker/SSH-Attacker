@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionHomeDirectoryHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpExtensionHomeDirectory
         extends SftpExtensionWithVersion<SftpExtensionHomeDirectory> {
@@ -29,5 +30,10 @@ public class SftpExtensionHomeDirectory
     @Override
     public SftpExtensionHomeDirectoryHandler getHandler(SshContext context) {
         return new SftpExtensionHomeDirectoryHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionHomeDirectoryHandler.PREPARATOR.prepare(this, chooser);
     }
 }

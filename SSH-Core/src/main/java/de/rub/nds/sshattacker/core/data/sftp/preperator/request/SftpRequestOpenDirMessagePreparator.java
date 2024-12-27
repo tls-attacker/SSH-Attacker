@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestOpenDirMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestOpenDirMessage> {
 
-    public SftpRequestOpenDirMessagePreparator(Chooser chooser, SftpRequestOpenDirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_OPENDIR);
+    public SftpRequestOpenDirMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_OPENDIR);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/tmp/", true, config);
+    public void prepareRequestSpecificContents(SftpRequestOpenDirMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp/", true, chooser.getConfig());
     }
 }

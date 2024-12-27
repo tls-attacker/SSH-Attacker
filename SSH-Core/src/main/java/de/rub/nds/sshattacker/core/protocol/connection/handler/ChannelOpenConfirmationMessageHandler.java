@@ -7,7 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
@@ -82,10 +83,8 @@ public class ChannelOpenConfirmationMessageHandler
         return new ChannelOpenConfirmationMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenConfirmationMessagePreparator getPreparator() {
-        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenConfirmationMessagePreparator PREPARATOR =
+            new ChannelOpenConfirmationMessagePreparator();
 
     @Override
     public ChannelOpenConfirmationMessageSerializer getSerializer() {

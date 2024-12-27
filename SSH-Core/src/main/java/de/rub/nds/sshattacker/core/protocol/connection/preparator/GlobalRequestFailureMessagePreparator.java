@@ -15,11 +15,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestFailureMessagePreparator
         extends SshMessagePreparator<GlobalRequestFailureMessage> {
 
-    public GlobalRequestFailureMessagePreparator(
-            Chooser chooser, GlobalRequestFailureMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_REQUEST_FAILURE);
+    public GlobalRequestFailureMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_REQUEST_FAILURE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    public void prepareMessageSpecificContents(
+            GlobalRequestFailureMessage object, Chooser chooser) {}
 }

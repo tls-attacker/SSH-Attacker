@@ -54,10 +54,8 @@ public class ChannelRequestXonXoffMessageHandler
         return new ChannelRequestXonXoffMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestXonXoffMessagePreparator getPreparator() {
-        return new ChannelRequestXonXoffMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestXonXoffMessagePreparator PREPARATOR =
+            new ChannelRequestXonXoffMessagePreparator();
 
     @Override
     public ChannelRequestXonXoffMessageSerializer getSerializer() {

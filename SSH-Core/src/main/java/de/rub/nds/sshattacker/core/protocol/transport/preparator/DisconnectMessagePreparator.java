@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -15,22 +16,22 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessage> {
 
-    public DisconnectMessagePreparator(Chooser chooser, DisconnectMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_DISCONNECT);
+    public DisconnectMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_DISCONNECT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(DisconnectMessage object, Chooser chooser) {
 
+        Config config = chooser.getConfig();
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
             object.setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
             object.setSoftlyDescription(
                     "No common compression algorithm found in delay-compression extension!",
-                    true,
-                    config);
+                    true, config);
             object.setSoftlyLanguageTag("", true, config);
         } else {
-            // TODO save values in config
+            // TODO save values in chooser.getConfig()
             object.setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
             object.setSoftlyDescription("Test", true, config);
             object.setSoftlyLanguageTag("", true, config);

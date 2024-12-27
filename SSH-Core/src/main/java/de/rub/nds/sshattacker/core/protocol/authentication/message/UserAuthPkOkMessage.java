@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
@@ -156,5 +157,10 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     @Override
     public UserAuthPkOkMessageHandler getHandler(SshContext context) {
         return new UserAuthPkOkMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPkOkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

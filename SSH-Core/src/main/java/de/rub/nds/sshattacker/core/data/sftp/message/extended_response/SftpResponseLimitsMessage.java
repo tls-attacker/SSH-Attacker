@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseLimitsMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseLimitsMessage> {
 
@@ -132,5 +133,10 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     @Override
     public SftpResponseLimitsMessageHandler getHandler(SshContext context) {
         return new SftpResponseLimitsMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseLimitsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

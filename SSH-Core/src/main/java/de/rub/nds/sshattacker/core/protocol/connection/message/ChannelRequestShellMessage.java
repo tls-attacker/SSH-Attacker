@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestShellMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelRequestShellMessage> {
 
@@ -28,5 +29,10 @@ public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelReq
     @Override
     public ChannelRequestShellMessageHandler getHandler(SshContext context) {
         return new ChannelRequestShellMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestShellMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

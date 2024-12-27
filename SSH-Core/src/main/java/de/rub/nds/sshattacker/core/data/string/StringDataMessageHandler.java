@@ -33,10 +33,7 @@ public class StringDataMessageHandler extends ProtocolMessageHandler<StringDataM
         return new StringDataMessageParser(array, startPosition);
     }
 
-    @Override
-    public StringDataMessagePreparator getPreparator() {
-        return new StringDataMessagePreparator(context.getChooser(), message);
-    }
+    public static final StringDataMessagePreparator PREPARATOR = new StringDataMessagePreparator();
 
     @Override
     public StringDataMessageSerializer getSerializer() {

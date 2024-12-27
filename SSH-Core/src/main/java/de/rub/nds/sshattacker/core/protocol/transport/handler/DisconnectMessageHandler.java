@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
@@ -44,10 +44,7 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
         return new DisconnectMessageParser(array, startPosition);
     }
 
-    @Override
-    public DisconnectMessagePreparator getPreparator() {
-        return new DisconnectMessagePreparator(context.getChooser(), message);
-    }
+    public static final DisconnectMessagePreparator PREPARATOR = new DisconnectMessagePreparator();
 
     @Override
     public DisconnectMessageSerializer getSerializer() {

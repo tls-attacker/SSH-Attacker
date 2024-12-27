@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestOpenMess
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpRequestOpenMessage> {
@@ -77,6 +78,11 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
     @Override
     public SftpRequestOpenMessageHandler getHandler(SshContext context) {
         return new SftpRequestOpenMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestOpenMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

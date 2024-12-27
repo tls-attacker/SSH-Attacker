@@ -14,13 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestSubsystemMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestSubsystemMessage> {
 
-    public ChannelRequestSubsystemMessagePreparator(
-            Chooser chooser, ChannelRequestSubsystemMessage message) {
-        super(chooser, message, ChannelRequestType.SUBSYSTEM, true);
+    public ChannelRequestSubsystemMessagePreparator() {
+        super(ChannelRequestType.SUBSYSTEM, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        object.setSoftlySubsystemName(config.getDefaultSubsystemName(), true, config);
+    public void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestSubsystemMessage object, Chooser chooser) {
+        object.setSoftlySubsystemName(
+                chooser.getConfig().getDefaultSubsystemName(), true, chooser.getConfig());
     }
 }

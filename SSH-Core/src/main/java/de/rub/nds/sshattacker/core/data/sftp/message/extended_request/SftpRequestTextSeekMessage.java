@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestTextSeekMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestTextSeekMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestTextSeekMessage> {
@@ -52,5 +53,10 @@ public class SftpRequestTextSeekMessage
     @Override
     public SftpRequestTextSeekMessageHandler getHandler(SshContext context) {
         return new SftpRequestTextSeekMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestTextSeekMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

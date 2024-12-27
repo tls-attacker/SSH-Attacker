@@ -35,10 +35,8 @@ public class SftpRequestUnknownMessageHandler
         return new SftpRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestUnknownMessagePreparator getPreparator() {
-        return new SftpRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestUnknownMessagePreparator PREPARATOR =
+            new SftpRequestUnknownMessagePreparator();
 
     @Override
     public SftpRequestUnknownMessageSerializer getSerializer() {

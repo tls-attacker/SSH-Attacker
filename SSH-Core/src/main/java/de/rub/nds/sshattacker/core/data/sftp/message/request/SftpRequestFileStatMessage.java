@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestFileStatMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestFileStatMessage
         extends SftpRequestWithHandleMessage<SftpRequestFileStatMessage> {
@@ -65,5 +66,10 @@ public class SftpRequestFileStatMessage
     @Override
     public SftpRequestFileStatMessageHandler getHandler(SshContext context) {
         return new SftpRequestFileStatMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestFileStatMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

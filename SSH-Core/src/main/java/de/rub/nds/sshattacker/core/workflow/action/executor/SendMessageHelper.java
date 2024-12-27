@@ -40,7 +40,7 @@ public final class SendMessageHelper {
         try {
             // Prepare message
             if (prepareBeforeSending) {
-                message.getHandler(context).getPreparator().prepare();
+                message.prepare(context.getChooser());
             }
 
             ProtocolMessage<?> innerMessage = null;

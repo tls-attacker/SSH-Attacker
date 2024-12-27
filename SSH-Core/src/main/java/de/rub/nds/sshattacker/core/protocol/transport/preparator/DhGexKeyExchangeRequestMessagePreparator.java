@@ -16,20 +16,20 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class DhGexKeyExchangeRequestMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeRequestMessage> {
 
-    public DhGexKeyExchangeRequestMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+    public DhGexKeyExchangeRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            DhGexKeyExchangeRequestMessage object, Chooser chooser) {
         Integer minimalDhGroupSize = chooser.getMinimalDhGroupSize();
         Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
         Integer maximalDhGroupSize = chooser.getMaximalDhGroupSize();
 
-        object.setSoftlyMinimalGroupSize(minimalDhGroupSize, config);
-        object.setSoftlyPreferredGroupSize(preferredDhGroupSize, config);
-        object.setSoftlyMaximalGroupSize(maximalDhGroupSize, config);
+        object.setSoftlyMinimalGroupSize(minimalDhGroupSize, chooser.getConfig());
+        object.setSoftlyPreferredGroupSize(preferredDhGroupSize, chooser.getConfig());
+        object.setSoftlyMaximalGroupSize(maximalDhGroupSize, chooser.getConfig());
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         inputHolder.setDhGexMinimalGroupSize(minimalDhGroupSize);

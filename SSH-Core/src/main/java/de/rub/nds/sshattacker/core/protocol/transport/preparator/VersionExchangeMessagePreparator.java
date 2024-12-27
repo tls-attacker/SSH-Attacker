@@ -14,12 +14,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class VersionExchangeMessagePreparator
         extends ProtocolMessagePreparator<VersionExchangeMessage> {
 
-    public VersionExchangeMessagePreparator(Chooser chooser, VersionExchangeMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareProtocolMessageContents() {
+    public void prepareProtocolMessageContents(VersionExchangeMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
             object.setSoftlyVersion(chooser.getClientVersion());
             object.setSoftlyComment(chooser.getClientComment());

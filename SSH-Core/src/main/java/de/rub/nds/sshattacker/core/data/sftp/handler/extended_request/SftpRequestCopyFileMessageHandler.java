@@ -36,10 +36,8 @@ public class SftpRequestCopyFileMessageHandler
         return new SftpRequestCopyFileMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestCopyFileMessagePreparator getPreparator() {
-        return new SftpRequestCopyFileMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestCopyFileMessagePreparator PREPARATOR =
+            new SftpRequestCopyFileMessagePreparator();
 
     @Override
     public SftpRequestCopyFileMessageSerializer getSerializer() {

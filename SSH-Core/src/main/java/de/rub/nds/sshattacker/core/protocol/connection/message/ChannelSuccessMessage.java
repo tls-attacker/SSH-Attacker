@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage> {
 
@@ -28,5 +29,10 @@ public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage>
     @Override
     public ChannelSuccessMessageHandler getHandler(SshContext context) {
         return new ChannelSuccessMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

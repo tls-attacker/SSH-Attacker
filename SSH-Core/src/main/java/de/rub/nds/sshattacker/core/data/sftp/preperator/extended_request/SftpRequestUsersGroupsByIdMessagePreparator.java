@@ -15,25 +15,29 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestUsersGroupsByIdMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestUsersGroupsByIdMessage> {
 
-    public SftpRequestUsersGroupsByIdMessagePreparator(
-            Chooser chooser, SftpRequestUsersGroupsByIdMessage message) {
-        super(chooser, message, SftpExtension.USERS_GROUPS_BY_ID);
+    public SftpRequestUsersGroupsByIdMessagePreparator() {
+        super(SftpExtension.USERS_GROUPS_BY_ID);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestUsersGroupsByIdMessage object, Chooser chooser) {
         if (object.getUserIds().isEmpty()) {
             object.addUserId(0);
             object.addUserId(1000);
+        } else {
+            object.getUserIds().forEach(userId -> userId.prepare(chooser));
         }
         if (object.getGroupIds().isEmpty()) {
             object.addGroupId(0);
+        } else {
+            object.getGroupIds().forEach(groupId -> groupId.prepare(chooser));
         }
 
         object.setSoftlyUserIdsLength(
-                object.getUserIds().size() * DataFormatConstants.UINT32_SIZE, config);
+                object.getUserIds().size() * DataFormatConstants.UINT32_SIZE, chooser.getConfig());
 
         object.setSoftlyGroupIdsLength(
-                object.getGroupIds().size() * DataFormatConstants.UINT32_SIZE, config);
+                object.getGroupIds().size() * DataFormatConstants.UINT32_SIZE, chooser.getConfig());
     }
 }

@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnknownMessagePreparator;
@@ -46,10 +46,7 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
         return new UnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<UnknownMessage> getPreparator() {
-        return new UnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final UnknownMessagePreparator PREPARATOR = new UnknownMessagePreparator();
 
     @Override
     public UnknownMessageSerializer getSerializer() {

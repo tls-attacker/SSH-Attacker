@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ServiceAcceptMessagePreparator extends SshMessagePreparator<ServiceAcceptMessage> {
 
-    public ServiceAcceptMessagePreparator(Chooser chooser, ServiceAcceptMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_SERVICE_ACCEPT);
+    public ServiceAcceptMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_SERVICE_ACCEPT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(ServiceAcceptMessage object, Chooser chooser) {
         // TODO: load service name from context
-        object.setSoftlyServiceName("", true, config);
+        object.setSoftlyServiceName("", true, chooser.getConfig());
     }
 }

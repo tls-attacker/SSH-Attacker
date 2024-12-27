@@ -52,10 +52,8 @@ public class ChannelRequestUnknownMessageHandler
         return new ChannelRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestUnknownMessagePreparator getPreparator() {
-        return new ChannelRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestUnknownMessagePreparator PREPARATOR =
+            new ChannelRequestUnknownMessagePreparator();
 
     @Override
     public ChannelRequestUnknownMessageSerializer getSerializer() {

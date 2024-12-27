@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMakeDirM
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class SftpRequestMakeDirMessage
@@ -44,6 +45,11 @@ public class SftpRequestMakeDirMessage
     @Override
     public SftpRequestMakeDirMessageHandler getHandler(SshContext context) {
         return new SftpRequestMakeDirMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestMakeDirMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestRemoveMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestRemoveMessage> {
 
-    public SftpRequestRemoveMessagePreparator(Chooser chooser, SftpRequestRemoveMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_REMOVE);
+    public SftpRequestRemoveMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_REMOVE);
     }
 
     @Override
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/etc/passwd", true, config);
+    public void prepareRequestSpecificContents(SftpRequestRemoveMessage object, Chooser chooser) {
+        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
     }
 }

@@ -14,14 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestFileStatVfsMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestFileStatVfsMessage> {
 
-    public SftpRequestFileStatVfsMessagePreparator(
-            Chooser chooser, SftpRequestFileStatVfsMessage message) {
-        super(chooser, message, SftpExtension.F_STAT_VFS_OPENSSH_COM);
+    public SftpRequestFileStatVfsMessagePreparator() {
+        super(SftpExtension.F_STAT_VFS_OPENSSH_COM);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestFileStatVfsMessage object, Chooser chooser) {
         object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true, config);
+                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
+                true,
+                chooser.getConfig());
     }
 }

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestTcpIpForwardMessage
@@ -122,5 +123,10 @@ public class GlobalRequestTcpIpForwardMessage
     @Override
     public GlobalRequestTcpIpForwardMessageHandler getHandler(SshContext context) {
         return new GlobalRequestTcpIpForwardMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestTcpIpForwardMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionNewlineHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNewline> {
@@ -102,5 +103,10 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
     @Override
     public SftpExtensionNewlineHandler getHandler(SshContext context) {
         return new SftpExtensionNewlineHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpExtensionNewlineHandler.PREPARATOR.prepare(this, chooser);
     }
 }

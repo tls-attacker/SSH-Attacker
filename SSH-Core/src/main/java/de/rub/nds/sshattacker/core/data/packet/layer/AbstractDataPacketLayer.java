@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.packet.layer;
 
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
-import de.rub.nds.sshattacker.core.data.packet.preparator.AbstractDataPacketPreparator;
 import de.rub.nds.sshattacker.core.data.packet.serializer.AbstractDataPacketSerializer;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -50,9 +49,7 @@ public abstract class AbstractDataPacketLayer {
             byte[] rawBytes, int startPosition);
 
     public byte[] preparePacket(AbstractDataPacket packet) {
-        AbstractDataPacketPreparator<? extends AbstractDataPacket> preparator =
-                packet.getPacketPreparator(context.getChooser());
-        preparator.prepare();
+        packet.prepare(context.getChooser());
         AbstractDataPacketSerializer<? extends AbstractDataPacket> serializer =
                 packet.getPacketSerializer();
         return serializer.serialize();

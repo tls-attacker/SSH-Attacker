@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestSpaceAvailableMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestSpaceAvailableMessage
         extends SftpRequestExtendedWithPathMessage<SftpRequestSpaceAvailableMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestSpaceAvailableMessage
     @Override
     public SftpRequestSpaceAvailableMessageHandler getHandler(SshContext context) {
         return new SftpRequestSpaceAvailableMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestSpaceAvailableMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

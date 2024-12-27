@@ -12,9 +12,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage>
         implements ExchangeHashSignatureMessage {
@@ -100,7 +100,12 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     }
 
     @Override
-    public SshMessageHandler<RsaKeyExchangeDoneMessage> getHandler(SshContext context) {
+    public RsaKeyExchangeDoneMessageHandler getHandler(SshContext context) {
         return new RsaKeyExchangeDoneMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangeDoneMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

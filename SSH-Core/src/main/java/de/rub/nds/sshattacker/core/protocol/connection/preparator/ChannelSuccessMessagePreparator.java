@@ -14,10 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelSuccessMessagePreparator
         extends ChannelMessagePreparator<ChannelSuccessMessage> {
 
-    public ChannelSuccessMessagePreparator(Chooser chooser, ChannelSuccessMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS);
+    public ChannelSuccessMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS);
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents() {}
+    public void prepareChannelMessageSpecificContents(
+            ChannelSuccessMessage object, Chooser chooser) {}
 }

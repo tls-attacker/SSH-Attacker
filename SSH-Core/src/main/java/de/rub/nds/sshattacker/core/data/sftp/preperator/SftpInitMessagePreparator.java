@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMessage> {
 
-    public SftpInitMessagePreparator(Chooser chooser, SftpInitMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_INIT);
+    public SftpInitMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_INIT);
     }
 
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(SftpInitMessage object, Chooser chooser) {
         object.setSoftlyVersion(chooser.getSftpClientVersion());
         if (object.getExtensions().isEmpty()) {
             // Only load default extensions if none are set in the message
@@ -28,17 +28,12 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
                 object.setExtensions(chooser.getSftpClientSupportedExtensions());
             }
         } else {
-            if (chooser.getSftpClientVersion() != 3 && config.getRespectSftpNegotiatedVersion()) {
+            if (chooser.getSftpClientVersion() != 3
+                    && chooser.getConfig().getRespectSftpNegotiatedVersion()) {
                 object.getExtensions().clear();
             }
         }
 
-        object.getExtensions()
-                .forEach(
-                        extension ->
-                                extension
-                                        .getHandler(chooser.getContext())
-                                        .getPreparator()
-                                        .prepare());
+        object.getExtensions().forEach(extension -> extension.prepare(chooser));
     }
 }

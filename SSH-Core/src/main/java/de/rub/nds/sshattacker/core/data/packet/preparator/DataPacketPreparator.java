@@ -12,12 +12,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DataPacketPreparator extends AbstractDataPacketPreparator<DataPacket> {
 
-    public DataPacketPreparator(Chooser chooser, DataPacket dataPacket) {
-        super(chooser, dataPacket);
-    }
-
     @Override
-    public void prepare() {
+    public void prepare(DataPacket object, Chooser chooser) {
         object.setLength(object.getPayload().getValue().length);
     }
 }

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator.extension;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionVendorId;
@@ -15,13 +16,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpExtensionVendorIdPreparator
         extends SftpAbstractExtensionPreparator<SftpExtensionVendorId> {
 
-    public SftpExtensionVendorIdPreparator(Chooser chooser, SftpExtensionVendorId extension) {
-        super(chooser, extension, SftpExtension.VENDOR_ID);
+    public SftpExtensionVendorIdPreparator() {
+        super(SftpExtension.VENDOR_ID);
     }
 
     @Override
-    public void prepareExtensionSpecificContents() {
-
+    public void prepareExtensionSpecificContents(SftpExtensionVendorId object, Chooser chooser) {
+        Config config = chooser.getConfig();
         object.setSoftlyVendorName("NDS RUB", true, config);
 
         object.setSoftlyProductName("SSH-Attacker", true, config);
@@ -34,7 +35,6 @@ public class SftpExtensionVendorIdPreparator
                 object.getVendorNameLength().getValue()
                         + object.getProductNameLength().getValue()
                         + object.getProductVersionLength().getValue()
-                        + DataFormatConstants.UINT64_SIZE,
-                config);
+                        + DataFormatConstants.UINT64_SIZE, config);
     }
 }

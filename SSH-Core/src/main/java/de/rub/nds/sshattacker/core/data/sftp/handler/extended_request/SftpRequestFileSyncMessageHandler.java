@@ -36,10 +36,8 @@ public class SftpRequestFileSyncMessageHandler
         return new SftpRequestFileSyncMessageParser(array, startPosition);
     }
 
-    @Override
-    public SftpRequestFileSyncMessagePreparator getPreparator() {
-        return new SftpRequestFileSyncMessagePreparator(context.getChooser(), message);
-    }
+    public static final SftpRequestFileSyncMessagePreparator PREPARATOR =
+            new SftpRequestFileSyncMessagePreparator();
 
     @Override
     public SftpRequestFileSyncMessageSerializer getSerializer() {

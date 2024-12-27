@@ -116,7 +116,7 @@ public class CyclicParserSerializerTest {
             }
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare();
+                message.getHandler(context).getPreparator().prepare(message, context.getChooser());
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
                 fail(

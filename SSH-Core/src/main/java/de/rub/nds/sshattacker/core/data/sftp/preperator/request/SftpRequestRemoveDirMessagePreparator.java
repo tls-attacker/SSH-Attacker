@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestRemoveDirMessagePreparator
         extends SftpRequestMessagePreparator<SftpRequestRemoveDirMessage> {
 
-    public SftpRequestRemoveDirMessagePreparator(
-            Chooser chooser, SftpRequestRemoveDirMessage message) {
-        super(chooser, message, SftpPacketTypeConstant.SSH_FXP_RMDIR);
+    public SftpRequestRemoveDirMessagePreparator() {
+        super(SftpPacketTypeConstant.SSH_FXP_RMDIR);
     }
 
-    public void prepareRequestSpecificContents() {
-        object.setSoftlyPath("/tmp/ssh-attacker", true, config);
+    public void prepareRequestSpecificContents(
+            SftpRequestRemoveDirMessage object, Chooser chooser) {
+        object.setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
     }
 }

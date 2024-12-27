@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.SftpVfsFlag;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_response.SftpResponseStatVfsMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponseStatVfsMessage> {
 
@@ -284,5 +285,10 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
     @Override
     public SftpResponseStatVfsMessageHandler getHandler(SshContext context) {
         return new SftpResponseStatVfsMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpResponseStatVfsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

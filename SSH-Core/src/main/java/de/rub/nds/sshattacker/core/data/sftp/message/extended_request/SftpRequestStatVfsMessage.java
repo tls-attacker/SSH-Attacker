@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestStatVfsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class SftpRequestStatVfsMessage
         extends SftpRequestExtendedWithPathMessage<SftpRequestStatVfsMessage> {
@@ -29,5 +30,10 @@ public class SftpRequestStatVfsMessage
     @Override
     public SftpRequestStatVfsMessageHandler getHandler(SshContext context) {
         return new SftpRequestStatVfsMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestStatVfsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

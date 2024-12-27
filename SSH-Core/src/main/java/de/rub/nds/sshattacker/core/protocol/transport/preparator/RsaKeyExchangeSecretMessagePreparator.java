@@ -17,18 +17,18 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class RsaKeyExchangeSecretMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
 
-    public RsaKeyExchangeSecretMessagePreparator(
-            Chooser chooser, RsaKeyExchangeSecretMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
+    public RsaKeyExchangeSecretMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    public void prepareMessageSpecificContents(
+            RsaKeyExchangeSecretMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.generateSharedSecret(context, chooser.getRsaKeyExchange());
         byte[] encryptedSecret = chooser.getRsaKeyExchange().encryptSharedSecret();
 
-        object.setSoftlyEncryptedSecret(encryptedSecret, true, config);
+        object.setSoftlyEncryptedSecret(encryptedSecret, true, chooser.getConfig());
 
         context.getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }

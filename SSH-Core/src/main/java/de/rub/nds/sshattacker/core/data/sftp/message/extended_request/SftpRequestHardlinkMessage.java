@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestHardlinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class SftpRequestHardlinkMessage
@@ -93,5 +94,10 @@ public class SftpRequestHardlinkMessage
     @Override
     public SftpRequestHardlinkMessageHandler getHandler(SshContext context) {
         return new SftpRequestHardlinkMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        SftpRequestHardlinkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelWindowAdjustMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdjustMessage> {
 
@@ -51,5 +52,10 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
     @Override
     public ChannelWindowAdjustMessageHandler getHandler(SshContext context) {
         return new ChannelWindowAdjustMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelWindowAdjustMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

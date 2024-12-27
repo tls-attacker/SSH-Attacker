@@ -12,7 +12,8 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSucce
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -88,10 +89,8 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         return new UserAuthSuccessMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthSuccessMessagePreparator getPreparator() {
-        return new UserAuthSuccessMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthSuccessMessagePreparator PREPARATOR =
+            new UserAuthSuccessMessagePreparator();
 
     @Override
     public UserAuthSuccessMessageSerializer getSerializer() {

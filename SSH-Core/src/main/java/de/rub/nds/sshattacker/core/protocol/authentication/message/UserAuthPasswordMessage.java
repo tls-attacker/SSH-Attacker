@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPasswordMessage> {
@@ -185,5 +186,10 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     @Override
     public UserAuthPasswordMessageHandler getHandler(SshContext context) {
         return new UserAuthPasswordMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPasswordMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

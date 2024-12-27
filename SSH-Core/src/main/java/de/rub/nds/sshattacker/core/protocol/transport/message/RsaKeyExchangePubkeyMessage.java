@@ -17,9 +17,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
@@ -205,7 +205,12 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     @Override
-    public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
+    public RsaKeyExchangePubkeyMessageHandler getHandler(SshContext context) {
         return new RsaKeyExchangePubkeyMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangePubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

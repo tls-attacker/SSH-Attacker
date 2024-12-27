@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileNameEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -164,6 +165,10 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
 
     public SftpFileNameEntryHandler getHandler(SshContext context) {
         return new SftpFileNameEntryHandler(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        SftpFileNameEntryHandler.PREPARATOR.prepare(this, chooser);
     }
 
     @Override

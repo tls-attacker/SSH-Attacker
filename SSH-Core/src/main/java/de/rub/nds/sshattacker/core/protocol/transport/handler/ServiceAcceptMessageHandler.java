@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceAcceptMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceAcceptMessagePreparator;
@@ -39,10 +39,8 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
         return new ServiceAcceptMessageParser(array, startPosition);
     }
 
-    @Override
-    public ServiceAcceptMessagePreparator getPreparator() {
-        return new ServiceAcceptMessagePreparator(context.getChooser(), message);
-    }
+    public static final ServiceAcceptMessagePreparator PREPARATOR =
+            new ServiceAcceptMessagePreparator();
 
     @Override
     public ServiceAcceptMessageSerializer getSerializer() {

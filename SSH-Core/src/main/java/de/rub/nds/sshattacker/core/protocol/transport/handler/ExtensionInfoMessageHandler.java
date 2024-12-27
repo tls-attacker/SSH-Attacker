@@ -44,10 +44,8 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
         return new ExtensionInfoMessageParser(array, startPosition);
     }
 
-    @Override
-    public ExtensionInfoMessagePreparator getPreparator() {
-        return new ExtensionInfoMessagePreparator(context.getChooser(), message);
-    }
+    public static final ExtensionInfoMessagePreparator PREPARATOR =
+            new ExtensionInfoMessagePreparator();
 
     @Override
     public ExtensionInfoMessageSerializer getSerializer() {

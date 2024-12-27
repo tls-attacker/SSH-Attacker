@@ -10,9 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DhGexKeyExchangeOldRequestMessage
         extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
@@ -61,5 +62,10 @@ public class DhGexKeyExchangeOldRequestMessage
     @Override
     public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
         return new DhGexKeyExchangeOldRequestMessageHandler(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhGexKeyExchangeOldRequestMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 }

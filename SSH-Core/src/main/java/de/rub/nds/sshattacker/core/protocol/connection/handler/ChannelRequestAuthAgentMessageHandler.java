@@ -52,10 +52,8 @@ public class ChannelRequestAuthAgentMessageHandler
         return new ChannelRequestAuthAgentMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestAuthAgentMessagePreparator getPreparator() {
-        return new ChannelRequestAuthAgentMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestAuthAgentMessagePreparator PREPARATOR =
+            new ChannelRequestAuthAgentMessagePreparator();
 
     @Override
     public ChannelRequestAuthAgentMessageSerializer getSerializer() {

@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpRequestHomeDirectoryMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestHomeDirectoryMessage> {
 
-    public SftpRequestHomeDirectoryMessagePreparator(
-            Chooser chooser, SftpRequestHomeDirectoryMessage message) {
-        super(chooser, message, SftpExtension.HOME_DIRECTORY);
+    public SftpRequestHomeDirectoryMessagePreparator() {
+        super(SftpExtension.HOME_DIRECTORY);
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents() {
-        object.setSoftlyUsername("ssh-attacker", true, config);
+    public void prepareRequestExtendedSpecificContents(
+            SftpRequestHomeDirectoryMessage object, Chooser chooser) {
+        object.setSoftlyUsername("ssh-attacker", true, chooser.getConfig());
     }
 }

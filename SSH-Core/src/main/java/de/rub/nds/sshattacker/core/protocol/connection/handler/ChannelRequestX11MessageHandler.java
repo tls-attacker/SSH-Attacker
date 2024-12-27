@@ -50,10 +50,8 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
         return new ChannelRequestX11MessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestX11MessagePreparator getPreparator() {
-        return new ChannelRequestX11MessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestX11MessagePreparator PREPARATOR =
+            new ChannelRequestX11MessagePreparator();
 
     @Override
     public ChannelRequestX11MessageSerializer getSerializer() {
