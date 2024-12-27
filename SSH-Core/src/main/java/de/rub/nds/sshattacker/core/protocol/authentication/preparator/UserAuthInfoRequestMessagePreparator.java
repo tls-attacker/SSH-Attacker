@@ -35,8 +35,7 @@ public class UserAuthInfoRequestMessagePreparator
         if (nextPrompts != null) {
             object.setSoftlyPromptEntries(nextPrompts, true, config);
         } else {
-            object.setSoftlyPromptEntriesCount(
-                    object.getPromptEntries().size(), config);
+            object.setSoftlyPromptEntriesCount(object.getPromptEntries().size(), config);
         }
 
         object.getPromptEntries().forEach(promptEntry -> promptEntry.prepare(chooser));

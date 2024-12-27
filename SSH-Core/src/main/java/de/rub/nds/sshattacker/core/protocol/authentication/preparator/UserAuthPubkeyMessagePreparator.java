@@ -147,11 +147,9 @@ public class UserAuthPubkeyMessagePreparator
 
         Config config = chooser.getConfig();
         if (pk != null) {
-            object.setSoftlyPubkeyAlgName(
-                    pk.getPublicKeyFormat().getName(), true, config);
+            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
             object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config);
-            object.setSoftlySignature(
-                    getEncodedSignature(object, chooser, pk), true, config, true);
+            object.setSoftlySignature(getEncodedSignature(object, chooser, pk), true, config, true);
         } else {
             object.setSoftlyPubkeyAlgName("", true, config);
             object.setSoftlyPubkey(new byte[0], true, config);

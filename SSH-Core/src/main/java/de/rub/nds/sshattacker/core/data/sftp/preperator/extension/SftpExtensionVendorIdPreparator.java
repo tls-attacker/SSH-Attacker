@@ -35,6 +35,7 @@ public class SftpExtensionVendorIdPreparator
                 object.getVendorNameLength().getValue()
                         + object.getProductNameLength().getValue()
                         + object.getProductVersionLength().getValue()
-                        + DataFormatConstants.UINT64_SIZE, config);
+                        + DataFormatConstants.UINT64_SIZE,
+                config);
     }
 }

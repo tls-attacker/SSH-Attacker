@@ -35,7 +35,6 @@ public class DelayCompressionExtensionPreparator
             object.setSoftlyCompressionMethodsServerToClient(
                     chooser.getServerSupportedDelayCompressionMethods(), true, config);
         }
-        object.setSoftlyCompressionMethodsLength(
-                object.computeCompressionMethodsLength(), config);
+        object.setSoftlyCompressionMethodsLength(object.computeCompressionMethodsLength(), config);
     }
 }

@@ -19,11 +19,9 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
         Config config = chooser.getConfig();
         object.setSoftlyFilename("/etc/passwd", true, config);
 
-        if (chooser.getSftpNegotiatedVersion() <= 3
-                || !config.getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() <= 3 || !config.getRespectSftpNegotiatedVersion()) {
             object.setSoftlyLongName(
-                    "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd",
-                    true, config);
+                    "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd", true, config);
         } else {
             // As of version 4 there is no longer a longName field
             object.clearLongName();

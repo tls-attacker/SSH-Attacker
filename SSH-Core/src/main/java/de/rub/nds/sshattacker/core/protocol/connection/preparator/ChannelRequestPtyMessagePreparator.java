@@ -23,8 +23,7 @@ public class ChannelRequestPtyMessagePreparator
     public void prepareChannelRequestMessageSpecificContents(
             ChannelRequestPtyMessage object, Chooser chooser) {
         Config config = chooser.getConfig();
-        object.setSoftlyTermEnvVariable(
-                config.getDefaultTermEnvVariable(), true, config);
+        object.setSoftlyTermEnvVariable(config.getDefaultTermEnvVariable(), true, config);
         object.setSoftlyWidthCharacters(config.getDefaultTerminalWidthColumns());
         object.setSoftlyHeightRows(config.getDefaultTerminalHeightRows());
         object.setSoftlyWidthPixels(config.getDefaultTerminalWidthPixels());

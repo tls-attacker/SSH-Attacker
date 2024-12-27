@@ -29,23 +29,17 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
             object.setSoftlyServerHostKeyAlgorithms(
                     chooser.getClientSupportedHostKeyAlgorithms(), true, config);
             object.setSoftlyEncryptionAlgorithmsClientToServer(
-                    chooser.getClientSupportedEncryptionAlgorithmsClientToServer(),
-                    true, config);
+                    chooser.getClientSupportedEncryptionAlgorithmsClientToServer(), true, config);
             object.setSoftlyEncryptionAlgorithmsServerToClient(
-                    chooser.getClientSupportedEncryptionAlgorithmsServerToClient(),
-                    true, config);
+                    chooser.getClientSupportedEncryptionAlgorithmsServerToClient(), true, config);
             object.setSoftlyMacAlgorithmsClientToServer(
-                    chooser.getClientSupportedMacAlgorithmsClientToServer(),
-                    true, config);
+                    chooser.getClientSupportedMacAlgorithmsClientToServer(), true, config);
             object.setSoftlyMacAlgorithmsServerToClient(
-                    chooser.getClientSupportedMacAlgorithmsServerToClient(),
-                    true, config);
+                    chooser.getClientSupportedMacAlgorithmsServerToClient(), true, config);
             object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getClientSupportedCompressionMethodsClientToServer(),
-                    true, config);
+                    chooser.getClientSupportedCompressionMethodsClientToServer(), true, config);
             object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getClientSupportedCompressionMethodsServerToClient(),
-                    true, config);
+                    chooser.getClientSupportedCompressionMethodsServerToClient(), true, config);
             object.setSoftlyLanguagesClientToServer(
                     chooser.getClientSupportedLanguagesClientToServer(), true, config);
             object.setSoftlyLanguagesServerToClient(
@@ -62,23 +56,17 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
             object.setSoftlyServerHostKeyAlgorithms(
                     chooser.getServerSupportedHostKeyAlgorithms(), true, config);
             object.setSoftlyEncryptionAlgorithmsClientToServer(
-                    chooser.getServerSupportedEncryptionAlgorithmsClientToServer(),
-                    true, config);
+                    chooser.getServerSupportedEncryptionAlgorithmsClientToServer(), true, config);
             object.setSoftlyEncryptionAlgorithmsServerToClient(
-                    chooser.getServerSupportedEncryptionAlgorithmsServerToClient(),
-                    true, config);
+                    chooser.getServerSupportedEncryptionAlgorithmsServerToClient(), true, config);
             object.setSoftlyMacAlgorithmsClientToServer(
-                    chooser.getServerSupportedMacAlgorithmsClientToServer(),
-                    true, config);
+                    chooser.getServerSupportedMacAlgorithmsClientToServer(), true, config);
             object.setSoftlyMacAlgorithmsServerToClient(
-                    chooser.getServerSupportedMacAlgorithmsServerToClient(),
-                    true, config);
+                    chooser.getServerSupportedMacAlgorithmsServerToClient(), true, config);
             object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getServerSupportedCompressionMethodsClientToServer(),
-                    true, config);
+                    chooser.getServerSupportedCompressionMethodsClientToServer(), true, config);
             object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getServerSupportedCompressionMethodsServerToClient(),
-                    true, config);
+                    chooser.getServerSupportedCompressionMethodsServerToClient(), true, config);
             object.setSoftlyLanguagesClientToServer(
                     chooser.getServerSupportedLanguagesClientToServer(), true, config);
             object.setSoftlyLanguagesServerToClient(

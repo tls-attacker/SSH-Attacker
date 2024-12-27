@@ -42,17 +42,16 @@ public class UserAuthHostbasedMessagePreparator
             UserAuthHostbasedMessage object, Chooser chooser) {
 
         Config config = chooser.getConfig();
-        object.setSoftlyPubKeyAlgorithm(
-                chooser.getHostKeyAlgorithm().toString(), true, config);
+        object.setSoftlyPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true, config);
         object.setSoftlyHostKeyBytes(
                 PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true, config);
         object.setSoftlyHostName(
                 Optional.ofNullable(chooser.getContext().getConnection().getIp())
                         .orElse(AliasedConnection.DEFAULT_IP),
-                true, config);
+                true,
+                config);
         // set the username on client machine to the username on remote, specify if needed
-        object.setSoftlyClientUserName(
-                config.getUsername(), true, config);
+        object.setSoftlyClientUserName(config.getUsername(), true, config);
         prepareSignature(object, chooser);
     }
 

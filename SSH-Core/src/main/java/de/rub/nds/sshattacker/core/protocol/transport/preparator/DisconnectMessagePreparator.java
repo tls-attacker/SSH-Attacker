@@ -28,7 +28,8 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
             object.setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
             object.setSoftlyDescription(
                     "No common compression algorithm found in delay-compression extension!",
-                    true, config);
+                    true,
+                    config);
             object.setSoftlyLanguageTag("", true, config);
         } else {
             // TODO save values in chooser.getConfig()
