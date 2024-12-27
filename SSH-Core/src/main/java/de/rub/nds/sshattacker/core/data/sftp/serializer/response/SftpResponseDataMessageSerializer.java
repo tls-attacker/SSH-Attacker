@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseDataMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,21 +19,18 @@ public class SftpResponseDataMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseDataMessageSerializer(SftpResponseDataMessage message) {
-        super(message);
-    }
-
-    private void serializeData() {
-        Integer dataLength = message.getDataLength().getValue();
+    private static void serializeData(SftpResponseDataMessage object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] data = message.getData().getValue();
+        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
-        appendBytes(data);
+        output.appendBytes(data);
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeData();
+    protected void serializeResponseSpecificContents(
+            SftpResponseDataMessage object, SerializerStream output) {
+        serializeData(object, output);
     }
 }

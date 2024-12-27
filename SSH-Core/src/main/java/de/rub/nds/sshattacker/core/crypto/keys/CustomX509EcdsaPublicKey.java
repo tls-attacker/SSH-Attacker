@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.X509EcdsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.interfaces.ECPublicKey;
@@ -184,5 +185,13 @@ public class CustomX509EcdsaPublicKey extends CustomEcPublicKey {
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
+    }
+
+    public static final X509EcdsaPublicKeySerializer SERIALIZER =
+            new X509EcdsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

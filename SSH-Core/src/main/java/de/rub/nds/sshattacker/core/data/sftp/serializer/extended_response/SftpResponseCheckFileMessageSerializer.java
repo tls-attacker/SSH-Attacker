@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseCheckFileMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,28 +23,27 @@ public class SftpResponseCheckFileMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseCheckFileMessageSerializer(SftpResponseCheckFileMessage message) {
-        super(message);
-    }
-
-    private void serializeUsedHashAlgorithm() {
-        Integer usedHashAlgorithmLength = message.getUsedHashAlgorithmLength().getValue();
+    private static void serializeUsedHashAlgorithm(
+            SftpResponseCheckFileMessage object, SerializerStream output) {
+        Integer usedHashAlgorithmLength = object.getUsedHashAlgorithmLength().getValue();
         LOGGER.debug("UsedHashAlgorithm length: {}", usedHashAlgorithmLength);
-        appendInt(usedHashAlgorithmLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String usedHashAlgorithm = message.getUsedHashAlgorithm().getValue();
+        output.appendInt(usedHashAlgorithmLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String usedHashAlgorithm = object.getUsedHashAlgorithm().getValue();
         LOGGER.debug("UsedHashAlgorithm: {}", () -> backslashEscapeString(usedHashAlgorithm));
-        appendString(usedHashAlgorithm, StandardCharsets.US_ASCII);
+        output.appendString(usedHashAlgorithm, StandardCharsets.US_ASCII);
     }
 
-    private void serializeHash() {
-        byte[] hash = message.getHash().getValue();
+    private static void serializeHash(
+            SftpResponseCheckFileMessage object, SerializerStream output) {
+        byte[] hash = object.getHash().getValue();
         LOGGER.debug("Hash: {}", () -> ArrayConverter.bytesToRawHexString(hash));
-        appendBytes(hash);
+        output.appendBytes(hash);
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeUsedHashAlgorithm();
-        serializeHash();
+    protected void serializeResponseSpecificContents(
+            SftpResponseCheckFileMessage object, SerializerStream output) {
+        serializeUsedHashAlgorithm(object, output);
+        serializeHash(object, output);
     }
 }

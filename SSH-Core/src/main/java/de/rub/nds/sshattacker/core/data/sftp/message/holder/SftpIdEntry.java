@@ -62,4 +62,8 @@ public class SftpIdEntry extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         SftpIdEntryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return SftpIdEntryHandler.SERIALIZER.serialize(this);
+    }
 }

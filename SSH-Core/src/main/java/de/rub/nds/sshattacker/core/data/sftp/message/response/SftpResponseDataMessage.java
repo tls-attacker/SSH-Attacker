@@ -95,4 +95,9 @@ public class SftpResponseDataMessage extends SftpResponseMessage<SftpResponseDat
     public void prepare(Chooser chooser) {
         SftpResponseDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

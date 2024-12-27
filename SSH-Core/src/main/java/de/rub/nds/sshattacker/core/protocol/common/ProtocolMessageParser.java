@@ -97,9 +97,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw).parse();
                 case SSH_MSG_HBR_INIT:
-                    return handleHybridKeyExchangeInitMessageParsing(raw, context).parse();
+                    return new HybridKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_HBR_REPLY:
-                    return handleHybridKeyExchangeReplyMessageParsing(raw, context).parse();
+                    return new HybridKeyExchangeReplyMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
                     return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST:
@@ -188,94 +188,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
             return new UnknownMessageParser(raw).parse();
-        }
-    }
-
-    public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
-            byte[] raw, SshContext context) {
-        LOGGER.info(
-                "Negotiated Hybrid Key Exchange: {}",
-                context.getChooser().getKeyExchangeAlgorithm());
-        switch (context.getChooser().getKeyExchangeAlgorithm()) {
-                //noinspection DefaultNotLastCaseInSwitch
-            default:
-                LOGGER.warn(
-                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
-                // Fallthrough to next case statement intended
-            case SNTRUP761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
-            case CURVE25519_FRODOKEM1344:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
-            case NISTP521_FIRESABER:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.FIRESABER_CIPHERTEXT_SIZE);
-            case NISTP521_KYBER1024:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
-        }
-    }
-
-    public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
-            byte[] raw, SshContext context) {
-        LOGGER.info(
-                "Negotiated Hybrid Key Exchange: {}",
-                context.getChooser().getKeyExchangeAlgorithm());
-        switch (context.getChooser().getKeyExchangeAlgorithm()) {
-                //noinspection DefaultNotLastCaseInSwitch
-            default:
-                LOGGER.warn(
-                        "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");
-                // Fallthrough to next case statement intended
-            case SNTRUP761_X25519:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
-            case CURVE25519_FRODOKEM1344:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
-            case NISTP521_FIRESABER:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE);
-            case NISTP521_KYBER1024:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE);
         }
     }
 

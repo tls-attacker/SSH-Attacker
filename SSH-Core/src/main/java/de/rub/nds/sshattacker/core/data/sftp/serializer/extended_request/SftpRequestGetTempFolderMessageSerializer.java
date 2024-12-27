@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestGetTempFolderMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestGetTempFolderMessageSerializer
         extends SftpRequestExtendedMessageSerializer<SftpRequestGetTempFolderMessage> {
 
-    public SftpRequestGetTempFolderMessageSerializer(SftpRequestGetTempFolderMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestExtendedSpecificContents() {}
+    protected void serializeRequestExtendedSpecificContents(
+            SftpRequestGetTempFolderMessage object, SerializerStream output) {}
 }

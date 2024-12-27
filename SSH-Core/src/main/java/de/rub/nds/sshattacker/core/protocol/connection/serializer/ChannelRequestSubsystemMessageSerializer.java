@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -20,22 +21,20 @@ public class ChannelRequestSubsystemMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestSubsystemMessageSerializer(ChannelRequestSubsystemMessage message) {
-        super(message);
-    }
-
-    private void serializeSubsystemName() {
-        Integer subsystemNameLength = message.getSubsystemNameLength().getValue();
+    private static void serializeSubsystemName(
+            ChannelRequestSubsystemMessage object, SerializerStream output) {
+        Integer subsystemNameLength = object.getSubsystemNameLength().getValue();
         LOGGER.debug("Subsystem name length: {}", subsystemNameLength);
-        appendInt(subsystemNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String subsystemName = message.getSubsystemName().getValue();
+        output.appendInt(subsystemNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String subsystemName = object.getSubsystemName().getValue();
         LOGGER.debug("Subsytem name: {}", () -> backslashEscapeString(subsystemName));
-        appendString(subsystemName, StandardCharsets.UTF_8);
+        output.appendString(subsystemName, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSubsystemName();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestSubsystemMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSubsystemName(object, output);
     }
 }

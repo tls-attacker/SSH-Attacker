@@ -110,4 +110,9 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
     public void prepare(Chooser chooser) {
         EcdhKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return EcdhKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
+    }
 }

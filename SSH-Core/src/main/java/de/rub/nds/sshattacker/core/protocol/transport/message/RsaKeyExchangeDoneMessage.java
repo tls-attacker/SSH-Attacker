@@ -108,4 +108,9 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     public void prepare(Chooser chooser) {
         RsaKeyExchangeDoneMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangeDoneMessageHandler.SERIALIZER.serialize(this);
+    }
 }

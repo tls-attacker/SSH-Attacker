@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -24,23 +25,16 @@ import org.bouncycastle.asn1.x509.Extensions;
 /** Serializer class to encode an ED25519 X.509 public key (X509-SSH-ED25519) format. */
 public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePublicKey> {
 
-    private final CustomX509XCurvePublicKey publicKey;
-
-    public X509XCurvePublicKeySerializer(CustomX509XCurvePublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomX509XCurvePublicKey object, SerializerStream output) {
         try {
             ASN1EncodableVector topLevelVector = new ASN1EncodableVector();
 
             // Version (uint32) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(publicKey.getVersion()));
+            topLevelVector.add(new ASN1Integer(object.getVersion()));
 
             // Serial (uint64) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(publicKey.getSerial())));
+            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(object.getSerial())));
 
             // Signature Algorithm (ED25519 as OID in ASN.1 format with NULL parameter)
             AlgorithmIdentifier signatureAlgorithm =
@@ -50,16 +44,16 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(publicKey.getIssuer());
+            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(publicKey.getSubject());
+            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for ED25519 with NULL parameter)
@@ -70,16 +64,16 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(publicKeyAlgorithm);
 
             // Public Key (as ASN.1 OCTET STRING)
-            topLevelVector.add(new DEROctetString(publicKey.getPublicKey()));
+            topLevelVector.add(new DEROctetString(object.getPublicKey()));
 
             // Extensions (ASN.1 encoded as Extensions sequence)
-            Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
+            Extensions extensions = getExtensionsAsASN1(object.getExtensions());
             if (extensions != null) {
                 topLevelVector.add(extensions);
             }
 
             // Signature (string) as ASN.1 OctetString
-            byte[] signature = publicKey.getSignature();
+            byte[] signature = object.getSignature();
             if (signature == null) {
                 throw new IllegalStateException("Signature is not set in the publicKey");
             }
@@ -88,7 +82,7 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             // Serialize the entire ASN.1 structure
             ASN1Sequence topLevelSequence = new DERSequence(topLevelVector);
             byte[] asn1Encoded = topLevelSequence.getEncoded();
-            appendBytes(asn1Encoded);
+            output.appendBytes(asn1Encoded);
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 ED25519 Public Key", e);

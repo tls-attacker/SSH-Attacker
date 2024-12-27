@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedWithHandleMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,24 +20,21 @@ public abstract class SftpRequestExtendedWithHandleMessageSerializer<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SftpRequestExtendedWithHandleMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeHandle() {
-        Integer handleLength = message.getHandleLength().getValue();
+    private void serializeHandle(T object, SerializerStream output) {
+        Integer handleLength = object.getHandleLength().getValue();
         LOGGER.debug("Handle length: {}", handleLength);
-        appendInt(handleLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] handle = message.getHandle().getValue();
+        output.appendInt(handleLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] handle = object.getHandle().getValue();
         LOGGER.debug("Handle: {}", () -> ArrayConverter.bytesToRawHexString(handle));
-        appendBytes(handle);
+        output.appendBytes(handle);
     }
 
     @Override
-    protected void serializeRequestExtendedSpecificContents() {
-        serializeHandle();
-        serializeRequestExtendedWithHandleSpecificContents();
+    protected void serializeRequestExtendedSpecificContents(T object, SerializerStream output) {
+        serializeHandle(object, output);
+        serializeRequestExtendedWithHandleSpecificContents(object, output);
     }
 
-    protected abstract void serializeRequestExtendedWithHandleSpecificContents();
+    protected abstract void serializeRequestExtendedWithHandleSpecificContents(
+            T object, SerializerStream output);
 }

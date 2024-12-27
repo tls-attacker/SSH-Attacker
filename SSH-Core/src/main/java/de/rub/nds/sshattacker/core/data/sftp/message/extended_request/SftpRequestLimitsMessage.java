@@ -35,4 +35,9 @@ public class SftpRequestLimitsMessage extends SftpRequestExtendedMessage<SftpReq
     public void prepare(Chooser chooser) {
         SftpRequestLimitsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestLimitsMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -186,4 +186,8 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         SftpAclEntryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return SftpAclEntryHandler.SERIALIZER.serialize(this);
+    }
 }

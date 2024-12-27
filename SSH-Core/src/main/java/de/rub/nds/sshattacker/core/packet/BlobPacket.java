@@ -40,9 +40,10 @@ public class BlobPacket extends AbstractPacket {
         PREPARATOR.prepare(this, chooser);
     }
 
-    @Override
-    public BlobPacketSerializer getPacketSerializer() {
-        return new BlobPacketSerializer(this);
+    public static final BlobPacketSerializer SERIALIZER = new BlobPacketSerializer();
+
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 
     @Override

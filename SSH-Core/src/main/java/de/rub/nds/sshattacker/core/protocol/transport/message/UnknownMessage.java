@@ -68,4 +68,9 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
     public void prepare(Chooser chooser) {
         UnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

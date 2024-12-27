@@ -35,4 +35,9 @@ public class SftpExtensionPosixRename extends SftpExtensionWithVersion<SftpExten
     public void prepare(Chooser chooser) {
         SftpExtensionPosixRenameHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionPosixRenameHandler.SERIALIZER.serialize(this);
+    }
 }

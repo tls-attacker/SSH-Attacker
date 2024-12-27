@@ -36,4 +36,9 @@ public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
     public void prepare(Chooser chooser) {
         UserAuthSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthSuccessMessageHandler.SERIALIZER.serialize(this);
+    }
 }

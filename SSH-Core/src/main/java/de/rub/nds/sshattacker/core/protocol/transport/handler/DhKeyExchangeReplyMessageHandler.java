@@ -57,8 +57,6 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
     public static final DhKeyExchangeReplyMessagePreparator PREPARATOR =
             new DhKeyExchangeReplyMessagePreparator();
 
-    @Override
-    public DhKeyExchangeReplyMessageSerializer getSerializer() {
-        return new DhKeyExchangeReplyMessageSerializer(message);
-    }
+    public static final DhKeyExchangeReplyMessageSerializer SERIALIZER =
+            new DhKeyExchangeReplyMessageSerializer();
 }

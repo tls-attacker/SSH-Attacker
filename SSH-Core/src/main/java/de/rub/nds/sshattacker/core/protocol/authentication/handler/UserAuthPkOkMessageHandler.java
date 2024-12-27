@@ -40,8 +40,6 @@ public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMe
     public static final UserAuthPkOkMessagePreparator PREPARATOR =
             new UserAuthPkOkMessagePreparator();
 
-    @Override
-    public UserAuthPkOkMessageSerializer getSerializer() {
-        return new UserAuthPkOkMessageSerializer(message);
-    }
+    public static final UserAuthPkOkMessageSerializer SERIALIZER =
+            new UserAuthPkOkMessageSerializer();
 }

@@ -45,8 +45,6 @@ public class SftpExtensionPosixRenameHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionPosixRename> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.POSIX_RENAME_OPENSSH_COM);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionPosixRename> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionPosixRename> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

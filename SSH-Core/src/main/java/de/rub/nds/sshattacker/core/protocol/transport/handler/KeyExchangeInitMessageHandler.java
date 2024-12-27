@@ -243,8 +243,6 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
     public static final KeyExchangeInitMessagePreparator PREPARATOR =
             new KeyExchangeInitMessagePreparator();
 
-    @Override
-    public KeyExchangeInitMessageSerializer getSerializer() {
-        return new KeyExchangeInitMessageSerializer(message);
-    }
+    public static final KeyExchangeInitMessageSerializer SERIALIZER =
+            new KeyExchangeInitMessageSerializer();
 }

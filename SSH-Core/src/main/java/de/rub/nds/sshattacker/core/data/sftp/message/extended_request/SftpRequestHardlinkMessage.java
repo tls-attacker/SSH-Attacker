@@ -100,4 +100,9 @@ public class SftpRequestHardlinkMessage
     public void prepare(Chooser chooser) {
         SftpRequestHardlinkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestHardlinkMessageHandler.SERIALIZER.serialize(this);
+    }
 }

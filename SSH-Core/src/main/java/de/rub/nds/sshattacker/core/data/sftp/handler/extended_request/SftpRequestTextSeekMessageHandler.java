@@ -44,8 +44,6 @@ public class SftpRequestTextSeekMessageHandler
     public static final SftpRequestTextSeekMessagePreparator PREPARATOR =
             new SftpRequestTextSeekMessagePreparator();
 
-    @Override
-    public SftpRequestTextSeekMessageSerializer getSerializer() {
-        return new SftpRequestTextSeekMessageSerializer(message);
-    }
+    public static final SftpRequestTextSeekMessageSerializer SERIALIZER =
+            new SftpRequestTextSeekMessageSerializer();
 }

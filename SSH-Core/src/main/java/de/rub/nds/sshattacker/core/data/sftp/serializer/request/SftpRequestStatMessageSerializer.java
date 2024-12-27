@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestStatMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,20 +18,17 @@ public class SftpRequestStatMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestStatMessageSerializer(SftpRequestStatMessage message) {
-        super(message);
-    }
-
-    private void serializeFlags() {
-        if (message.getFlags() != null) {
-            Integer flags = message.getFlags().getValue();
+    private static void serializeFlags(SftpRequestStatMessage object, SerializerStream output) {
+        if (object.getFlags() != null) {
+            Integer flags = object.getFlags().getValue();
             LOGGER.debug("Flags: {}", flags);
-            appendInt(flags, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(flags, DataFormatConstants.UINT32_SIZE);
         }
     }
 
     @Override
-    protected void serializeRequestWithPathSpecificContents() {
-        serializeFlags();
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestStatMessage object, SerializerStream output) {
+        serializeFlags(object, output);
     }
 }

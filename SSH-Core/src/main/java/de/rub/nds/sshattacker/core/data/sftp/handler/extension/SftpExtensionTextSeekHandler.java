@@ -45,8 +45,6 @@ public class SftpExtensionTextSeekHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionTextSeek> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.TEXT_SEEK);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionTextSeek> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionTextSeek> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

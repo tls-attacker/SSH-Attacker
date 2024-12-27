@@ -47,8 +47,5 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
 
     public static final PingMessagePreparator PREPARATOR = new PingMessagePreparator();
 
-    @Override
-    public PingMessageSerializer getSerializer() {
-        return new PingMessageSerializer(message);
-    }
+    public static final PingMessageSerializer SERIALIZER = new PingMessageSerializer();
 }

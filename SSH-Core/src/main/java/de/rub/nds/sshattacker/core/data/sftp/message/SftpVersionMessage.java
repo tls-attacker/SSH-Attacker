@@ -35,4 +35,9 @@ public class SftpVersionMessage extends SftpHandshakeMessage<SftpVersionMessage>
     public void prepare(Chooser chooser) {
         SftpVersionMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpVersionMessageHandler.SERIALIZER.serialize(this);
+    }
 }

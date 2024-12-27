@@ -56,4 +56,9 @@ public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccess
     public void prepare(Chooser chooser) {
         GlobalRequestSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestSuccessMessageHandler.SERIALIZER.serialize(this);
+    }
 }

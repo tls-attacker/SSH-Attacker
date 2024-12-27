@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,23 +20,21 @@ public class EcdhKeyExchangeInitMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeInitMessageSerializer(EcdhKeyExchangeInitMessage message) {
-        super(message);
-    }
-
-    private void serializeEphemeralPublicKey() {
-        Integer ephemeralPublicKeyLength = message.getEphemeralPublicKeyLength().getValue();
+    private static void serializeEphemeralPublicKey(
+            EcdhKeyExchangeInitMessage object, SerializerStream output) {
+        Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
-        appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] ephemeralPublicKey = message.getEphemeralPublicKey().getValue();
+        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] ephemeralPublicKey = object.getEphemeralPublicKey().getValue();
         LOGGER.debug(
                 "Ephemeral public key (client): {}",
                 () -> ArrayConverter.bytesToRawHexString(ephemeralPublicKey));
-        appendBytes(ephemeralPublicKey);
+        output.appendBytes(ephemeralPublicKey);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeEphemeralPublicKey();
+    protected void serializeMessageSpecificContents(
+            EcdhKeyExchangeInitMessage object, SerializerStream output) {
+        serializeEphemeralPublicKey(object, output);
     }
 }

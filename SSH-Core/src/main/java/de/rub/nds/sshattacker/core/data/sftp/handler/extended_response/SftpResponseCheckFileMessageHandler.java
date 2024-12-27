@@ -39,8 +39,6 @@ public class SftpResponseCheckFileMessageHandler
     public static final SftpResponseCheckFileMessagePreparator PREPARATOR =
             new SftpResponseCheckFileMessagePreparator();
 
-    @Override
-    public SftpResponseCheckFileMessageSerializer getSerializer() {
-        return new SftpResponseCheckFileMessageSerializer(message);
-    }
+    public static final SftpResponseCheckFileMessageSerializer SERIALIZER =
+            new SftpResponseCheckFileMessageSerializer();
 }

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -22,28 +23,24 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected GlobalRequestMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeRequestName() {
-        Integer requestNameLength = message.getRequestNameLength().getValue();
+    private void serializeRequestName(T object, SerializerStream output) {
+        Integer requestNameLength = object.getRequestNameLength().getValue();
         LOGGER.debug("Request name length: {}", requestNameLength);
-        appendInt(requestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String requestName = message.getRequestName().getValue();
+        output.appendInt(requestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String requestName = object.getRequestName().getValue();
         LOGGER.debug("Request name: {}", () -> backslashEscapeString(requestName));
-        appendString(requestName, StandardCharsets.US_ASCII);
+        output.appendString(requestName, StandardCharsets.US_ASCII);
     }
 
-    private void serializeWantReply() {
-        Byte wantReply = message.getWantReply().getValue();
+    private void serializeWantReply(T object, SerializerStream output) {
+        Byte wantReply = object.getWantReply().getValue();
         LOGGER.debug("Want reply: {}", () -> Converter.byteToBoolean(wantReply));
-        appendByte(wantReply);
+        output.appendByte(wantReply);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeRequestName();
-        serializeWantReply();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        serializeRequestName(object, output);
+        serializeWantReply(object, output);
     }
 }

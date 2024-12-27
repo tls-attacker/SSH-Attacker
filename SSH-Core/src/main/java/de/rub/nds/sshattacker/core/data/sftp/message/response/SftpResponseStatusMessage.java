@@ -193,4 +193,9 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     public void prepare(Chooser chooser) {
         SftpResponseStatusMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseStatusMessageHandler.SERIALIZER.serialize(this);
+    }
 }

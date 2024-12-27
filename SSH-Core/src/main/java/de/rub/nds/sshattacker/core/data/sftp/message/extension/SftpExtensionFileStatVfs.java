@@ -35,4 +35,9 @@ public class SftpExtensionFileStatVfs extends SftpExtensionWithVersion<SftpExten
     public void prepare(Chooser chooser) {
         SftpExtensionFileStatVfsHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionFileStatVfsHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -38,8 +38,6 @@ public class SftpRequestLinkStatMessageHandler
     public static final SftpRequestLinkStatMessagePreparator PREPARATOR =
             new SftpRequestLinkStatMessagePreparator();
 
-    @Override
-    public SftpRequestLinkStatMessageSerializer getSerializer() {
-        return new SftpRequestLinkStatMessageSerializer(message);
-    }
+    public static final SftpRequestLinkStatMessageSerializer SERIALIZER =
+            new SftpRequestLinkStatMessageSerializer();
 }

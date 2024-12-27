@@ -99,8 +99,6 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
     public static final UserAuthHostbasedMessagePreparator PREPARATOR =
             new UserAuthHostbasedMessagePreparator();
 
-    @Override
-    public UserAuthHostbasedMessageSerializer getSerializer() {
-        return new UserAuthHostbasedMessageSerializer(message);
-    }
+    public static final UserAuthHostbasedMessageSerializer SERIALIZER =
+            new UserAuthHostbasedMessageSerializer();
 }

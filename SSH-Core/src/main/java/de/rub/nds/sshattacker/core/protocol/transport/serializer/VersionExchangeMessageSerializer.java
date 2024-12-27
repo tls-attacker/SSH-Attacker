@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -19,45 +20,43 @@ public class VersionExchangeMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public VersionExchangeMessageSerializer(VersionExchangeMessage message) {
-        super(message);
-    }
-
-    private void serializeVersion() {
-        if (message.getVersion().getValue().isEmpty()) {
+    private static void serializeVersion(VersionExchangeMessage object, SerializerStream output) {
+        if (object.getVersion().getValue().isEmpty()) {
             LOGGER.debug("Version: [none]");
         } else {
-            LOGGER.debug("Version: {}", message.getVersion().getValue());
-            appendString(message.getVersion().getValue(), StandardCharsets.US_ASCII);
+            LOGGER.debug("Version: {}", object.getVersion().getValue());
+            output.appendString(object.getVersion().getValue(), StandardCharsets.US_ASCII);
         }
     }
 
-    private void serializeComment() {
-        if (message.getComment().getValue().isEmpty()) {
+    private static void serializeComment(VersionExchangeMessage object, SerializerStream output) {
+        if (object.getComment().getValue().isEmpty()) {
             LOGGER.debug("Comment: [none]");
         } else {
-            LOGGER.debug("Comment: {}", message.getComment().getValue());
-            appendString(
+            LOGGER.debug("Comment: {}", object.getComment().getValue());
+            output.appendString(
                     String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR),
                     StandardCharsets.US_ASCII);
-            appendString(message.getComment().getValue(), StandardCharsets.US_ASCII);
+            output.appendString(object.getComment().getValue(), StandardCharsets.US_ASCII);
         }
     }
 
-    private void serializeEndOfMessageSequence() {
+    private static void serializeEndOfMessageSequence(
+            VersionExchangeMessage object, SerializerStream output) {
         LOGGER.debug(
                 "End of Line Sequence: {}",
-                message.getEndOfMessageSequence()
+                object.getEndOfMessageSequence()
                         .getValue()
                         .replace("\r", "[CR]")
                         .replace("\n", "[NL]"));
-        appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
+        output.appendString(object.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeProtocolMessageContents() {
-        serializeVersion();
-        serializeComment();
-        serializeEndOfMessageSequence();
+    protected void serializeProtocolMessageContents(
+            VersionExchangeMessage object, SerializerStream output) {
+        serializeVersion(object, output);
+        serializeComment(object, output);
+        serializeEndOfMessageSequence(object, output);
     }
 }

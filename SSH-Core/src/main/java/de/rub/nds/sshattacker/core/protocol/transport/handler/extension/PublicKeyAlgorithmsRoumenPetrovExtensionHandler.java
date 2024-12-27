@@ -53,8 +53,6 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
     public static final PublicKeyAlgorithmsRoumenPetrovExtensionPreparator PREPARATOR =
             new PublicKeyAlgorithmsRoumenPetrovExtensionPreparator();
 
-    @Override
-    public PublicKeyAlgorithmsRoumenPetrovExtensionSerializer getSerializer() {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionSerializer(extension);
-    }
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionSerializer SERIALIZER =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionSerializer();
 }

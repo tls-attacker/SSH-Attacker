@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurveEcPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
@@ -119,5 +120,12 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @Override
     public byte[] getEncoded() {
         return coordinate;
+    }
+
+    public static final XCurveEcPublicKeySerializer SERIALIZER = new XCurveEcPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

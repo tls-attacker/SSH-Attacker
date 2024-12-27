@@ -36,4 +36,9 @@ public class SftpExtensionMakeTempFolder
     public void prepare(Chooser chooser) {
         SftpExtensionMakeTempFolderHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionMakeTempFolderHandler.SERIALIZER.serialize(this);
+    }
 }

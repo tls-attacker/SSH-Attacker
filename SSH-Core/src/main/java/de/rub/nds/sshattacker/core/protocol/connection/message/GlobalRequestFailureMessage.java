@@ -36,4 +36,9 @@ public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailure
     public void prepare(Chooser chooser) {
         GlobalRequestFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestFailureMessageHandler.SERIALIZER.serialize(this);
+    }
 }

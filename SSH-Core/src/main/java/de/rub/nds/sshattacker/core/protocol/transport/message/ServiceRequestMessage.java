@@ -114,4 +114,9 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
     public void prepare(Chooser chooser) {
         ServiceRequestMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ServiceRequestMessageHandler.SERIALIZER.serialize(this);
+    }
 }

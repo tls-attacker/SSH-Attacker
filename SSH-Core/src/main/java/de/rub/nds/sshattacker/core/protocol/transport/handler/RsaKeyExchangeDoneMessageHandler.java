@@ -46,8 +46,6 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     public static final RsaKeyExchangeDoneMessagePreparator PREPARATOR =
             new RsaKeyExchangeDoneMessagePreparator();
 
-    @Override
-    public RsaKeyExchangeDoneMessageSerializer getSerializer() {
-        return new RsaKeyExchangeDoneMessageSerializer(message);
-    }
+    public static final RsaKeyExchangeDoneMessageSerializer SERIALIZER =
+            new RsaKeyExchangeDoneMessageSerializer();
 }

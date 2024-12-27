@@ -62,4 +62,9 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
     public void prepare(Chooser chooser) {
         GlobalRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

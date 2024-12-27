@@ -48,8 +48,5 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
 
     public static final UnknownMessagePreparator PREPARATOR = new UnknownMessagePreparator();
 
-    @Override
-    public UnknownMessageSerializer getSerializer() {
-        return new UnknownMessageSerializer(message);
-    }
+    public static final UnknownMessageSerializer SERIALIZER = new UnknownMessageSerializer();
 }

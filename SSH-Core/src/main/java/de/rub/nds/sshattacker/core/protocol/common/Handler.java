@@ -13,7 +13,5 @@ public interface Handler<T> {
 
     Parser<T> getParser(byte[] array, int startPosition);
 
-    Serializer<T> getSerializer();
-
     void adjustContext();
 }

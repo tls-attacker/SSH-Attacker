@@ -63,4 +63,9 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
     public void prepare(Chooser chooser) {
         UserAuthUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

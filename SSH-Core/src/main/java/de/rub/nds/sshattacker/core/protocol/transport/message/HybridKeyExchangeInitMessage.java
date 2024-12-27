@@ -18,10 +18,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
 
-    private ModifiableInteger agreementPublicKeyLength;
-    private ModifiableByteArray agreementPublicKey;
-    private ModifiableInteger encapsulationPublicKeyLength;
-    private ModifiableByteArray encapsulationPublicKey;
+    private ModifiableInteger concatenatedHybridKeysLength;
+    private ModifiableByteArray concatenatedHybridKeys;
 
     // Neue Variable für die Zertifikatsdaten
     private ModifiableByteArray certificatePublicKeyData;
@@ -33,19 +31,13 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     public HybridKeyExchangeInitMessage(HybridKeyExchangeInitMessage other) {
         super(other);
-        agreementPublicKeyLength =
-                other.agreementPublicKeyLength != null
-                        ? other.agreementPublicKeyLength.createCopy()
+        concatenatedHybridKeysLength =
+                other.concatenatedHybridKeysLength != null
+                        ? other.concatenatedHybridKeysLength.createCopy()
                         : null;
-        agreementPublicKey =
-                other.agreementPublicKey != null ? other.agreementPublicKey.createCopy() : null;
-        encapsulationPublicKeyLength =
-                other.encapsulationPublicKeyLength != null
-                        ? other.encapsulationPublicKeyLength.createCopy()
-                        : null;
-        encapsulationPublicKey =
-                other.encapsulationPublicKey != null
-                        ? other.encapsulationPublicKey.createCopy()
+        concatenatedHybridKeys =
+                other.concatenatedHybridKeys != null
+                        ? other.concatenatedHybridKeys.createCopy()
                         : null;
         certificatePublicKeyData =
                 other.certificatePublicKeyData != null
@@ -62,125 +54,64 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
         return new HybridKeyExchangeInitMessage(this);
     }
 
-    public ModifiableInteger getAgreementPublicKeyLength() {
-        return agreementPublicKeyLength;
+    public ModifiableInteger getConcatenatedHybridKeysLength() {
+        return concatenatedHybridKeysLength;
     }
 
-    public void setAgreementPublicKeyLength(ModifiableInteger agreementPublicKeyLength) {
-        this.agreementPublicKeyLength = agreementPublicKeyLength;
+    public void setConcatenatedHybridKeysLength(ModifiableInteger concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength = concatenatedHybridKeysLength;
     }
 
-    public void setAgreementPublicKeyLength(int agreementPublicKeyLength) {
-        this.agreementPublicKeyLength =
+    public void setConcatenatedHybridKeysLength(int concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.agreementPublicKeyLength, agreementPublicKeyLength);
+                        this.concatenatedHybridKeysLength, concatenatedHybridKeysLength);
     }
 
-    public ModifiableByteArray getAgreementPublicKey() {
-        return agreementPublicKey;
+    public ModifiableByteArray getConcatenatedHybridKeys() {
+        return concatenatedHybridKeys;
     }
 
-    public void setAgreementPublicKey(ModifiableByteArray agreementPublicKey) {
-        setAgreementPublicKey(agreementPublicKey, false);
+    public void setConcatenatedHybridKeys(ModifiableByteArray concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
     }
 
-    public void setAgreementPublicKey(byte[] agreementPublicKey) {
-        setAgreementPublicKey(agreementPublicKey, false);
+    public void setConcatenatedHybridKeys(byte[] concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
     }
 
-    public void setAgreementPublicKey(
-            ModifiableByteArray agreementPublicKey, boolean adjustLengthField) {
-        this.agreementPublicKey = agreementPublicKey;
+    public void setConcatenatedHybridKeys(
+            ModifiableByteArray concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys = concatenatedHybridKeys;
         if (adjustLengthField) {
-            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
     }
 
-    public void setAgreementPublicKey(byte[] agreementPublicKey, boolean adjustLengthField) {
-        this.agreementPublicKey =
+    public void setConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys =
                 ModifiableVariableFactory.safelySetValue(
-                        this.agreementPublicKey, agreementPublicKey);
+                        this.concatenatedHybridKeys, concatenatedHybridKeys);
         if (adjustLengthField) {
-            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
     }
 
-    public void setSoftlyAgreementPublicKey(
-            byte[] agreementPublicKey, boolean adjustLengthField, Config config) {
+    public void setSoftlyConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField, Config config) {
         if (config.getAlwaysPrepareKex()
-                || this.agreementPublicKey == null
-                || this.agreementPublicKey.getOriginalValue() == null) {
-            this.agreementPublicKey =
+                || this.concatenatedHybridKeys == null
+                || this.concatenatedHybridKeys.getOriginalValue() == null) {
+            this.concatenatedHybridKeys =
                     ModifiableVariableFactory.safelySetValue(
-                            this.agreementPublicKey, agreementPublicKey);
+                            this.concatenatedHybridKeys, concatenatedHybridKeys);
         }
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
-                    || agreementPublicKeyLength == null
-                    || agreementPublicKeyLength.getOriginalValue() == null) {
-                setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
-            }
-        }
-    }
-
-    public ModifiableInteger getEncapsulationPublicKeyLength() {
-        return encapsulationPublicKeyLength;
-    }
-
-    public void setEncapsulationPublicKeyLength(ModifiableInteger encapsulationPublicKeyLength) {
-        this.encapsulationPublicKeyLength = encapsulationPublicKeyLength;
-    }
-
-    public void setEncapsulationPublicKeyLength(int encapsulationPublicKeyLength) {
-        this.encapsulationPublicKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.encapsulationPublicKeyLength, encapsulationPublicKeyLength);
-    }
-
-    public ModifiableByteArray getEncapsulationPublicKey() {
-        return encapsulationPublicKey;
-    }
-
-    public void setEncapsulationPublicKey(ModifiableByteArray encapsulationPublicKey) {
-        setEncapsulationPublicKey(encapsulationPublicKey, false);
-    }
-
-    public void setEncapsulationPublicKey(byte[] encapsulationPublicKey) {
-        setEncapsulationPublicKey(encapsulationPublicKey, false);
-    }
-
-    public void setEncapsulationPublicKey(
-            ModifiableByteArray encapsulationPublicKey, boolean adjustLengthField) {
-        this.encapsulationPublicKey = encapsulationPublicKey;
-        if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
-        }
-    }
-
-    public void setEncapsulationPublicKey(
-            byte[] encapsulationPublicKey, boolean adjustLengthField) {
-        this.encapsulationPublicKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.encapsulationPublicKey, encapsulationPublicKey);
-        if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
-        }
-    }
-
-    public void setSoftlyEncapsulationPublicKey(
-            byte[] encapsulationPublicKey, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.encapsulationPublicKey == null
-                || this.encapsulationPublicKey.getOriginalValue() == null) {
-            this.encapsulationPublicKey =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.encapsulationPublicKey, encapsulationPublicKey);
-        }
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || encapsulationPublicKeyLength == null
-                    || encapsulationPublicKeyLength.getOriginalValue() == null) {
-                setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
+                    || concatenatedHybridKeysLength == null
+                    || concatenatedHybridKeysLength.getOriginalValue() == null) {
+                setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
             }
         }
     }
@@ -256,5 +187,10 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
     @Override
     public void prepare(Chooser chooser) {
         HybridKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return HybridKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
     }
 }

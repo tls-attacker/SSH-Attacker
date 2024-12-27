@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.X509XCurvePublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -229,5 +230,13 @@ public class CustomX509XCurvePublicKey extends CustomPublicKey {
     @Override
     public String getAlgorithm() {
         return "EdDSA";
+    }
+
+    public static final X509XCurvePublicKeySerializer SERIALIZER =
+            new X509XCurvePublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

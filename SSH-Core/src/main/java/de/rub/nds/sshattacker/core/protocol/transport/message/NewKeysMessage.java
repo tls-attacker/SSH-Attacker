@@ -36,4 +36,9 @@ public class NewKeysMessage extends SshMessage<NewKeysMessage> {
     public void prepare(Chooser chooser) {
         NewKeysMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return NewKeysMessageHandler.SERIALIZER.serialize(this);
+    }
 }

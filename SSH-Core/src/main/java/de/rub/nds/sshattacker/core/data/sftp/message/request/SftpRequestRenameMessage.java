@@ -99,4 +99,9 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     public void prepare(Chooser chooser) {
         SftpRequestRenameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestRenameMessageHandler.SERIALIZER.serialize(this);
+    }
 }

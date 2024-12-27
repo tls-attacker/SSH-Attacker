@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509EcdsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -24,15 +25,8 @@ import org.bouncycastle.asn1.x509.Extensions;
 /** Serializer class to encode an ECDSA X.509 public key (X509-SSH-ECDSA) format. */
 public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPublicKey> {
 
-    private final CustomX509EcdsaPublicKey publicKey;
-
-    public X509EcdsaPublicKeySerializer(CustomX509EcdsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomX509EcdsaPublicKey object, SerializerStream output) {
         /*
          * The X509-SSH-ECDSA format as specified:
          *   uint32    version
@@ -53,10 +47,10 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             ASN1EncodableVector topLevelVector = new ASN1EncodableVector();
 
             // Version (uint32) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(publicKey.getVersion()));
+            topLevelVector.add(new ASN1Integer(object.getVersion()));
 
             // Serial (uint64) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(publicKey.getSerial())));
+            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(object.getSerial())));
 
             // Signature Algorithm (OID for ECDSA with SHA256)
             AlgorithmIdentifier signatureAlgorithm =
@@ -66,16 +60,16 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(publicKey.getIssuer());
+            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(publicKey.getSubject());
+            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for ECDSA)
@@ -87,24 +81,24 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
 
             // Curve Name (as ASN.1 Object Identifier for the specific curve, e.g., NIST P-256)
             ASN1ObjectIdentifier curveOid =
-                    new ASN1ObjectIdentifier(getCurveOid(publicKey.getGroup()));
+                    new ASN1ObjectIdentifier(getCurveOid(object.getGroup()));
             topLevelVector.add(curveOid);
 
             // Public Key (as ASN.1 SEQUENCE for ECPoint)
             ASN1EncodableVector publicKeyVector = new ASN1EncodableVector();
-            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineX()));
-            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineY()));
+            publicKeyVector.add(new ASN1Integer(object.getW().getAffineX()));
+            publicKeyVector.add(new ASN1Integer(object.getW().getAffineY()));
             ASN1Sequence publicKeySequence = new DERSequence(publicKeyVector);
             topLevelVector.add(new DERBitString(publicKeySequence));
 
             // Extensions (ASN.1 encoded as Extensions sequence)
-            Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
+            Extensions extensions = getExtensionsAsASN1(object.getExtensions());
             if (extensions != null) {
                 topLevelVector.add(extensions);
             }
 
             // Signature (string) as ASN.1 OctetString
-            byte[] signature = publicKey.getSignature();
+            byte[] signature = object.getSignature();
             if (signature == null) {
                 throw new IllegalStateException("Signature is not set in the publicKey");
             }
@@ -113,7 +107,7 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             // Serialize the entire ASN.1 structure
             ASN1Sequence topLevelSequence = new DERSequence(topLevelVector);
             byte[] asn1Encoded = topLevelSequence.getEncoded();
-            appendBytes(asn1Encoded);
+            output.appendBytes(asn1Encoded);
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 ECDSA Public Key", e);

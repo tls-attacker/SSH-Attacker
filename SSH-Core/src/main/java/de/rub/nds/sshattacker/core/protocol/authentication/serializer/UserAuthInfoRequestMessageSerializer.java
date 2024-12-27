@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,54 +21,52 @@ public class UserAuthInfoRequestMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoRequestMessageSerializer(UserAuthInfoRequestMessage message) {
-        super(message);
-    }
-
-    private void serializeUserName() {
-        Integer userNameLength = message.getUserNameLength().getValue();
+    private static void serializeUserName(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer userNameLength = object.getUserNameLength().getValue();
         LOGGER.debug("User name length: {}", userNameLength);
-        appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String userName = message.getUserName().getValue();
+        output.appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String userName = object.getUserName().getValue();
         LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
-        appendString(userName);
+        output.appendString(userName);
     }
 
-    private void serializeInstruction() {
-        Integer instructionLength = message.getInstructionLength().getValue();
+    private static void serializeInstruction(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer instructionLength = object.getInstructionLength().getValue();
         LOGGER.debug("Instruction length: {}", instructionLength);
-        appendInt(instructionLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String instruction = message.getInstruction().getValue();
+        output.appendInt(instructionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String instruction = object.getInstruction().getValue();
         LOGGER.debug("Instruction: {}", () -> backslashEscapeString(instruction));
-        appendString(instruction);
+        output.appendString(instruction);
     }
 
-    private void serializeLanguageTag() {
-        Integer languageTagLength = message.getLanguageTagLength().getValue();
+    private static void serializeLanguageTag(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String languageTag = message.getLanguageTag().getValue();
+        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
-        appendString(languageTag);
+        output.appendString(languageTag);
     }
 
-    private void serializePrompt() {
-        Integer promptEntryCount = message.getPromptEntriesCount().getValue();
+    private static void serializePrompt(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer promptEntryCount = object.getPromptEntriesCount().getValue();
         LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
-        appendInt(promptEntryCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(promptEntryCount, DataFormatConstants.UINT32_SIZE);
 
-        message.getPromptEntries()
-                .forEach(
-                        promptEntry ->
-                                appendBytes(
-                                        promptEntry.getHandler(null).getSerializer().serialize()));
+        object.getPromptEntries()
+                .forEach(promptEntry -> output.appendBytes(promptEntry.serialize()));
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeUserName();
-        serializeInstruction();
-        serializeLanguageTag();
-        serializePrompt();
+    protected void serializeMessageSpecificContents(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        serializeUserName(object, output);
+        serializeInstruction(object, output);
+        serializeLanguageTag(object, output);
+        serializePrompt(object, output);
     }
 }

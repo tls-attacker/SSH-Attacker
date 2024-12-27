@@ -158,9 +158,10 @@ public class BinaryPacket extends AbstractPacket {
         PREPARATOR.prepare(this, chooser);
     }
 
-    @Override
-    public BinaryPacketSerializer getPacketSerializer() {
-        return new BinaryPacketSerializer(this);
+    public static final BinaryPacketSerializer SERIALIZER = new BinaryPacketSerializer();
+
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 
     public PacketCryptoComputations getComputations() {

@@ -36,4 +36,9 @@ public class SftpRequestStatVfsMessage
     public void prepare(Chooser chooser) {
         SftpRequestStatVfsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestStatVfsMessageHandler.SERIALIZER.serialize(this);
+    }
 }

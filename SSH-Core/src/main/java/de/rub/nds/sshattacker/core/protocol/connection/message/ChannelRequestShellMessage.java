@@ -35,4 +35,9 @@ public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelReq
     public void prepare(Chooser chooser) {
         ChannelRequestShellMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestShellMessageHandler.SERIALIZER.serialize(this);
+    }
 }

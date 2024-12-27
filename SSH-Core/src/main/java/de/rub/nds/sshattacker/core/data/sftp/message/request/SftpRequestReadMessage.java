@@ -79,4 +79,9 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
     public void prepare(Chooser chooser) {
         SftpRequestReadMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestReadMessageHandler.SERIALIZER.serialize(this);
+    }
 }

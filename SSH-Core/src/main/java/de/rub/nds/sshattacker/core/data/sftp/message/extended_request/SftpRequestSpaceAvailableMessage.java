@@ -36,4 +36,9 @@ public class SftpRequestSpaceAvailableMessage
     public void prepare(Chooser chooser) {
         SftpRequestSpaceAvailableMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestSpaceAvailableMessageHandler.SERIALIZER.serialize(this);
+    }
 }

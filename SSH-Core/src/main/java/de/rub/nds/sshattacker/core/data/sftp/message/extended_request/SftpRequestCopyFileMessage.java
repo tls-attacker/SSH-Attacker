@@ -146,4 +146,9 @@ public class SftpRequestCopyFileMessage
     public void prepare(Chooser chooser) {
         SftpRequestCopyFileMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestCopyFileMessageHandler.SERIALIZER.serialize(this);
+    }
 }

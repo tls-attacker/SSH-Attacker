@@ -51,8 +51,5 @@ public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> 
 
     public static final SftpInitMessagePreparator PREPARATOR = new SftpInitMessagePreparator();
 
-    @Override
-    public SftpInitMessageSerializer getSerializer() {
-        return new SftpInitMessageSerializer(message);
-    }
+    public static final SftpInitMessageSerializer SERIALIZER = new SftpInitMessageSerializer();
 }

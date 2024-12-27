@@ -42,8 +42,6 @@ public class UserAuthUnknownMessageHandler extends SshMessageHandler<UserAuthUnk
     public static final UserAuthUnknownMessagePreparator PREPARATOR =
             new UserAuthUnknownMessagePreparator();
 
-    @Override
-    public UserAuthUnknownMessageSerializer getSerializer() {
-        return new UserAuthUnknownMessageSerializer(message);
-    }
+    public static final UserAuthUnknownMessageSerializer SERIALIZER =
+            new UserAuthUnknownMessageSerializer();
 }

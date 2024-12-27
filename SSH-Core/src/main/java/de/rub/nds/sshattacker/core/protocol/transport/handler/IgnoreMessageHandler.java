@@ -39,8 +39,5 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
 
     public static final IgnoreMessagePreparator PREPARATOR = new IgnoreMessagePreparator();
 
-    @Override
-    public IgnoreMessageSerializer getSerializer() {
-        return new IgnoreMessageSerializer(message);
-    }
+    public static final IgnoreMessageSerializer SERIALIZER = new IgnoreMessageSerializer();
 }

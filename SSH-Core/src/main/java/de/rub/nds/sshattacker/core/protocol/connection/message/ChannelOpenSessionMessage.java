@@ -35,4 +35,9 @@ public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSes
     public void prepare(Chooser chooser) {
         ChannelOpenSessionMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenSessionMessageHandler.SERIALIZER.serialize(this);
+    }
 }

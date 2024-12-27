@@ -35,4 +35,9 @@ public class SftpInitMessage extends SftpHandshakeMessage<SftpInitMessage> {
     public void prepare(Chooser chooser) {
         SftpInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpInitMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -42,8 +42,6 @@ public class GlobalRequestCancelTcpIpForwardMessageHandler
     public static final GlobalRequestCancelTcpIpForwardMessagePreparator PREPARATOR =
             new GlobalRequestCancelTcpIpForwardMessagePreparator();
 
-    @Override
-    public GlobalRequestCancelTcpIpForwardMessageSerializer getSerializer() {
-        return new GlobalRequestCancelTcpIpForwardMessageSerializer(message);
-    }
+    public static final GlobalRequestCancelTcpIpForwardMessageSerializer SERIALIZER =
+            new GlobalRequestCancelTcpIpForwardMessageSerializer();
 }

@@ -44,8 +44,6 @@ public class SftpExtensionCheckFileHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionCheckFile> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.CHECK_FILE);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionCheckFile> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionCheckFile> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

@@ -64,4 +64,9 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
     public void prepare(Chooser chooser) {
         SftpResponseUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

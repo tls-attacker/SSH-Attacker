@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,21 +19,19 @@ public class DhGexKeyExchangeInitMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeInitMessageSerializer(DhGexKeyExchangeInitMessage message) {
-        super(message);
-    }
-
-    private void serializeEphemeralPublicKey() {
-        Integer ephemeralPublicKeyLength = message.getEphemeralPublicKeyLength().getValue();
+    private static void serializeEphemeralPublicKey(
+            DhGexKeyExchangeInitMessage object, SerializerStream output) {
+        Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
-        appendInt(ephemeralPublicKeyLength, DataFormatConstants.MPINT_SIZE_LENGTH);
+        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
-                "Ephemeral public key (client): {}", message.getEphemeralPublicKey().getValue());
-        appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
+                "Ephemeral public key (client): {}", object.getEphemeralPublicKey().getValue());
+        output.appendBytes(object.getEphemeralPublicKey().getValue().toByteArray());
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeEphemeralPublicKey();
+    protected void serializeMessageSpecificContents(
+            DhGexKeyExchangeInitMessage object, SerializerStream output) {
+        serializeEphemeralPublicKey(object, output);
     }
 }

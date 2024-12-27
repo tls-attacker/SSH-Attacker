@@ -98,4 +98,9 @@ public class SftpRequestHomeDirectoryMessage
     public void prepare(Chooser chooser) {
         SftpRequestHomeDirectoryMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestHomeDirectoryMessageHandler.SERIALIZER.serialize(this);
+    }
 }

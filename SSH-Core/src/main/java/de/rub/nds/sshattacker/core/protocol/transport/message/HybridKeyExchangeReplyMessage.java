@@ -24,11 +24,8 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
-    private ModifiableInteger publicKeyLength;
-    private ModifiableByteArray publicKey;
-
-    private ModifiableInteger combinedKeyShareLength;
-    private ModifiableByteArray combinedKeyShare;
+    private ModifiableInteger concatenatedHybridKeysLength;
+    private ModifiableByteArray concatenatedHybridKeys;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -42,14 +39,14 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         hostKeyBytesLength =
                 other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
         hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
-        publicKeyLength = other.publicKeyLength != null ? other.publicKeyLength.createCopy() : null;
-        publicKey = other.publicKey != null ? other.publicKey.createCopy() : null;
-        combinedKeyShareLength =
-                other.combinedKeyShareLength != null
-                        ? other.combinedKeyShareLength.createCopy()
+        concatenatedHybridKeysLength =
+                other.concatenatedHybridKeysLength != null
+                        ? other.concatenatedHybridKeysLength.createCopy()
                         : null;
-        combinedKeyShare =
-                other.combinedKeyShare != null ? other.combinedKeyShare.createCopy() : null;
+        concatenatedHybridKeys =
+                other.concatenatedHybridKeys != null
+                        ? other.concatenatedHybridKeys.createCopy()
+                        : null;
         signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
         signature = other.signature != null ? other.signature.createCopy() : null;
     }
@@ -130,106 +127,60 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
+    public ModifiableInteger getConcatenatedHybridKeysLength() {
+        return concatenatedHybridKeysLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
+    public void setConcatenatedHybridKeysLength(ModifiableInteger concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength = concatenatedHybridKeysLength;
     }
 
-    public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+    public void setConcatenatedHybridKeysLength(int concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.concatenatedHybridKeysLength, concatenatedHybridKeysLength);
     }
 
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
+    public ModifiableByteArray getConcatenatedHybridKeys() {
+        return concatenatedHybridKeys;
     }
 
-    public void setPublicKey(byte[] publicKey) {
-        setPublicKey(publicKey, false);
+    public void setConcatenatedHybridKeys(byte[] concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
     }
 
-    public void setPublicKey(ModifiableByteArray publicKey, boolean adjustLengthField) {
-        this.publicKey = publicKey;
+    public void setConcatenatedHybridKeys(
+            ModifiableByteArray concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys = concatenatedHybridKeys;
         if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
     }
 
-    public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+    public void setConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys =
+                ModifiableVariableFactory.safelySetValue(
+                        this.concatenatedHybridKeys, concatenatedHybridKeys);
         if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
     }
 
-    public void setSoftlyPublicKey(byte[] publicKey, boolean adjustLengthField, Config config) {
+    public void setSoftlyConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField, Config config) {
         if (config.getAlwaysPrepareKex()
-                || this.publicKey == null
-                || this.publicKey.getOriginalValue() == null) {
-            this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
-        }
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || publicKeyLength == null
-                    || publicKeyLength.getOriginalValue() == null) {
-                setPublicKeyLength(this.publicKey.getValue().length);
-            }
-        }
-    }
-
-    public ModifiableInteger getCombinedKeyShareLength() {
-        return combinedKeyShareLength;
-    }
-
-    public void setCombinedKeyShareLength(ModifiableInteger combinedKeyShareLength) {
-        this.combinedKeyShareLength = combinedKeyShareLength;
-    }
-
-    public void setCombinedKeyShareLength(int ciphertextLength) {
-        combinedKeyShareLength =
-                ModifiableVariableFactory.safelySetValue(combinedKeyShareLength, ciphertextLength);
-    }
-
-    public ModifiableByteArray getCombinedKeyShare() {
-        return combinedKeyShare;
-    }
-
-    public void setCombinedKeyShare(byte[] combinedKeyShare) {
-        setCombinedKeyShare(combinedKeyShare, false);
-    }
-
-    public void setCombinedKeyShare(ModifiableByteArray ciphertext, boolean adjustLengthField) {
-        combinedKeyShare = ciphertext;
-        if (adjustLengthField) {
-            setCombinedKeyShareLength(combinedKeyShare.getValue().length);
-        }
-    }
-
-    public void setCombinedKeyShare(byte[] combinedKeyShare, boolean adjustLengthField) {
-        this.combinedKeyShare =
-                ModifiableVariableFactory.safelySetValue(this.combinedKeyShare, combinedKeyShare);
-        if (adjustLengthField) {
-            setCombinedKeyShareLength(this.combinedKeyShare.getValue().length);
-        }
-    }
-
-    public void setSoftlyCombinedKeyShare(
-            byte[] combinedKeyShare, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.combinedKeyShare == null
-                || this.combinedKeyShare.getOriginalValue() == null) {
-            this.combinedKeyShare =
+                || this.concatenatedHybridKeys == null
+                || this.concatenatedHybridKeys.getOriginalValue() == null) {
+            this.concatenatedHybridKeys =
                     ModifiableVariableFactory.safelySetValue(
-                            this.combinedKeyShare, combinedKeyShare);
+                            this.concatenatedHybridKeys, concatenatedHybridKeys);
         }
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
-                    || combinedKeyShareLength == null
-                    || combinedKeyShareLength.getOriginalValue() == null) {
-                setCombinedKeyShareLength(this.combinedKeyShare.getValue().length);
+                    || concatenatedHybridKeysLength == null
+                    || concatenatedHybridKeysLength.getOriginalValue() == null) {
+                setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
             }
         }
     }
@@ -304,5 +255,10 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     @Override
     public void prepare(Chooser chooser) {
         HybridKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return HybridKeyExchangeReplyMessageHandler.SERIALIZER.serialize(this);
     }
 }

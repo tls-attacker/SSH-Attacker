@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileExtendedAttribute;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,34 +22,27 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SftpFileExtendedAttribute attribute;
-
-    public SftpFileExtendedAttributeSerializer(SftpFileExtendedAttribute attribute) {
-        super();
-        this.attribute = attribute;
-    }
-
-    private void serializeType() {
-        Integer typeLength = attribute.getTypeLength().getValue();
+    private static void serializeType(SftpFileExtendedAttribute object, SerializerStream output) {
+        Integer typeLength = object.getTypeLength().getValue();
         LOGGER.debug("Type length: {}", typeLength);
-        appendInt(typeLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String type = attribute.getType().getValue();
+        output.appendInt(typeLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String type = object.getType().getValue();
         LOGGER.debug("Type: {}", () -> backslashEscapeString(type));
-        appendString(type, StandardCharsets.US_ASCII);
+        output.appendString(type, StandardCharsets.US_ASCII);
     }
 
-    private void serializeData() {
-        Integer dataLength = attribute.getDataLength().getValue();
+    private static void serializeData(SftpFileExtendedAttribute object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] data = attribute.getData().getValue();
+        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
-        appendBytes(data);
+        output.appendBytes(data);
     }
 
     @Override
-    protected final void serializeBytes() {
-        serializeType();
-        serializeData();
+    protected final void serializeBytes(SftpFileExtendedAttribute object, SerializerStream output) {
+        serializeType(object, output);
+        serializeData(object, output);
     }
 }

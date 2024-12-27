@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUsersGroupsByIdMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,34 +18,28 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestUsersGroupsByIdMessageSerializer(SftpRequestUsersGroupsByIdMessage message) {
-        super(message);
-    }
-
-    private void serializeUserIdsLength() {
-        Integer userIdsLength = message.getUserIdsLength().getValue();
+    private static void serializeUserIdsLength(
+            SftpRequestUsersGroupsByIdMessage object, SerializerStream output) {
+        Integer userIdsLength = object.getUserIdsLength().getValue();
         LOGGER.debug("UserIdsLength: {}", userIdsLength);
-        appendInt(userIdsLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(userIdsLength, DataFormatConstants.UINT32_SIZE);
 
-        message.getUserIds()
-                .forEach(
-                        userId -> appendBytes(userId.getHandler(null).getSerializer().serialize()));
+        object.getUserIds().forEach(userId -> output.appendBytes(userId.serialize()));
     }
 
-    private void serializeGroupIdsLength() {
-        Integer groupIdsLength = message.getGroupIdsLength().getValue();
+    private static void serializeGroupIdsLength(
+            SftpRequestUsersGroupsByIdMessage object, SerializerStream output) {
+        Integer groupIdsLength = object.getGroupIdsLength().getValue();
         LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
-        appendInt(groupIdsLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(groupIdsLength, DataFormatConstants.UINT32_SIZE);
 
-        message.getGroupIds()
-                .forEach(
-                        groupId ->
-                                appendBytes(groupId.getHandler(null).getSerializer().serialize()));
+        object.getGroupIds().forEach(groupId -> output.appendBytes(groupId.serialize()));
     }
 
     @Override
-    protected void serializeRequestExtendedSpecificContents() {
-        serializeUserIdsLength();
-        serializeGroupIdsLength();
+    protected void serializeRequestExtendedSpecificContents(
+            SftpRequestUsersGroupsByIdMessage object, SerializerStream output) {
+        serializeUserIdsLength(object, output);
+        serializeGroupIdsLength(object, output);
     }
 }

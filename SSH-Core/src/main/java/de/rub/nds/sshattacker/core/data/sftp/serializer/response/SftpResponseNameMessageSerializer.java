@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,24 +18,18 @@ public class SftpResponseNameMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseNameMessageSerializer(SftpResponseNameMessage message) {
-        super(message);
-    }
-
-    private void serializeNameEntries() {
-        Integer countNameEntries = message.getNameEntriesCount().getValue();
+    private static void serializeNameEntries(
+            SftpResponseNameMessage object, SerializerStream output) {
+        Integer countNameEntries = object.getNameEntriesCount().getValue();
         LOGGER.debug("CountNameEntries: {}", countNameEntries);
-        appendInt(countNameEntries, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(countNameEntries, DataFormatConstants.UINT32_SIZE);
 
-        message.getNameEntries()
-                .forEach(
-                        nameEntry ->
-                                appendBytes(
-                                        nameEntry.getHandler(null).getSerializer().serialize()));
+        object.getNameEntries().forEach(nameEntry -> output.appendBytes(nameEntry.serialize()));
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeNameEntries();
+    protected void serializeResponseSpecificContents(
+            SftpResponseNameMessage object, SerializerStream output) {
+        serializeNameEntries(object, output);
     }
 }

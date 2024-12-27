@@ -38,8 +38,6 @@ public class SftpRequestUnknownMessageHandler
     public static final SftpRequestUnknownMessagePreparator PREPARATOR =
             new SftpRequestUnknownMessagePreparator();
 
-    @Override
-    public SftpRequestUnknownMessageSerializer getSerializer() {
-        return new SftpRequestUnknownMessageSerializer(message);
-    }
+    public static final SftpRequestUnknownMessageSerializer SERIALIZER =
+            new SftpRequestUnknownMessageSerializer();
 }

@@ -37,4 +37,9 @@ public class SftpRequestRemoveMessage extends SftpRequestWithPathMessage<SftpReq
     public void prepare(Chooser chooser) {
         SftpRequestRemoveMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestRemoveMessageHandler.SERIALIZER.serialize(this);
+    }
 }

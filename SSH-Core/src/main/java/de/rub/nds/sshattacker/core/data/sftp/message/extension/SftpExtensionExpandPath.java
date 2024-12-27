@@ -35,4 +35,9 @@ public class SftpExtensionExpandPath extends SftpExtensionWithVersion<SftpExtens
     public void prepare(Chooser chooser) {
         SftpExtensionExpandPathHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionExpandPathHandler.SERIALIZER.serialize(this);
+    }
 }

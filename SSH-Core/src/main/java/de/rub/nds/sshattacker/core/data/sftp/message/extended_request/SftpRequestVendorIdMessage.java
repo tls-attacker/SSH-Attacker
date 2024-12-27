@@ -250,4 +250,9 @@ public class SftpRequestVendorIdMessage
     public void prepare(Chooser chooser) {
         SftpRequestVendorIdMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestVendorIdMessageHandler.SERIALIZER.serialize(this);
+    }
 }

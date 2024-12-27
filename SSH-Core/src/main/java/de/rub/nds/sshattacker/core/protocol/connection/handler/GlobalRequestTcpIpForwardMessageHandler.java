@@ -42,8 +42,6 @@ public class GlobalRequestTcpIpForwardMessageHandler
     public static final GlobalRequestTcpIpForwardMessagePreparator PREPARATOR =
             new GlobalRequestTcpIpForwardMessagePreparator();
 
-    @Override
-    public GlobalRequestTcpIpForwardMessageSerializer getSerializer() {
-        return new GlobalRequestTcpIpForwardMessageSerializer(message);
-    }
+    public static final GlobalRequestTcpIpForwardMessageSerializer SERIALIZER =
+            new GlobalRequestTcpIpForwardMessageSerializer();
 }

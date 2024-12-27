@@ -54,8 +54,6 @@ public class ChannelRequestSubsystemMessageHandler
     public static final ChannelRequestSubsystemMessagePreparator PREPARATOR =
             new ChannelRequestSubsystemMessagePreparator();
 
-    @Override
-    public ChannelRequestSubsystemMessageSerializer getSerializer() {
-        return new ChannelRequestSubsystemMessageSerializer(message);
-    }
+    public static final ChannelRequestSubsystemMessageSerializer SERIALIZER =
+            new ChannelRequestSubsystemMessageSerializer();
 }

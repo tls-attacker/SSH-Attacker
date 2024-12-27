@@ -38,8 +38,6 @@ public class SftpRequestLimitsMessageHandler
     public static final SftpRequestLimitsMessagePreparator PREPARATOR =
             new SftpRequestLimitsMessagePreparator();
 
-    @Override
-    public SftpRequestLimitsMessageSerializer getSerializer() {
-        return new SftpRequestLimitsMessageSerializer(message);
-    }
+    public static final SftpRequestLimitsMessageSerializer SERIALIZER =
+            new SftpRequestLimitsMessageSerializer();
 }

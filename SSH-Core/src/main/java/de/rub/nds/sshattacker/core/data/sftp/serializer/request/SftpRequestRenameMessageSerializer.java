@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRenameMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,21 +21,18 @@ public class SftpRequestRenameMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestRenameMessageSerializer(SftpRequestRenameMessage message) {
-        super(message);
-    }
-
-    private void serializeNewPath() {
-        Integer newPathLength = message.getNewPathLength().getValue();
+    private static void serializeNewPath(SftpRequestRenameMessage object, SerializerStream output) {
+        Integer newPathLength = object.getNewPathLength().getValue();
         LOGGER.debug("NewPath length: {}", newPathLength);
-        appendInt(newPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String newPath = message.getNewPath().getValue();
+        output.appendInt(newPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String newPath = object.getNewPath().getValue();
         LOGGER.debug("NewPath: {}", () -> backslashEscapeString(newPath));
-        appendString(newPath, StandardCharsets.UTF_8);
+        output.appendString(newPath, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeRequestWithPathSpecificContents() {
-        serializeNewPath();
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestRenameMessage object, SerializerStream output) {
+        serializeNewPath(object, output);
     }
 }

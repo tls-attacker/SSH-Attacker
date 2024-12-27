@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -19,28 +20,24 @@ public class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ChannelRequestMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeRequestType() {
-        Integer requestTypeLength = message.getRequestTypeLength().getValue();
+    private void serializeRequestType(T object, SerializerStream output) {
+        Integer requestTypeLength = object.getRequestTypeLength().getValue();
         LOGGER.debug("Request type length: {}", requestTypeLength);
-        appendInt(requestTypeLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Request type: {}", message.getRequestType().getValue());
-        appendString(message.getRequestType().getValue(), StandardCharsets.US_ASCII);
+        output.appendInt(requestTypeLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Request type: {}", object.getRequestType().getValue());
+        output.appendString(object.getRequestType().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeWantReply() {
-        Byte wantReply = message.getWantReply().getValue();
+    private void serializeWantReply(T object, SerializerStream output) {
+        Byte wantReply = object.getWantReply().getValue();
         LOGGER.debug("Want reply: {}", () -> Converter.byteToBoolean(wantReply));
-        appendByte(wantReply);
+        output.appendByte(wantReply);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeRequestType();
-        serializeWantReply();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeRequestType(object, output);
+        serializeWantReply(object, output);
     }
 }

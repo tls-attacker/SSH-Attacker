@@ -137,6 +137,11 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
     }
 
     @Override
+    public byte[] serialize() {
+        return UserAuthInfoResponseMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (responseEntries != null) {

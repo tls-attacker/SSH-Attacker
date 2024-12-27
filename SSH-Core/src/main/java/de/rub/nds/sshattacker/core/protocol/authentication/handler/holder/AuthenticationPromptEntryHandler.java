@@ -47,8 +47,6 @@ public class AuthenticationPromptEntryHandler implements Handler<AuthenticationP
     public static final AuthenticationPromptEntryPreparator PREPARATOR =
             new AuthenticationPromptEntryPreparator();
 
-    @Override
-    public AuthenticationPromptEntrySerializer getSerializer() {
-        return new AuthenticationPromptEntrySerializer(authenticationPromptEntry);
-    }
+    public static final AuthenticationPromptEntrySerializer SERIALIZER =
+            new AuthenticationPromptEntrySerializer();
 }

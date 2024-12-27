@@ -53,8 +53,6 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
     public static final ChannelRequestX11MessagePreparator PREPARATOR =
             new ChannelRequestX11MessagePreparator();
 
-    @Override
-    public ChannelRequestX11MessageSerializer getSerializer() {
-        return new ChannelRequestX11MessageSerializer(message);
-    }
+    public static final ChannelRequestX11MessageSerializer SERIALIZER =
+            new ChannelRequestX11MessageSerializer();
 }

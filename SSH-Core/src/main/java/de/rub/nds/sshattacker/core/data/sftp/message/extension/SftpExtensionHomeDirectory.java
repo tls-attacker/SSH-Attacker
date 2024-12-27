@@ -36,4 +36,9 @@ public class SftpExtensionHomeDirectory
     public void prepare(Chooser chooser) {
         SftpExtensionHomeDirectoryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionHomeDirectoryHandler.SERIALIZER.serialize(this);
+    }
 }

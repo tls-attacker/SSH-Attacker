@@ -38,8 +38,6 @@ public class SftpRequestSymbolicLinkMessageHandler
     public static final SftpRequestSymbolicLinkMessagePreparator PREPARATOR =
             new SftpRequestSymbolicLinkMessagePreparator();
 
-    @Override
-    public SftpRequestSymbolicLinkMessageSerializer getSerializer() {
-        return new SftpRequestSymbolicLinkMessageSerializer(message);
-    }
+    public static final SftpRequestSymbolicLinkMessageSerializer SERIALIZER =
+            new SftpRequestSymbolicLinkMessageSerializer();
 }

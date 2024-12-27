@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCopyFileMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -21,29 +22,28 @@ public class SftpRequestCopyFileMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestCopyFileMessageSerializer(SftpRequestCopyFileMessage message) {
-        super(message);
-    }
-
-    private void serializeDestinationPath() {
-        Integer destinationPathLength = message.getDestinationPathLength().getValue();
+    private static void serializeDestinationPath(
+            SftpRequestCopyFileMessage object, SerializerStream output) {
+        Integer destinationPathLength = object.getDestinationPathLength().getValue();
         LOGGER.debug("DestinationPath length: {}", destinationPathLength);
-        appendInt(destinationPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String destinationPath = message.getDestinationPath().getValue();
+        output.appendInt(destinationPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String destinationPath = object.getDestinationPath().getValue();
         LOGGER.debug("DestinationPath: {}", () -> backslashEscapeString(destinationPath));
-        appendString(destinationPath, StandardCharsets.UTF_8);
+        output.appendString(destinationPath, StandardCharsets.UTF_8);
     }
 
-    private void serializeOverwriteDestination() {
-        Byte overwriteDestination = message.getOverwriteDestination().getValue();
+    private static void serializeOverwriteDestination(
+            SftpRequestCopyFileMessage object, SerializerStream output) {
+        Byte overwriteDestination = object.getOverwriteDestination().getValue();
         LOGGER.debug(
                 "OverwriteDestination: {}", () -> Converter.byteToBoolean(overwriteDestination));
-        appendByte(overwriteDestination);
+        output.appendByte(overwriteDestination);
     }
 
     @Override
-    protected void serializeRequestExtendedWithPathSpecificContents() {
-        serializeDestinationPath();
-        serializeOverwriteDestination();
+    protected void serializeRequestExtendedWithPathSpecificContents(
+            SftpRequestCopyFileMessage object, SerializerStream output) {
+        serializeDestinationPath(object, output);
+        serializeOverwriteDestination(object, output);
     }
 }

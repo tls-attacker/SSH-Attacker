@@ -38,8 +38,6 @@ public class SftpRequestRealPathMessageHandler
     public static final SftpRequestRealPathMessagePreparator PREPARATOR =
             new SftpRequestRealPathMessagePreparator();
 
-    @Override
-    public SftpRequestRealPathMessageSerializer getSerializer() {
-        return new SftpRequestRealPathMessageSerializer(message);
-    }
+    public static final SftpRequestRealPathMessageSerializer SERIALIZER =
+            new SftpRequestRealPathMessageSerializer();
 }

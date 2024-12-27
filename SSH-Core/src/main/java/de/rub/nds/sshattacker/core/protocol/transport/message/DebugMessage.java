@@ -191,4 +191,9 @@ public class DebugMessage extends SshMessage<DebugMessage> {
     public void prepare(Chooser chooser) {
         DebugMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DebugMessageHandler.SERIALIZER.serialize(this);
+    }
 }

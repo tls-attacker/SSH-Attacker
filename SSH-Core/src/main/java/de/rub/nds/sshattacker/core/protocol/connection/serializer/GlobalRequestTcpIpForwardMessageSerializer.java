@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,28 +19,27 @@ public class GlobalRequestTcpIpForwardMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestTcpIpForwardMessageSerializer(GlobalRequestTcpIpForwardMessage message) {
-        super(message);
-    }
-
-    private void serializeIPAddressToBind() {
-        Integer ipAddressToBindLength = message.getIpAddressToBindLength().getValue();
+    private static void serializeIPAddressToBind(
+            GlobalRequestTcpIpForwardMessage object, SerializerStream output) {
+        Integer ipAddressToBindLength = object.getIpAddressToBindLength().getValue();
         LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
-        appendInt(ipAddressToBindLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
-        appendString(message.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
+        output.appendInt(ipAddressToBindLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("IP address to bind: {}", object.getIpAddressToBind().getValue());
+        output.appendString(object.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializePortToBind() {
-        Integer portToBind = message.getPortToBind().getValue();
+    private static void serializePortToBind(
+            GlobalRequestTcpIpForwardMessage object, SerializerStream output) {
+        Integer portToBind = object.getPortToBind().getValue();
         LOGGER.debug("Port to bind: {}", portToBind);
-        appendInt(portToBind, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(portToBind, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeIPAddressToBind();
-        serializePortToBind();
+    protected void serializeMessageSpecificContents(
+            GlobalRequestTcpIpForwardMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeIPAddressToBind(object, output);
+        serializePortToBind(object, output);
     }
 }

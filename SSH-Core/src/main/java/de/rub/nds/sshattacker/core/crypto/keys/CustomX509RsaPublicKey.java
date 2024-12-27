@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.X509RsaPublicKeySerializer;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
@@ -175,5 +176,12 @@ public class CustomX509RsaPublicKey extends CustomRsaPublicKey {
 
     public void setSubjectKeyIdentifier(byte[] subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
+    }
+
+    public static final X509RsaPublicKeySerializer SERIALIZER = new X509RsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

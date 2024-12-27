@@ -63,4 +63,9 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
     public void prepare(Chooser chooser) {
         StringDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return StringDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

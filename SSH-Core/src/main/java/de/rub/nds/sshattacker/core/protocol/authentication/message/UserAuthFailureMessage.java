@@ -182,4 +182,9 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
     public void prepare(Chooser chooser) {
         UserAuthFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthFailureMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestFileSyncMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestFileSyncMessageSerializer
         extends SftpRequestExtendedWithHandleMessageSerializer<SftpRequestFileSyncMessage> {
 
-    public SftpRequestFileSyncMessageSerializer(SftpRequestFileSyncMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestExtendedWithHandleSpecificContents() {}
+    protected void serializeRequestExtendedWithHandleSpecificContents(
+            SftpRequestFileSyncMessage object, SerializerStream output) {}
 }

@@ -53,6 +53,11 @@ public class SftpResponseAttributesMessage
     }
 
     @Override
+    public byte[] serialize() {
+        return SftpResponseAttributesMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (attributes != null) {

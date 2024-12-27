@@ -35,4 +35,9 @@ public class SftpExtensionHardlink extends SftpExtensionWithVersion<SftpExtensio
     public void prepare(Chooser chooser) {
         SftpExtensionHardlinkHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionHardlinkHandler.SERIALIZER.serialize(this);
+    }
 }

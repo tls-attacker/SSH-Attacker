@@ -63,4 +63,9 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
     public void prepare(Chooser chooser) {
         UnknownDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UnknownDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

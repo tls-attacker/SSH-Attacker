@@ -46,8 +46,6 @@ public class SftpExtensionMakeTempFolderHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionMakeTempFolder> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.MAKE_TEMP_FOLDER);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionMakeTempFolder> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionMakeTempFolder> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

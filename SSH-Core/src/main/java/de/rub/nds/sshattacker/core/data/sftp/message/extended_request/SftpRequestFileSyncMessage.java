@@ -36,4 +36,9 @@ public class SftpRequestFileSyncMessage
     public void prepare(Chooser chooser) {
         SftpRequestFileSyncMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestFileSyncMessageHandler.SERIALIZER.serialize(this);
+    }
 }

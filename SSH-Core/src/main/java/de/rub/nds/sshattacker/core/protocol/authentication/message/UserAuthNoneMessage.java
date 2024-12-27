@@ -35,4 +35,9 @@ public class UserAuthNoneMessage extends UserAuthRequestMessage<UserAuthNoneMess
     public void prepare(Chooser chooser) {
         UserAuthNoneMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthNoneMessageHandler.SERIALIZER.serialize(this);
+    }
 }

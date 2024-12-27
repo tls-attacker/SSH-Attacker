@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.string;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,18 +19,15 @@ public class StringDataMessageSerializer extends ProtocolMessageSerializer<Strin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public StringDataMessageSerializer(StringDataMessage message) {
-        super(message);
-    }
-
-    private void serializeData() {
-        String data = message.getData().getValue();
+    private static void serializeData(StringDataMessage object, SerializerStream output) {
+        String data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> backslashEscapeString(data));
-        appendString(data, StandardCharsets.UTF_8);
+        output.appendString(data, StandardCharsets.UTF_8);
     }
 
     @Override
-    public final void serializeProtocolMessageContents() {
-        serializeData();
+    public final void serializeProtocolMessageContents(
+            StringDataMessage object, SerializerStream output) {
+        serializeData(object, output);
     }
 }

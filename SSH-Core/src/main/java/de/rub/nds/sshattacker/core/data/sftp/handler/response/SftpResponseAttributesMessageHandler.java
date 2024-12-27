@@ -38,8 +38,6 @@ public class SftpResponseAttributesMessageHandler
     public static final SftpResponseAttributesMessagePreparator PREPARATOR =
             new SftpResponseAttributesMessagePreparator();
 
-    @Override
-    public SftpResponseAttributesMessageSerializer getSerializer() {
-        return new SftpResponseAttributesMessageSerializer(message);
-    }
+    public static final SftpResponseAttributesMessageSerializer SERIALIZER =
+            new SftpResponseAttributesMessageSerializer();
 }

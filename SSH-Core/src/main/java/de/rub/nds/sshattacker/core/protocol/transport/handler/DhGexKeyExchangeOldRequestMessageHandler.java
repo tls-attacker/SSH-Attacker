@@ -51,8 +51,6 @@ public class DhGexKeyExchangeOldRequestMessageHandler
     public static final DhGexKeyExchangeOldRequestMessagePreparator PREPARATOR =
             new DhGexKeyExchangeOldRequestMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeOldRequestMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeOldRequestMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeOldRequestMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeOldRequestMessageSerializer();
 }

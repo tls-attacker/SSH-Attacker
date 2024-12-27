@@ -55,8 +55,6 @@ public class ChannelRequestUnknownMessageHandler
     public static final ChannelRequestUnknownMessagePreparator PREPARATOR =
             new ChannelRequestUnknownMessagePreparator();
 
-    @Override
-    public ChannelRequestUnknownMessageSerializer getSerializer() {
-        return new ChannelRequestUnknownMessageSerializer(message);
-    }
+    public static final ChannelRequestUnknownMessageSerializer SERIALIZER =
+            new ChannelRequestUnknownMessageSerializer();
 }

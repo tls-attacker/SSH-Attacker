@@ -39,8 +39,6 @@ public class SftpRequestHardlinkMessageHandler
     public static final SftpRequestHardlinkMessagePreparator PREPARATOR =
             new SftpRequestHardlinkMessagePreparator();
 
-    @Override
-    public SftpRequestHardlinkMessageSerializer getSerializer() {
-        return new SftpRequestHardlinkMessageSerializer(message);
-    }
+    public static final SftpRequestHardlinkMessageSerializer SERIALIZER =
+            new SftpRequestHardlinkMessageSerializer();
 }

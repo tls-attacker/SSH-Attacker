@@ -105,4 +105,9 @@ public class SftpRequestSymbolicLinkMessage
     public void prepare(Chooser chooser) {
         SftpRequestSymbolicLinkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestSymbolicLinkMessageHandler.SERIALIZER.serialize(this);
+    }
 }

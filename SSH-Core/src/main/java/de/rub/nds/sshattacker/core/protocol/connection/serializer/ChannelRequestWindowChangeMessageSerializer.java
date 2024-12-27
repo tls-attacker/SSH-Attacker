@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,40 +17,41 @@ public class ChannelRequestWindowChangeMessageSerializer
         extends ChannelRequestMessageSerializer<ChannelRequestWindowChangeMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestWindowChangeMessageSerializer(ChannelRequestWindowChangeMessage message) {
-        super(message);
-    }
-
-    private void serializeWidthColums() {
-        Integer widthPixels = message.getWidthPixels().getValue();
+    private static void serializeWidthColums(
+            ChannelRequestWindowChangeMessage object, SerializerStream output) {
+        Integer widthPixels = object.getWidthPixels().getValue();
         LOGGER.debug("Terminal width in colums: {}", widthPixels);
-        appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeHeightRows() {
-        Integer heightRows = message.getHeightRows().getValue();
+    private static void serializeHeightRows(
+            ChannelRequestWindowChangeMessage object, SerializerStream output) {
+        Integer heightRows = object.getHeightRows().getValue();
         LOGGER.debug("Terminal height in rows: {}", heightRows);
-        appendInt(heightRows, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(heightRows, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeWidthPixels() {
-        Integer widthPixels = message.getWidthPixels().getValue();
+    private static void serializeWidthPixels(
+            ChannelRequestWindowChangeMessage object, SerializerStream output) {
+        Integer widthPixels = object.getWidthPixels().getValue();
         LOGGER.debug("Terminal width in pixels: {}", widthPixels);
-        appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeHeightPixels() {
-        Integer heightPixels = message.getHeightPixels().getValue();
+    private static void serializeHeightPixels(
+            ChannelRequestWindowChangeMessage object, SerializerStream output) {
+        Integer heightPixels = object.getHeightPixels().getValue();
         LOGGER.debug("Terminal height in pixels: {}", heightPixels);
-        appendInt(heightPixels, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(heightPixels, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeWidthColums();
-        serializeHeightRows();
-        serializeWidthPixels();
-        serializeHeightPixels();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestWindowChangeMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeWidthColums(object, output);
+        serializeHeightRows(object, output);
+        serializeWidthPixels(object, output);
+        serializeHeightPixels(object, output);
     }
 }

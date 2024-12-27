@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,24 +22,21 @@ public abstract class SftpRequestExtendedMessageSerializer<T extends SftpRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SftpRequestExtendedMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeExtendedRequestName() {
-        Integer extendedRequestNameLength = message.getExtendedRequestNameLength().getValue();
+    private void serializeExtendedRequestName(T object, SerializerStream output) {
+        Integer extendedRequestNameLength = object.getExtendedRequestNameLength().getValue();
         LOGGER.debug("ExtendedRequestName length: {}", extendedRequestNameLength);
-        appendInt(extendedRequestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String extendedRequestName = message.getExtendedRequestName().getValue();
+        output.appendInt(extendedRequestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String extendedRequestName = object.getExtendedRequestName().getValue();
         LOGGER.debug("ExtendedRequestName: {}", () -> backslashEscapeString(extendedRequestName));
-        appendString(extendedRequestName, StandardCharsets.US_ASCII);
+        output.appendString(extendedRequestName, StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeRequestSpecificContents() {
-        serializeExtendedRequestName();
-        serializeRequestExtendedSpecificContents();
+    protected void serializeRequestSpecificContents(T object, SerializerStream output) {
+        serializeExtendedRequestName(object, output);
+        serializeRequestExtendedSpecificContents(object, output);
     }
 
-    protected abstract void serializeRequestExtendedSpecificContents();
+    protected abstract void serializeRequestExtendedSpecificContents(
+            T object, SerializerStream output);
 }

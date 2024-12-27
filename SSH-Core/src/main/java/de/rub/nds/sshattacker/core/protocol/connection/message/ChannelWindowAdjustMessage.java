@@ -58,4 +58,9 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
     public void prepare(Chooser chooser) {
         ChannelWindowAdjustMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelWindowAdjustMessageHandler.SERIALIZER.serialize(this);
+    }
 }

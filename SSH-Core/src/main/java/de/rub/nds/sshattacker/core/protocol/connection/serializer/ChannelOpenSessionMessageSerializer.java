@@ -10,8 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 
 public class ChannelOpenSessionMessageSerializer
-        extends ChannelOpenMessageSerializer<ChannelOpenSessionMessage> {
-    public ChannelOpenSessionMessageSerializer(ChannelOpenSessionMessage message) {
-        super(message);
-    }
-}
+        extends ChannelOpenMessageSerializer<ChannelOpenSessionMessage> {}

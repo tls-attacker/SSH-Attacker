@@ -46,8 +46,6 @@ public class SftpExtensionUsersGroupsByIdHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionUsersGroupsById>
             PREPARATOR = new SftpExtensionWithVersionPreparator<>(SftpExtension.USERS_GROUPS_BY_ID);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionUsersGroupsById> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionUsersGroupsById>
+            SERIALIZER = new SftpExtensionWithVersionSerializer<>();
 }

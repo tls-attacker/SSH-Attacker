@@ -268,4 +268,9 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     public void prepare(Chooser chooser) {
         ChannelRequestX11MessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestX11MessageHandler.SERIALIZER.serialize(this);
+    }
 }

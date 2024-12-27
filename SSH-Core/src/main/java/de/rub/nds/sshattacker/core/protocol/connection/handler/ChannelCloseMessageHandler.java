@@ -88,8 +88,6 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     public static final ChannelCloseMessagePreparator PREPARATOR =
             new ChannelCloseMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelCloseMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelCloseMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

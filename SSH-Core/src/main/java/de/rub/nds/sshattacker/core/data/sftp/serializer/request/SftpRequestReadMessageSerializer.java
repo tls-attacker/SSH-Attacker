@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestReadMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,25 +18,22 @@ public class SftpRequestReadMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestReadMessageSerializer(SftpRequestReadMessage message) {
-        super(message);
-    }
-
-    private void serializeOffset() {
-        Long offset = message.getOffset().getValue();
+    private static void serializeOffset(SftpRequestReadMessage object, SerializerStream output) {
+        Long offset = object.getOffset().getValue();
         LOGGER.debug("Offset: {}", offset);
-        appendLong(offset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(offset, DataFormatConstants.UINT64_SIZE);
     }
 
-    private void serializeLength() {
-        Integer length = message.getLength().getValue();
+    private static void serializeLength(SftpRequestReadMessage object, SerializerStream output) {
+        Integer length = object.getLength().getValue();
         LOGGER.debug("Length: {}", length);
-        appendInt(length, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(length, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeRequestWithHandleSpecificContents() {
-        serializeOffset();
-        serializeLength();
+    protected void serializeRequestWithHandleSpecificContents(
+            SftpRequestReadMessage object, SerializerStream output) {
+        serializeOffset(object, output);
+        serializeLength(object, output);
     }
 }

@@ -38,8 +38,6 @@ public class SftpRequestRemoveDirMessageHandler
     public static final SftpRequestRemoveDirMessagePreparator PREPARATOR =
             new SftpRequestRemoveDirMessagePreparator();
 
-    @Override
-    public SftpRequestRemoveDirMessageSerializer getSerializer() {
-        return new SftpRequestRemoveDirMessageSerializer(message);
-    }
+    public static final SftpRequestRemoveDirMessageSerializer SERIALIZER =
+            new SftpRequestRemoveDirMessageSerializer();
 }

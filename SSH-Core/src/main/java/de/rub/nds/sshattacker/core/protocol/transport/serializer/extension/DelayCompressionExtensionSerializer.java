@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,50 +19,50 @@ public class DelayCompressionExtensionSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DelayCompressionExtensionSerializer(DelayCompressionExtension extension) {
-        super(extension);
-    }
-
     @Override
-    protected void serializeExtensionValue() {
-        serializeCompressionMethodsLength();
-        serializeCompressionMethodsClientToServer();
-        serializeCompressionMethodsServerToClient();
+    protected void serializeExtensionValue(
+            DelayCompressionExtension object, SerializerStream output) {
+        serializeCompressionMethodsLength(object, output);
+        serializeCompressionMethodsClientToServer(object, output);
+        serializeCompressionMethodsServerToClient(object, output);
     }
 
-    private void serializeCompressionMethodsLength() {
-        Integer compressionMethodsLength = extension.getCompressionMethodsLength().getValue();
+    private static void serializeCompressionMethodsLength(
+            DelayCompressionExtension object, SerializerStream output) {
+        Integer compressionMethodsLength = object.getCompressionMethodsLength().getValue();
         LOGGER.debug("Compression methods length: {}", compressionMethodsLength);
-        appendInt(compressionMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
-    private void serializeCompressionMethodsClientToServer() {
+    private static void serializeCompressionMethodsClientToServer(
+            DelayCompressionExtension object, SerializerStream output) {
         Integer compressionMethodsClientToServerLength =
-                extension.getCompressionMethodsClientToServerLength().getValue();
+                object.getCompressionMethodsClientToServerLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
                 compressionMethodsClientToServerLength);
-        appendInt(compressionMethodsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(
+                compressionMethodsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (client to server): {}",
-                extension.getCompressionMethodsClientToServer().getValue());
-        appendString(
-                extension.getCompressionMethodsClientToServer().getValue(),
-                StandardCharsets.US_ASCII);
+                object.getCompressionMethodsClientToServer().getValue());
+        output.appendString(
+                object.getCompressionMethodsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeCompressionMethodsServerToClient() {
+    private static void serializeCompressionMethodsServerToClient(
+            DelayCompressionExtension object, SerializerStream output) {
         Integer compressionMethodsServerToClientLength =
-                extension.getCompressionMethodsServerToClientLength().getValue();
+                object.getCompressionMethodsServerToClientLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
                 compressionMethodsServerToClientLength);
-        appendInt(compressionMethodsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(
+                compressionMethodsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (server to client): {}",
-                extension.getCompressionMethodsServerToClient().getValue());
-        appendString(
-                extension.getCompressionMethodsServerToClient().getValue(),
-                StandardCharsets.US_ASCII);
+                object.getCompressionMethodsServerToClient().getValue());
+        output.appendString(
+                object.getCompressionMethodsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 }

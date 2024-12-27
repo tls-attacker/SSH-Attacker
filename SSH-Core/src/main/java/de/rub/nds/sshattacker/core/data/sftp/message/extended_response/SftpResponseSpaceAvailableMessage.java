@@ -171,4 +171,9 @@ public class SftpResponseSpaceAvailableMessage
     public void prepare(Chooser chooser) {
         SftpResponseSpaceAvailableMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseSpaceAvailableMessageHandler.SERIALIZER.serialize(this);
+    }
 }

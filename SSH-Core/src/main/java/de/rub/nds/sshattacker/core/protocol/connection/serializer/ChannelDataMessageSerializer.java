@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,22 +18,19 @@ public class ChannelDataMessageSerializer extends ChannelMessageSerializer<Chann
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelDataMessageSerializer(ChannelDataMessage message) {
-        super(message);
-    }
-
-    private void serializeData() {
-        Integer dataLength = message.getDataLength().getValue();
+    private static void serializeData(ChannelDataMessage object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] data = message.getData().getValue();
+        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = object.getData().getValue();
         LOGGER.trace("Data: {}", () -> ArrayConverter.bytesToHexString(data));
-        appendBytes(data);
+        output.appendBytes(data);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeData();
+    protected void serializeMessageSpecificContents(
+            ChannelDataMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeData(object, output);
     }
 }

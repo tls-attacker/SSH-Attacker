@@ -39,8 +39,6 @@ public class SftpResponseUnknownMessageHandler
     public static final SftpResponseUnknownMessagePreparator PREPARATOR =
             new SftpResponseUnknownMessagePreparator();
 
-    @Override
-    public SftpResponseUnknownMessageSerializer getSerializer() {
-        return new SftpResponseUnknownMessageSerializer(message);
-    }
+    public static final SftpResponseUnknownMessageSerializer SERIALIZER =
+            new SftpResponseUnknownMessageSerializer();
 }

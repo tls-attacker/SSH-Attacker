@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertXCurvePublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -23,16 +24,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePublicKey> {
 
-    private final CustomCertXCurvePublicKey publicKey;
     private static final Logger LOGGER = LogManager.getLogger(CertXCurvePublicKeySerializer.class);
 
-    public CertXCurvePublicKeySerializer(CustomCertXCurvePublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomCertXCurvePublicKey object, SerializerStream output) {
         LOGGER.debug("Starting serialization of CertXCurvePublicKey.");
 
         /*
@@ -54,54 +49,56 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
          */
 
         // 1. Format identifier (ssh-ed25519-cert-v01@openssh.com)
-        appendInt(
+        output.appendInt(
                 PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM
                         .toString()
                         .getBytes(StandardCharsets.US_ASCII)
                         .length,
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(
+        output.appendString(
                 PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.toString(),
                 StandardCharsets.US_ASCII);
 
         // 2. Nonce
-        byte[] nonce = publicKey.getNonce();
+        byte[] nonce = object.getNonce();
         if (nonce != null) {
-            appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(nonce);
+            output.appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(nonce);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing nonce
+            output.appendInt(
+                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing nonce
         }
 
         // 3. Public Key (Corresponds to "pk" in the Ed25519 format)
-        byte[] publicKeyBytes = publicKey.getCoordinate();
+        byte[] publicKeyBytes = object.getCoordinate();
         if (publicKeyBytes != null) {
-            appendInt(publicKeyBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(publicKeyBytes);
+            output.appendInt(publicKeyBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(publicKeyBytes);
         } else {
             throw new IllegalStateException("Public Key is not set in the publicKey object");
         }
 
         // 4. Serial (uint64) - Convert long to BigInteger
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // 5. Certificate type (uint32)
-        appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(Integer.parseInt(object.getCertType()), DataFormatConstants.UINT32_SIZE);
 
         // 6. Key ID (string)
-        String keyId = publicKey.getKeyId();
+        String keyId = object.getKeyId();
         if (keyId != null) {
-            appendInt(
+            output.appendInt(
                     keyId.getBytes(StandardCharsets.US_ASCII).length,
                     DataFormatConstants.STRING_SIZE_LENGTH);
-            appendString(keyId, StandardCharsets.US_ASCII);
+            output.appendString(keyId, StandardCharsets.US_ASCII);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing Key ID
+            output.appendInt(
+                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing Key ID
         }
 
         // 7. Valid Principals (string list)
-        String[] validPrincipals = publicKey.getValidPrincipals();
+        String[] validPrincipals = object.getValidPrincipals();
         if (validPrincipals != null && validPrincipals.length > 0) {
             // Create a buffer large enough to hold all principals, grow dynamically if needed
             ByteBuffer principalsBuffer = ByteBuffer.allocate(1024); // Start with a reasonable size
@@ -117,58 +114,58 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
             principalsBuffer.flip();
             principalsBuffer.get(principalsSerialized);
 
-            appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(principalsSerialized);
+            output.appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(principalsSerialized);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No valid principals
+            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No valid principals
         }
 
         // 8. Valid After (uint64) - Convert long to BigInteger
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getValidAfter()), DataFormatConstants.UINT64_SIZE);
 
         // 9. Valid Before (uint64) - Convert long to BigInteger
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
         // 10. Critical Options
-        Map<String, String> criticalOptions = publicKey.getCriticalOptions();
-        appendStringMap(criticalOptions);
+        Map<String, String> criticalOptions = object.getCriticalOptions();
+        appendStringMap(criticalOptions, output);
 
         // 11. Extensions
-        Map<String, String> extensions = publicKey.getExtensions();
-        appendStringMap(extensions);
+        Map<String, String> extensions = object.getExtensions();
+        appendStringMap(extensions, output);
 
         // 12. Reserved
-        String reserved = publicKey.getReserved();
+        String reserved = object.getReserved();
         if (reserved != null) {
             byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
-            appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(reservedBytes);
+            output.appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(reservedBytes);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No reserved field
+            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No reserved field
         }
 
         // 13. Signature Key (The public key used to sign this certificate)
-        byte[] signatureKey = publicKey.getSignatureKey();
+        byte[] signatureKey = object.getSignatureKey();
         if (signatureKey != null) {
-            appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(signatureKey);
+            output.appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(signatureKey);
         } else {
             throw new IllegalStateException("Signature Key is not set in the publicKey");
         }
 
         // 14. Signature (The actual signature on the certificate)
-        byte[] signature = publicKey.getSignature();
+        byte[] signature = object.getSignature();
         if (signature != null) {
-            appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(signature);
+            output.appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(signature);
         } else {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }
     }
 
-    private void appendStringMap(Map<String, String> stringMap) {
+    private static void appendStringMap(Map<String, String> stringMap, SerializerStream output) {
         if (stringMap != null && !stringMap.isEmpty()) {
             StringBuilder optionsBuilder = new StringBuilder();
             for (Map.Entry<String, String> entry : stringMap.entrySet()) {
@@ -176,10 +173,11 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
                 optionsBuilder.append(serializeString(entry.getValue()));
             }
             byte[] optionsBytes = optionsBuilder.toString().getBytes(StandardCharsets.US_ASCII);
-            appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(optionsBytes);
+            output.appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendBytes(optionsBytes);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty field if map is empty
+            output.appendInt(
+                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty field if map is empty
         }
     }
 

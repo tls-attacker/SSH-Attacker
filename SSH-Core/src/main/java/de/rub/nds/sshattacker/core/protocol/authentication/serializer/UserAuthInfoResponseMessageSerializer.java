@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,27 +18,19 @@ public class UserAuthInfoResponseMessageSerializer
         extends SshMessageSerializer<UserAuthInfoResponseMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoResponseMessageSerializer(UserAuthInfoResponseMessage message) {
-        super(message);
-    }
-
-    private void serializeResponse() {
-        Integer responseEntryCount = message.getResponseEntriesCount().getValue();
+    private static void serializeResponse(
+            UserAuthInfoResponseMessage object, SerializerStream output) {
+        Integer responseEntryCount = object.getResponseEntriesCount().getValue();
         LOGGER.debug("Number of response entries: {}", responseEntryCount);
-        appendInt(responseEntryCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(responseEntryCount, DataFormatConstants.UINT32_SIZE);
 
-        message.getResponseEntries()
-                .forEach(
-                        responseEntry ->
-                                appendBytes(
-                                        responseEntry
-                                                .getHandler(null)
-                                                .getSerializer()
-                                                .serialize()));
+        object.getResponseEntries()
+                .forEach(responseEntry -> output.appendBytes(responseEntry.serialize()));
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeResponse();
+    protected void serializeMessageSpecificContents(
+            UserAuthInfoResponseMessage object, SerializerStream output) {
+        serializeResponse(object, output);
     }
 }

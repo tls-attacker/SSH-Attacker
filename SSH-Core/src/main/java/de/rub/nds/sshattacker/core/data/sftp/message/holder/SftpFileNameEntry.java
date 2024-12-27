@@ -171,6 +171,10 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
         SftpFileNameEntryHandler.PREPARATOR.prepare(this, chooser);
     }
 
+    public byte[] serialize() {
+        return SftpFileNameEntryHandler.SERIALIZER.serialize(this);
+    }
+
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();

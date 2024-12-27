@@ -45,8 +45,5 @@ public class SftpAclEntryHandler implements Handler<SftpAclEntry> {
 
     public static final SftpAclEntryPreparator PREPARATOR = new SftpAclEntryPreparator();
 
-    @Override
-    public SftpAclEntrySerializer getSerializer() {
-        return new SftpAclEntrySerializer(aclEntry);
-    }
+    public static final SftpAclEntrySerializer SERIALIZER = new SftpAclEntrySerializer();
 }

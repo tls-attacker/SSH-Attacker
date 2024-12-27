@@ -55,8 +55,6 @@ public class ChannelRequestAuthAgentMessageHandler
     public static final ChannelRequestAuthAgentMessagePreparator PREPARATOR =
             new ChannelRequestAuthAgentMessagePreparator();
 
-    @Override
-    public ChannelRequestAuthAgentMessageSerializer getSerializer() {
-        return new ChannelRequestAuthAgentMessageSerializer(message);
-    }
+    public static final ChannelRequestAuthAgentMessageSerializer SERIALIZER =
+            new ChannelRequestAuthAgentMessageSerializer();
 }

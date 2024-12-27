@@ -47,8 +47,6 @@ public class AuthenticationResponseEntryHandler implements Handler<Authenticatio
     public static final AuthenticationResponseEntryPreparator PREPARATOR =
             new AuthenticationResponseEntryPreparator();
 
-    @Override
-    public AuthenticationResponseEntrySerializer getSerializer() {
-        return new AuthenticationResponseEntrySerializer(authenticationResponseEntry);
-    }
+    public static final AuthenticationResponseEntrySerializer SERIALIZER =
+            new AuthenticationResponseEntrySerializer();
 }

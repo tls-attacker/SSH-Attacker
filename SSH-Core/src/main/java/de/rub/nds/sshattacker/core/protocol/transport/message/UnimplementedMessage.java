@@ -61,4 +61,9 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
     public void prepare(Chooser chooser) {
         UnimplementedMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UnimplementedMessageHandler.SERIALIZER.serialize(this);
+    }
 }

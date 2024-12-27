@@ -42,8 +42,6 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
     public static final UserAuthPasswordMessagePreparator PREPARATOR =
             new UserAuthPasswordMessagePreparator();
 
-    @Override
-    public UserAuthPasswordMessageSerializer getSerializer() {
-        return new UserAuthPasswordMessageSerializer(message);
-    }
+    public static final UserAuthPasswordMessageSerializer SERIALIZER =
+            new UserAuthPasswordMessageSerializer();
 }

@@ -86,8 +86,6 @@ public class ChannelOpenConfirmationMessageHandler
     public static final ChannelOpenConfirmationMessagePreparator PREPARATOR =
             new ChannelOpenConfirmationMessagePreparator();
 
-    @Override
-    public ChannelOpenConfirmationMessageSerializer getSerializer() {
-        return new ChannelOpenConfirmationMessageSerializer(message);
-    }
+    public static final ChannelOpenConfirmationMessageSerializer SERIALIZER =
+            new ChannelOpenConfirmationMessageSerializer();
 }

@@ -72,8 +72,6 @@ public class RsaKeyExchangeSecretMessageHandler
     public static final RsaKeyExchangeSecretMessagePreparator PREPARATOR =
             new RsaKeyExchangeSecretMessagePreparator();
 
-    @Override
-    public RsaKeyExchangeSecretMessageSerializer getSerializer() {
-        return new RsaKeyExchangeSecretMessageSerializer(message);
-    }
+    public static final RsaKeyExchangeSecretMessageSerializer SERIALIZER =
+            new RsaKeyExchangeSecretMessageSerializer();
 }

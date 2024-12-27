@@ -96,4 +96,9 @@ public class PongMessage extends SshMessage<PongMessage> {
     public void prepare(Chooser chooser) {
         PongMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return PongMessageHandler.SERIALIZER.serialize(this);
+    }
 }

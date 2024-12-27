@@ -36,4 +36,9 @@ public class SftpRequestGetTempFolderMessage
     public void prepare(Chooser chooser) {
         SftpRequestGetTempFolderMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestGetTempFolderMessageHandler.SERIALIZER.serialize(this);
+    }
 }

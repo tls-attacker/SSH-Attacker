@@ -48,8 +48,6 @@ public class EcdhKeyExchangeInitMessageHandler
     public static final EcdhKeyExchangeInitMessagePreparator PREPARATOR =
             new EcdhKeyExchangeInitMessagePreparator();
 
-    @Override
-    public EcdhKeyExchangeInitMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeInitMessageSerializer(message);
-    }
+    public static final EcdhKeyExchangeInitMessageSerializer SERIALIZER =
+            new EcdhKeyExchangeInitMessageSerializer();
 }

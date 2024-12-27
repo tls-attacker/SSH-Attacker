@@ -39,8 +39,6 @@ public class SftpRequestCheckFileNameMessageHandler
     public static final SftpRequestCheckFileNameMessagePreparator PREPARATOR =
             new SftpRequestCheckFileNameMessagePreparator();
 
-    @Override
-    public SftpRequestCheckFileNameMessageSerializer getSerializer() {
-        return new SftpRequestCheckFileNameMessageSerializer(message);
-    }
+    public static final SftpRequestCheckFileNameMessageSerializer SERIALIZER =
+            new SftpRequestCheckFileNameMessageSerializer();
 }

@@ -36,4 +36,9 @@ public class SftpExtensionUsersGroupsById
     public void prepare(Chooser chooser) {
         SftpExtensionUsersGroupsByIdHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionUsersGroupsByIdHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -26,7 +26,4 @@ public abstract class SftpMessageHandler<T extends SftpMessage<T>>
 
     @Override
     public abstract SftpMessageParser<T> getParser(byte[] array, int startPosition);
-
-    @Override
-    public abstract SftpMessageSerializer<T> getSerializer();
 }

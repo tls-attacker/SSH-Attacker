@@ -35,4 +35,9 @@ public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
     public void prepare(Chooser chooser) {
         ChannelEofMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelEofMessageHandler.SERIALIZER.serialize(this);
+    }
 }

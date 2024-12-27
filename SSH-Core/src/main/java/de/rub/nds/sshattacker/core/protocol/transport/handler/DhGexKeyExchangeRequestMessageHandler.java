@@ -60,8 +60,6 @@ public class DhGexKeyExchangeRequestMessageHandler
     public static final DhGexKeyExchangeRequestMessagePreparator PREPARATOR =
             new DhGexKeyExchangeRequestMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeRequestMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeRequestMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeRequestMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeRequestMessageSerializer();
 }

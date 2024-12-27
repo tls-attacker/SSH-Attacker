@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -21,31 +22,29 @@ public class UserAuthPkOkMessageSerializer extends SshMessageSerializer<UserAuth
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPkOkMessageSerializer(UserAuthPkOkMessage message) {
-        super(message);
-    }
-
-    private void serializePubkeyAlgName() {
-        Integer pubkeyAlgNameLength = message.getPubkeyAlgNameLength().getValue();
+    private static void serializePubkeyAlgName(
+            UserAuthPkOkMessage object, SerializerStream output) {
+        Integer pubkeyAlgNameLength = object.getPubkeyAlgNameLength().getValue();
         LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
-        appendInt(pubkeyAlgNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String pubkeyAlgName = message.getPubkeyAlgName().getValue();
+        output.appendInt(pubkeyAlgNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String pubkeyAlgName = object.getPubkeyAlgName().getValue();
         LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
-        appendString(pubkeyAlgName, StandardCharsets.US_ASCII);
+        output.appendString(pubkeyAlgName, StandardCharsets.US_ASCII);
     }
 
-    private void serializePubkey() {
-        Integer pubkeyLength = message.getPubkeyLength().getValue();
+    private static void serializePubkey(UserAuthPkOkMessage object, SerializerStream output) {
+        Integer pubkeyLength = object.getPubkeyLength().getValue();
         LOGGER.debug("Pubkey length: {}", pubkeyLength);
-        appendInt(pubkeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] pubkey = message.getPubkey().getValue();
+        output.appendInt(pubkeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] pubkey = object.getPubkey().getValue();
         LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
-        appendBytes(pubkey);
+        output.appendBytes(pubkey);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializePubkeyAlgName();
-        serializePubkey();
+    protected void serializeMessageSpecificContents(
+            UserAuthPkOkMessage object, SerializerStream output) {
+        serializePubkeyAlgName(object, output);
+        serializePubkey(object, output);
     }
 }

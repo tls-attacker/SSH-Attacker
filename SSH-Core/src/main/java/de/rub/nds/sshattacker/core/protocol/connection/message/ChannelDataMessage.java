@@ -95,4 +95,9 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
     public void prepare(Chooser chooser) {
         ChannelDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

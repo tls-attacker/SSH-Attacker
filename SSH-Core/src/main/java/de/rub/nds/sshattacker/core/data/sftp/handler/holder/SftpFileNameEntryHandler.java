@@ -45,8 +45,5 @@ public class SftpFileNameEntryHandler implements Handler<SftpFileNameEntry> {
 
     public static final SftpFileNameEntryPreparator PREPARATOR = new SftpFileNameEntryPreparator();
 
-    @Override
-    public SftpFileNameEntrySerializer getSerializer() {
-        return new SftpFileNameEntrySerializer(nameEntry);
-    }
+    public static final SftpFileNameEntrySerializer SERIALIZER = new SftpFileNameEntrySerializer();
 }

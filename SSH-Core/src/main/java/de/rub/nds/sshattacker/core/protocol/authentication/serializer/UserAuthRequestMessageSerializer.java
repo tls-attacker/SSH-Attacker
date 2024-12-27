@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -21,41 +22,37 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected UserAuthRequestMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeUserName() {
-        Integer userNameLength = message.getUserNameLength().getValue();
+    private void serializeUserName(T object, SerializerStream output) {
+        Integer userNameLength = object.getUserNameLength().getValue();
         LOGGER.debug("User name length: {}", userNameLength);
-        appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String userName = message.getUserName().getValue();
+        output.appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String userName = object.getUserName().getValue();
         LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
-        appendString(userName, StandardCharsets.UTF_8);
+        output.appendString(userName, StandardCharsets.UTF_8);
     }
 
-    private void serializeServiceName() {
-        Integer serviceNameLength = message.getServiceNameLength().getValue();
+    private void serializeServiceName(T object, SerializerStream output) {
+        Integer serviceNameLength = object.getServiceNameLength().getValue();
         LOGGER.debug("Service name length: {}", serviceNameLength);
-        appendInt(serviceNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String serviceName = message.getServiceName().getValue();
+        output.appendInt(serviceNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String serviceName = object.getServiceName().getValue();
         LOGGER.debug("Service name: {}", () -> backslashEscapeString(serviceName));
-        appendString(serviceName, StandardCharsets.US_ASCII);
+        output.appendString(serviceName, StandardCharsets.US_ASCII);
     }
 
-    private void serializeMethodName() {
-        Integer methodNameLength = message.getMethodNameLength().getValue();
+    private void serializeMethodName(T object, SerializerStream output) {
+        Integer methodNameLength = object.getMethodNameLength().getValue();
         LOGGER.debug("Method name length: {}", methodNameLength);
-        appendInt(methodNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String methodName = message.getMethodName().getValue();
+        output.appendInt(methodNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String methodName = object.getMethodName().getValue();
         LOGGER.debug("Method name: {}", () -> backslashEscapeString(methodName));
-        appendString(methodName, StandardCharsets.US_ASCII);
+        output.appendString(methodName, StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeUserName();
-        serializeServiceName();
-        serializeMethodName();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        serializeUserName(object, output);
+        serializeServiceName(object, output);
+        serializeMethodName(object, output);
     }
 }

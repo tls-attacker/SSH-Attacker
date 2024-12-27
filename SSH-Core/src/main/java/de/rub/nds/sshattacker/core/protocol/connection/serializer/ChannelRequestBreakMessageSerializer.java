@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,19 +17,17 @@ public class ChannelRequestBreakMessageSerializer
         extends ChannelRequestMessageSerializer<ChannelRequestBreakMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestBreakMessageSerializer(ChannelRequestBreakMessage message) {
-        super(message);
-    }
-
-    private void serializeBreakLength() {
-        Integer breakLength = message.getBreakLength().getValue();
+    private static void serializeBreakLength(
+            ChannelRequestBreakMessage object, SerializerStream output) {
+        Integer breakLength = object.getBreakLength().getValue();
         LOGGER.debug("Break length in milliseconds: {}", breakLength);
-        appendInt(breakLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(breakLength, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeBreakLength();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestBreakMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeBreakLength(object, output);
     }
 }

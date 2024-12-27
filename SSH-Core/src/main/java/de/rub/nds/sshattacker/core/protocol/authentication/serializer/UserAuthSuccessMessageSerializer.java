@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 
 public class UserAuthSuccessMessageSerializer extends SshMessageSerializer<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessageSerializer(UserAuthSuccessMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeMessageSpecificContents() {}
+    protected void serializeMessageSpecificContents(
+            UserAuthSuccessMessage object, SerializerStream output) {}
 }

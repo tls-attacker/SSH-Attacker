@@ -37,8 +37,6 @@ public class SftpRequestReadMessageHandler
     public static final SftpRequestReadMessagePreparator PREPARATOR =
             new SftpRequestReadMessagePreparator();
 
-    @Override
-    public SftpRequestReadMessageSerializer getSerializer() {
-        return new SftpRequestReadMessageSerializer(message);
-    }
+    public static final SftpRequestReadMessageSerializer SERIALIZER =
+            new SftpRequestReadMessageSerializer();
 }

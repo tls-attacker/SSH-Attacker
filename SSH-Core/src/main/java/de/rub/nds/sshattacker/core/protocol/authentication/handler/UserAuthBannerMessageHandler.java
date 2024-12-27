@@ -42,8 +42,6 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
     public static final UserAuthBannerMessagePreparator PREPARATOR =
             new UserAuthBannerMessagePreparator();
 
-    @Override
-    public UserAuthBannerMessageSerializer getSerializer() {
-        return new UserAuthBannerMessageSerializer(message);
-    }
+    public static final UserAuthBannerMessageSerializer SERIALIZER =
+            new UserAuthBannerMessageSerializer();
 }

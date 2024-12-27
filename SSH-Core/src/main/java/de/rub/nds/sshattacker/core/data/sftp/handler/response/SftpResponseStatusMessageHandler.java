@@ -37,8 +37,6 @@ public class SftpResponseStatusMessageHandler
     public static final SftpResponseStatusMessagePreparator PREPARATOR =
             new SftpResponseStatusMessagePreparator();
 
-    @Override
-    public SftpResponseStatusMessageSerializer getSerializer() {
-        return new SftpResponseStatusMessageSerializer(message);
-    }
+    public static final SftpResponseStatusMessageSerializer SERIALIZER =
+            new SftpResponseStatusMessageSerializer();
 }

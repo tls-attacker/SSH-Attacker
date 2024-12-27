@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -64,5 +65,10 @@ public class CustomPQKemPublicKey extends CustomPublicKey {
     @Override
     public String getAlgorithm() {
         return kemName.getName();
+    }
+
+    @Override
+    public byte[] serialize() {
+        throw new NotImplementedException("Missing Serializer");
     }
 }

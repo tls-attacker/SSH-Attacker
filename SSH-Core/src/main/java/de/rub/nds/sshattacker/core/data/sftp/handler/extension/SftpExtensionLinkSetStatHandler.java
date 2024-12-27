@@ -45,8 +45,6 @@ public class SftpExtensionLinkSetStatHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionLinkSetStat> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.L_SET_STAT);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionLinkSetStat> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionLinkSetStat> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

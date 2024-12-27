@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import org.apache.logging.log4j.LogManager;
@@ -17,18 +18,14 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeRecipientChannel() {
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+    private void serializeRecipientChannel(T object, SerializerStream output) {
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
         LOGGER.debug("Recipient channel id: {}", recipientChannelId);
-        appendInt(recipientChannelId, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(recipientChannelId, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeRecipientChannel();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        serializeRecipientChannel(object, output);
     }
 }

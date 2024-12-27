@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,24 +21,17 @@ public class SftpNameEntrySerializer extends Serializer<SftpNameEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SftpNameEntry nameEntry;
-
-    public SftpNameEntrySerializer(SftpNameEntry nameEntry) {
-        super();
-        this.nameEntry = nameEntry;
-    }
-
-    private void serializeName() {
-        Integer nameLength = nameEntry.getNameLength().getValue();
+    private static void serializeName(SftpNameEntry object, SerializerStream output) {
+        Integer nameLength = object.getNameLength().getValue();
         LOGGER.debug("Name length: {}", nameLength);
-        appendInt(nameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String name = nameEntry.getName().getValue();
+        output.appendInt(nameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String name = object.getName().getValue();
         LOGGER.debug("Name: {}", () -> backslashEscapeString(name));
-        appendString(name, StandardCharsets.UTF_8);
+        output.appendString(name, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected final void serializeBytes() {
-        serializeName();
+    protected final void serializeBytes(SftpNameEntry object, SerializerStream output) {
+        serializeName(object, output);
     }
 }

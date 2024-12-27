@@ -279,4 +279,9 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     public void prepare(Chooser chooser) {
         SftpExtensionVendorIdHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionVendorIdHandler.SERIALIZER.serialize(this);
+    }
 }

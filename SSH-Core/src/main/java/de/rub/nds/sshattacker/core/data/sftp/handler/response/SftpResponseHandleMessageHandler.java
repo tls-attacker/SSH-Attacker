@@ -43,8 +43,6 @@ public class SftpResponseHandleMessageHandler
     public static final SftpResponseHandleMessagePreparator PREPARATOR =
             new SftpResponseHandleMessagePreparator();
 
-    @Override
-    public SftpResponseHandleMessageSerializer getSerializer() {
-        return new SftpResponseHandleMessageSerializer(message);
-    }
+    public static final SftpResponseHandleMessageSerializer SERIALIZER =
+            new SftpResponseHandleMessageSerializer();
 }

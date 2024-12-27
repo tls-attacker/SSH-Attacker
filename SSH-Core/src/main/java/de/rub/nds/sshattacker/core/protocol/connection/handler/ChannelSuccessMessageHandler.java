@@ -97,8 +97,6 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
     public static final ChannelSuccessMessagePreparator PREPARATOR =
             new ChannelSuccessMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelSuccessMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelSuccessMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

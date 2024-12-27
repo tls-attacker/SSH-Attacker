@@ -36,4 +36,9 @@ public class SftpRequestLinkStatMessage
     public void prepare(Chooser chooser) {
         SftpRequestLinkStatMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestLinkStatMessageHandler.SERIALIZER.serialize(this);
+    }
 }

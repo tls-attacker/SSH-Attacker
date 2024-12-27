@@ -310,4 +310,9 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     public void prepare(Chooser chooser) {
         DelayCompressionExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DelayCompressionExtensionHandler.SERIALIZER.serialize(this);
+    }
 }

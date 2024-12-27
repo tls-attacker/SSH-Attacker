@@ -41,8 +41,6 @@ public class UnknownDataMessageHandler extends ProtocolMessageHandler<UnknownDat
     public static final UnknownDataMessagePreparator PREPARATOR =
             new UnknownDataMessagePreparator();
 
-    @Override
-    public UnknownDataMessageSerializer getSerializer() {
-        return new UnknownDataMessageSerializer(message);
-    }
+    public static final UnknownDataMessageSerializer SERIALIZER =
+            new UnknownDataMessageSerializer();
 }

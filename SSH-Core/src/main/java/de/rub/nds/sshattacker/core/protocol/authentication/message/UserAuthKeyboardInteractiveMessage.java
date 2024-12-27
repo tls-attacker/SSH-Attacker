@@ -161,4 +161,9 @@ public class UserAuthKeyboardInteractiveMessage
     public void prepare(Chooser chooser) {
         UserAuthKeyboardInteractiveMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthKeyboardInteractiveMessageHandler.SERIALIZER.serialize(this);
+    }
 }

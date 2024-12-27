@@ -46,8 +46,5 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
 
     public static final DisconnectMessagePreparator PREPARATOR = new DisconnectMessagePreparator();
 
-    @Override
-    public DisconnectMessageSerializer getSerializer() {
-        return new DisconnectMessageSerializer(message);
-    }
+    public static final DisconnectMessageSerializer SERIALIZER = new DisconnectMessageSerializer();
 }

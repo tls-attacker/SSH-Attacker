@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCheckFileNameMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,42 +21,43 @@ public class SftpRequestCheckFileNameMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestCheckFileNameMessageSerializer(SftpRequestCheckFileNameMessage message) {
-        super(message);
-    }
-
-    private void serializeHashAlgorithms() {
-        Integer hashAlgorithmsLength = message.getHashAlgorithmsLength().getValue();
+    private static void serializeHashAlgorithms(
+            SftpRequestCheckFileNameMessage object, SerializerStream output) {
+        Integer hashAlgorithmsLength = object.getHashAlgorithmsLength().getValue();
         LOGGER.debug("HashAlgorithms length: {}", hashAlgorithmsLength);
-        appendInt(hashAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String hashAlgorithms = message.getHashAlgorithms().getValue();
+        output.appendInt(hashAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String hashAlgorithms = object.getHashAlgorithms().getValue();
         LOGGER.debug("HashAlgorithms: {}", () -> backslashEscapeString(hashAlgorithms));
-        appendString(hashAlgorithms, StandardCharsets.US_ASCII);
+        output.appendString(hashAlgorithms, StandardCharsets.US_ASCII);
     }
 
-    private void serializeStartOffset() {
-        Long startOffset = message.getStartOffset().getValue();
+    private static void serializeStartOffset(
+            SftpRequestCheckFileNameMessage object, SerializerStream output) {
+        Long startOffset = object.getStartOffset().getValue();
         LOGGER.debug("StartOffset: {}", startOffset);
-        appendLong(startOffset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(startOffset, DataFormatConstants.UINT64_SIZE);
     }
 
-    private void serializeLength() {
-        Long length = message.getLength().getValue();
+    private static void serializeLength(
+            SftpRequestCheckFileNameMessage object, SerializerStream output) {
+        Long length = object.getLength().getValue();
         LOGGER.debug("Length: {}", length);
-        appendLong(length, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(length, DataFormatConstants.UINT64_SIZE);
     }
 
-    private void serializeBlockSize() {
-        Integer blockSize = message.getBlockSize().getValue();
+    private static void serializeBlockSize(
+            SftpRequestCheckFileNameMessage object, SerializerStream output) {
+        Integer blockSize = object.getBlockSize().getValue();
         LOGGER.debug("BlockSize: {}", blockSize);
-        appendInt(blockSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(blockSize, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeRequestExtendedWithPathSpecificContents() {
-        serializeHashAlgorithms();
-        serializeStartOffset();
-        serializeLength();
-        serializeBlockSize();
+    protected void serializeRequestExtendedWithPathSpecificContents(
+            SftpRequestCheckFileNameMessage object, SerializerStream output) {
+        serializeHashAlgorithms(object, output);
+        serializeStartOffset(object, output);
+        serializeLength(object, output);
+        serializeBlockSize(object, output);
     }
 }

@@ -159,4 +159,9 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     public void prepare(Chooser chooser) {
         UserAuthBannerMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthBannerMessageHandler.SERIALIZER.serialize(this);
+    }
 }

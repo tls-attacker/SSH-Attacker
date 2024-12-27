@@ -59,4 +59,9 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
     public void prepare(Chooser chooser) {
         ChannelRequestBreakMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestBreakMessageHandler.SERIALIZER.serialize(this);
+    }
 }

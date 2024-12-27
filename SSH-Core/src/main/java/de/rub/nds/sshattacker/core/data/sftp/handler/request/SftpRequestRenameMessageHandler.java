@@ -37,8 +37,6 @@ public class SftpRequestRenameMessageHandler
     public static final SftpRequestRenameMessagePreparator PREPARATOR =
             new SftpRequestRenameMessagePreparator();
 
-    @Override
-    public SftpRequestRenameMessageSerializer getSerializer() {
-        return new SftpRequestRenameMessageSerializer(message);
-    }
+    public static final SftpRequestRenameMessageSerializer SERIALIZER =
+            new SftpRequestRenameMessageSerializer();
 }

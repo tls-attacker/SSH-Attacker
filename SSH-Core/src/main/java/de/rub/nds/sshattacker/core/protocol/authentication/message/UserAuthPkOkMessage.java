@@ -163,4 +163,9 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     public void prepare(Chooser chooser) {
         UserAuthPkOkMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPkOkMessageHandler.SERIALIZER.serialize(this);
+    }
 }

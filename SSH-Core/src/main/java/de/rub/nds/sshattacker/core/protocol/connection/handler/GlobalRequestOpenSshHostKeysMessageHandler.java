@@ -42,8 +42,6 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
     public static final GlobalRequestOpenSshHostKeysMessagePreparator PREPARATOR =
             new GlobalRequestOpenSshHostKeysMessagePreparator();
 
-    @Override
-    public GlobalRequestOpenSshHostKeysMessageSerializer getSerializer() {
-        return new GlobalRequestOpenSshHostKeysMessageSerializer(message);
-    }
+    public static final GlobalRequestOpenSshHostKeysMessageSerializer SERIALIZER =
+            new GlobalRequestOpenSshHostKeysMessageSerializer();
 }

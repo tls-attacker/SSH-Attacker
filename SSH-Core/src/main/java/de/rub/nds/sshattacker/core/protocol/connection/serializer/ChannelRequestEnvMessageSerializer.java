@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -20,32 +21,31 @@ public class ChannelRequestEnvMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestEnvMessageSerializer(ChannelRequestEnvMessage message) {
-        super(message);
-    }
-
-    private void serializeVariableName() {
-        Integer variableNameLength = message.getVariableNameLength().getValue();
+    private static void serializeVariableName(
+            ChannelRequestEnvMessage object, SerializerStream output) {
+        Integer variableNameLength = object.getVariableNameLength().getValue();
         LOGGER.debug("Variable name length: {}", variableNameLength);
-        appendInt(variableNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String variableName = message.getVariableName().getValue();
+        output.appendInt(variableNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String variableName = object.getVariableName().getValue();
         LOGGER.debug("Variable name: {}", () -> backslashEscapeString(variableName));
-        appendString(variableName, StandardCharsets.UTF_8);
+        output.appendString(variableName, StandardCharsets.UTF_8);
     }
 
-    private void serializeVariableValue() {
-        Integer variableValueLength = message.getVariableValueLength().getValue();
+    private static void serializeVariableValue(
+            ChannelRequestEnvMessage object, SerializerStream output) {
+        Integer variableValueLength = object.getVariableValueLength().getValue();
         LOGGER.debug("Variable value length: {}", variableValueLength);
-        appendInt(variableValueLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String variableValue = message.getVariableValue().getValue();
+        output.appendInt(variableValueLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String variableValue = object.getVariableValue().getValue();
         LOGGER.debug("Variable value: {}", () -> backslashEscapeString(variableValue));
-        appendString(variableValue, StandardCharsets.UTF_8);
+        output.appendString(variableValue, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeVariableName();
-        serializeVariableValue();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestEnvMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeVariableName(object, output);
+        serializeVariableValue(object, output);
     }
 }

@@ -102,4 +102,9 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     public void prepare(Chooser chooser) {
         RsaKeyExchangeSecretMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangeSecretMessageHandler.SERIALIZER.serialize(this);
+    }
 }

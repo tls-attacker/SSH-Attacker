@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.packet.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.packet.DataPacket;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +26,6 @@ public class DataPacketParser extends AbstractDataPacketParser<DataPacket> {
         DataPacket packet = new DataPacket();
         packet.setLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         packet.setPayload(parseByteArrayField(packet.getLength().getValue()));
-        packet.setCompletePacketBytes(getAlreadyParsed());
-
-        LOGGER.trace(
-                "Complete packet bytes: {}",
-                () -> ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
-
         return packet;
     }
 }

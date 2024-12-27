@@ -59,9 +59,10 @@ public class DataPacket extends AbstractDataPacket {
         PREPARATOR.prepare(this, chooser);
     }
 
-    @Override
-    public DataPacketSerializer getPacketSerializer() {
-        return new DataPacketSerializer(this);
+    public static final DataPacketSerializer SERIALIZER = new DataPacketSerializer();
+
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 
     @Override

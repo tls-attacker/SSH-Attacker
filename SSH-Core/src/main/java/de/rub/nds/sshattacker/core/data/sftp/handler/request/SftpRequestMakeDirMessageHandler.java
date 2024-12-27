@@ -37,8 +37,6 @@ public class SftpRequestMakeDirMessageHandler
     public static final SftpRequestMakeDirMessagePreparator PREPARATOR =
             new SftpRequestMakeDirMessagePreparator();
 
-    @Override
-    public SftpRequestMakeDirMessageSerializer getSerializer() {
-        return new SftpRequestMakeDirMessageSerializer(message);
-    }
+    public static final SftpRequestMakeDirMessageSerializer SERIALIZER =
+            new SftpRequestMakeDirMessageSerializer();
 }

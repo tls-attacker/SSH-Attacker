@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,21 +18,19 @@ public class UserAuthUnknownMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthUnknownMessageSerializer(UserAuthUnknownMessage message) {
-        super(message);
-    }
-
-    private void serializeMethodSpecificFields() {
-        byte[] methodSpecificFields = message.getMethodSpecificFields().getValue();
+    private static void serializeMethodSpecificFields(
+            UserAuthUnknownMessage object, SerializerStream output) {
+        byte[] methodSpecificFields = object.getMethodSpecificFields().getValue();
         LOGGER.debug(
                 "Method Specific Fields: {}",
                 () -> ArrayConverter.bytesToHexString(methodSpecificFields));
-        appendBytes(methodSpecificFields);
+        output.appendBytes(methodSpecificFields);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeMethodSpecificFields();
+    protected void serializeMessageSpecificContents(
+            UserAuthUnknownMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeMethodSpecificFields(object, output);
     }
 }

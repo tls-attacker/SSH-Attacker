@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPublicKey;
@@ -100,5 +101,10 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     @Override
     public byte[] getEncoded() {
         return publicKey.toByteArray();
+    }
+
+    @Override
+    public byte[] serialize() {
+        throw new NotImplementedException("Missing Serializer");
     }
 }

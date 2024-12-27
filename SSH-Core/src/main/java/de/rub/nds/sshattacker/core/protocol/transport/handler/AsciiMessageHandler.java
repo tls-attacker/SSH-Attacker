@@ -45,8 +45,5 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
     public static final AsciiMessagePreparator PREPARATOR = new AsciiMessagePreparator();
 
-    @Override
-    public AsciiMessageSerializer getSerializer() {
-        return new AsciiMessageSerializer(message);
-    }
+    public static final AsciiMessageSerializer SERIALIZER = new AsciiMessageSerializer();
 }

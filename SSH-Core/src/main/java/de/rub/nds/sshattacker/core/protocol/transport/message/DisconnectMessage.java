@@ -193,4 +193,9 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     public void prepare(Chooser chooser) {
         DisconnectMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DisconnectMessageHandler.SERIALIZER.serialize(this);
+    }
 }

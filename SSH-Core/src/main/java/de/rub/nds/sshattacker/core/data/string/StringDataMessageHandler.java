@@ -35,8 +35,5 @@ public class StringDataMessageHandler extends ProtocolMessageHandler<StringDataM
 
     public static final StringDataMessagePreparator PREPARATOR = new StringDataMessagePreparator();
 
-    @Override
-    public StringDataMessageSerializer getSerializer() {
-        return new StringDataMessageSerializer(message);
-    }
+    public static final StringDataMessageSerializer SERIALIZER = new StringDataMessageSerializer();
 }

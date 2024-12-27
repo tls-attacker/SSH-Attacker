@@ -47,8 +47,6 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
     public static final ExtensionInfoMessagePreparator PREPARATOR =
             new ExtensionInfoMessagePreparator();
 
-    @Override
-    public ExtensionInfoMessageSerializer getSerializer() {
-        return new ExtensionInfoMessageSerializer(message);
-    }
+    public static final ExtensionInfoMessageSerializer SERIALIZER =
+            new ExtensionInfoMessageSerializer();
 }

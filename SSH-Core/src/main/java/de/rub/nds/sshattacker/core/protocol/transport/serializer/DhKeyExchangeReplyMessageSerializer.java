@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,40 +20,40 @@ public class DhKeyExchangeReplyMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeReplyMessageSerializer(DhKeyExchangeReplyMessage message) {
-        super(message);
-    }
-
-    private void serializeHostKeyBytes() {
-        Integer hostKeyBytesLength = message.getHostKeyBytesLength().getValue();
+    private static void serializeHostKeyBytes(
+            DhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key length: {}", hostKeyBytesLength);
-        appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] hostKeyBytes = message.getHostKeyBytes().getValue();
+        output.appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
         LOGGER.debug("Host key: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
-        appendBytes(hostKeyBytes);
+        output.appendBytes(hostKeyBytes);
     }
 
-    private void serializeEphemeralPublicKey() {
-        Integer ephemeralPublicKeyLength = message.getEphemeralPublicKeyLength().getValue();
+    private static void serializeEphemeralPublicKey(
+            DhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
-        appendInt(ephemeralPublicKeyLength, DataFormatConstants.MPINT_SIZE_LENGTH);
-        appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
+        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.MPINT_SIZE_LENGTH);
+        output.appendBytes(object.getEphemeralPublicKey().getValue().toByteArray());
         LOGGER.debug(
-                "Ephemeral public key (server): {}", message.getEphemeralPublicKey().getValue());
+                "Ephemeral public key (server): {}", object.getEphemeralPublicKey().getValue());
     }
 
-    private void serializeSignature() {
-        Integer signatureLength = message.getSignatureLength().getValue();
+    private static void serializeSignature(
+            DhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer signatureLength = object.getSignatureLength().getValue();
         LOGGER.debug("Signature length: {}", signatureLength);
-        appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendBytes(message.getSignature().getValue());
-        LOGGER.debug("Signature: {}", message.getSignature());
+        output.appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendBytes(object.getSignature().getValue());
+        LOGGER.debug("Signature: {}", object.getSignature());
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeHostKeyBytes();
-        serializeEphemeralPublicKey();
-        serializeSignature();
+    protected void serializeMessageSpecificContents(
+            DhKeyExchangeReplyMessage object, SerializerStream output) {
+        serializeHostKeyBytes(object, output);
+        serializeEphemeralPublicKey(object, output);
+        serializeSignature(object, output);
     }
 }

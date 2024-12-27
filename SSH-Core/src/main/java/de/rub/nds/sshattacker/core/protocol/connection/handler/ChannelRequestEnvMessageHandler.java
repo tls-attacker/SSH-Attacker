@@ -54,8 +54,6 @@ public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRe
     public static final ChannelRequestEnvMessagePreparator PREPARATOR =
             new ChannelRequestEnvMessagePreparator();
 
-    @Override
-    public ChannelRequestEnvMessageSerializer getSerializer() {
-        return new ChannelRequestEnvMessageSerializer(message);
-    }
+    public static final ChannelRequestEnvMessageSerializer SERIALIZER =
+            new ChannelRequestEnvMessageSerializer();
 }

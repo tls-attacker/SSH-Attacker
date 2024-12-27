@@ -59,8 +59,6 @@ public class DhGexKeyExchangeReplyMessageHandler
     public static final DhGexKeyExchangeReplyMessagePreparator PREPARATOR =
             new DhGexKeyExchangeReplyMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeReplyMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeReplyMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeReplyMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeReplyMessageSerializer();
 }

@@ -383,4 +383,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     public void prepare(Chooser chooser) {
         UserAuthHostbasedMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthHostbasedMessageHandler.SERIALIZER.serialize(this);
+    }
 }

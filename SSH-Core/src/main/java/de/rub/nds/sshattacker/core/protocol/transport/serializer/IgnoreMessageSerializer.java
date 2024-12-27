@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,21 +19,17 @@ public class IgnoreMessageSerializer extends SshMessageSerializer<IgnoreMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public IgnoreMessageSerializer(IgnoreMessage message) {
-        super(message);
-    }
-
-    private void serializeData() {
-        Integer dataLength = message.getDataLength().getValue();
+    private static void serializeData(IgnoreMessage object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] data = message.getData().getValue();
+        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
-        appendBytes(data);
+        output.appendBytes(data);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeData();
+    protected void serializeMessageSpecificContents(IgnoreMessage object, SerializerStream output) {
+        serializeData(object, output);
     }
 }

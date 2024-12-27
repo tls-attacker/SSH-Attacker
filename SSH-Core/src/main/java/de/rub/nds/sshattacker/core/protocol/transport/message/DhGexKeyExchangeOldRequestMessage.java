@@ -68,4 +68,9 @@ public class DhGexKeyExchangeOldRequestMessage
     public void prepare(Chooser chooser) {
         DhGexKeyExchangeOldRequestMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DhGexKeyExchangeOldRequestMessageHandler.SERIALIZER.serialize(this);
+    }
 }

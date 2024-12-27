@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
@@ -38,24 +37,18 @@ public class HybridKeyExchangeInitMessagePreparator
         byte[] pubKeyEncapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] pubKeyAgreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
 
-        object.setSoftlyAgreementPublicKey(pubKeyAgreement, true, chooser.getConfig());
-        object.setSoftlyEncapsulationPublicKey(pubKeyEncapsulation, true, chooser.getConfig());
-
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        byte[] keys = null;
         switch (chooser.getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                inputHolder.setHybridClientPublicKey(
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                pubKeyAgreement, pubKeyEncapsulation));
+                keys = KeyExchangeUtil.concatenateHybridKeys(pubKeyAgreement, pubKeyEncapsulation);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                inputHolder.setHybridClientPublicKey(
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                pubKeyEncapsulation, pubKeyAgreement));
+                keys = KeyExchangeUtil.concatenateHybridKeys(pubKeyEncapsulation, pubKeyAgreement);
                 break;
             default:
                 LOGGER.warn(
                         "Combiner is not supported, continue without updating ExchangeHashInputHolder");
         }
+        object.setSoftlyConcatenatedHybridKeys(keys, true, chooser.getConfig());
     }
 }

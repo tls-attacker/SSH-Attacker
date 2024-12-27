@@ -314,6 +314,11 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     }
 
     @Override
+    public byte[] serialize() {
+        return UserAuthInfoRequestMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (promptEntries != null) {

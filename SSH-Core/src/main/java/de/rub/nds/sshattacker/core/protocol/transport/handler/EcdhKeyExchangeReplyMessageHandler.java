@@ -59,8 +59,6 @@ public class EcdhKeyExchangeReplyMessageHandler
     public static final EcdhKeyExchangeReplyMessagePreparator PREPARATOR =
             new EcdhKeyExchangeReplyMessagePreparator();
 
-    @Override
-    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeReplyMessageSerializer(message);
-    }
+    public static final EcdhKeyExchangeReplyMessageSerializer SERIALIZER =
+            new EcdhKeyExchangeReplyMessageSerializer();
 }

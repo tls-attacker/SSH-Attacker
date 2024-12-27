@@ -42,8 +42,6 @@ public class SftpExtensionUnknownHandler
     public static final SftpExtensionUnknownPreparator PREPARATOR =
             new SftpExtensionUnknownPreparator();
 
-    @Override
-    public SftpExtensionUnknownSerializer getSerializer() {
-        return new SftpExtensionUnknownSerializer(extension);
-    }
+    public static final SftpExtensionUnknownSerializer SERIALIZER =
+            new SftpExtensionUnknownSerializer();
 }

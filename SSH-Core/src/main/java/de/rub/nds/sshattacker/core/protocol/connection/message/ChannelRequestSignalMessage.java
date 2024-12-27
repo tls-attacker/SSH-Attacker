@@ -114,4 +114,9 @@ public class ChannelRequestSignalMessage
     public void prepare(Chooser chooser) {
         ChannelRequestSignalMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestSignalMessageHandler.SERIALIZER.serialize(this);
+    }
 }

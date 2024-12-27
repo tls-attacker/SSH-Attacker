@@ -291,4 +291,9 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
     public void prepare(Chooser chooser) {
         SftpResponseStatVfsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseStatVfsMessageHandler.SERIALIZER.serialize(this);
+    }
 }

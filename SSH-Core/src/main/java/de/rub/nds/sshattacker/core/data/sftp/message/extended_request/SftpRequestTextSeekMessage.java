@@ -59,4 +59,9 @@ public class SftpRequestTextSeekMessage
     public void prepare(Chooser chooser) {
         SftpRequestTextSeekMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestTextSeekMessageHandler.SERIALIZER.serialize(this);
+    }
 }

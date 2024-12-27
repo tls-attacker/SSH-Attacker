@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.packet.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,20 +17,11 @@ public class BlobPacketSerializer extends AbstractPacketSerializer<BlobPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final BlobPacket packet;
-
-    public BlobPacketSerializer(BlobPacket packet) {
-        super();
-        this.packet = packet;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(BlobPacket object, SerializerStream output) {
         LOGGER.debug("Serializing BlobPacket");
-        byte[] ciphertext = packet.getCiphertext().getValue();
+        byte[] ciphertext = object.getCiphertext().getValue();
         LOGGER.debug("Ciphertext: {}", () -> ArrayConverter.bytesToHexString(ciphertext));
-        appendBytes(ciphertext);
-
-        packet.setCompletePacketBytes(getAlreadySerialized());
+        output.appendBytes(ciphertext);
     }
 }

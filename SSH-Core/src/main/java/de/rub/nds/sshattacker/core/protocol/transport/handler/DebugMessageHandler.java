@@ -54,8 +54,5 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
 
     public static final DebugMessagePreparator PREPARATOR = new DebugMessagePreparator();
 
-    @Override
-    public DebugMessageSerializer getSerializer() {
-        return new DebugMessageSerializer(message);
-    }
+    public static final DebugMessageSerializer SERIALIZER = new DebugMessageSerializer();
 }

@@ -77,8 +77,6 @@ public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<Channel
     public static final ChannelWindowAdjustMessagePreparator PREPARATOR =
             new ChannelWindowAdjustMessagePreparator();
 
-    @Override
-    public ChannelWindowAdjustMessageSerializer getSerializer() {
-        return new ChannelWindowAdjustMessageSerializer(message);
-    }
+    public static final ChannelWindowAdjustMessageSerializer SERIALIZER =
+            new ChannelWindowAdjustMessageSerializer();
 }

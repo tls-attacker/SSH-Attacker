@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.packet.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +25,6 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
         BlobPacket packet = new BlobPacket();
         packet.setCiphertext(parseByteArrayField(getBytesLeft()));
-        packet.setCompletePacketBytes(getAlreadyParsed());
-
-        LOGGER.debug(
-                "Complete packet bytes: {}",
-                () -> ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
-
         return packet;
     }
 }

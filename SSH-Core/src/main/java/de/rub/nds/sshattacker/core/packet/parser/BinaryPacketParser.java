@@ -58,13 +58,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 LOGGER.debug("Packet structure: Encrypt-and-MAC");
                 parseEAMPacket(binaryPacket);
             }
-            binaryPacket.setCompletePacketBytes(getAlreadyParsed());
 
-            LOGGER.trace(
-                    "Complete packet bytes: {}",
-                    () ->
-                            ArrayConverter.bytesToHexString(
-                                    binaryPacket.getCompletePacketBytes().getValue()));
             LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
             if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
                 LOGGER.debug(

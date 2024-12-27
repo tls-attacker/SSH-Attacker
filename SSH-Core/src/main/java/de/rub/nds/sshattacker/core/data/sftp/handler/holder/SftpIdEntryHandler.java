@@ -45,8 +45,5 @@ public class SftpIdEntryHandler implements Handler<SftpIdEntry> {
 
     public static final SftpIdEntryPreparator PREPARATOR = new SftpIdEntryPreparator();
 
-    @Override
-    public SftpIdEntrySerializer getSerializer() {
-        return new SftpIdEntrySerializer(idEntry);
-    }
+    public static final SftpIdEntrySerializer SERIALIZER = new SftpIdEntrySerializer();
 }

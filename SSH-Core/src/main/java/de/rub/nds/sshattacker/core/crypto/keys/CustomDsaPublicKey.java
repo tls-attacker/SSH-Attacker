@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.DsaPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
@@ -100,5 +101,12 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "DSA";
+    }
+
+    public static final DsaPublicKeySerializer SERIALIZER = new DsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

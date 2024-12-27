@@ -111,4 +111,9 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
     public void prepare(Chooser chooser) {
         DhKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DhKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
+    }
 }

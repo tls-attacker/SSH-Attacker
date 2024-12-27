@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseSpaceAvailableMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,30 +19,27 @@ public class SftpResponseSpaceAvailableMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseSpaceAvailableMessageSerializer(SftpResponseSpaceAvailableMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeResponseSpecificContents() {
-        Long bytesOnDevice = message.getBytesOnDevice().getValue();
+    protected void serializeResponseSpecificContents(
+            SftpResponseSpaceAvailableMessage object, SerializerStream output) {
+        Long bytesOnDevice = object.getBytesOnDevice().getValue();
         LOGGER.debug("BytesOnDevice: {}", bytesOnDevice);
-        appendLong(bytesOnDevice, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(bytesOnDevice, DataFormatConstants.UINT64_SIZE);
 
-        Long unusedBytesOnDevice = message.getUnusedBytesOnDevice().getValue();
+        Long unusedBytesOnDevice = object.getUnusedBytesOnDevice().getValue();
         LOGGER.debug("UnusedBytesOnDevice: {}", unusedBytesOnDevice);
-        appendLong(unusedBytesOnDevice, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(unusedBytesOnDevice, DataFormatConstants.UINT64_SIZE);
 
-        Long bytesAvailableToUser = message.getBytesAvailableToUser().getValue();
+        Long bytesAvailableToUser = object.getBytesAvailableToUser().getValue();
         LOGGER.debug("BytesAvailableToUser: {}", bytesAvailableToUser);
-        appendLong(bytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(bytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
 
-        Long unusedBytesAvailableToUser = message.getUnusedBytesAvailableToUser().getValue();
+        Long unusedBytesAvailableToUser = object.getUnusedBytesAvailableToUser().getValue();
         LOGGER.debug("UnusedBytesAvailableToUser: {}", unusedBytesAvailableToUser);
-        appendLong(unusedBytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(unusedBytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
 
-        Integer bytesPerAllocationUnit = message.getBytesPerAllocationUnit().getValue();
+        Integer bytesPerAllocationUnit = object.getBytesPerAllocationUnit().getValue();
         LOGGER.debug("BytesPerAllocationUnit: {}", bytesPerAllocationUnit);
-        appendInt(bytesPerAllocationUnit, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(bytesPerAllocationUnit, DataFormatConstants.UINT32_SIZE);
     }
 }

@@ -188,4 +188,9 @@ public class SftpRequestCheckFileNameMessage
     public void prepare(Chooser chooser) {
         SftpRequestCheckFileNameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestCheckFileNameMessageHandler.SERIALIZER.serialize(this);
+    }
 }

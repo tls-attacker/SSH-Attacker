@@ -36,4 +36,9 @@ public class ChannelRequestAuthAgentMessage
     public void prepare(Chooser chooser) {
         ChannelRequestAuthAgentMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestAuthAgentMessageHandler.SERIALIZER.serialize(this);
+    }
 }

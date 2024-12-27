@@ -40,8 +40,6 @@ public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelO
     public static final ChannelOpenUnknownMessagePreparator PREPARATOR =
             new ChannelOpenUnknownMessagePreparator();
 
-    @Override
-    public ChannelOpenUnknownMessageSerializer getSerializer() {
-        return new ChannelOpenUnknownMessageSerializer(message);
-    }
+    public static final ChannelOpenUnknownMessageSerializer SERIALIZER =
+            new ChannelOpenUnknownMessageSerializer();
 }

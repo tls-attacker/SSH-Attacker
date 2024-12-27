@@ -58,8 +58,6 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
     public static final ChannelFailureMessagePreparator PREPARATOR =
             new ChannelFailureMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelFailureMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

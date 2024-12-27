@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,32 +18,32 @@ public class ChannelOpenConfirmationMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageSerializer(ChannelOpenConfirmationMessage message) {
-        super(message);
-    }
-
-    private void serializeSenderChannel() {
-        Integer senderChannelId = message.getSenderChannelId().getValue();
+    private static void serializeSenderChannel(
+            ChannelOpenConfirmationMessage object, SerializerStream output) {
+        Integer senderChannelId = object.getSenderChannelId().getValue();
         LOGGER.debug("Sender channel id: {}", senderChannelId);
-        appendInt(senderChannelId, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(senderChannelId, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeWindowSize() {
-        Integer windowSize = message.getWindowSize().getValue();
+    private static void serializeWindowSize(
+            ChannelOpenConfirmationMessage object, SerializerStream output) {
+        Integer windowSize = object.getWindowSize().getValue();
         LOGGER.debug("Initial window size: {}", windowSize);
-        appendInt(windowSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(windowSize, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializePacketSize() {
-        LOGGER.debug("Maximum packet size: {}", message.getWindowSize().getValue());
-        appendInt(message.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializePacketSize(
+            ChannelOpenConfirmationMessage object, SerializerStream output) {
+        LOGGER.debug("Maximum packet size: {}", object.getWindowSize().getValue());
+        output.appendInt(object.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSenderChannel();
-        serializeWindowSize();
-        serializePacketSize();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenConfirmationMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSenderChannel(object, output);
+        serializeWindowSize(object, output);
+        serializePacketSize(object, output);
     }
 }

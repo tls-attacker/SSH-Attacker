@@ -109,4 +109,9 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
     public void prepare(Chooser chooser) {
         SftpExtensionNewlineHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionNewlineHandler.SERIALIZER.serialize(this);
+    }
 }

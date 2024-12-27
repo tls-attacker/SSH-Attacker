@@ -96,4 +96,9 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
     public void prepare(Chooser chooser) {
         IgnoreMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return IgnoreMessageHandler.SERIALIZER.serialize(this);
+    }
 }

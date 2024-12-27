@@ -38,7 +38,8 @@ public class RsaKeyExchangePubkeyMessagePreparator
         prepareTransientPublicKey(object, chooser);
     }
 
-    private void prepareTransientPublicKey(RsaKeyExchangePubkeyMessage object, Chooser chooser) {
+    private static void prepareTransientPublicKey(
+            RsaKeyExchangePubkeyMessage object, Chooser chooser) {
 
         try {
             RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();

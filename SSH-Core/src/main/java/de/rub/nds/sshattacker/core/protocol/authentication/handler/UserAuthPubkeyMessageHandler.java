@@ -40,8 +40,6 @@ public class UserAuthPubkeyMessageHandler extends SshMessageHandler<UserAuthPubk
     public static final UserAuthPubkeyMessagePreparator PREPARATOR =
             new UserAuthPubkeyMessagePreparator();
 
-    @Override
-    public UserAuthPubkeyMessageSerializer getSerializer() {
-        return new UserAuthPubkeyMessageSerializer(message);
-    }
+    public static final UserAuthPubkeyMessageSerializer SERIALIZER =
+            new UserAuthPubkeyMessageSerializer();
 }

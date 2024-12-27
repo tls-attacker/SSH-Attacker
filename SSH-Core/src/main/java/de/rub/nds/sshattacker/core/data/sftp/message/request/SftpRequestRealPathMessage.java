@@ -36,4 +36,9 @@ public class SftpRequestRealPathMessage
     public void prepare(Chooser chooser) {
         SftpRequestRealPathMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestRealPathMessageHandler.SERIALIZER.serialize(this);
+    }
 }

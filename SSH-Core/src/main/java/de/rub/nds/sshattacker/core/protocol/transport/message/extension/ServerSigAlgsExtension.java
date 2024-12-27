@@ -163,4 +163,9 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     public void prepare(Chooser chooser) {
         ServerSigAlgsExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ServerSigAlgsExtensionHandler.SERIALIZER.serialize(this);
+    }
 }

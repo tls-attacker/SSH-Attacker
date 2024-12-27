@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestSymbolicLinkMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,21 +21,19 @@ public class SftpRequestSymbolicLinkMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestSymbolicLinkMessageSerializer(SftpRequestSymbolicLinkMessage message) {
-        super(message);
-    }
-
-    private void serializeTargetPath() {
-        Integer targetPathLength = message.getTargetPathLength().getValue();
+    private static void serializeTargetPath(
+            SftpRequestSymbolicLinkMessage object, SerializerStream output) {
+        Integer targetPathLength = object.getTargetPathLength().getValue();
         LOGGER.debug("TargetPath length: {}", targetPathLength);
-        appendInt(targetPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String targetPath = message.getTargetPath().getValue();
+        output.appendInt(targetPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String targetPath = object.getTargetPath().getValue();
         LOGGER.debug("TargetPath: {}", () -> backslashEscapeString(targetPath));
-        appendString(targetPath, StandardCharsets.UTF_8);
+        output.appendString(targetPath, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeRequestWithPathSpecificContents() {
-        serializeTargetPath();
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestSymbolicLinkMessage object, SerializerStream output) {
+        serializeTargetPath(object, output);
     }
 }

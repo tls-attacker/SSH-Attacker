@@ -52,8 +52,6 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
     public static final SftpVersionMessagePreparator PREPARATOR =
             new SftpVersionMessagePreparator();
 
-    @Override
-    public SftpVersionMessageSerializer getSerializer() {
-        return new SftpVersionMessageSerializer(message);
-    }
+    public static final SftpVersionMessageSerializer SERIALIZER =
+            new SftpVersionMessageSerializer();
 }

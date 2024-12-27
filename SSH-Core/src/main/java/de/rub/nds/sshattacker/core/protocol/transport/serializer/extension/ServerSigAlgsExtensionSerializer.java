@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,29 +19,27 @@ public class ServerSigAlgsExtensionSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerSigAlgsExtensionSerializer(ServerSigAlgsExtension extension) {
-        super(extension);
-    }
-
     @Override
-    protected void serializeExtensionValue() {
-        serializeAcceptedPublicKeyAlgorithmsLength();
-        serializeAcceptedPublicKeyAlgorithms();
+    protected void serializeExtensionValue(ServerSigAlgsExtension object, SerializerStream output) {
+        serializeAcceptedPublicKeyAlgorithmsLength(object, output);
+        serializeAcceptedPublicKeyAlgorithms(object, output);
     }
 
-    private void serializeAcceptedPublicKeyAlgorithmsLength() {
+    private static void serializeAcceptedPublicKeyAlgorithmsLength(
+            ServerSigAlgsExtension object, SerializerStream output) {
         Integer acceptedPublicKeyAlgorithmsLength =
-                extension.getAcceptedPublicKeyAlgorithmsLength().getValue();
+                object.getAcceptedPublicKeyAlgorithmsLength().getValue();
         LOGGER.debug(
                 "Accepted public key algorithms length: {}", acceptedPublicKeyAlgorithmsLength);
-        appendInt(acceptedPublicKeyAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(acceptedPublicKeyAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
-    private void serializeAcceptedPublicKeyAlgorithms() {
+    private static void serializeAcceptedPublicKeyAlgorithms(
+            ServerSigAlgsExtension object, SerializerStream output) {
         LOGGER.debug(
                 "Accepted public key algorithms: {}",
-                extension.getAcceptedPublicKeyAlgorithms().getValue());
-        appendString(
-                extension.getAcceptedPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+                object.getAcceptedPublicKeyAlgorithms().getValue());
+        output.appendString(
+                object.getAcceptedPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 }

@@ -53,6 +53,11 @@ public class SftpRequestLinkSetStatMessage
     }
 
     @Override
+    public byte[] serialize() {
+        return SftpRequestLinkSetStatMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (attributes != null) {

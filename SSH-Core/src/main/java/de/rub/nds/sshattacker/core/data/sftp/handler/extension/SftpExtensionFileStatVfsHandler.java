@@ -44,8 +44,6 @@ public class SftpExtensionFileStatVfsHandler
     public static final SftpExtensionFileStatVfsPreparator PREPARATOR =
             new SftpExtensionFileStatVfsPreparator();
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionFileStatVfs> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionFileStatVfs> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

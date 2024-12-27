@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,25 +21,19 @@ public class AuthenticationResponseEntrySerializer extends Serializer<Authentica
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final AuthenticationResponseEntry authenticationResponseEntry;
-
-    public AuthenticationResponseEntrySerializer(
-            AuthenticationResponseEntry authenticationResponseEntry) {
-        super();
-        this.authenticationResponseEntry = authenticationResponseEntry;
-    }
-
-    private void serializeResponse() {
-        Integer responseLength = authenticationResponseEntry.getResponseLength().getValue();
+    private static void serializeResponse(
+            AuthenticationResponseEntry object, SerializerStream output) {
+        Integer responseLength = object.getResponseLength().getValue();
         LOGGER.debug("Response length: {}", responseLength);
-        appendInt(responseLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String response = authenticationResponseEntry.getResponse().getValue();
+        output.appendInt(responseLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String response = object.getResponse().getValue();
         LOGGER.debug("Response: {}", () -> backslashEscapeString(response));
-        appendString(response, StandardCharsets.UTF_8);
+        output.appendString(response, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected final void serializeBytes() {
-        serializeResponse();
+    protected final void serializeBytes(
+            AuthenticationResponseEntry object, SerializerStream output) {
+        serializeResponse(object, output);
     }
 }

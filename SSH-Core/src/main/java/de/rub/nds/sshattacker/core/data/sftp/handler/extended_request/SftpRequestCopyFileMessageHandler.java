@@ -39,8 +39,6 @@ public class SftpRequestCopyFileMessageHandler
     public static final SftpRequestCopyFileMessagePreparator PREPARATOR =
             new SftpRequestCopyFileMessagePreparator();
 
-    @Override
-    public SftpRequestCopyFileMessageSerializer getSerializer() {
-        return new SftpRequestCopyFileMessageSerializer(message);
-    }
+    public static final SftpRequestCopyFileMessageSerializer SERIALIZER =
+            new SftpRequestCopyFileMessageSerializer();
 }

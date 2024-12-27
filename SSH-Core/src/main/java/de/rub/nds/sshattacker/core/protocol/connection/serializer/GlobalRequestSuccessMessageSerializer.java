@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,24 +19,22 @@ public class GlobalRequestSuccessMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestSuccessMessageSerializer(GlobalRequestSuccessMessage message) {
-        super(message);
-    }
-
-    private void serializeResponseSpecificData() {
-        if (message.getResponseSpecificData() != null) {
-            byte[] responseSpecificData = message.getResponseSpecificData().getValue();
+    private static void serializeResponseSpecificData(
+            GlobalRequestSuccessMessage object, SerializerStream output) {
+        if (object.getResponseSpecificData() != null) {
+            byte[] responseSpecificData = object.getResponseSpecificData().getValue();
             LOGGER.debug(
                     "Response specific data blob: {}",
                     () -> ArrayConverter.bytesToRawHexString(responseSpecificData));
-            appendBytes(responseSpecificData);
+            output.appendBytes(responseSpecificData);
         } else {
             LOGGER.debug("No response specific data blob set");
         }
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeResponseSpecificData();
+    protected void serializeMessageSpecificContents(
+            GlobalRequestSuccessMessage object, SerializerStream output) {
+        serializeResponseSpecificData(object, output);
     }
 }

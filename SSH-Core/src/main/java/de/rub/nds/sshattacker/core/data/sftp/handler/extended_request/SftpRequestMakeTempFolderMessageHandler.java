@@ -39,8 +39,6 @@ public class SftpRequestMakeTempFolderMessageHandler
     public static final SftpRequestMakeTempFolderMessagePreparator PREPARATOR =
             new SftpRequestMakeTempFolderMessagePreparator();
 
-    @Override
-    public SftpRequestMakeTempFolderMessageSerializer getSerializer() {
-        return new SftpRequestMakeTempFolderMessageSerializer(message);
-    }
+    public static final SftpRequestMakeTempFolderMessageSerializer SERIALIZER =
+            new SftpRequestMakeTempFolderMessageSerializer();
 }

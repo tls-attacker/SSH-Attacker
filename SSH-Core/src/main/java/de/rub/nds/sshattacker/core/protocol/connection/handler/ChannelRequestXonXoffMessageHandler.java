@@ -57,8 +57,6 @@ public class ChannelRequestXonXoffMessageHandler
     public static final ChannelRequestXonXoffMessagePreparator PREPARATOR =
             new ChannelRequestXonXoffMessagePreparator();
 
-    @Override
-    public ChannelRequestXonXoffMessageSerializer getSerializer() {
-        return new ChannelRequestXonXoffMessageSerializer(message);
-    }
+    public static final ChannelRequestXonXoffMessageSerializer SERIALIZER =
+            new ChannelRequestXonXoffMessageSerializer();
 }

@@ -44,8 +44,6 @@ public class ChannelExtendedDataMessageHandler
     public static final ChannelExtendedDataMessagePreparator PREPARATOR =
             new ChannelExtendedDataMessagePreparator();
 
-    @Override
-    public ChannelExtendedDataMessageSerializer getSerializer() {
-        return new ChannelExtendedDataMessageSerializer(message);
-    }
+    public static final ChannelExtendedDataMessageSerializer SERIALIZER =
+            new ChannelExtendedDataMessageSerializer();
 }

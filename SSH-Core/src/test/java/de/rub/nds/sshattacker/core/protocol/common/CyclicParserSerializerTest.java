@@ -116,7 +116,7 @@ public class CyclicParserSerializerTest {
             }
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare(message, context.getChooser());
+                message.prepare(context.getChooser());
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -135,7 +135,7 @@ public class CyclicParserSerializerTest {
             // Serialize message into a byte array
             byte[] serializedMessage = null;
             try {
-                serializedMessage = message.getHandler(context).getSerializer().serialize();
+                serializedMessage = message.serialize();
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -174,9 +174,7 @@ public class CyclicParserSerializerTest {
             // serializedMessage
             // This validates the order parse -> serialize
             try {
-                assertArrayEquals(
-                        serializedMessage,
-                        parsedMessage.getHandler(context).getSerializer().serialize());
+                assertArrayEquals(serializedMessage, parsedMessage.serialize());
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(

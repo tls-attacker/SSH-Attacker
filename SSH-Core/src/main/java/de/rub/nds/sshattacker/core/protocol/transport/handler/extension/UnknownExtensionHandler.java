@@ -40,8 +40,5 @@ public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExt
 
     public static final UnknownExtensionPreparator PREPARATOR = new UnknownExtensionPreparator();
 
-    @Override
-    public UnknownExtensionSerializer getSerializer() {
-        return new UnknownExtensionSerializer(extension);
-    }
+    public static final UnknownExtensionSerializer SERIALIZER = new UnknownExtensionSerializer();
 }

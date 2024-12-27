@@ -56,8 +56,6 @@ public class ChannelRequestWindowChangeMessageHandler
     public static final ChannelRequestWindowChangeMessagePreparator PREPARATOR =
             new ChannelRequestWindowChangeMessagePreparator();
 
-    @Override
-    public ChannelRequestWindowChangeMessageSerializer getSerializer() {
-        return new ChannelRequestWindowChangeMessageSerializer(message);
-    }
+    public static final ChannelRequestWindowChangeMessageSerializer SERIALIZER =
+            new ChannelRequestWindowChangeMessageSerializer();
 }

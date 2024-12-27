@@ -192,4 +192,9 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     public void prepare(Chooser chooser) {
         UserAuthPasswordMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPasswordMessageHandler.SERIALIZER.serialize(this);
+    }
 }

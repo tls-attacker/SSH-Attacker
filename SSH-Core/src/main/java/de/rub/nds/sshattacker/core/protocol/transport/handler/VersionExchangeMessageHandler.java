@@ -50,8 +50,6 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
     public static final VersionExchangeMessagePreparator PREPARATOR =
             new VersionExchangeMessagePreparator();
 
-    @Override
-    public VersionExchangeMessageSerializer getSerializer() {
-        return new VersionExchangeMessageSerializer(message);
-    }
+    public static final VersionExchangeMessageSerializer SERIALIZER =
+            new VersionExchangeMessageSerializer();
 }

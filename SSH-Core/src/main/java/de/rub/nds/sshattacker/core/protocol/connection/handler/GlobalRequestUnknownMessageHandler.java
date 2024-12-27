@@ -42,8 +42,6 @@ public class GlobalRequestUnknownMessageHandler
     public static final GlobalRequestUnknownMessagePreparator PREPARATOR =
             new GlobalRequestUnknownMessagePreparator();
 
-    @Override
-    public GlobalRequestUnknownMessageSerializer getSerializer() {
-        return new GlobalRequestUnknownMessageSerializer(message);
-    }
+    public static final GlobalRequestUnknownMessageSerializer SERIALIZER =
+            new GlobalRequestUnknownMessageSerializer();
 }

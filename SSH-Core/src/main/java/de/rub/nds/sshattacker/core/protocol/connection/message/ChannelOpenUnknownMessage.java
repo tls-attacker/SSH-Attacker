@@ -62,4 +62,9 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
     public void prepare(Chooser chooser) {
         ChannelOpenUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

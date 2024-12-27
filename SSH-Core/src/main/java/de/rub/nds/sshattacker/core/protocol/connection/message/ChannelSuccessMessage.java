@@ -35,4 +35,9 @@ public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage>
     public void prepare(Chooser chooser) {
         ChannelSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelSuccessMessageHandler.SERIALIZER.serialize(this);
+    }
 }

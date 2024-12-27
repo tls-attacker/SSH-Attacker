@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,9 +112,7 @@ public abstract class AbstractPacketLayer {
 
     public byte[] preparePacket(AbstractPacket packet) {
         packet.prepare(context.getChooser());
-        AbstractPacketSerializer<? extends AbstractPacket> serializer =
-                packet.getPacketSerializer();
-        return serializer.serialize();
+        return packet.serialize();
     }
 
     public void updateCompressionAlgorithm(CompressionAlgorithm algorithm) {

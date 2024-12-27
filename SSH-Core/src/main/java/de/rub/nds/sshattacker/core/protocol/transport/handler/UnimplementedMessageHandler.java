@@ -42,8 +42,6 @@ public class UnimplementedMessageHandler extends SshMessageHandler<Unimplemented
     public static final UnimplementedMessagePreparator PREPARATOR =
             new UnimplementedMessagePreparator();
 
-    @Override
-    public UnimplementedMessageSerializer getSerializer() {
-        return new UnimplementedMessageSerializer(message);
-    }
+    public static final UnimplementedMessageSerializer SERIALIZER =
+            new UnimplementedMessageSerializer();
 }

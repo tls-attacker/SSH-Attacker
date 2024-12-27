@@ -8,20 +8,19 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpResponseAttributesMessageSerializer
         extends SftpResponseMessageSerializer<SftpResponseAttributesMessage> {
 
-    public SftpResponseAttributesMessageSerializer(SftpResponseAttributesMessage message) {
-        super(message);
-    }
-
-    private void serializeAttributes() {
-        appendBytes(message.getAttributes().getHandler(null).getSerializer().serialize());
+    private static void serializeAttributes(
+            SftpResponseAttributesMessage object, SerializerStream output) {
+        output.appendBytes(object.getAttributes().serialize());
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeAttributes();
+    protected void serializeResponseSpecificContents(
+            SftpResponseAttributesMessage object, SerializerStream output) {
+        serializeAttributes(object, output);
     }
 }

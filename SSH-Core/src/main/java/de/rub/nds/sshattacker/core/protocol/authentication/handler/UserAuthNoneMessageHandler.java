@@ -42,8 +42,6 @@ public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMe
     public static final UserAuthNoneMessagePreparator PREPARATOR =
             new UserAuthNoneMessagePreparator();
 
-    @Override
-    public UserAuthNoneMessageSerializer getSerializer() {
-        return new UserAuthNoneMessageSerializer(message);
-    }
+    public static final UserAuthNoneMessageSerializer SERIALIZER =
+            new UserAuthNoneMessageSerializer();
 }

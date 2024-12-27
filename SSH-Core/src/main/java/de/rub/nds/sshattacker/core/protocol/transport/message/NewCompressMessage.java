@@ -36,4 +36,9 @@ public class NewCompressMessage extends SshMessage<NewCompressMessage> {
     public void prepare(Chooser chooser) {
         NewCompressMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return NewCompressMessageHandler.SERIALIZER.serialize(this);
+    }
 }

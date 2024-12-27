@@ -63,4 +63,9 @@ public class ChannelRequestUnknownMessage
     public void prepare(Chooser chooser) {
         ChannelRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

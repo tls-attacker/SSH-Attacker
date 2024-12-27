@@ -39,8 +39,6 @@ public class SftpRequestExpandPathMessageHandler
     public static final SftpRequestExpandPathMessagePreparator PREPARATOR =
             new SftpRequestExpandPathMessagePreparator();
 
-    @Override
-    public SftpRequestExpandPathMessageSerializer getSerializer() {
-        return new SftpRequestExpandPathMessageSerializer(message);
-    }
+    public static final SftpRequestExpandPathMessageSerializer SERIALIZER =
+            new SftpRequestExpandPathMessageSerializer();
 }

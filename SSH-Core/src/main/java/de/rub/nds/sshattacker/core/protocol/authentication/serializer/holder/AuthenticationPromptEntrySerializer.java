@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,32 +21,24 @@ public class AuthenticationPromptEntrySerializer extends Serializer<Authenticati
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final AuthenticationPromptEntry authenticationPromptEntry;
-
-    public AuthenticationPromptEntrySerializer(
-            AuthenticationPromptEntry authenticationPromptEntry) {
-        super();
-        this.authenticationPromptEntry = authenticationPromptEntry;
-    }
-
-    private void serializeEcho() {
-        byte echo = authenticationPromptEntry.getEcho().getValue();
+    private static void serializeEcho(AuthenticationPromptEntry object, SerializerStream output) {
+        byte echo = object.getEcho().getValue();
         LOGGER.debug("Echo: {}", echo);
-        appendByte(echo);
+        output.appendByte(echo);
     }
 
-    private void serializePrompt() {
-        Integer promptLength = authenticationPromptEntry.getPromptLength().getValue();
+    private static void serializePrompt(AuthenticationPromptEntry object, SerializerStream output) {
+        Integer promptLength = object.getPromptLength().getValue();
         LOGGER.debug("Prompt length: {}", promptLength);
-        appendInt(promptLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String prompt = authenticationPromptEntry.getPrompt().getValue();
+        output.appendInt(promptLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String prompt = object.getPrompt().getValue();
         LOGGER.debug("Prompt: {}", () -> backslashEscapeString(prompt));
-        appendString(prompt, StandardCharsets.UTF_8);
+        output.appendString(prompt, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected final void serializeBytes() {
-        serializePrompt();
-        serializeEcho();
+    protected final void serializeBytes(AuthenticationPromptEntry object, SerializerStream output) {
+        serializePrompt(object, output);
+        serializeEcho(object, output);
     }
 }

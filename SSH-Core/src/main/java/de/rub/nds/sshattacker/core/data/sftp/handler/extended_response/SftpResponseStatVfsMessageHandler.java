@@ -39,8 +39,6 @@ public class SftpResponseStatVfsMessageHandler
     public static final SftpResponseStatVfsMessagePreparator PREPARATOR =
             new SftpResponseStatVfsMessagePreparator();
 
-    @Override
-    public SftpResponseStatVfsMessageSerializer getSerializer() {
-        return new SftpResponseStatVfsMessageSerializer(message);
-    }
+    public static final SftpResponseStatVfsMessageSerializer SERIALIZER =
+            new SftpResponseStatVfsMessageSerializer();
 }

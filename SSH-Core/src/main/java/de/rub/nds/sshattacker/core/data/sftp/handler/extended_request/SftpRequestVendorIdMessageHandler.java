@@ -39,8 +39,6 @@ public class SftpRequestVendorIdMessageHandler
     public static final SftpRequestVendorIdMessagePreparator PREPARATOR =
             new SftpRequestVendorIdMessagePreparator();
 
-    @Override
-    public SftpRequestVendorIdMessageSerializer getSerializer() {
-        return new SftpRequestVendorIdMessageSerializer(message);
-    }
+    public static final SftpRequestVendorIdMessageSerializer SERIALIZER =
+            new SftpRequestVendorIdMessageSerializer();
 }

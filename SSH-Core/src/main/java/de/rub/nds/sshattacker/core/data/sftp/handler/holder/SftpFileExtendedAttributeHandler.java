@@ -47,8 +47,6 @@ public class SftpFileExtendedAttributeHandler implements Handler<SftpFileExtende
     public static final SftpFileExtendedAttributePreparator PREPARATOR =
             new SftpFileExtendedAttributePreparator();
 
-    @Override
-    public SftpFileExtendedAttributeSerializer getSerializer() {
-        return new SftpFileExtendedAttributeSerializer(attribute);
-    }
+    public static final SftpFileExtendedAttributeSerializer SERIALIZER =
+            new SftpFileExtendedAttributeSerializer();
 }

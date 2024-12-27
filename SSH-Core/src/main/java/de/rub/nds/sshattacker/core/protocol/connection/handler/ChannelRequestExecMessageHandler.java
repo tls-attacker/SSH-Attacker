@@ -54,8 +54,6 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     public static final ChannelRequestExecMessagePreparator PREPARATOR =
             new ChannelRequestExecMessagePreparator();
 
-    @Override
-    public ChannelRequestExecMessageSerializer getSerializer() {
-        return new ChannelRequestExecMessageSerializer(message);
-    }
+    public static final ChannelRequestExecMessageSerializer SERIALIZER =
+            new ChannelRequestExecMessageSerializer();
 }

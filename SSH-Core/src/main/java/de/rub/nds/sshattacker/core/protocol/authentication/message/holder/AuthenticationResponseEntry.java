@@ -101,4 +101,8 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         AuthenticationResponseEntryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return AuthenticationResponseEntryHandler.SERIALIZER.serialize(this);
+    }
 }

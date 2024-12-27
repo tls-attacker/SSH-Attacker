@@ -119,4 +119,9 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     public void prepare(Chooser chooser) {
         DhGexKeyExchangeRequestMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return DhGexKeyExchangeRequestMessageHandler.SERIALIZER.serialize(this);
+    }
 }

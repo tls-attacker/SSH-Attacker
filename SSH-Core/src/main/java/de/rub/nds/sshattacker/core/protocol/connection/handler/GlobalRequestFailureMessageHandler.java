@@ -44,8 +44,6 @@ public class GlobalRequestFailureMessageHandler
     public static final GlobalRequestFailureMessagePreparator PREPARATOR =
             new GlobalRequestFailureMessagePreparator();
 
-    @Override
-    public GlobalRequestFailureMessageSerializer getSerializer() {
-        return new GlobalRequestFailureMessageSerializer(message);
-    }
+    public static final GlobalRequestFailureMessageSerializer SERIALIZER =
+            new GlobalRequestFailureMessageSerializer();
 }

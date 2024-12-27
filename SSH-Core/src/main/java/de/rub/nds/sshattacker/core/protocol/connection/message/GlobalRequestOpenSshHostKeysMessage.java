@@ -71,6 +71,11 @@ public class GlobalRequestOpenSshHostKeysMessage
         GlobalRequestOpenSshHostKeysMessageHandler.PREPARATOR.prepare(this, chooser);
     }
 
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestOpenSshHostKeysMessageHandler.SERIALIZER.serialize(this);
+    }
+
     /**
      * Encodes a list of keys into a host key blob value, consisting of one length-prefixed string
      * per key.

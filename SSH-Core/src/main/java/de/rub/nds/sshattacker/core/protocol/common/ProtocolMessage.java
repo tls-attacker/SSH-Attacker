@@ -122,5 +122,7 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
 
     public abstract void prepare(Chooser chooser);
 
+    public abstract byte[] serialize();
+
     public abstract String toCompactString();
 }

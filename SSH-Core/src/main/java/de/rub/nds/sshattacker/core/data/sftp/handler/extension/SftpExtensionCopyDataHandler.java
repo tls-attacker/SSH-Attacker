@@ -45,8 +45,6 @@ public class SftpExtensionCopyDataHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionCopyData> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.COPY_DATA);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionCopyData> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionCopyData> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

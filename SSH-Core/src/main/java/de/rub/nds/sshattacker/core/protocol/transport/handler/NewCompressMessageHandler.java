@@ -54,10 +54,8 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
     public static final NewCompressMessagePreparator PREPARATOR =
             new NewCompressMessagePreparator();
 
-    @Override
-    public NewCompressMessageSerializer getSerializer() {
-        return new NewCompressMessageSerializer(message);
-    }
+    public static final NewCompressMessageSerializer SERIALIZER =
+            new NewCompressMessageSerializer();
 
     @Override
     public void adjustContextAfterMessageSent() {

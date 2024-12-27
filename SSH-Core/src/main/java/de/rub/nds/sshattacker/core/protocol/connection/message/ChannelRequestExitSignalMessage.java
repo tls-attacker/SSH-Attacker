@@ -270,4 +270,9 @@ public class ChannelRequestExitSignalMessage
     public void prepare(Chooser chooser) {
         ChannelRequestExitSignalMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestExitSignalMessageHandler.SERIALIZER.serialize(this);
+    }
 }

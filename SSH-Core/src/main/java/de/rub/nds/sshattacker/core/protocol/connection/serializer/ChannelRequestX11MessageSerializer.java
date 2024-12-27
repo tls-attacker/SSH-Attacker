@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,48 +19,50 @@ public class ChannelRequestX11MessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestX11MessageSerializer(ChannelRequestX11Message message) {
-        super(message);
+    private static void serializeSingleConnection(
+            ChannelRequestX11Message object, SerializerStream output) {
+        LOGGER.debug("Single connection: {}", object.getSingleConnection().getValue());
+        output.appendByte(object.getSingleConnection().getValue());
     }
 
-    private void serializeSingleConnection() {
-        LOGGER.debug("Single connection: {}", message.getSingleConnection().getValue());
-        appendByte(message.getSingleConnection().getValue());
-    }
-
-    private void serializeX11AuthenticationProtocol() {
+    private static void serializeX11AuthenticationProtocol(
+            ChannelRequestX11Message object, SerializerStream output) {
         Integer x11AuthenticationProtocolLength =
-                message.getX11AuthenticationProtocolLength().getValue();
+                object.getX11AuthenticationProtocolLength().getValue();
         LOGGER.debug("X11 authentication protocol length: {}", x11AuthenticationProtocolLength);
-        appendInt(x11AuthenticationProtocolLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(x11AuthenticationProtocolLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "X11 authentication protocol: {}",
-                message.getX11AuthenticationProtocol().getValue());
-        appendString(message.getX11AuthenticationProtocol().getValue(), StandardCharsets.UTF_8);
+                object.getX11AuthenticationProtocol().getValue());
+        output.appendString(
+                object.getX11AuthenticationProtocol().getValue(), StandardCharsets.UTF_8);
     }
 
-    private void serializeX11AuthenticationCookie() {
+    private static void serializeX11AuthenticationCookie(
+            ChannelRequestX11Message object, SerializerStream output) {
         Integer x11AuthenticationCookieLength =
-                message.getX11AuthenticationCookieLength().getValue();
+                object.getX11AuthenticationCookieLength().getValue();
         LOGGER.debug("X11 authenticaton cookie length: {}", x11AuthenticationCookieLength);
-        appendInt(x11AuthenticationCookieLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(x11AuthenticationCookieLength, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
-        appendString(message.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
+                "X11 authentication cookie: {}", object.getX11AuthenticationCookie().getValue());
+        output.appendString(object.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
     }
 
-    private void serializeX11ScreenNumber() {
-        Integer x11ScreenNumber = message.getX11ScreenNumber().getValue();
+    private static void serializeX11ScreenNumber(
+            ChannelRequestX11Message object, SerializerStream output) {
+        Integer x11ScreenNumber = object.getX11ScreenNumber().getValue();
         LOGGER.debug("X11 screen number: {}", x11ScreenNumber);
-        appendInt(x11ScreenNumber, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(x11ScreenNumber, DataFormatConstants.UINT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSingleConnection();
-        serializeX11AuthenticationProtocol();
-        serializeX11AuthenticationCookie();
-        serializeX11ScreenNumber();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestX11Message object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSingleConnection(object, output);
+        serializeX11AuthenticationProtocol(object, output);
+        serializeX11AuthenticationCookie(object, output);
+        serializeX11ScreenNumber(object, output);
     }
 }

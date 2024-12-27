@@ -8,20 +8,19 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestMakeDirMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestMakeDirMessageSerializer
         extends SftpRequestWithPathMessageSerializer<SftpRequestMakeDirMessage> {
 
-    public SftpRequestMakeDirMessageSerializer(SftpRequestMakeDirMessage message) {
-        super(message);
-    }
-
-    private void serializeAttributes() {
-        appendBytes(message.getAttributes().getHandler(null).getSerializer().serialize());
+    private static void serializeAttributes(
+            SftpRequestMakeDirMessage object, SerializerStream output) {
+        output.appendBytes(object.getAttributes().serialize());
     }
 
     @Override
-    protected void serializeRequestWithPathSpecificContents() {
-        serializeAttributes();
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestMakeDirMessage object, SerializerStream output) {
+        serializeAttributes(object, output);
     }
 }

@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseStatusMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,38 +21,38 @@ public class SftpResponseStatusMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseStatusMessageSerializer(SftpResponseStatusMessage message) {
-        super(message);
-    }
-
-    private void serializeStatusCode() {
-        Integer statusCode = message.getStatusCode().getValue();
+    private static void serializeStatusCode(
+            SftpResponseStatusMessage object, SerializerStream output) {
+        Integer statusCode = object.getStatusCode().getValue();
         LOGGER.debug("StatusCode: {}", statusCode);
-        appendInt(statusCode, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(statusCode, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeErrorMessage() {
-        Integer errorMessageLength = message.getErrorMessageLength().getValue();
+    private static void serializeErrorMessage(
+            SftpResponseStatusMessage object, SerializerStream output) {
+        Integer errorMessageLength = object.getErrorMessageLength().getValue();
         LOGGER.debug("ErrorMessage length: {}", errorMessageLength);
-        appendInt(errorMessageLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String errorMessage = message.getErrorMessage().getValue();
+        output.appendInt(errorMessageLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String errorMessage = object.getErrorMessage().getValue();
         LOGGER.debug("ErrorMessage: {}", () -> backslashEscapeString(errorMessage));
-        appendString(errorMessage, StandardCharsets.UTF_8);
+        output.appendString(errorMessage, StandardCharsets.UTF_8);
     }
 
-    private void serializeLanguageTag() {
-        Integer languageTagLength = message.getLanguageTagLength().getValue();
+    private static void serializeLanguageTag(
+            SftpResponseStatusMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("LanguageTag length: {}", languageTagLength);
-        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String languageTag = message.getLanguageTag().getValue();
+        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("LanguageTag: {}", () -> backslashEscapeString(languageTag));
-        appendString(languageTag, StandardCharsets.US_ASCII);
+        output.appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeStatusCode();
-        serializeErrorMessage();
-        serializeLanguageTag();
+    protected void serializeResponseSpecificContents(
+            SftpResponseStatusMessage object, SerializerStream output) {
+        serializeStatusCode(object, output);
+        serializeErrorMessage(object, output);
+        serializeLanguageTag(object, output);
     }
 }

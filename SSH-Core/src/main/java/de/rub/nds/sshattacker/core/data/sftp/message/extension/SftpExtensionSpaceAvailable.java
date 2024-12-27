@@ -36,4 +36,9 @@ public class SftpExtensionSpaceAvailable
     public void prepare(Chooser chooser) {
         SftpExtensionSpaceAvailableHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionSpaceAvailableHandler.SERIALIZER.serialize(this);
+    }
 }

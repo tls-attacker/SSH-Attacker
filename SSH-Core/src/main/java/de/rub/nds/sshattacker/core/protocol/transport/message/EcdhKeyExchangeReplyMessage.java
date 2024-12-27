@@ -257,4 +257,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
     public void prepare(Chooser chooser) {
         EcdhKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return EcdhKeyExchangeReplyMessageHandler.SERIALIZER.serialize(this);
+    }
 }

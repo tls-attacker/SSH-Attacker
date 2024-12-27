@@ -54,8 +54,6 @@ public class ChannelRequestBreakMessageHandler extends SshMessageHandler<Channel
     public static final ChannelRequestBreakMessagePreparator PREPARATOR =
             new ChannelRequestBreakMessagePreparator();
 
-    @Override
-    public ChannelRequestBreakMessageSerializer getSerializer() {
-        return new ChannelRequestBreakMessageSerializer(message);
-    }
+    public static final ChannelRequestBreakMessageSerializer SERIALIZER =
+            new ChannelRequestBreakMessageSerializer();
 }

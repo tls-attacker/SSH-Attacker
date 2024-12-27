@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenDirMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestOpenDirMessageSerializer
         extends SftpRequestWithPathMessageSerializer<SftpRequestOpenDirMessage> {
 
-    public SftpRequestOpenDirMessageSerializer(SftpRequestOpenDirMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestWithPathSpecificContents() {}
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestOpenDirMessage object, SerializerStream output) {}
 }

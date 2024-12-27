@@ -153,8 +153,5 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
 
     public static final NewKeysMessagePreparator PREPARATOR = new NewKeysMessagePreparator();
 
-    @Override
-    public NewKeysMessageSerializer getSerializer() {
-        return new NewKeysMessageSerializer(message);
-    }
+    public static final NewKeysMessageSerializer SERIALIZER = new NewKeysMessageSerializer();
 }

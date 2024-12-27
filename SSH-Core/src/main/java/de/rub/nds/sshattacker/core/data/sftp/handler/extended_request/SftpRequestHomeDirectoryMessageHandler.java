@@ -39,8 +39,6 @@ public class SftpRequestHomeDirectoryMessageHandler
     public static final SftpRequestHomeDirectoryMessagePreparator PREPARATOR =
             new SftpRequestHomeDirectoryMessagePreparator();
 
-    @Override
-    public SftpRequestHomeDirectoryMessageSerializer getSerializer() {
-        return new SftpRequestHomeDirectoryMessageSerializer(message);
-    }
+    public static final SftpRequestHomeDirectoryMessageSerializer SERIALIZER =
+            new SftpRequestHomeDirectoryMessageSerializer();
 }

@@ -264,4 +264,9 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     public void prepare(Chooser chooser) {
         ChannelRequestPtyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestPtyMessageHandler.SERIALIZER.serialize(this);
+    }
 }

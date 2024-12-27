@@ -185,4 +185,9 @@ public class SftpResponseUsersGroupsByIdMessage
     public void prepare(Chooser chooser) {
         SftpResponseUsersGroupsByIdMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseUsersGroupsByIdMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -59,8 +59,6 @@ public class DhGexKeyExchangeGroupMessageHandler
     public static final DhGexKeyExchangeGroupMessagePreparator PREPARATOR =
             new DhGexKeyExchangeGroupMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeGroupMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeGroupMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeGroupMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeGroupMessageSerializer();
 }

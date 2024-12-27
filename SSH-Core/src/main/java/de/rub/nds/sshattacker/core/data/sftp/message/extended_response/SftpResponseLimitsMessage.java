@@ -139,4 +139,9 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     public void prepare(Chooser chooser) {
         SftpResponseLimitsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseLimitsMessageHandler.SERIALIZER.serialize(this);
+    }
 }

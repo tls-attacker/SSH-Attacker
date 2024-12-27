@@ -57,8 +57,6 @@ public class ChannelRequestExitSignalMessageHandler
     public static final ChannelRequestExitSignalMessagePreparator PREPARATOR =
             new ChannelRequestExitSignalMessagePreparator();
 
-    @Override
-    public ChannelRequestExitSignalMessageSerializer getSerializer() {
-        return new ChannelRequestExitSignalMessageSerializer(message);
-    }
+    public static final ChannelRequestExitSignalMessageSerializer SERIALIZER =
+            new ChannelRequestExitSignalMessageSerializer();
 }

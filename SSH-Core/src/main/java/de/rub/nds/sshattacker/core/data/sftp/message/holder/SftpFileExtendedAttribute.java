@@ -151,4 +151,8 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         SftpFileExtendedAttributeHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return SftpFileExtendedAttributeHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509RsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
@@ -26,23 +27,15 @@ import org.bouncycastle.asn1.x509.Extensions;
  */
 public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKey> {
 
-    private final CustomX509RsaPublicKey publicKey;
-
-    public X509RsaPublicKeySerializer(CustomX509RsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomX509RsaPublicKey object, SerializerStream output) {
         try {
             // Step 1: Add additional bytes at the beginning
             byte[] prefix = {0x30, (byte) 0x82}; // Example: exact bytes from server
-            appendBytes(prefix);
+            output.appendBytes(prefix);
 
             // Step 2: Create the ASN.1 vector for the entire certificate
             ASN1EncodableVector topLevelVector = new ASN1EncodableVector();
-
             // 1. Version (uint32)
             appendInt(
                     topLevelVector,
@@ -52,7 +45,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             // 2. Serial Number (mpint)
             appendBigInteger(
                     topLevelVector,
-                    BigInteger.valueOf(publicKey.getSerial()),
+                    BigInteger.valueOf(object.getSerial()),
                     20); // Updated to use correct serial number size
 
             // 3. Signature Algorithm
@@ -63,16 +56,16 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(signatureAlgorithm);
 
             // 4. Issuer (Distinguished Name)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(publicKey.getIssuer());
+            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
             topLevelVector.add(issuerSequence);
 
             // 5. Validity Period (ASN.1 GeneralizedTime)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // 6. Subject (Distinguished Name)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(publicKey.getSubject());
+            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
             topLevelVector.add(subjectSequence);
 
             // 7. Public Key Algorithm (OID)
@@ -84,13 +77,13 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
 
             // 8. Public Key (Modulus and Exponent as ASN.1 SEQUENCE)
             ASN1EncodableVector publicKeyVector = new ASN1EncodableVector();
-            publicKeyVector.add(new ASN1Integer(publicKey.getModulus()));
-            publicKeyVector.add(new ASN1Integer(publicKey.getPublicExponent()));
+            publicKeyVector.add(new ASN1Integer(object.getModulus()));
+            publicKeyVector.add(new ASN1Integer(object.getPublicExponent()));
             ASN1Sequence publicKeySequence = new DERSequence(publicKeyVector);
             topLevelVector.add(publicKeySequence);
 
             // 9. Extensions (ASN.1 encoded as Extensions sequence)
-            Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
+            Extensions extensions = getExtensionsAsASN1(object.getExtensions());
             if (extensions != null) {
                 topLevelVector.add(extensions);
             }
@@ -103,7 +96,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(signatureAlgId);
 
             // Step 4: Signature Value (ASN.1 Bit String)
-            byte[] signature = publicKey.getSignature();
+            byte[] signature = object.getSignature();
             if (signature == null) {
                 throw new IllegalStateException("Signature is not set in the publicKey");
             }
@@ -112,7 +105,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             // Step 5: Serialize the entire ASN.1 block
             ASN1Sequence topLevelSequence = new DERSequence(topLevelVector);
             byte[] asn1Encoded = topLevelSequence.getEncoded();
-            appendBytes(asn1Encoded);
+            output.appendBytes(asn1Encoded);
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 RSA Public Key", e);

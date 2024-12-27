@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -19,33 +20,30 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AsciiMessageSerializer(AsciiMessage message) {
-        super(message);
-    }
-
-    private void serializeText() {
-        String text = message.getText().getValue();
+    private static void serializeText(AsciiMessage object, SerializerStream output) {
+        String text = object.getText().getValue();
         if (text.isEmpty()) {
             LOGGER.debug("Text: [none]");
         } else {
             LOGGER.debug("Text: {}", () -> backslashEscapeString(text));
-            appendString(text, StandardCharsets.US_ASCII);
+            output.appendString(text, StandardCharsets.US_ASCII);
         }
     }
 
-    private void serializeEndOfMessageSequence() {
+    private static void serializeEndOfMessageSequence(
+            AsciiMessage object, SerializerStream output) {
         LOGGER.debug(
                 "End of Line Sequence: {}",
-                message.getEndOfMessageSequence()
+                object.getEndOfMessageSequence()
                         .getValue()
                         .replace("\r", "[CR]")
                         .replace("\n", "[NL]"));
-        appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
+        output.appendString(object.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeProtocolMessageContents() {
-        serializeText();
-        serializeEndOfMessageSequence();
+    protected void serializeProtocolMessageContents(AsciiMessage object, SerializerStream output) {
+        serializeText(object, output);
+        serializeEndOfMessageSequence(object, output);
     }
 }

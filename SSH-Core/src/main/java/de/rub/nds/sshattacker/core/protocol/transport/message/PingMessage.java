@@ -96,4 +96,9 @@ public class PingMessage extends SshMessage<PingMessage> {
     public void prepare(Chooser chooser) {
         PingMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return PingMessageHandler.SERIALIZER.serialize(this);
+    }
 }

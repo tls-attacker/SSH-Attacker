@@ -37,8 +37,6 @@ public class SftpRequestRemoveMessageHandler
     public static final SftpRequestRemoveMessagePreparator PREPARATOR =
             new SftpRequestRemoveMessagePreparator();
 
-    @Override
-    public SftpRequestRemoveMessageSerializer getSerializer() {
-        return new SftpRequestRemoveMessageSerializer(message);
-    }
+    public static final SftpRequestRemoveMessageSerializer SERIALIZER =
+            new SftpRequestRemoveMessageSerializer();
 }

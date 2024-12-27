@@ -97,4 +97,9 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     public void prepare(Chooser chooser) {
         ChannelRequestExecMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestExecMessageHandler.SERIALIZER.serialize(this);
+    }
 }

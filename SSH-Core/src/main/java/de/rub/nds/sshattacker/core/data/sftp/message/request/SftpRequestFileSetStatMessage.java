@@ -60,4 +60,9 @@ public class SftpRequestFileSetStatMessage
     public void prepare(Chooser chooser) {
         SftpRequestFileSetStatMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestFileSetStatMessageHandler.SERIALIZER.serialize(this);
+    }
 }

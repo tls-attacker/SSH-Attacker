@@ -71,4 +71,9 @@ public class SftpRequestStatMessage extends SftpRequestWithPathMessage<SftpReque
     public void prepare(Chooser chooser) {
         SftpRequestStatMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestStatMessageHandler.SERIALIZER.serialize(this);
+    }
 }

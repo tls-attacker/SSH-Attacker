@@ -42,8 +42,6 @@ public class SftpExtensionNewlineHandler
     public static final SftpExtensionNewlinePreparator PREPARATOR =
             new SftpExtensionNewlinePreparator();
 
-    @Override
-    public SftpExtensionNewlineSerializer getSerializer() {
-        return new SftpExtensionNewlineSerializer(extension);
-    }
+    public static final SftpExtensionNewlineSerializer SERIALIZER =
+            new SftpExtensionNewlineSerializer();
 }

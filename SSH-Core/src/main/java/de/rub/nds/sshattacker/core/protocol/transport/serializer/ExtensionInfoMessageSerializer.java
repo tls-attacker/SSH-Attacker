@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import org.apache.logging.log4j.LogManager;
@@ -17,27 +18,21 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtensionInfoMessageSerializer(ExtensionInfoMessage message) {
-        super(message);
-    }
-
-    private void serializeExtensionCount() {
-        Integer extensionCount = message.getExtensionCount().getValue();
+    private static void serializeExtensionCount(
+            ExtensionInfoMessage object, SerializerStream output) {
+        Integer extensionCount = object.getExtensionCount().getValue();
         LOGGER.debug("Extension count: {}", extensionCount);
-        appendInt(extensionCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(extensionCount, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeExtensions() {
-        message.getExtensions()
-                .forEach(
-                        extension ->
-                                appendBytes(
-                                        extension.getHandler(null).getSerializer().serialize()));
+    private static void serializeExtensions(ExtensionInfoMessage object, SerializerStream output) {
+        object.getExtensions().forEach(extension -> output.appendBytes(extension.serialize()));
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeExtensionCount();
-        serializeExtensions();
+    protected void serializeMessageSpecificContents(
+            ExtensionInfoMessage object, SerializerStream output) {
+        serializeExtensionCount(object, output);
+        serializeExtensions(object, output);
     }
 }

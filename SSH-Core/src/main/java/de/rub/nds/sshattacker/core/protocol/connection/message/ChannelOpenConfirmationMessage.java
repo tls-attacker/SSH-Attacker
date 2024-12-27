@@ -103,4 +103,9 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     public void prepare(Chooser chooser) {
         ChannelOpenConfirmationMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenConfirmationMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -568,6 +568,10 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         SftpFileAttributesHandler.PREPARATOR.prepare(this, chooser);
     }
 
+    public byte[] serialize() {
+        return SftpFileAttributesHandler.SERIALIZER.serialize(this);
+    }
+
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();

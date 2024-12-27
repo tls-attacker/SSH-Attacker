@@ -98,4 +98,9 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     public void prepare(Chooser chooser) {
         PingExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return PingExtensionHandler.SERIALIZER.serialize(this);
+    }
 }

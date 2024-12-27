@@ -35,4 +35,9 @@ public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRe
     public void prepare(Chooser chooser) {
         SftpRequestCloseMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestCloseMessageHandler.SERIALIZER.serialize(this);
+    }
 }

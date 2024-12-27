@@ -39,8 +39,6 @@ public class SftpRequestPosixRenameMessageHandler
     public static final SftpRequestPosixRenameMessagePreparator PREPARATOR =
             new SftpRequestPosixRenameMessagePreparator();
 
-    @Override
-    public SftpRequestPosixRenameMessageSerializer getSerializer() {
-        return new SftpRequestPosixRenameMessageSerializer(message);
-    }
+    public static final SftpRequestPosixRenameMessageSerializer SERIALIZER =
+            new SftpRequestPosixRenameMessageSerializer();
 }

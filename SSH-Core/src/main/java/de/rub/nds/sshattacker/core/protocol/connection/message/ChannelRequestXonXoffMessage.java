@@ -68,4 +68,9 @@ public class ChannelRequestXonXoffMessage
     public void prepare(Chooser chooser) {
         ChannelRequestXonXoffMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestXonXoffMessageHandler.SERIALIZER.serialize(this);
+    }
 }

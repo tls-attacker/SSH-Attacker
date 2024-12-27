@@ -36,4 +36,9 @@ public class GlobalRequestNoMoreSessionsMessage
     public void prepare(Chooser chooser) {
         GlobalRequestNoMoreSessionsMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestNoMoreSessionsMessageHandler.SERIALIZER.serialize(this);
+    }
 }

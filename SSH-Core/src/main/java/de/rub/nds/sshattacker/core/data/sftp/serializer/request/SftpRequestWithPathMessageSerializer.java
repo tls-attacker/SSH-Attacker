@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWithPathMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,24 +21,21 @@ public abstract class SftpRequestWithPathMessageSerializer<T extends SftpRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SftpRequestWithPathMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializePath() {
-        Integer pathLength = message.getPathLength().getValue();
+    private void serializePath(T object, SerializerStream output) {
+        Integer pathLength = object.getPathLength().getValue();
         LOGGER.debug("Path length: {}", pathLength);
-        appendInt(pathLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String path = message.getPath().getValue();
+        output.appendInt(pathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String path = object.getPath().getValue();
         LOGGER.debug("Path: {}", () -> backslashEscapeString(path));
-        appendString(path, StandardCharsets.UTF_8);
+        output.appendString(path, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeRequestSpecificContents() {
-        serializePath();
-        serializeRequestWithPathSpecificContents();
+    protected void serializeRequestSpecificContents(T object, SerializerStream output) {
+        serializePath(object, output);
+        serializeRequestWithPathSpecificContents(object, output);
     }
 
-    protected abstract void serializeRequestWithPathSpecificContents();
+    protected abstract void serializeRequestWithPathSpecificContents(
+            T object, SerializerStream output);
 }

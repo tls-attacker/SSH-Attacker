@@ -116,4 +116,9 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
     public void prepare(Chooser chooser) {
         SftpRequestWriteMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestWriteMessageHandler.SERIALIZER.serialize(this);
+    }
 }

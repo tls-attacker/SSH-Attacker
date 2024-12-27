@@ -39,8 +39,6 @@ public class SftpResponseUsersGroupsByIdMessageHandler
     public static final SftpResponseUsersGroupsByIdMessagePreparator PREPARATOR =
             new SftpResponseUsersGroupsByIdMessagePreparator();
 
-    @Override
-    public SftpResponseUsersGroupsByIdMessageSerializer getSerializer() {
-        return new SftpResponseUsersGroupsByIdMessageSerializer(message);
-    }
+    public static final SftpResponseUsersGroupsByIdMessageSerializer SERIALIZER =
+            new SftpResponseUsersGroupsByIdMessageSerializer();
 }

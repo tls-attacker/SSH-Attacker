@@ -96,4 +96,9 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
     public void prepare(Chooser chooser) {
         UnknownExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UnknownExtensionHandler.SERIALIZER.serialize(this);
+    }
 }

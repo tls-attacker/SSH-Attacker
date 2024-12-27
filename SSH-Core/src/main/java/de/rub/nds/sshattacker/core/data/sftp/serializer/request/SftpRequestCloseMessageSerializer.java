@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestCloseMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestCloseMessageSerializer
         extends SftpRequestWithHandleMessageSerializer<SftpRequestCloseMessage> {
 
-    public SftpRequestCloseMessageSerializer(SftpRequestCloseMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestWithHandleSpecificContents() {}
+    protected void serializeRequestWithHandleSpecificContents(
+            SftpRequestCloseMessage object, SerializerStream output) {}
 }

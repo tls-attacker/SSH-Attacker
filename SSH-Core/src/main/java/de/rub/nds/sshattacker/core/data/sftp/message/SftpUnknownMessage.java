@@ -70,4 +70,9 @@ public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
     public void prepare(Chooser chooser) {
         SftpUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

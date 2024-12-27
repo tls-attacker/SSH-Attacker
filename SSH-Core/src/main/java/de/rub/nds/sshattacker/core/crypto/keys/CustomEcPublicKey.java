@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
@@ -131,5 +132,12 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     public static CustomEcPublicKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
+    }
+
+    public static final EcPublicKeySerializer SERIALIZER = new EcPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

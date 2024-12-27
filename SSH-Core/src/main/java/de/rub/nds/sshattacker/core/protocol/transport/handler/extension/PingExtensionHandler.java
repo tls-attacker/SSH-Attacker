@@ -45,8 +45,5 @@ public class PingExtensionHandler extends AbstractExtensionHandler<PingExtension
 
     public static final PingExtensionPreparator PREPARATOR = new PingExtensionPreparator();
 
-    @Override
-    public PingExtensionSerializer getSerializer() {
-        return new PingExtensionSerializer(extension);
-    }
+    public static final PingExtensionSerializer SERIALIZER = new PingExtensionSerializer();
 }

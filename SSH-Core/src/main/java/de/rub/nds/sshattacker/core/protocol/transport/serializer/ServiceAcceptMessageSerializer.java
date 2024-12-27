@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import java.nio.charset.StandardCharsets;
@@ -20,21 +21,18 @@ public class ServiceAcceptMessageSerializer extends SshMessageSerializer<Service
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceAcceptMessageSerializer(ServiceAcceptMessage message) {
-        super(message);
-    }
-
-    private void serializeServiceName() {
-        Integer serviceNameLength = message.getServiceNameLength().getValue();
+    private static void serializeServiceName(ServiceAcceptMessage object, SerializerStream output) {
+        Integer serviceNameLength = object.getServiceNameLength().getValue();
         LOGGER.debug("Service name length: {}", serviceNameLength);
-        appendInt(serviceNameLength, DataFormatConstants.UINT32_SIZE);
-        String serviceName = message.getServiceName().getValue();
+        output.appendInt(serviceNameLength, DataFormatConstants.UINT32_SIZE);
+        String serviceName = object.getServiceName().getValue();
         LOGGER.debug("Service name: {}", () -> backslashEscapeString(serviceName));
-        appendString(serviceName, StandardCharsets.US_ASCII);
+        output.appendString(serviceName, StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeServiceName();
+    protected void serializeMessageSpecificContents(
+            ServiceAcceptMessage object, SerializerStream output) {
+        serializeServiceName(object, output);
     }
 }

@@ -92,8 +92,6 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     public static final UserAuthSuccessMessagePreparator PREPARATOR =
             new UserAuthSuccessMessagePreparator();
 
-    @Override
-    public UserAuthSuccessMessageSerializer getSerializer() {
-        return new UserAuthSuccessMessageSerializer(message);
-    }
+    public static final UserAuthSuccessMessageSerializer SERIALIZER =
+            new UserAuthSuccessMessageSerializer();
 }

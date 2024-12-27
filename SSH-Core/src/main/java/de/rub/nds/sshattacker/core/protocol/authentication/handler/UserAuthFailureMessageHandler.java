@@ -42,8 +42,6 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
     public static final UserAuthFailureMessagePreparator PREPARATOR =
             new UserAuthFailureMessagePreparator();
 
-    @Override
-    public UserAuthFailureMessageSerializer getSerializer() {
-        return new UserAuthFailureMessageSerializer(message);
-    }
+    public static final UserAuthFailureMessageSerializer SERIALIZER =
+            new UserAuthFailureMessageSerializer();
 }

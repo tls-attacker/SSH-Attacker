@@ -113,6 +113,11 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     }
 
     @Override
+    public byte[] serialize() {
+        return SftpResponseNameMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (nameEntries != null) {

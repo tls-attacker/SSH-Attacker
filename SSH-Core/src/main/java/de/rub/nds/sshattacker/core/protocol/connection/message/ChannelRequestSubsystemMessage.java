@@ -107,4 +107,9 @@ public class ChannelRequestSubsystemMessage
     public void prepare(Chooser chooser) {
         ChannelRequestSubsystemMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestSubsystemMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,17 +19,13 @@ public class SftpExtensionUnknownSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpExtensionUnknownSerializer(SftpExtensionUnknown extension) {
-        super(extension);
-    }
-
     @Override
-    protected void serializeExtensionValue() {
-        Integer valueLength = extension.getValueLength().getValue();
+    protected void serializeExtensionValue(SftpExtensionUnknown object, SerializerStream output) {
+        Integer valueLength = object.getValueLength().getValue();
         LOGGER.debug("Extension value length: {}", valueLength);
-        appendInt(valueLength, DataFormatConstants.UINT32_SIZE);
-        byte[] value = extension.getValue().getValue();
+        output.appendInt(valueLength, DataFormatConstants.UINT32_SIZE);
+        byte[] value = object.getValue().getValue();
         LOGGER.debug("Extension value: {}", () -> ArrayConverter.bytesToRawHexString(value));
-        appendBytes(value);
+        output.appendBytes(value);
     }
 }

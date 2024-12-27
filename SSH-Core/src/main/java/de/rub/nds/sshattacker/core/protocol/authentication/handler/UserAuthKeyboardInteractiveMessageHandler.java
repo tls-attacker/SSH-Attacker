@@ -43,8 +43,6 @@ public class UserAuthKeyboardInteractiveMessageHandler
     public static final UserAuthKeyboardInteractiveMessagePreparator PREPARATOR =
             new UserAuthKeyboardInteractiveMessagePreparator();
 
-    @Override
-    public UserAuthKeyboardInteractiveMessageSerializer getSerializer() {
-        return new UserAuthKeyboardInteractiveMessageSerializer(message);
-    }
+    public static final UserAuthKeyboardInteractiveMessageSerializer SERIALIZER =
+            new UserAuthKeyboardInteractiveMessageSerializer();
 }

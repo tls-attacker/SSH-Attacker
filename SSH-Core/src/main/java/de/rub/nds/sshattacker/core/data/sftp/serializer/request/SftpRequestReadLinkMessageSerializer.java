@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestReadLinkMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestReadLinkMessageSerializer
         extends SftpRequestWithPathMessageSerializer<SftpRequestReadLinkMessage> {
 
-    public SftpRequestReadLinkMessageSerializer(SftpRequestReadLinkMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestWithPathSpecificContents() {}
+    protected void serializeRequestWithPathSpecificContents(
+            SftpRequestReadLinkMessage object, SerializerStream output) {}
 }

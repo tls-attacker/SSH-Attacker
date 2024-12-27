@@ -42,8 +42,6 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
     public static final ServiceAcceptMessagePreparator PREPARATOR =
             new ServiceAcceptMessagePreparator();
 
-    @Override
-    public ServiceAcceptMessageSerializer getSerializer() {
-        return new ServiceAcceptMessageSerializer(message);
-    }
+    public static final ServiceAcceptMessageSerializer SERIALIZER =
+            new ServiceAcceptMessageSerializer();
 }

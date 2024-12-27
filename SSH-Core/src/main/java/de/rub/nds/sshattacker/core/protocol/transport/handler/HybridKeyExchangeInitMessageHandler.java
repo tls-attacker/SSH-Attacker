@@ -7,19 +7,21 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeInitMessageHandler
-        extends SshMessageHandler<HybridKeyExchangeInitMessage> {
+        extends SshMessageHandler<HybridKeyExchangeInitMessage> implements MessageSentHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,63 +36,77 @@ public class HybridKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
-        context.getChooser()
-                .getHybridKeyExchange()
-                .getKeyAgreement()
-                .setRemotePublicKey(message.getAgreementPublicKey().getValue());
-        context.getChooser()
-                .getHybridKeyExchange()
-                .getKeyEncapsulation()
-                .setRemotePublicKey(message.getEncapsulationPublicKey().getValue());
-        byte[] combined;
-        switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
-            case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getEncapsulationPublicKey().getValue(),
-                                message.getAgreementPublicKey().getValue());
-                context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
-                break;
+        byte[] concatenatedHybridKeys = message.getConcatenatedHybridKeys().getValue();
+
+        HybridKeyExchange hybridKeyExchange = context.getChooser().getHybridKeyExchange();
+        switch (hybridKeyExchange.getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getAgreementPublicKey().getValue(),
-                                message.getEncapsulationPublicKey().getValue());
-                context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
+                byte[] publicKeyClassic =
+                        Arrays.copyOfRange(
+                                concatenatedHybridKeys,
+                                0,
+                                hybridKeyExchange.getPkAgreementLength());
+                byte[] encapsulationClassic =
+                        Arrays.copyOfRange(
+                                concatenatedHybridKeys,
+                                hybridKeyExchange.getPkAgreementLength(),
+                                concatenatedHybridKeys.length);
+                updateHybridKeys(publicKeyClassic, encapsulationClassic, hybridKeyExchange);
+                break;
+            case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                byte[] encapsulationPQ =
+                        Arrays.copyOfRange(
+                                concatenatedHybridKeys,
+                                0,
+                                hybridKeyExchange.getPkEncapsulationLength());
+                byte[] publicKeyPQ =
+                        Arrays.copyOfRange(
+                                concatenatedHybridKeys,
+                                hybridKeyExchange.getPkEncapsulationLength(),
+                                concatenatedHybridKeys.length);
+                updateHybridKeys(publicKeyPQ, encapsulationPQ, hybridKeyExchange);
                 break;
             default:
-                LOGGER.warn("Combiner is not supported. Cannot set Hybrid Key.");
+                LOGGER.warn("Combiner not supported. Can not update message");
                 break;
         }
+
+        context.getExchangeHashInputHolder().setHybridClientPublicKey(concatenatedHybridKeys);
+    }
+
+    private static void updateHybridKeys(
+            byte[] remotePublicKey, byte[] encapsulationKey, HybridKeyExchange hybridKeyExchange) {
+        LOGGER.debug(
+                "RemoteKey Agreement: {}",
+                () -> ArrayConverter.bytesToRawHexString(remotePublicKey));
+        hybridKeyExchange.getKeyAgreement().setRemotePublicKey(remotePublicKey);
+
+        LOGGER.debug(
+                "Encapsulation: {}", () -> ArrayConverter.bytesToRawHexString(encapsulationKey));
+        hybridKeyExchange.getKeyEncapsulation().setRemotePublicKey(encapsulationKey);
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        context.getExchangeHashInputHolder()
+                .setHybridClientPublicKey(message.getConcatenatedHybridKeys().getValue());
     }
 
     @Override
     public HybridKeyExchangeInitMessageParser getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageParser(
-                array,
-                kex.getCombiner(),
-                kex.getPkAgreementLength(),
-                kex.getPkEncapsulationLength());
+        return new HybridKeyExchangeInitMessageParser(array);
     }
 
     @Override
     public HybridKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageParser(
-                array,
-                startPosition,
-                kex.getCombiner(),
-                kex.getPkAgreementLength(),
-                kex.getPkEncapsulationLength());
+        return new HybridKeyExchangeInitMessageParser(array, startPosition);
     }
 
     public static final HybridKeyExchangeInitMessagePreparator PREPARATOR =
             new HybridKeyExchangeInitMessagePreparator();
 
-    @Override
-    public HybridKeyExchangeInitMessageSerializer getSerializer() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageSerializer(message, kex.getCombiner());
-    }
+    public static final HybridKeyExchangeInitMessageSerializer SERIALIZER =
+            new HybridKeyExchangeInitMessageSerializer();
 }

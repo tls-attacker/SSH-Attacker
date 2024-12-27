@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
@@ -67,5 +68,12 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "RSA";
+    }
+
+    public static final RsaPublicKeySerializer SERIALIZER = new RsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

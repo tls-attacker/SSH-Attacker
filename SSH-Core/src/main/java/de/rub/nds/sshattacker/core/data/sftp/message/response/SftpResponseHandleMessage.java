@@ -107,4 +107,9 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     public void prepare(Chooser chooser) {
         SftpResponseHandleMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpResponseHandleMessageHandler.SERIALIZER.serialize(this);
+    }
 }

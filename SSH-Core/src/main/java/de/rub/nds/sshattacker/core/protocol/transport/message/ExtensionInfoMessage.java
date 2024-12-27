@@ -107,6 +107,11 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     }
 
     @Override
+    public byte[] serialize() {
+        return ExtensionInfoMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (extensions != null) {

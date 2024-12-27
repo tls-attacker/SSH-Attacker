@@ -43,8 +43,6 @@ public class SftpExtensionLimitsHandler extends SftpAbstractExtensionHandler<Sft
     public static final SftpExtensionWithVersionPreparator<SftpExtensionLimits> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.LIMITS);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionLimits> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionLimits> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

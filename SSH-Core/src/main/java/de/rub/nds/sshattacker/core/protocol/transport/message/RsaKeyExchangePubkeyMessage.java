@@ -213,4 +213,9 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     public void prepare(Chooser chooser) {
         RsaKeyExchangePubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangePubkeyMessageHandler.SERIALIZER.serialize(this);
+    }
 }

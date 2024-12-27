@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseLimitsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,26 +19,23 @@ public class SftpResponseLimitsMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseLimitsMessageSerializer(SftpResponseLimitsMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeResponseSpecificContents() {
-        Long maximumPacketLength = message.getMaximumPacketLength().getValue();
+    protected void serializeResponseSpecificContents(
+            SftpResponseLimitsMessage object, SerializerStream output) {
+        Long maximumPacketLength = object.getMaximumPacketLength().getValue();
         LOGGER.debug("MaximumPacketLength: {}", maximumPacketLength);
-        appendLong(maximumPacketLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumPacketLength, DataFormatConstants.UINT64_SIZE);
 
-        Long maximumReadLength = message.getMaximumReadLength().getValue();
+        Long maximumReadLength = object.getMaximumReadLength().getValue();
         LOGGER.debug("MaximumReadLength: {}", maximumReadLength);
-        appendLong(maximumReadLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumReadLength, DataFormatConstants.UINT64_SIZE);
 
-        Long maximumWriteLength = message.getMaximumWriteLength().getValue();
+        Long maximumWriteLength = object.getMaximumWriteLength().getValue();
         LOGGER.debug("MaximumWriteLength: {}", maximumWriteLength);
-        appendLong(maximumWriteLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumWriteLength, DataFormatConstants.UINT64_SIZE);
 
-        Long maximumOpenHandles = message.getMaximumOpenHandles().getValue();
+        Long maximumOpenHandles = object.getMaximumOpenHandles().getValue();
         LOGGER.debug("MaximumOpenHandles: {}", maximumOpenHandles);
-        appendLong(maximumOpenHandles, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumOpenHandles, DataFormatConstants.UINT64_SIZE);
     }
 }

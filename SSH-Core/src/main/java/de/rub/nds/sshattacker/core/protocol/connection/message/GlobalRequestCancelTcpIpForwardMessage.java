@@ -129,4 +129,9 @@ public class GlobalRequestCancelTcpIpForwardMessage
     public void prepare(Chooser chooser) {
         GlobalRequestCancelTcpIpForwardMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestCancelTcpIpForwardMessageHandler.SERIALIZER.serialize(this);
+    }
 }

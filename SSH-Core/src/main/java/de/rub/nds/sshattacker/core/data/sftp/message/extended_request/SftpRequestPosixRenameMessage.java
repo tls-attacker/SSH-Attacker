@@ -100,4 +100,9 @@ public class SftpRequestPosixRenameMessage
     public void prepare(Chooser chooser) {
         SftpRequestPosixRenameMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestPosixRenameMessageHandler.SERIALIZER.serialize(this);
+    }
 }

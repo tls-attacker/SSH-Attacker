@@ -42,8 +42,6 @@ public class UserAuthInfoResponseMessageHandler
     public static final UserAuthInfoResponseMessagePreparator PREPARATOR =
             new UserAuthInfoResponseMessagePreparator();
 
-    @Override
-    public UserAuthInfoResponseMessageSerializer getSerializer() {
-        return new UserAuthInfoResponseMessageSerializer(message);
-    }
+    public static final UserAuthInfoResponseMessageSerializer SERIALIZER =
+            new UserAuthInfoResponseMessageSerializer();
 }

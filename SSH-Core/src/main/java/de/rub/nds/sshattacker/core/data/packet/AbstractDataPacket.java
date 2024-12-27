@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.data.packet.parser.AbstractDataPacketParser;
-import de.rub.nds.sshattacker.core.data.packet.serializer.AbstractDataPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -21,13 +20,6 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
  * <p>AbstractDataPacket do not utilize compression and encryption.
  */
 public abstract class AbstractDataPacket extends ModifiableVariableHolder {
-
-    /**
-     * This field contains the packet bytes sent over the network. This includes packet_length,
-     * padding_length, payload, padding and mac (some fields may be encrypted).
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray completePacketBytes;
 
     /** The useful contents of the packet. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
@@ -39,27 +31,11 @@ public abstract class AbstractDataPacket extends ModifiableVariableHolder {
 
     protected AbstractDataPacket(AbstractDataPacket other) {
         super(other);
-        completePacketBytes =
-                other.completePacketBytes != null ? other.completePacketBytes.createCopy() : null;
         payload = other.payload != null ? other.payload.createCopy() : null;
     }
 
     @Override
     public abstract AbstractDataPacket createCopy();
-
-    public ModifiableByteArray getCompletePacketBytes() {
-        return completePacketBytes;
-    }
-
-    public void setCompletePacketBytes(ModifiableByteArray completePacketBytes) {
-        this.completePacketBytes = completePacketBytes;
-    }
-
-    public void setCompletePacketBytes(byte[] completePacketBytes) {
-        this.completePacketBytes =
-                ModifiableVariableFactory.safelySetValue(
-                        this.completePacketBytes, completePacketBytes);
-    }
 
     public ModifiableByteArray getPayload() {
         return payload;
@@ -75,9 +51,8 @@ public abstract class AbstractDataPacket extends ModifiableVariableHolder {
 
     public abstract void prepare(Chooser chooser);
 
+    public abstract byte[] serialize();
+
     public abstract AbstractDataPacketParser<? extends AbstractDataPacket> getPacketParser(
             byte[] array, int startPosition);
-
-    public abstract AbstractDataPacketSerializer<? extends AbstractDataPacket>
-            getPacketSerializer();
 }

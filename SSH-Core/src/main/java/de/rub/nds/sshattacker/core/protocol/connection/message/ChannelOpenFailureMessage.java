@@ -178,4 +178,9 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     public void prepare(Chooser chooser) {
         ChannelOpenFailureMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenFailureMessageHandler.SERIALIZER.serialize(this);
+    }
 }

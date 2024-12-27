@@ -51,8 +51,6 @@ public class RsaKeyExchangePubkeyMessageHandler
     public static final RsaKeyExchangePubkeyMessagePreparator PREPARATOR =
             new RsaKeyExchangePubkeyMessagePreparator();
 
-    @Override
-    public RsaKeyExchangePubkeyMessageSerializer getSerializer() {
-        return new RsaKeyExchangePubkeyMessageSerializer(message);
-    }
+    public static final RsaKeyExchangePubkeyMessageSerializer SERIALIZER =
+            new RsaKeyExchangePubkeyMessageSerializer();
 }

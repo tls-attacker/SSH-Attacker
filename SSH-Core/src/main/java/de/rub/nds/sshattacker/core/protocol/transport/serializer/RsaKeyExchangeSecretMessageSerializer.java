@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,22 +20,20 @@ public class RsaKeyExchangeSecretMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeSecretMessageSerializer(RsaKeyExchangeSecretMessage message) {
-        super(message);
-    }
-
-    private void serializeEncryptedSecret() {
-        Integer encryptedSecretLength = message.getEncryptedSecretLength().getValue();
+    private static void serializeEncryptedSecret(
+            RsaKeyExchangeSecretMessage object, SerializerStream output) {
+        Integer encryptedSecretLength = object.getEncryptedSecretLength().getValue();
         LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
-        appendInt(encryptedSecretLength, DataFormatConstants.MPINT_SIZE_LENGTH);
-        byte[] encryptedSecret = message.getEncryptedSecret().getValue();
+        output.appendInt(encryptedSecretLength, DataFormatConstants.MPINT_SIZE_LENGTH);
+        byte[] encryptedSecret = object.getEncryptedSecret().getValue();
         LOGGER.debug(
                 "Encrypted secret: {}", () -> ArrayConverter.bytesToRawHexString(encryptedSecret));
-        appendBytes(encryptedSecret);
+        output.appendBytes(encryptedSecret);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        serializeEncryptedSecret();
+    protected void serializeMessageSpecificContents(
+            RsaKeyExchangeSecretMessage object, SerializerStream output) {
+        serializeEncryptedSecret(object, output);
     }
 }

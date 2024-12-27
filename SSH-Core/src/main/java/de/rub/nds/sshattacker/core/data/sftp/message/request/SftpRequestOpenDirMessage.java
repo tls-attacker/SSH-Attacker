@@ -36,4 +36,9 @@ public class SftpRequestOpenDirMessage
     public void prepare(Chooser chooser) {
         SftpRequestOpenDirMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestOpenDirMessageHandler.SERIALIZER.serialize(this);
+    }
 }

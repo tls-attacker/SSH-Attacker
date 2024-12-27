@@ -12,19 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
-import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class AbstractPacket extends ModifiableVariableHolder {
-
-    /**
-     * This field contains the packet bytes sent over the network. This includes packet_length,
-     * padding_length, payload, padding and mac (some fields may be encrypted).
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray completePacketBytes;
-
     /**
      * The encrypted contents of the packet. If no encryption (NONE) is used, this field contains
      * the unencrypted payload.
@@ -46,8 +37,6 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
 
     protected AbstractPacket(AbstractPacket other) {
         super(other);
-        completePacketBytes =
-                other.completePacketBytes != null ? other.completePacketBytes.createCopy() : null;
         ciphertext = other.ciphertext != null ? other.ciphertext.createCopy() : null;
         compressedPayload =
                 other.compressedPayload != null ? other.compressedPayload.createCopy() : null;
@@ -56,20 +45,6 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
 
     @Override
     public abstract AbstractPacket createCopy();
-
-    public ModifiableByteArray getCompletePacketBytes() {
-        return completePacketBytes;
-    }
-
-    public void setCompletePacketBytes(ModifiableByteArray completePacketBytes) {
-        this.completePacketBytes = completePacketBytes;
-    }
-
-    public void setCompletePacketBytes(byte[] completePacketBytes) {
-        this.completePacketBytes =
-                ModifiableVariableFactory.safelySetValue(
-                        this.completePacketBytes, completePacketBytes);
-    }
 
     public ModifiableByteArray getCiphertext() {
         return ciphertext;
@@ -110,10 +85,10 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
 
     public abstract void prepare(Chooser chooser);
 
+    public abstract byte[] serialize();
+
     public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber);
-
-    public abstract AbstractPacketSerializer<? extends AbstractPacket> getPacketSerializer();
 
     public abstract void prepareComputations();
 }

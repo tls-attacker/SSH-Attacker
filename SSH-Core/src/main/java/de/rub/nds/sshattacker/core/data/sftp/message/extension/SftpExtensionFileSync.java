@@ -35,4 +35,9 @@ public class SftpExtensionFileSync extends SftpExtensionWithVersion<SftpExtensio
     public void prepare(Chooser chooser) {
         SftpExtensionFileSyncHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionFileSyncHandler.SERIALIZER.serialize(this);
+    }
 }

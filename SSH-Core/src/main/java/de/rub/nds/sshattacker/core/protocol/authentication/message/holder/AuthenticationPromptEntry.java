@@ -132,4 +132,8 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         AuthenticationPromptEntryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return AuthenticationPromptEntryHandler.SERIALIZER.serialize(this);
+    }
 }

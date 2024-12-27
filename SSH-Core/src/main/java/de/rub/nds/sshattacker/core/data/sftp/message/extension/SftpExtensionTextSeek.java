@@ -35,4 +35,9 @@ public class SftpExtensionTextSeek extends SftpExtensionWithVersion<SftpExtensio
     public void prepare(Chooser chooser) {
         SftpExtensionTextSeekHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionTextSeekHandler.SERIALIZER.serialize(this);
+    }
 }

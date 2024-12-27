@@ -45,8 +45,6 @@ public class SftpExtensionFileSyncHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionFileSync> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.F_SYNC_OPENSSH_COM);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionFileSync> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionFileSync> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

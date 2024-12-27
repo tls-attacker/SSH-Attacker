@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUsersGroupsByIdMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,37 +19,28 @@ public class SftpResponseUsersGroupsByIdMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpResponseUsersGroupsByIdMessageSerializer(
-            SftpResponseUsersGroupsByIdMessage message) {
-        super(message);
-    }
-
-    private void serializeUserNames() {
-        Integer userNamesLength = message.getUserNamesLength().getValue();
+    private static void serializeUserNames(
+            SftpResponseUsersGroupsByIdMessage object, SerializerStream output) {
+        Integer userNamesLength = object.getUserNamesLength().getValue();
         LOGGER.debug("UserNames length: {}", userNamesLength);
-        appendInt(userNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(userNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        message.getUserNames()
-                .forEach(
-                        userName ->
-                                appendBytes(userName.getHandler(null).getSerializer().serialize()));
+        object.getUserNames().forEach(userName -> output.appendBytes(userName.serialize()));
     }
 
-    private void serializeGroupNames() {
-        Integer groupNamesLength = message.getGroupNamesLength().getValue();
+    private static void serializeGroupNames(
+            SftpResponseUsersGroupsByIdMessage object, SerializerStream output) {
+        Integer groupNamesLength = object.getGroupNamesLength().getValue();
         LOGGER.debug("GroupNames length: {}", groupNamesLength);
-        appendInt(groupNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(groupNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        message.getGroupNames()
-                .forEach(
-                        groupName ->
-                                appendBytes(
-                                        groupName.getHandler(null).getSerializer().serialize()));
+        object.getGroupNames().forEach(groupName -> output.appendBytes(groupName.serialize()));
     }
 
     @Override
-    protected void serializeResponseSpecificContents() {
-        serializeUserNames();
-        serializeGroupNames();
+    protected void serializeResponseSpecificContents(
+            SftpResponseUsersGroupsByIdMessage object, SerializerStream output) {
+        serializeUserNames(object, output);
+        serializeGroupNames(object, output);
     }
 }

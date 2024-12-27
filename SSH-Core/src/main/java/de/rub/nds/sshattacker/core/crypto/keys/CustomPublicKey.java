@@ -38,4 +38,6 @@ public abstract class CustomPublicKey implements PublicKey {
     public byte[] getEncoded() {
         return null;
     }
+
+    public abstract byte[] serialize();
 }

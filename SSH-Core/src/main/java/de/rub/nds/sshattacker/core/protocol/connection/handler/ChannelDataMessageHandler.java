@@ -40,8 +40,6 @@ public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMess
     public static final ChannelDataMessagePreparator PREPARATOR =
             new ChannelDataMessagePreparator();
 
-    @Override
-    public ChannelDataMessageSerializer getSerializer() {
-        return new ChannelDataMessageSerializer(message);
-    }
+    public static final ChannelDataMessageSerializer SERIALIZER =
+            new ChannelDataMessageSerializer();
 }

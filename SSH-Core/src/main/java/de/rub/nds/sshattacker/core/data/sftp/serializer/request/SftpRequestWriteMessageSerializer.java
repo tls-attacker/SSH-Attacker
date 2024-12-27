@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWriteMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,28 +19,25 @@ public class SftpRequestWriteMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestWriteMessageSerializer(SftpRequestWriteMessage message) {
-        super(message);
-    }
-
-    private void serializeOffset() {
-        Long offset = message.getOffset().getValue();
+    private static void serializeOffset(SftpRequestWriteMessage object, SerializerStream output) {
+        Long offset = object.getOffset().getValue();
         LOGGER.debug("Offset: {}", offset);
-        appendLong(offset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(offset, DataFormatConstants.UINT64_SIZE);
     }
 
-    private void serializeData() {
-        Integer dataLength = message.getDataLength().getValue();
+    private static void serializeData(SftpRequestWriteMessage object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        byte[] data = message.getData().getValue();
+        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
-        appendBytes(data);
+        output.appendBytes(data);
     }
 
     @Override
-    protected void serializeRequestWithHandleSpecificContents() {
-        serializeOffset();
-        serializeData();
+    protected void serializeRequestWithHandleSpecificContents(
+            SftpRequestWriteMessage object, SerializerStream output) {
+        serializeOffset(object, output);
+        serializeData(object, output);
     }
 }

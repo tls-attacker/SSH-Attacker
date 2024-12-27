@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertXCurvePublicKeySerializer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -174,5 +175,13 @@ public class CustomCertXCurvePublicKey extends XCurveEcPublicKey {
 
     public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
+    }
+
+    public static final CertXCurvePublicKeySerializer SERIALIZER =
+            new CertXCurvePublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

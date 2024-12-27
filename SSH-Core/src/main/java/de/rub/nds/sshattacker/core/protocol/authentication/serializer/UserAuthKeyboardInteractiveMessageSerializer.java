@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,33 +21,31 @@ public class UserAuthKeyboardInteractiveMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthKeyboardInteractiveMessageSerializer(
-            UserAuthKeyboardInteractiveMessage message) {
-        super(message);
-    }
-
-    private void serializeLanguageTag() {
-        Integer languageTagLength = message.getLanguageTagLength().getValue();
+    private static void serializeLanguageTag(
+            UserAuthKeyboardInteractiveMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String languageTag = message.getLanguageTag().getValue();
+        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
-        appendString(languageTag, StandardCharsets.US_ASCII);
+        output.appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
-    private void serializeSubMethods() {
-        Integer subMethodsLength = message.getSubMethodsLength().getValue();
+    private static void serializeSubMethods(
+            UserAuthKeyboardInteractiveMessage object, SerializerStream output) {
+        Integer subMethodsLength = object.getSubMethodsLength().getValue();
         LOGGER.debug("Sub methods length: {}", subMethodsLength);
-        appendInt(subMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String subMethods = message.getSubMethods().getValue();
+        output.appendInt(subMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String subMethods = object.getSubMethods().getValue();
         LOGGER.debug("Sub methods: {}", () -> backslashEscapeString(subMethods));
-        appendString(subMethods, StandardCharsets.UTF_8);
+        output.appendString(subMethods, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeLanguageTag();
-        serializeSubMethods();
+    protected void serializeMessageSpecificContents(
+            UserAuthKeyboardInteractiveMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeLanguageTag(object, output);
+        serializeSubMethods(object, output);
     }
 }

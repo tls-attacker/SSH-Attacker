@@ -55,8 +55,6 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
     public static final ChannelOpenFailureMessagePreparator PREPARATOR =
             new ChannelOpenFailureMessagePreparator();
 
-    @Override
-    public ChannelOpenFailureMessageSerializer getSerializer() {
-        return new ChannelOpenFailureMessageSerializer(message);
-    }
+    public static final ChannelOpenFailureMessageSerializer SERIALIZER =
+            new ChannelOpenFailureMessageSerializer();
 }

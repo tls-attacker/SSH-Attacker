@@ -35,4 +35,9 @@ public class SftpExtensionLinkSetStat extends SftpExtensionWithVersion<SftpExten
     public void prepare(Chooser chooser) {
         SftpExtensionLinkSetStatHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionLinkSetStatHandler.SERIALIZER.serialize(this);
+    }
 }

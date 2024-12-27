@@ -42,8 +42,6 @@ public class SftpExtensionVendorIdHandler
     public static final SftpExtensionVendorIdPreparator PREPARATOR =
             new SftpExtensionVendorIdPreparator();
 
-    @Override
-    public SftpExtensionVendorIdSerializer getSerializer() {
-        return new SftpExtensionVendorIdSerializer(extension);
-    }
+    public static final SftpExtensionVendorIdSerializer SERIALIZER =
+            new SftpExtensionVendorIdSerializer();
 }

@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestVendorIdMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,48 +21,49 @@ public class SftpRequestVendorIdMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestVendorIdMessageSerializer(SftpRequestVendorIdMessage message) {
-        super(message);
-    }
-
-    private void serializeVendorName() {
-        Integer vendorNameLength = message.getVendorNameLength().getValue();
+    private static void serializeVendorName(
+            SftpRequestVendorIdMessage object, SerializerStream output) {
+        Integer vendorNameLength = object.getVendorNameLength().getValue();
         LOGGER.debug("VendorName length: {}", vendorNameLength);
-        appendInt(vendorNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String vendorName = message.getVendorName().getValue();
+        output.appendInt(vendorNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String vendorName = object.getVendorName().getValue();
         LOGGER.debug("VendorName: {}", () -> backslashEscapeString(vendorName));
-        appendString(vendorName, StandardCharsets.UTF_8);
+        output.appendString(vendorName, StandardCharsets.UTF_8);
     }
 
-    private void serializeProductName() {
-        Integer productNameLength = message.getProductNameLength().getValue();
+    private static void serializeProductName(
+            SftpRequestVendorIdMessage object, SerializerStream output) {
+        Integer productNameLength = object.getProductNameLength().getValue();
         LOGGER.debug("ProductName length: {}", productNameLength);
-        appendInt(productNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String productName = message.getProductName().getValue();
+        output.appendInt(productNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productName = object.getProductName().getValue();
         LOGGER.debug("ProductName: {}", () -> backslashEscapeString(productName));
-        appendString(productName, StandardCharsets.UTF_8);
+        output.appendString(productName, StandardCharsets.UTF_8);
     }
 
-    private void serializeProductVersion() {
-        Integer productVersionLength = message.getProductVersionLength().getValue();
+    private static void serializeProductVersion(
+            SftpRequestVendorIdMessage object, SerializerStream output) {
+        Integer productVersionLength = object.getProductVersionLength().getValue();
         LOGGER.debug("ProductVersion length: {}", productVersionLength);
-        appendInt(productVersionLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String productVersion = message.getProductVersion().getValue();
+        output.appendInt(productVersionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String productVersion = object.getProductVersion().getValue();
         LOGGER.debug("ProductVersion: {}", () -> backslashEscapeString(productVersion));
-        appendString(productVersion, StandardCharsets.UTF_8);
+        output.appendString(productVersion, StandardCharsets.UTF_8);
     }
 
-    private void serializeProductBuildNumber() {
-        Long productBuildNumber = message.getProductBuildNumber().getValue();
+    private static void serializeProductBuildNumber(
+            SftpRequestVendorIdMessage object, SerializerStream output) {
+        Long productBuildNumber = object.getProductBuildNumber().getValue();
         LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
-        appendLong(productBuildNumber, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(productBuildNumber, DataFormatConstants.UINT64_SIZE);
     }
 
     @Override
-    protected void serializeRequestExtendedSpecificContents() {
-        serializeVendorName();
-        serializeProductName();
-        serializeProductVersion();
-        serializeProductBuildNumber();
+    protected void serializeRequestExtendedSpecificContents(
+            SftpRequestVendorIdMessage object, SerializerStream output) {
+        serializeVendorName(object, output);
+        serializeProductName(object, output);
+        serializeProductVersion(object, output);
+        serializeProductBuildNumber(object, output);
     }
 }

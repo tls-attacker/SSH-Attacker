@@ -113,6 +113,11 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     @Override
+    public byte[] serialize() {
+        return VersionExchangeMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public String toCompactString() {
         return getClass().getSimpleName();
     }

@@ -45,8 +45,6 @@ public class SftpExtensionExpandPathHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionExpandPath> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.EXPAND_PATH);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionExpandPath> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionExpandPath> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

@@ -42,8 +42,6 @@ public class GlobalRequestNoMoreSessionsMessageHandler
     public static final GlobalRequestNoMoreSessionsMessagePreparator PREPARATOR =
             new GlobalRequestNoMoreSessionsMessagePreparator();
 
-    @Override
-    public GlobalRequestNoMoreSessionsMessageSerializer getSerializer() {
-        return new GlobalRequestNoMoreSessionsMessageSerializer(message);
-    }
+    public static final GlobalRequestNoMoreSessionsMessageSerializer SERIALIZER =
+            new GlobalRequestNoMoreSessionsMessageSerializer();
 }

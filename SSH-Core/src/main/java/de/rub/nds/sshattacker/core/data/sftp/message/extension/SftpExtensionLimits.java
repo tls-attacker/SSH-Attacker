@@ -35,4 +35,9 @@ public class SftpExtensionLimits extends SftpExtensionWithVersion<SftpExtensionL
     public void prepare(Chooser chooser) {
         SftpExtensionLimitsHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionLimitsHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -171,4 +171,9 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
     public void prepare(Chooser chooser) {
         ChannelRequestEnvMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestEnvMessageHandler.SERIALIZER.serialize(this);
+    }
 }

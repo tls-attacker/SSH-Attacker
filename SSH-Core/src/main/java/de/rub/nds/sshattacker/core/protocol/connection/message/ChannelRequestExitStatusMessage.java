@@ -59,4 +59,9 @@ public class ChannelRequestExitStatusMessage
     public void prepare(Chooser chooser) {
         ChannelRequestExitStatusMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestExitStatusMessageHandler.SERIALIZER.serialize(this);
+    }
 }

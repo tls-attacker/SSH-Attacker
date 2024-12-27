@@ -124,4 +124,9 @@ public class ChannelRequestWindowChangeMessage
     public void prepare(Chooser chooser) {
         ChannelRequestWindowChangeMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestWindowChangeMessageHandler.SERIALIZER.serialize(this);
+    }
 }

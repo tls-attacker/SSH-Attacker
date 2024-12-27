@@ -203,13 +203,9 @@ public final class ExchangeHash {
                         Converter.stringToLengthPrefixedBinaryString(
                                 inputHolder.getServerVersion().get().getIdentification()),
                         Converter.bytesToLengthPrefixedBinaryString(
-                                new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getClientKeyExchangeInit().get())
-                                        .serialize()),
+                                inputHolder.getClientKeyExchangeInit().get().serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
-                                new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getServerKeyExchangeInit().get())
-                                        .serialize()),
+                                inputHolder.getServerKeyExchangeInit().get().serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
                                 PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
         // Restore the old log level

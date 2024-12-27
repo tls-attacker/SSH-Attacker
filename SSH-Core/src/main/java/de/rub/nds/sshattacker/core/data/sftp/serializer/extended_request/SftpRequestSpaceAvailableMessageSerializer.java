@@ -8,14 +8,12 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestSpaceAvailableMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public class SftpRequestSpaceAvailableMessageSerializer
         extends SftpRequestExtendedWithPathMessageSerializer<SftpRequestSpaceAvailableMessage> {
 
-    public SftpRequestSpaceAvailableMessageSerializer(SftpRequestSpaceAvailableMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestExtendedWithPathSpecificContents() {}
+    protected void serializeRequestExtendedWithPathSpecificContents(
+            SftpRequestSpaceAvailableMessage object, SerializerStream output) {}
 }

@@ -65,4 +65,9 @@ public class SftpRequestUnknownMessage
     public void prepare(Chooser chooser) {
         SftpRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestUnknownMessageHandler.SERIALIZER.serialize(this);
+    }
 }

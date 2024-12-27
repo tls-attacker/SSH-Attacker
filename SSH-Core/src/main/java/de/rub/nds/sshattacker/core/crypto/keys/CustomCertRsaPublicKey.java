@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertRsaPublicKeySerializer;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
@@ -173,5 +174,12 @@ public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
 
     public void setCriticalOptions(HashMap<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
+    }
+
+    public static final CertRsaPublicKeySerializer SERIALIZER = new CertRsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

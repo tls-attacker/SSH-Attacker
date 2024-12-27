@@ -173,4 +173,9 @@ public class SftpRequestCopyDataMessage
     public void prepare(Chooser chooser) {
         SftpRequestCopyDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestCopyDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

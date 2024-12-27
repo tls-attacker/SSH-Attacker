@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertDsaPublicKeySerializer;
 import java.math.BigInteger;
 import java.security.interfaces.DSAPublicKey;
 import java.util.HashMap;
@@ -175,5 +176,12 @@ public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
 
     public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
+    }
+
+    public static final CertDsaPublicKeySerializer SERIALIZER = new CertDsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

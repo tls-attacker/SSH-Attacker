@@ -46,8 +46,6 @@ public class SftpExtensionSpaceAvailableHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionSpaceAvailable> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.SPACE_AVAILABLE);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionSpaceAvailable> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionSpaceAvailable> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

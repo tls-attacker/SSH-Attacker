@@ -44,8 +44,6 @@ public class GlobalRequestSuccessMessageHandler
     public static final GlobalRequestSuccessMessagePreparator PREPARATOR =
             new GlobalRequestSuccessMessagePreparator();
 
-    @Override
-    public GlobalRequestSuccessMessageSerializer getSerializer() {
-        return new GlobalRequestSuccessMessageSerializer(message);
-    }
+    public static final GlobalRequestSuccessMessageSerializer SERIALIZER =
+            new GlobalRequestSuccessMessageSerializer();
 }

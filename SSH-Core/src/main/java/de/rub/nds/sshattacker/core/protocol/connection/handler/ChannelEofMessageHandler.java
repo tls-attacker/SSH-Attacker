@@ -41,8 +41,6 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
 
     public static final ChannelEofMessagePreparator PREPARATOR = new ChannelEofMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelEofMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

@@ -39,8 +39,6 @@ public class SftpRequestSpaceAvailableMessageHandler
     public static final SftpRequestSpaceAvailableMessagePreparator PREPARATOR =
             new SftpRequestSpaceAvailableMessagePreparator();
 
-    @Override
-    public SftpRequestSpaceAvailableMessageSerializer getSerializer() {
-        return new SftpRequestSpaceAvailableMessageSerializer(message);
-    }
+    public static final SftpRequestSpaceAvailableMessageSerializer SERIALIZER =
+            new SftpRequestSpaceAvailableMessageSerializer();
 }

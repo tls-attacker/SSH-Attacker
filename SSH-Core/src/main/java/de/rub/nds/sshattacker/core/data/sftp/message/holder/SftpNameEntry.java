@@ -100,4 +100,8 @@ public class SftpNameEntry extends ModifiableVariableHolder {
     public void prepare(Chooser chooser) {
         SftpNameEntryHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    public byte[] serialize() {
+        return SftpNameEntryHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -43,10 +43,8 @@ public class ServerSigAlgsExtensionHandler
     public static final ServerSigAlgsExtensionPreparator PREPARATOR =
             new ServerSigAlgsExtensionPreparator();
 
-    @Override
-    public ServerSigAlgsExtensionSerializer getSerializer() {
-        return new ServerSigAlgsExtensionSerializer(extension);
-    }
+    public static final ServerSigAlgsExtensionSerializer SERIALIZER =
+            new ServerSigAlgsExtensionSerializer();
 
     @Override
     public void adjustContext() {

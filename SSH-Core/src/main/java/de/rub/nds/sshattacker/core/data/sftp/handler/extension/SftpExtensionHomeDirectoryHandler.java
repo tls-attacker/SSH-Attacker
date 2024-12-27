@@ -46,8 +46,6 @@ public class SftpExtensionHomeDirectoryHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionHomeDirectory> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.HOME_DIRECTORY);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionHomeDirectory> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionHomeDirectory> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }

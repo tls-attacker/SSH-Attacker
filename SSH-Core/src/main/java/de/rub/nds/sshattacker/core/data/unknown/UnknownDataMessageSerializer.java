@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.unknown;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,14 +17,11 @@ public class UnknownDataMessageSerializer extends ProtocolMessageSerializer<Unkn
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownDataMessageSerializer(UnknownDataMessage message) {
-        super(message);
-    }
-
     @Override
-    public final void serializeProtocolMessageContents() {
-        byte[] payload = message.getPayload().getValue();
+    public final void serializeProtocolMessageContents(
+            UnknownDataMessage object, SerializerStream output) {
+        byte[] payload = object.getPayload().getValue();
         LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));
-        appendBytes(payload);
+        output.appendBytes(payload);
     }
 }

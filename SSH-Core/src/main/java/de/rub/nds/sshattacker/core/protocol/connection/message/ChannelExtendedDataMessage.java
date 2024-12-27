@@ -122,4 +122,9 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     public void prepare(Chooser chooser) {
         ChannelExtendedDataMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelExtendedDataMessageHandler.SERIALIZER.serialize(this);
+    }
 }

@@ -35,4 +35,9 @@ public class SftpExtensionCopyFile extends SftpExtensionWithVersion<SftpExtensio
     public void prepare(Chooser chooser) {
         SftpExtensionCopyFileHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionCopyFileHandler.SERIALIZER.serialize(this);
+    }
 }

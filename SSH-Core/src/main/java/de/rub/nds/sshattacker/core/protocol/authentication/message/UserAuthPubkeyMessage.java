@@ -248,4 +248,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     public void prepare(Chooser chooser) {
         UserAuthPubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPubkeyMessageHandler.SERIALIZER.serialize(this);
+    }
 }

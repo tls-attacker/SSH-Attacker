@@ -37,8 +37,6 @@ public class SftpRequestCloseMessageHandler
     public static final SftpRequestCloseMessagePreparator PREPARATOR =
             new SftpRequestCloseMessagePreparator();
 
-    @Override
-    public SftpRequestCloseMessageSerializer getSerializer() {
-        return new SftpRequestCloseMessageSerializer(message);
-    }
+    public static final SftpRequestCloseMessageSerializer SERIALIZER =
+            new SftpRequestCloseMessageSerializer();
 }

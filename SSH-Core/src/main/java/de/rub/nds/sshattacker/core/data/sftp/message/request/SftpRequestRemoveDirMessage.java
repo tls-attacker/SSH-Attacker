@@ -36,4 +36,9 @@ public class SftpRequestRemoveDirMessage
     public void prepare(Chooser chooser) {
         SftpRequestRemoveDirMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpRequestRemoveDirMessageHandler.SERIALIZER.serialize(this);
+    }
 }

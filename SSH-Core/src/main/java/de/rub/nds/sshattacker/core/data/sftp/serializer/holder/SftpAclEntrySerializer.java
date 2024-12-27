@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,45 +21,38 @@ public class SftpAclEntrySerializer extends Serializer<SftpAclEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SftpAclEntry aclEntry;
-
-    public SftpAclEntrySerializer(SftpAclEntry aclEntry) {
-        super();
-        this.aclEntry = aclEntry;
-    }
-
-    private void serializeType() {
-        Integer type = aclEntry.getType().getValue();
+    private static void serializeType(SftpAclEntry object, SerializerStream output) {
+        Integer type = object.getType().getValue();
         LOGGER.debug("Type: {}", type);
-        appendInt(type, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(type, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeFlags() {
-        Integer flags = aclEntry.getFlags().getValue();
+    private static void serializeFlags(SftpAclEntry object, SerializerStream output) {
+        Integer flags = object.getFlags().getValue();
         LOGGER.debug("Flags: {}", flags);
-        appendInt(flags, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(flags, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeMask() {
-        Integer mask = aclEntry.getMask().getValue();
+    private static void serializeMask(SftpAclEntry object, SerializerStream output) {
+        Integer mask = object.getMask().getValue();
         LOGGER.debug("Mask: {}", mask);
-        appendInt(mask, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(mask, DataFormatConstants.UINT32_SIZE);
     }
 
-    private void serializeWho() {
-        Integer whoLength = aclEntry.getWhoLength().getValue();
+    private static void serializeWho(SftpAclEntry object, SerializerStream output) {
+        Integer whoLength = object.getWhoLength().getValue();
         LOGGER.debug("Who length: {}", whoLength);
-        appendInt(whoLength, DataFormatConstants.STRING_SIZE_LENGTH);
-        String who = aclEntry.getWho().getValue();
+        output.appendInt(whoLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        String who = object.getWho().getValue();
         LOGGER.debug("Who: {}", () -> backslashEscapeString(who));
-        appendString(who, StandardCharsets.UTF_8);
+        output.appendString(who, StandardCharsets.UTF_8);
     }
 
     @Override
-    protected final void serializeBytes() {
-        serializeType();
-        serializeFlags();
-        serializeMask();
-        serializeWho();
+    protected final void serializeBytes(SftpAclEntry object, SerializerStream output) {
+        serializeType(object, output);
+        serializeFlags(object, output);
+        serializeMask(object, output);
+        serializeWho(object, output);
     }
 }

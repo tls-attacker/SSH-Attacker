@@ -9,9 +9,4 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
 
-public class SftpInitMessageSerializer extends SftpHandshakeMessageSerializer<SftpInitMessage> {
-
-    public SftpInitMessageSerializer(SftpInitMessage message) {
-        super(message);
-    }
-}
+public class SftpInitMessageSerializer extends SftpHandshakeMessageSerializer<SftpInitMessage> {}

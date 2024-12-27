@@ -8,19 +8,16 @@
 package de.rub.nds.sshattacker.core.data.sftp;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 
 public abstract class SftpMessageSerializer<T extends SftpMessage<T>>
         extends ProtocolMessageSerializer<T> {
 
-    protected SftpMessageSerializer(T message) {
-        super(message);
-    }
-
     @Override
-    protected final void serializeProtocolMessageContents() {
-        appendByte(message.getPacketType().getValue());
-        serializeMessageSpecificContents();
+    protected final void serializeProtocolMessageContents(T object, SerializerStream output) {
+        output.appendByte(object.getPacketType().getValue());
+        serializeMessageSpecificContents(object, output);
     }
 
-    protected abstract void serializeMessageSpecificContents();
+    protected abstract void serializeMessageSpecificContents(T object, SerializerStream output);
 }

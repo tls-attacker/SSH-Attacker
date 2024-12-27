@@ -42,9 +42,10 @@ public class PassThroughPacket extends AbstractDataPacket {
         PREPARATOR.prepare(this, chooser);
     }
 
-    @Override
-    public PassThroughPacketSerializer getPacketSerializer() {
-        return new PassThroughPacketSerializer(this);
+    public static final PassThroughPacketSerializer SERIALIZER = new PassThroughPacketSerializer();
+
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 
     @Override

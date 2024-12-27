@@ -48,8 +48,6 @@ public class DhGexKeyExchangeInitMessageHandler
     public static final DhGexKeyExchangeInitMessagePreparator PREPARATOR =
             new DhGexKeyExchangeInitMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeInitMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeInitMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeInitMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeInitMessageSerializer();
 }

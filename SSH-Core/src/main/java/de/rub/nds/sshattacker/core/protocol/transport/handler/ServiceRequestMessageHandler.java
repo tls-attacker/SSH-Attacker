@@ -42,8 +42,6 @@ public class ServiceRequestMessageHandler extends SshMessageHandler<ServiceReque
     public static final ServiceRequestMessagePreparator PREPARATOR =
             new ServiceRequestMessagePreparator();
 
-    @Override
-    public ServiceRequestMessageSerializer getSerializer() {
-        return new ServiceRequestMessageSerializer(message);
-    }
+    public static final ServiceRequestMessageSerializer SERIALIZER =
+            new ServiceRequestMessageSerializer();
 }

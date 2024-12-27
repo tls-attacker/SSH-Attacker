@@ -57,8 +57,6 @@ public class ChannelRequestSignalMessageHandler
     public static final ChannelRequestSignalMessagePreparator PREPARATOR =
             new ChannelRequestSignalMessagePreparator();
 
-    @Override
-    public ChannelRequestSignalMessageSerializer getSerializer() {
-        return new ChannelRequestSignalMessageSerializer(message);
-    }
+    public static final ChannelRequestSignalMessageSerializer SERIALIZER =
+            new ChannelRequestSignalMessageSerializer();
 }

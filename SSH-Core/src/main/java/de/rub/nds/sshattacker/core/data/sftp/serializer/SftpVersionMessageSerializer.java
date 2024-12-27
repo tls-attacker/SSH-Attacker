@@ -10,9 +10,4 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 
 public class SftpVersionMessageSerializer
-        extends SftpHandshakeMessageSerializer<SftpVersionMessage> {
-
-    public SftpVersionMessageSerializer(SftpVersionMessage message) {
-        super(message);
-    }
-}
+        extends SftpHandshakeMessageSerializer<SftpVersionMessage> {}

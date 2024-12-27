@@ -1209,4 +1209,9 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     public void prepare(Chooser chooser) {
         KeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return KeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
+    }
 }

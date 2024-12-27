@@ -96,4 +96,9 @@ public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnk
     public void prepare(Chooser chooser) {
         SftpExtensionUnknownHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionUnknownHandler.SERIALIZER.serialize(this);
+    }
 }

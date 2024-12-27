@@ -112,4 +112,9 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
     public void prepare(Chooser chooser) {
         ServiceAcceptMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ServiceAcceptMessageHandler.SERIALIZER.serialize(this);
+    }
 }

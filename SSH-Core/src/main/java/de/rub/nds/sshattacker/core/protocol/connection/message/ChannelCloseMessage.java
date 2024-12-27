@@ -35,4 +35,9 @@ public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
     public void prepare(Chooser chooser) {
         ChannelCloseMessageHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelCloseMessageHandler.SERIALIZER.serialize(this);
+    }
 }

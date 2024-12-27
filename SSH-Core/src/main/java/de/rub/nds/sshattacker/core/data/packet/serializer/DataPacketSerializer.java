@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.packet.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.packet.DataPacket;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,30 +18,16 @@ public class DataPacketSerializer extends AbstractDataPacketSerializer<DataPacke
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final DataPacket dataPacket;
-
-    public DataPacketSerializer(DataPacket dataPacket) {
-        super();
-        this.dataPacket = dataPacket;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(DataPacket object, SerializerStream output) {
         LOGGER.debug("Serializing DataPacket to bytes:");
 
-        Integer length = dataPacket.getLength().getValue();
+        Integer length = object.getLength().getValue();
         LOGGER.debug("Packet length: {}", length);
-        appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        byte[] payload = dataPacket.getPayload().getValue();
+        byte[] payload = object.getPayload().getValue();
         LOGGER.trace("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));
-        appendBytes(payload);
-
-        dataPacket.setCompletePacketBytes(getAlreadySerialized());
-        LOGGER.trace(
-                "Complete packet bytes: {}",
-                () ->
-                        ArrayConverter.bytesToHexString(
-                                dataPacket.getCompletePacketBytes().getValue()));
+        output.appendBytes(payload);
     }
 }

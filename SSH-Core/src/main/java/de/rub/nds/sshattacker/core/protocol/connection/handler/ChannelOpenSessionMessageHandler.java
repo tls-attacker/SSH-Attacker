@@ -41,8 +41,6 @@ public class ChannelOpenSessionMessageHandler extends SshMessageHandler<ChannelO
     public static final ChannelOpenSessionMessagePreparator PREPARATOR =
             new ChannelOpenSessionMessagePreparator();
 
-    @Override
-    public ChannelOpenSessionMessageSerializer getSerializer() {
-        return new ChannelOpenSessionMessageSerializer(message);
-    }
+    public static final ChannelOpenSessionMessageSerializer SERIALIZER =
+            new ChannelOpenSessionMessageSerializer();
 }

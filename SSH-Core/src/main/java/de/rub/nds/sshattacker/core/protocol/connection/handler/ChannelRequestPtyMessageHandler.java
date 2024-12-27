@@ -54,8 +54,6 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
     public static final ChannelRequestPtyMessagePreparator PREPARATOR =
             new ChannelRequestPtyMessagePreparator();
 
-    @Override
-    public ChannelRequestPtyMessageSerializer getSerializer() {
-        return new ChannelRequestPtyMessageSerializer(message);
-    }
+    public static final ChannelRequestPtyMessageSerializer SERIALIZER =
+            new ChannelRequestPtyMessageSerializer();
 }

@@ -81,10 +81,8 @@ public class DelayCompressionExtensionHandler
     public static final DelayCompressionExtensionPreparator PREPARATOR =
             new DelayCompressionExtensionPreparator();
 
-    @Override
-    public DelayCompressionExtensionSerializer getSerializer() {
-        return new DelayCompressionExtensionSerializer(extension);
-    }
+    public static final DelayCompressionExtensionSerializer SERIALIZER =
+            new DelayCompressionExtensionSerializer();
 
     private CompressionMethod getCommonCompressionMethod(
             List<CompressionMethod> clientSupportedCompressionMethods,

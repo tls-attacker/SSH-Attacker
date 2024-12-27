@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageSerializer;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,20 +19,16 @@ public abstract class SftpResponseMessageSerializer<T extends SftpResponseMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SftpResponseMessageSerializer(T message) {
-        super(message);
-    }
-
-    private void serializeRequestId() {
-        Integer requestId = message.getRequestId().getValue();
+    private void serializeRequestId(T object, SerializerStream output) {
+        Integer requestId = object.getRequestId().getValue();
         LOGGER.debug("RequestId: {}", requestId);
-        appendInt(requestId, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(requestId, DataFormatConstants.UINT32_SIZE);
     }
 
-    protected void serializeMessageSpecificContents() {
-        serializeRequestId();
-        serializeResponseSpecificContents();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        serializeRequestId(object, output);
+        serializeResponseSpecificContents(object, output);
     }
 
-    protected abstract void serializeResponseSpecificContents();
+    protected abstract void serializeResponseSpecificContents(T object, SerializerStream output);
 }

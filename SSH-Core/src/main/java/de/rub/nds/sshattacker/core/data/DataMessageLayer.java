@@ -131,7 +131,7 @@ public class DataMessageLayer {
             packet = new PassThroughPacket();
             packetLayer = new PassThroughPacketLayer(context);
         }
-        packet.setPayload(message.getHandler(context).getSerializer().serialize());
+        packet.setPayload(message.serialize());
 
         // Create and prepare ChannelDataMessage
         ChannelDataMessage resultMessage = new ChannelDataMessage();

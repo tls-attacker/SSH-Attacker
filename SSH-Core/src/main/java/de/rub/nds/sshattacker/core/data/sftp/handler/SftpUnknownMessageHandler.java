@@ -49,8 +49,6 @@ public class SftpUnknownMessageHandler extends SftpMessageHandler<SftpUnknownMes
     public static final SftpUnknownMessagePreparator PREPARATOR =
             new SftpUnknownMessagePreparator();
 
-    @Override
-    public SftpUnknownMessageSerializer getSerializer() {
-        return new SftpUnknownMessageSerializer(message);
-    }
+    public static final SftpUnknownMessageSerializer SERIALIZER =
+            new SftpUnknownMessageSerializer();
 }

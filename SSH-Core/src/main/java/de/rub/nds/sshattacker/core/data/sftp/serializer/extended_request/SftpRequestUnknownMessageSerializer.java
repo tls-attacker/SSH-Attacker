@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,16 +18,13 @@ public class SftpRequestUnknownMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpRequestUnknownMessageSerializer(SftpRequestUnknownMessage message) {
-        super(message);
-    }
-
     @Override
-    protected void serializeRequestExtendedSpecificContents() {
-        byte[] requestSpecificData = message.getRequestSpecificData().getValue();
+    protected void serializeRequestExtendedSpecificContents(
+            SftpRequestUnknownMessage object, SerializerStream output) {
+        byte[] requestSpecificData = object.getRequestSpecificData().getValue();
         LOGGER.debug(
                 "RequestSpecificData: {}",
                 () -> ArrayConverter.bytesToRawHexString(requestSpecificData));
-        appendBytes(requestSpecificData);
+        output.appendBytes(requestSpecificData);
     }
 }

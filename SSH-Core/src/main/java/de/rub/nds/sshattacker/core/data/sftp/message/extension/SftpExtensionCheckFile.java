@@ -35,4 +35,9 @@ public class SftpExtensionCheckFile extends SftpExtensionWithVersion<SftpExtensi
     public void prepare(Chooser chooser) {
         SftpExtensionCheckFileHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return SftpExtensionCheckFileHandler.SERIALIZER.serialize(this);
+    }
 }

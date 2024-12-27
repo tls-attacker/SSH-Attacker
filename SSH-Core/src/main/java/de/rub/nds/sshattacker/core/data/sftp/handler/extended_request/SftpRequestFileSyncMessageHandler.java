@@ -39,8 +39,6 @@ public class SftpRequestFileSyncMessageHandler
     public static final SftpRequestFileSyncMessagePreparator PREPARATOR =
             new SftpRequestFileSyncMessagePreparator();
 
-    @Override
-    public SftpRequestFileSyncMessageSerializer getSerializer() {
-        return new SftpRequestFileSyncMessageSerializer(message);
-    }
+    public static final SftpRequestFileSyncMessageSerializer SERIALIZER =
+            new SftpRequestFileSyncMessageSerializer();
 }

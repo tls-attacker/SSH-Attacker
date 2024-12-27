@@ -145,4 +145,9 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
     public void prepare(Chooser chooser) {
         PublicKeyAlgorithmsRoumenPetrovExtensionHandler.PREPARATOR.prepare(this, chooser);
     }
+
+    @Override
+    public byte[] serialize() {
+        return PublicKeyAlgorithmsRoumenPetrovExtensionHandler.SERIALIZER.serialize(this);
+    }
 }

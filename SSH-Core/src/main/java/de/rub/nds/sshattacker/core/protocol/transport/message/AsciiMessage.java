@@ -93,6 +93,11 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     @Override
+    public byte[] serialize() {
+        return AsciiMessageHandler.SERIALIZER.serialize(this);
+    }
+
+    @Override
     public String toCompactString() {
         return getClass().getSimpleName();
     }

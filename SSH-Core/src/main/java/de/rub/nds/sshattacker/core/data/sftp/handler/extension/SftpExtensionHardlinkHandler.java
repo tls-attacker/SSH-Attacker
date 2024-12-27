@@ -45,8 +45,6 @@ public class SftpExtensionHardlinkHandler
     public static final SftpExtensionWithVersionPreparator<SftpExtensionHardlink> PREPARATOR =
             new SftpExtensionWithVersionPreparator<>(SftpExtension.HARDLINK_OPENSSH_COM);
 
-    @Override
-    public SftpExtensionWithVersionSerializer<SftpExtensionHardlink> getSerializer() {
-        return new SftpExtensionWithVersionSerializer<>(extension);
-    }
+    public static final SftpExtensionWithVersionSerializer<SftpExtensionHardlink> SERIALIZER =
+            new SftpExtensionWithVersionSerializer<>();
 }
