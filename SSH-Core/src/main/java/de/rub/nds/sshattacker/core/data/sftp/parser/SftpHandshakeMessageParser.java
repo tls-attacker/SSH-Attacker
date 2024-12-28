@@ -12,8 +12,8 @@ import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpHandshakeMessage;
-import de.rub.nds.sshattacker.core.data.sftp.parser.extension.SftpAbstractExtensionParser;
-import de.rub.nds.sshattacker.core.data.sftp.parser.extension.SftpExtensionUnknownParser;
+import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
+import de.rub.nds.sshattacker.core.data.sftp.parser.extension.*;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,100 +51,116 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
             switch (extension) {
                 case VENDOR_ID:
                     extensionParser =
-                            new SftpExtensionVendorIdHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionVendorIdParser(getArray(), extensionStartPointer);
                     break;
                 case CHECK_FILE:
                     extensionParser =
-                            new SftpExtensionCheckFileHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionCheckFile::new, getArray(), extensionStartPointer);
                     break;
                 case SPACE_AVAILABLE:
                     extensionParser =
-                            new SftpExtensionSpaceAvailableHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionSpaceAvailable::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case HOME_DIRECTORY:
                     extensionParser =
-                            new SftpExtensionHomeDirectoryHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionHomeDirectory::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case COPY_FILE:
                     extensionParser =
-                            new SftpExtensionCopyFileHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionCopyFile::new, getArray(), extensionStartPointer);
                     break;
                 case COPY_DATA:
                     extensionParser =
-                            new SftpExtensionCopyDataHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionCopyData::new, getArray(), extensionStartPointer);
                     break;
                 case GET_TEMP_FOLDER:
                     extensionParser =
-                            new SftpExtensionGetTempFolderHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionGetTempFolder::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case MAKE_TEMP_FOLDER:
                     extensionParser =
-                            new SftpExtensionMakeTempFolderHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionMakeTempFolder::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                     // SFTP v4
                 case TEXT_SEEK:
                     extensionParser =
-                            new SftpExtensionTextSeekHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionTextSeek::new, getArray(), extensionStartPointer);
                     break;
                 case NEWLINE:
                     extensionParser =
-                            new SftpExtensionNewlineHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionNewlineParser(getArray(), extensionStartPointer);
                     break;
                     // Vendor extensions
                 case POSIX_RENAME_OPENSSH_COM:
                     extensionParser =
-                            new SftpExtensionPosixRenameHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionPosixRename::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case STAT_VFS_OPENSSH_COM:
                     extensionParser =
-                            new SftpExtensionStatVfsHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionStatVfs::new, getArray(), extensionStartPointer);
                     break;
                 case F_STAT_VFS_OPENSSH_COM:
                     extensionParser =
-                            new SftpExtensionFileStatVfsHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionFileStatVfs::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case HARDLINK_OPENSSH_COM:
                     extensionParser =
-                            new SftpExtensionHardlinkHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionHardlink::new, getArray(), extensionStartPointer);
                     break;
                 case F_SYNC_OPENSSH_COM:
                     extensionParser =
-                            new SftpExtensionFileSyncHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionFileSync::new, getArray(), extensionStartPointer);
                     break;
                 case L_SET_STAT:
                     extensionParser =
-                            new SftpExtensionLinkSetStatHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionLinkSetStat::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case LIMITS:
                     extensionParser =
-                            new SftpExtensionLimitsHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionLimits::new, getArray(), extensionStartPointer);
                     break;
                 case EXPAND_PATH:
                     extensionParser =
-                            new SftpExtensionExpandPathHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionExpandPath::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
                 case USERS_GROUPS_BY_ID:
                     extensionParser =
-                            new SftpExtensionUsersGroupsByIdHandler(null)
-                                    .getParser(getArray(), extensionStartPointer);
+                            new SftpExtensionWithVersionParser<>(
+                                    SftpExtensionUsersGroupsById::new,
+                                    getArray(),
+                                    extensionStartPointer);
                     break;
 
                 default:
