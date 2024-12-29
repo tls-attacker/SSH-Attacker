@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.handler.extension.*;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpHandshakeMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extension.*;

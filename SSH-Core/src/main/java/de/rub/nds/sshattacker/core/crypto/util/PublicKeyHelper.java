@@ -14,7 +14,6 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
-import de.rub.nds.sshattacker.core.crypto.keys.serializer.*;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
