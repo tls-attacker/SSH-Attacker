@@ -79,21 +79,39 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     }
 
     private void parseAccessTime() {
-        int accessTime = parseIntField(DataFormatConstants.UINT32_SIZE);
-        attributes.setAccessTime(accessTime);
-        LOGGER.debug("AccessTime: {}", accessTime);
+        long accessTimeLong = parseIntField(DataFormatConstants.UINT64_SIZE);
+        attributes.setAccessTimeLong(accessTimeLong);
+        LOGGER.debug("AccessTime: {}", accessTimeLong);
+    }
+
+    private void parseAccessTimeNanoseconds() {
+        int accessTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setAccessTimeNanoseconds(accessTimeNanoseconds);
+        LOGGER.debug("AccessTimeNanoseconds: {}", accessTimeNanoseconds);
     }
 
     private void parseCreateTime() {
-        int createTime = parseIntField(DataFormatConstants.UINT32_SIZE);
-        attributes.setCreateTime(createTime);
-        LOGGER.debug("CreateTime: {}", createTime);
+        long createTimeLong = parseLongField(DataFormatConstants.UINT64_SIZE);
+        attributes.setCreateTimeLong(createTimeLong);
+        LOGGER.debug("CreateTime: {}", createTimeLong);
+    }
+
+    private void parseCreateTimeNanoseconds() {
+        int createTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setCreateTimeNanoseconds(createTimeNanoseconds);
+        LOGGER.debug("CreateTimeNanoseconds: {}", createTimeNanoseconds);
     }
 
     private void parseModifyTime() {
-        int modifyTime = parseIntField(DataFormatConstants.UINT32_SIZE);
-        attributes.setModifyTime(modifyTime);
-        LOGGER.debug("ModifyTime: {}", modifyTime);
+        long modifyTimeLong = parseIntField(DataFormatConstants.UINT64_SIZE);
+        attributes.setModifyTimeLong(modifyTimeLong);
+        LOGGER.debug("ModifyTime: {}", modifyTimeLong);
+    }
+
+    private void parseModifyTimeNanoseconds() {
+        int modifyTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        attributes.setModifyTimeNanoseconds(modifyTimeNanoseconds);
+        LOGGER.debug("ModifyTimeNanoseconds: {}", modifyTimeNanoseconds);
     }
 
     private void parseOwnerGroup() {
@@ -178,11 +196,20 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME)) {
                 parseAccessTime();
             }
+            if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SUBSECOND_TIMES)) {
+                parseAccessTimeNanoseconds();
+            }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_CREATETIME)) {
                 parseCreateTime();
             }
+            if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SUBSECOND_TIMES)) {
+                parseCreateTimeNanoseconds();
+            }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_MODIFYTIME)) {
                 parseModifyTime();
+            }
+            if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SUBSECOND_TIMES)) {
+                parseModifyTimeNanoseconds();
             }
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME)) {

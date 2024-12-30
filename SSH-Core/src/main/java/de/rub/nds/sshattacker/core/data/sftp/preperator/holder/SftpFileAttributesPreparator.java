@@ -74,20 +74,20 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
         if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME, config)) {
-                object.setSoftlyAccessTime(0);
+                object.setSoftlyAccessTimeLong(0);
             } else {
-                object.clearAccessTime();
+                object.clearAccessTimeLong();
             }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_CREATETIME, config)) {
-                object.setSoftlyCreateTime(0);
+                object.setSoftlyCreateTimeLong(0);
             } else {
-                object.clearCreateTime();
+                object.clearCreateTimeLong();
             }
 
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_MODIFYTIME, config)) {
-                object.setSoftlyModifyTime(0);
+                object.setSoftlyModifyTimeLong(0);
             } else {
-                object.clearModifyTime();
+                object.clearModifyTimeLong();
             }
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME, config)) {
@@ -97,7 +97,18 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
                 object.clearAccessTime();
                 object.clearModifyTime();
             }
-            object.clearCreateTime();
+            object.clearAllLongTimes();
+        }
+        if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {
+            if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SUBSECOND_TIMES, config)) {
+                object.setSoftlyAccessTimeNanoseconds(0);
+                object.setSoftlyCreateTimeNanoseconds(0);
+                object.setSoftlyModifyTimeNanoseconds(0);
+            } else {
+                object.clearAllNanoseconds();
+            }
+        } else {
+            object.clearAllNanoseconds();
         }
 
         if (chooser.getSftpNegotiatedVersion() > 3 || !config.getRespectSftpNegotiatedVersion()) {

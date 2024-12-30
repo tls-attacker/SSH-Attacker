@@ -30,7 +30,8 @@ public enum SftpStatusCode {
     SSH_FX_INVALID_HANDLE(9),
     SSH_FX_NO_SUCH_PATH(10),
     SSH_FX_FILE_ALREADY_EXISTS(11),
-    SSH_FX_WRITE_PROTECT(12);
+    SSH_FX_WRITE_PROTECT(12),
+    SSH_FX_NO_MEDIA(13);
 
     private final int code;
 

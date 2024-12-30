@@ -1288,8 +1288,8 @@ public class Config implements Serializable {
         // endregion
 
         // region SFTP Version Exchange initialization
-        sftpClientVersion = 4;
-        sftpServerVersion = 4;
+        sftpClientVersion = 3;
+        sftpServerVersion = 3;
         sftpNegotiatedVersion = 1;
         respectSftpNegotiatedVersion = true;
         // endregion

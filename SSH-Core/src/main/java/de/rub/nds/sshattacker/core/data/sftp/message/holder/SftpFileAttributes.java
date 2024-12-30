@@ -53,7 +53,15 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     private ModifiableInteger groupLength;
     private ModifiableString group;
 
-    private ModifiableInteger createTime;
+    // As of version 4 there are fields for nanoseconds, and the actual time fields are now int64
+    // This change is done in the second draft of version 4:
+    // https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-04#page-10
+    private ModifiableLong accessTimeLong;
+    private ModifiableInteger accessTimeNanoseconds;
+    private ModifiableLong createTimeLong;
+    private ModifiableInteger createTimeNanoseconds;
+    private ModifiableLong modifyTimeLong;
+    private ModifiableInteger modifyTimeNanoseconds;
 
     private ModifiableInteger aclLength;
     private ModifiableInteger aclEntriesCount;
@@ -88,7 +96,21 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         owner = other.owner != null ? other.owner.createCopy() : null;
         groupLength = other.groupLength != null ? other.groupLength.createCopy() : null;
         group = other.group != null ? other.group.createCopy() : null;
-        createTime = other.createTime != null ? other.createTime.createCopy() : null;
+        accessTimeLong = other.accessTimeLong != null ? other.accessTimeLong.createCopy() : null;
+        accessTimeNanoseconds =
+                other.accessTimeNanoseconds != null
+                        ? other.accessTimeNanoseconds.createCopy()
+                        : null;
+        createTimeLong = other.createTimeLong != null ? other.createTimeLong.createCopy() : null;
+        createTimeNanoseconds =
+                other.createTimeNanoseconds != null
+                        ? other.createTimeNanoseconds.createCopy()
+                        : null;
+        modifyTimeLong = other.modifyTimeLong != null ? other.modifyTimeLong.createCopy() : null;
+        modifyTimeNanoseconds =
+                other.modifyTimeNanoseconds != null
+                        ? other.modifyTimeNanoseconds.createCopy()
+                        : null;
         aclLength = other.aclLength != null ? other.aclLength.createCopy() : null;
         aclEntriesCount = other.aclEntriesCount != null ? other.aclEntriesCount.createCopy() : null;
         if (other.aclEntries != null) {
@@ -464,26 +486,169 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         group = null;
     }
 
-    public ModifiableInteger getCreateTime() {
-        return createTime;
+    public ModifiableLong getAccessTimeLong() {
+        return accessTimeLong;
     }
 
-    public void setCreateTime(ModifiableInteger createTime) {
-        this.createTime = createTime;
+    public void setAccessTimeLong(ModifiableLong accessTimeLong) {
+        this.accessTimeLong = accessTimeLong;
     }
 
-    public void setCreateTime(int createTime) {
-        this.createTime = ModifiableVariableFactory.safelySetValue(this.createTime, createTime);
+    public void setAccessTimeLong(long accessTimeLong) {
+        this.accessTimeLong =
+                ModifiableVariableFactory.safelySetValue(this.accessTimeLong, accessTimeLong);
     }
 
-    public void setSoftlyCreateTime(int createTime) {
-        if (this.createTime == null || this.createTime.getOriginalValue() == null) {
-            this.createTime = ModifiableVariableFactory.safelySetValue(this.createTime, createTime);
+    public void setSoftlyAccessTimeLong(long accessTimeLong) {
+        if (this.accessTimeLong == null || this.accessTimeLong.getOriginalValue() == null) {
+            this.accessTimeLong =
+                    ModifiableVariableFactory.safelySetValue(this.accessTimeLong, accessTimeLong);
         }
     }
 
-    public void clearCreateTime() {
-        createTime = null;
+    public void clearAccessTimeLong() {
+        accessTimeLong = null;
+    }
+
+    public ModifiableInteger getAccessTimeNanoseconds() {
+        return accessTimeNanoseconds;
+    }
+
+    public void setAccessTimeNanoseconds(ModifiableInteger accessTimeNanoseconds) {
+        this.accessTimeNanoseconds = accessTimeNanoseconds;
+    }
+
+    public void setAccessTimeNanoseconds(int accessTimeNanoseconds) {
+        this.accessTimeNanoseconds =
+                ModifiableVariableFactory.safelySetValue(
+                        this.accessTimeNanoseconds, accessTimeNanoseconds);
+    }
+
+    public void setSoftlyAccessTimeNanoseconds(int accessTimeNanoseconds) {
+        if (this.accessTimeNanoseconds == null
+                || this.accessTimeNanoseconds.getOriginalValue() == null) {
+            this.accessTimeNanoseconds =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.accessTimeNanoseconds, accessTimeNanoseconds);
+        }
+    }
+
+    public void clearAccessTimeNanoseconds() {
+        accessTimeNanoseconds = null;
+    }
+
+    public ModifiableLong getCreateTimeLong() {
+        return createTimeLong;
+    }
+
+    public void setCreateTimeLong(ModifiableLong createTimeLong) {
+        this.createTimeLong = createTimeLong;
+    }
+
+    public void setCreateTimeLong(long createTimeLong) {
+        this.createTimeLong =
+                ModifiableVariableFactory.safelySetValue(this.createTimeLong, createTimeLong);
+    }
+
+    public void setSoftlyCreateTimeLong(long createTimeLong) {
+        if (this.createTimeLong == null || this.createTimeLong.getOriginalValue() == null) {
+            this.createTimeLong =
+                    ModifiableVariableFactory.safelySetValue(this.createTimeLong, createTimeLong);
+        }
+    }
+
+    public void clearCreateTimeLong() {
+        createTimeLong = null;
+    }
+
+    public ModifiableInteger getCreateTimeNanoseconds() {
+        return createTimeNanoseconds;
+    }
+
+    public void setCreateTimeNanoseconds(ModifiableInteger createTimeNanoseconds) {
+        this.createTimeNanoseconds = createTimeNanoseconds;
+    }
+
+    public void setCreateTimeNanoseconds(int createTimeNanoseconds) {
+        this.createTimeNanoseconds =
+                ModifiableVariableFactory.safelySetValue(
+                        this.createTimeNanoseconds, createTimeNanoseconds);
+    }
+
+    public void setSoftlyCreateTimeNanoseconds(int createTimeNanoseconds) {
+        if (this.createTimeNanoseconds == null
+                || this.createTimeNanoseconds.getOriginalValue() == null) {
+            this.createTimeNanoseconds =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.createTimeNanoseconds, createTimeNanoseconds);
+        }
+    }
+
+    public void clearCreateTimeNanoseconds() {
+        createTimeNanoseconds = null;
+    }
+
+    public ModifiableLong getModifyTimeLong() {
+        return modifyTimeLong;
+    }
+
+    public void setModifyTimeLong(ModifiableLong modifyTimeLong) {
+        this.modifyTimeLong = modifyTimeLong;
+    }
+
+    public void setModifyTimeLong(long modifyTimeLong) {
+        this.modifyTimeLong =
+                ModifiableVariableFactory.safelySetValue(this.modifyTimeLong, modifyTimeLong);
+    }
+
+    public void setSoftlyModifyTimeLong(long modifyTimeLong) {
+        if (this.modifyTimeLong == null || this.modifyTimeLong.getOriginalValue() == null) {
+            this.modifyTimeLong =
+                    ModifiableVariableFactory.safelySetValue(this.modifyTimeLong, modifyTimeLong);
+        }
+    }
+
+    public void clearModifyTimeLong() {
+        modifyTimeLong = null;
+    }
+
+    public void clearAllLongTimes() {
+        createTimeLong = null;
+        modifyTimeLong = null;
+        accessTimeLong = null;
+    }
+
+    public ModifiableInteger getModifyTimeNanoseconds() {
+        return modifyTimeNanoseconds;
+    }
+
+    public void setModifyTimeNanoseconds(ModifiableInteger modifyTimeNanoseconds) {
+        this.modifyTimeNanoseconds = modifyTimeNanoseconds;
+    }
+
+    public void setModifyTimeNanoseconds(int modifyTimeNanoseconds) {
+        this.modifyTimeNanoseconds =
+                ModifiableVariableFactory.safelySetValue(
+                        this.modifyTimeNanoseconds, modifyTimeNanoseconds);
+    }
+
+    public void setSoftlyModifyTimeNanoseconds(int modifyTimeNanoseconds) {
+        if (this.modifyTimeNanoseconds == null
+                || this.modifyTimeNanoseconds.getOriginalValue() == null) {
+            this.modifyTimeNanoseconds =
+                    ModifiableVariableFactory.safelySetValue(
+                            this.modifyTimeNanoseconds, modifyTimeNanoseconds);
+        }
+    }
+
+    public void clearModifyTimeNanoseconds() {
+        modifyTimeNanoseconds = null;
+    }
+
+    public void clearAllNanoseconds() {
+        createTimeNanoseconds = null;
+        modifyTimeNanoseconds = null;
+        accessTimeNanoseconds = null;
     }
 
     public ModifiableInteger getAclLength() {

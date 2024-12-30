@@ -15,6 +15,8 @@ public enum SftpFileAttributeFlag {
      */
     SSH_FILEXFER_ATTR_SIZE(0x00000001),
     SSH_FILEXFER_ATTR_UIDGID(0x00000002), // No longer available since version 4
+    // In version 4 it is unclear if the SSH_FILEXFER_ATTR_PERMISSIONS flag
+    // should be used, but it is valid again in version 5
     SSH_FILEXFER_ATTR_PERMISSIONS(0x00000004),
     SSH_FILEXFER_ATTR_ACMODTIME(
             0x00000008), // Name changed to SSH_FILEXFER_ATTR_ACCESSTIME in version 4
@@ -24,7 +26,8 @@ public enum SftpFileAttributeFlag {
     SSH_FILEXFER_ATTR_CREATETIME(0x00000010),
     SSH_FILEXFER_ATTR_MODIFYTIME(0x00000020),
     SSH_FILEXFER_ATTR_ACL(0x00000040),
-    SSH_FILEXFER_ATTR_OWNERGROUP(0x00000080);
+    SSH_FILEXFER_ATTR_OWNERGROUP(0x00000080),
+    SSH_FILEXFER_ATTR_SUBSECOND_TIMES(0x00000100);
 
     private final int value;
 

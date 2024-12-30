@@ -85,20 +85,48 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
     }
 
     private static void serializeTimes(SftpFileAttributes object, SerializerStream output) {
+        // SFTP v3
         if (object.getAccessTime() != null) {
             Integer aTime = object.getAccessTime().getValue();
             LOGGER.debug("ATime: {}", aTime);
             output.appendInt(aTime, DataFormatConstants.UINT32_SIZE);
         }
-        if (object.getCreateTime() != null) {
-            Integer cTime = object.getCreateTime().getValue();
-            LOGGER.debug("CTime: {}", cTime);
-            output.appendInt(cTime, DataFormatConstants.UINT32_SIZE);
-        }
         if (object.getModifyTime() != null) {
             Integer mTime = object.getModifyTime().getValue();
             LOGGER.debug("MTime: {}", mTime);
             output.appendInt(mTime, DataFormatConstants.UINT32_SIZE);
+        }
+
+        // SFTP v4
+        if (object.getAccessTimeLong() != null) {
+            Long aTime = object.getAccessTimeLong().getValue();
+            LOGGER.debug("ATime: {}", aTime);
+            output.appendLong(aTime, DataFormatConstants.UINT64_SIZE);
+        }
+        if (object.getAccessTimeNanoseconds() != null) {
+            Integer aTimeNanoseconds = object.getAccessTimeNanoseconds().getValue();
+            LOGGER.debug("ATime Nanoseconds: {}", aTimeNanoseconds);
+            output.appendInt(aTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
+        }
+        if (object.getCreateTimeLong() != null) {
+            Long cTime = object.getCreateTimeLong().getValue();
+            LOGGER.debug("CTime: {}", cTime);
+            output.appendLong(cTime, DataFormatConstants.UINT64_SIZE);
+        }
+        if (object.getCreateTimeNanoseconds() != null) {
+            Integer cTimeNanoseconds = object.getCreateTimeNanoseconds().getValue();
+            LOGGER.debug("CTime Nanoseconds: {}", cTimeNanoseconds);
+            output.appendInt(cTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
+        }
+        if (object.getModifyTimeLong() != null) {
+            Long mTime = object.getModifyTimeLong().getValue();
+            LOGGER.debug("MTime: {}", mTime);
+            output.appendLong(mTime, DataFormatConstants.UINT64_SIZE);
+        }
+        if (object.getModifyTimeNanoseconds() != null) {
+            Integer mTimeNanoseconds = object.getModifyTimeNanoseconds().getValue();
+            LOGGER.debug("MTime Nanoseconds: {}", mTimeNanoseconds);
+            output.appendInt(mTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
         }
     }
 
