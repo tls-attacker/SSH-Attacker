@@ -21,7 +21,12 @@ public enum SftpFileType {
     SSH_FILEXFER_TYPE_DIRECTORY((byte) 2),
     SSH_FILEXFER_TYPE_SYMLINK((byte) 3),
     SSH_FILEXFER_TYPE_SPECIAL((byte) 4),
-    SSH_FILEXFER_TYPE_UNKNOWN((byte) 5);
+    SSH_FILEXFER_TYPE_UNKNOWN((byte) 5),
+    // [ From version 5 onwards ]
+    SSH_FILEXFER_TYPE_SOCKET((byte) 6),
+    SSH_FILEXFER_TYPE_CHAR_DEVICE((byte) 7),
+    SSH_FILEXFER_TYPE_BLOCK_DEVICE((byte) 8),
+    SSH_FILEXFER_TYSSH_FILEXFER_TYPE_FIFOPE_UNKNOWN((byte) 9);
 
     private final byte type;
 

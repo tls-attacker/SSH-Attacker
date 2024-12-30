@@ -22,6 +22,7 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
 
     // path is the filename
 
+    // TODO: SFTPv5 adds desired-access bitmask and attribute field
     private ModifiableInteger pFlags;
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();

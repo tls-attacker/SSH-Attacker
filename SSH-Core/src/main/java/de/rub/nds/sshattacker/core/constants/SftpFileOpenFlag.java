@@ -23,6 +23,8 @@ public enum SftpFileOpenFlag {
     // [ From version 4 onwards ]
     SSH_FXF_TEXT(0x00000040);
 
+    // TODO: SFTPv5 changed the flags completely
+
     private final int value;
 
     SftpFileOpenFlag(int value) {

@@ -23,6 +23,8 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     private ModifiableInteger newPathLength;
     private ModifiablePath newPath;
 
+    // TODO: SFTPv5 adds flags field
+
     public SftpRequestRenameMessage() {
         super();
     }

@@ -25,6 +25,8 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
+    // TODO: SFTPv5 adds <error-specific data>, especially for SSH_FX_UNKNOWN_PRINCIPLE
+
     public SftpResponseStatusMessage() {
         super();
     }

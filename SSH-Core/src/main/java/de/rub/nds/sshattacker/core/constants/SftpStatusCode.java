@@ -31,7 +31,12 @@ public enum SftpStatusCode {
     SSH_FX_NO_SUCH_PATH(10),
     SSH_FX_FILE_ALREADY_EXISTS(11),
     SSH_FX_WRITE_PROTECT(12),
-    SSH_FX_NO_MEDIA(13);
+    SSH_FX_NO_MEDIA(13),
+    // [ From version 5 onwards ]
+    SSH_FX_NO_SPACE_ON_FILESYSTEM(14),
+    SSH_FX_QUOTA_EXCEEDED(15),
+    SSH_FX_UNKNOWN_PRINCIPLE(16),
+    SSH_FX_LOCK_CONFlICT(17);
 
     private final int code;
 

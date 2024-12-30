@@ -71,6 +71,8 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     @XmlElements(@XmlElement(type = SftpAclEntry.class, name = "SftpAclEntry"))
     private ArrayList<SftpAclEntry> aclEntries = new ArrayList<>();
 
+    // TODO: SFTPv5 defines attrib-bits field
+
     public SftpFileAttributes() {
         super();
     }
