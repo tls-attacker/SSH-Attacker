@@ -13,10 +13,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import jakarta.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,8 +39,9 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     public SshPublicKey<CustomX509XCurvePublicKey, ?> parse() {
         try {
             // Start parsing the certificate dynamically based on the ASN.1 structure
-            int startIndex = findX509StartIndex(getArray());
-            X509Certificate cert = extractCertificateWithBC(getArray(), startIndex);
+            int startIndex = PublicKeyParserHelper.findX509StartIndex(getArray());
+            X509Certificate cert =
+                    PublicKeyParserHelper.extractCertificate(getArray(), startIndex, true);
             PublicKey publicKey = cert.getPublicKey();
 
             // Falls der Key Ed25519 oder Ed448 ist
@@ -128,31 +127,6 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
         } catch (Exception e) {
             throw new IllegalArgumentException("Ungültiges X.509 Zertifikat!", e);
         }
-    }
-
-    // Find offset for start of ASN.1-block
-    private static int findX509StartIndex(byte[] encodedPublicKeyBytes) {
-        int startIndex = 8; // SSH-Header überspringen
-        while (startIndex < encodedPublicKeyBytes.length) {
-            if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
-                return startIndex;
-            }
-            startIndex++;
-        }
-        throw new IllegalArgumentException("Konnte Start des X.509 Zertifikats nicht finden.");
-    }
-
-    // Extract Certificate with BouncyCastle
-    private static X509Certificate extractCertificateWithBC(
-            byte[] encodedCertificateBytes, int startIndex) throws Exception {
-        ByteArrayInputStream certInputStream =
-                new ByteArrayInputStream(
-                        encodedCertificateBytes,
-                        startIndex,
-                        encodedCertificateBytes.length - startIndex);
-        CertificateFactory certFactory =
-                CertificateFactory.getInstance("X.509", "BC"); // Force usage of BouncyCastle
-        return (X509Certificate) certFactory.generateCertificate(certInputStream);
     }
 
     // Find EdDSA-Curve

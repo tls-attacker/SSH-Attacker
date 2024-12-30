@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509EcdsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -80,8 +79,7 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             topLevelVector.add(publicKeyAlgorithm);
 
             // Curve Name (as ASN.1 Object Identifier for the specific curve, e.g., NIST P-256)
-            ASN1ObjectIdentifier curveOid =
-                    new ASN1ObjectIdentifier(getCurveOid(object.getGroup()));
+            ASN1ObjectIdentifier curveOid = new ASN1ObjectIdentifier(object.getGroup().getOid());
             topLevelVector.add(curveOid);
 
             // Public Key (as ASN.1 SEQUENCE for ECPoint)
@@ -152,20 +150,5 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             }
         }
         return null;
-    }
-
-    /** Utility method to map curve names to their corresponding OIDs. */
-    private static String getCurveOid(NamedEcGroup curve) {
-        switch (curve) {
-            case SECP256R1:
-                return "1.2.840.10045.3.1.7";
-            case SECP384R1:
-                return "1.3.132.0.34";
-            case SECP521R1:
-                return "1.3.132.0.35";
-                // Additional curves from RFC 5656
-            default:
-                return curve.getIdentifier();
-        }
     }
 }
