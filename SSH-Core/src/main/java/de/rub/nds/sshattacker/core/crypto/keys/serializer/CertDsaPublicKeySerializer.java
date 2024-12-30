@@ -50,8 +50,7 @@ public class CertDsaPublicKeySerializer extends Serializer<CustomCertDsaPublicKe
                 PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
 
         // Nonce
-        byte[] nonce = object.getNonce();
-        output.appendLengthPrefixedBytes(nonce);
+        output.appendLengthPrefixedBytes(object.getNonce());
 
         // p (DSA prime)
         output.appendLengthPrefixedBigInteger(object.getP());

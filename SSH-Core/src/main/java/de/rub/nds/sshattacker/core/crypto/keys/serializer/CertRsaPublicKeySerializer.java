@@ -48,16 +48,13 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
                 PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
 
         // Nonce
-        byte[] nonce = object.getNonce();
-        output.appendLengthPrefixedBytes(nonce);
+        output.appendLengthPrefixedBytes(object.getNonce());
 
         // Public Exponent (e)
-        byte[] encodedExponent = object.getPublicExponent().toByteArray();
-        output.appendLengthPrefixedBytes(encodedExponent);
+        output.appendLengthPrefixedBytes(object.getPublicExponent().toByteArray());
 
         // Modulus (n)
-        byte[] encodedModulus = object.getModulus().toByteArray();
-        output.appendLengthPrefixedBytes(encodedModulus);
+        output.appendLengthPrefixedBytes(object.getModulus().toByteArray());
 
         // Serial (uint64) -- using BigInteger instead of long
         output.appendBigInteger(

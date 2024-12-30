@@ -31,9 +31,8 @@ public class EcPublicKeySerializer extends Serializer<CustomEcPublicKey> {
         output.appendString(object.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
         output.appendLengthPrefixedString(
                 object.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
-        byte[] encodedQ =
+        output.appendLengthPrefixedBytes(
                 PointFormatter.formatToByteArray(
-                        object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
-        output.appendLengthPrefixedBytes(encodedQ);
+                        object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED));
     }
 }
