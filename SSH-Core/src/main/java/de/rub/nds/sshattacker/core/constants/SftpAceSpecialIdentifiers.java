@@ -28,14 +28,14 @@ public enum SftpAceSpecialIdentifiers {
     AUTHENTICATED("AUTHENTICATED@"),
     SERVICE("SERVICE@");
 
-    private final String who;
+    private final String name;
 
-    SftpAceSpecialIdentifiers(String who) {
-        this.who = who;
+    SftpAceSpecialIdentifiers(String name) {
+        this.name = name;
     }
 
-    public String getWho() {
-        return who;
+    public String getName() {
+        return name;
     }
 
     public static final Map<String, SftpAceSpecialIdentifiers> map;
@@ -43,12 +43,17 @@ public enum SftpAceSpecialIdentifiers {
     static {
         Map<String, SftpAceSpecialIdentifiers> mutableMap = new TreeMap<>();
         for (SftpAceSpecialIdentifiers constant : values()) {
-            mutableMap.put(constant.who, constant);
+            mutableMap.put(constant.name, constant);
         }
         map = Collections.unmodifiableMap(mutableMap);
     }
 
-    public static SftpAceSpecialIdentifiers fromWho(String who) {
+    public static SftpAceSpecialIdentifiers fromName(String who) {
         return map.get(who);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
