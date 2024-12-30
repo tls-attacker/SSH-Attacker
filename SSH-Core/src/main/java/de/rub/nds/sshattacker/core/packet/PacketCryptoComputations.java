@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -44,7 +44,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     private ModifiableByteArray iv;
 
     /** The set of binary packet fields covered by the encryption */
-    private EnumSet<BinaryPacketField> encryptedPacketFields;
+    private HashSet<BinaryPacketField> encryptedPacketFields;
 
     /** A flag indicating whether the padding is considered valid */
     private Boolean paddingValid;
@@ -74,7 +74,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         iv = other.iv != null ? other.iv.createCopy() : null;
         encryptedPacketFields =
                 other.encryptedPacketFields != null
-                        ? EnumSet.copyOf(other.encryptedPacketFields)
+                        ? new HashSet<>(other.encryptedPacketFields)
                         : null;
         paddingValid = other.paddingValid;
         macValid = other.macValid;
@@ -190,7 +190,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         return encryptedPacketFields;
     }
 
-    public void setEncryptedPacketFields(EnumSet<BinaryPacketField> encryptedPacketFields) {
+    public void setEncryptedPacketFields(HashSet<BinaryPacketField> encryptedPacketFields) {
         this.encryptedPacketFields = encryptedPacketFields;
     }
 

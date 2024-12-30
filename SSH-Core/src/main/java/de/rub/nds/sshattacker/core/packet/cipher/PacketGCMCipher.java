@@ -22,9 +22,8 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashSet;
+import java.util.Set;
 import javax.crypto.AEADBadTagException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,13 +112,11 @@ public class PacketGCMCipher extends PacketCipher {
         packet.setCiphertext(ciphertext);
         packet.setMac(authTag);
         computations.setEncryptedPacketFields(
-                Stream.of(
+                new HashSet<>(
+                        Set.of(
                                 BinaryPacketField.PADDING_LENGTH,
                                 BinaryPacketField.PAYLOAD,
-                                BinaryPacketField.PADDING)
-                        .collect(
-                                Collectors.toCollection(
-                                        () -> EnumSet.noneOf(BinaryPacketField.class))));
+                                BinaryPacketField.PADDING)));
 
         computations.setPaddingValid(true);
         computations.setMacValid(true);
@@ -164,13 +161,11 @@ public class PacketGCMCipher extends PacketCipher {
             return;
         }
         computations.setEncryptedPacketFields(
-                Stream.of(
+                new HashSet<>(
+                        Set.of(
                                 BinaryPacketField.PADDING_LENGTH,
                                 BinaryPacketField.PAYLOAD,
-                                BinaryPacketField.PADDING)
-                        .collect(
-                                Collectors.toCollection(
-                                        () -> EnumSet.noneOf(BinaryPacketField.class))));
+                                BinaryPacketField.PADDING)));
 
         DecryptionParser parser =
                 new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
