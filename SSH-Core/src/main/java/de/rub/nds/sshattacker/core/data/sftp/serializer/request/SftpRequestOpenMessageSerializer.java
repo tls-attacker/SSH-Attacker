@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +20,7 @@ public class SftpRequestOpenMessageSerializer
     private static void serializePFlags(SftpRequestOpenMessage object, SerializerStream output) {
         Integer pFlags = object.getPFlags().getValue();
         LOGGER.debug("PFlags: {}", pFlags);
-        output.appendInt(pFlags, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(pFlags);
     }
 
     private static void serializeAttributes(

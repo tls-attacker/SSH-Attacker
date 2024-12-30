@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseSpaceAvailableMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -24,22 +23,22 @@ public class SftpResponseSpaceAvailableMessageSerializer
             SftpResponseSpaceAvailableMessage object, SerializerStream output) {
         Long bytesOnDevice = object.getBytesOnDevice().getValue();
         LOGGER.debug("BytesOnDevice: {}", bytesOnDevice);
-        output.appendLong(bytesOnDevice, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(bytesOnDevice);
 
         Long unusedBytesOnDevice = object.getUnusedBytesOnDevice().getValue();
         LOGGER.debug("UnusedBytesOnDevice: {}", unusedBytesOnDevice);
-        output.appendLong(unusedBytesOnDevice, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(unusedBytesOnDevice);
 
         Long bytesAvailableToUser = object.getBytesAvailableToUser().getValue();
         LOGGER.debug("BytesAvailableToUser: {}", bytesAvailableToUser);
-        output.appendLong(bytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(bytesAvailableToUser);
 
         Long unusedBytesAvailableToUser = object.getUnusedBytesAvailableToUser().getValue();
         LOGGER.debug("UnusedBytesAvailableToUser: {}", unusedBytesAvailableToUser);
-        output.appendLong(unusedBytesAvailableToUser, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(unusedBytesAvailableToUser);
 
         Integer bytesPerAllocationUnit = object.getBytesPerAllocationUnit().getValue();
         LOGGER.debug("BytesPerAllocationUnit: {}", bytesPerAllocationUnit);
-        output.appendInt(bytesPerAllocationUnit, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(bytesPerAllocationUnit);
     }
 }

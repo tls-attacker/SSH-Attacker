@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWithPathMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,7 @@ public abstract class SftpRequestWithPathMessageParser<T extends SftpRequestWith
     }
 
     private void parsePath() {
-        int pathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int pathLength = parseIntField();
         message.setPathLength(pathLength);
         LOGGER.debug("Path length: {}", pathLength);
         String path = parseByteString(pathLength, StandardCharsets.UTF_8);

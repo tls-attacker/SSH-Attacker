@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +27,7 @@ public class HybridKeyExchangeInitMessageParser
     }
 
     private void parseHybridKey() {
-        int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int length = parseIntField();
         LOGGER.debug("ConcatenatedHybridKeys Length: {}", length);
         message.setConcatenatedHybridKeysLength(length);
 

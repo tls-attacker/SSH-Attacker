@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +27,7 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
     }
 
     private void parseRequestType() {
-        int requestTypeLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int requestTypeLength = parseIntField();
         message.setRequestTypeLength(requestTypeLength);
         LOGGER.debug("Request type length: {}", requestTypeLength);
         String requestType = parseByteString(requestTypeLength, StandardCharsets.US_ASCII);
@@ -37,7 +36,7 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
     }
 
     private void parseWantReply() {
-        byte wantReply = parseByteField(1);
+        byte wantReply = parseByteField();
         message.setWantReply(wantReply);
         LOGGER.debug("Reply wanted: {}", Converter.byteToBoolean(wantReply));
     }

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +25,7 @@ public class SignatureParser extends Parser<RawSignature> {
     @Override
     public RawSignature parse() {
         RawSignature signature = new RawSignature();
-        int sigtypeLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int sigtypeLength = parseIntField();
         String sigtype = parseByteString(sigtypeLength);
         LOGGER.debug("Signature Type: {}", sigtype);
 
@@ -37,7 +36,7 @@ public class SignatureParser extends Parser<RawSignature> {
                 "Corresponding signature algorithm: {}",
                 signature.getSignatureAlgorithm().getJavaName());
 
-        signature.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        signature.setSignatureLength(parseIntField());
         LOGGER.debug("Signature length: {}", signature.getSignatureLength());
         signature.setSignatureBytes(parseByteArrayField(signature.getSignatureLength()));
         LOGGER.debug(

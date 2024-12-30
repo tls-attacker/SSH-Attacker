@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import java.math.BigInteger;
@@ -33,7 +32,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
     }
 
     private void parseHostKeyBytes() {
-        int hostKeyBytesLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int hostKeyBytesLength = parseIntField();
         message.setHostKeyBytesLength(hostKeyBytesLength);
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
         byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
@@ -42,7 +41,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
     }
 
     private void parseEphemeralPublicKey() {
-        int ephemeralPublicKeyLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int ephemeralPublicKeyLength = parseIntField();
         message.setEphemeralPublicKeyLength(ephemeralPublicKeyLength);
         LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
         BigInteger ephemeralPublicKey = parseBigIntField(ephemeralPublicKeyLength);
@@ -51,7 +50,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
     }
 
     private void parseSignature() {
-        int signatureLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int signatureLength = parseIntField();
         message.setSignatureLength(signatureLength);
         LOGGER.debug("Signature length: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -25,7 +24,7 @@ public class UserAuthInfoRequestMessageSerializer
             UserAuthInfoRequestMessage object, SerializerStream output) {
         Integer userNameLength = object.getUserNameLength().getValue();
         LOGGER.debug("User name length: {}", userNameLength);
-        output.appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(userNameLength);
         String userName = object.getUserName().getValue();
         LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
         output.appendString(userName);
@@ -35,7 +34,7 @@ public class UserAuthInfoRequestMessageSerializer
             UserAuthInfoRequestMessage object, SerializerStream output) {
         Integer instructionLength = object.getInstructionLength().getValue();
         LOGGER.debug("Instruction length: {}", instructionLength);
-        output.appendInt(instructionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(instructionLength);
         String instruction = object.getInstruction().getValue();
         LOGGER.debug("Instruction: {}", () -> backslashEscapeString(instruction));
         output.appendString(instruction);
@@ -45,7 +44,7 @@ public class UserAuthInfoRequestMessageSerializer
             UserAuthInfoRequestMessage object, SerializerStream output) {
         Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languageTagLength);
         String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
         output.appendString(languageTag);
@@ -55,7 +54,7 @@ public class UserAuthInfoRequestMessageSerializer
             UserAuthInfoRequestMessage object, SerializerStream output) {
         Integer promptEntryCount = object.getPromptEntriesCount().getValue();
         LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
-        output.appendInt(promptEntryCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(promptEntryCount);
 
         object.getPromptEntries()
                 .forEach(promptEntry -> output.appendBytes(promptEntry.serialize()));

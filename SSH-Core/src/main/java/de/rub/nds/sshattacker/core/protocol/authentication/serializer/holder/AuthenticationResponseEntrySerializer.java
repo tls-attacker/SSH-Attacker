@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -25,7 +24,7 @@ public class AuthenticationResponseEntrySerializer extends Serializer<Authentica
             AuthenticationResponseEntry object, SerializerStream output) {
         Integer responseLength = object.getResponseLength().getValue();
         LOGGER.debug("Response length: {}", responseLength);
-        output.appendInt(responseLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(responseLength);
         String response = object.getResponse().getValue();
         LOGGER.debug("Response: {}", () -> backslashEscapeString(response));
         output.appendString(response, StandardCharsets.UTF_8);

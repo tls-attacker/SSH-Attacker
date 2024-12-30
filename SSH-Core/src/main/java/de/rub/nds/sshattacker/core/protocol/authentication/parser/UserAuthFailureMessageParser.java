@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -28,8 +27,7 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
     }
 
     private void parsePossibleAuthenticationMethods() {
-        message.setPossibleAuthenticationMethodsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        message.setPossibleAuthenticationMethodsLength(parseIntField());
         message.setPossibleAuthenticationMethods(
                 parseByteString(
                         message.getPossibleAuthenticationMethodsLength().getValue(),
@@ -38,7 +36,7 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
     }
 
     private void parsePartialSuccess() {
-        message.setPartialSuccess(parseByteField(1));
+        message.setPartialSuccess(parseByteField());
     }
 
     @Override

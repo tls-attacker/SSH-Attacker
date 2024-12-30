@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestHomeDirectoryMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class SftpRequestHomeDirectoryMessageSerializer
             SftpRequestHomeDirectoryMessage object, SerializerStream output) {
         Integer usernameLength = object.getUsernameLength().getValue();
         LOGGER.debug("Username length: {}", usernameLength);
-        output.appendInt(usernameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(usernameLength);
         String username = object.getUsername().getValue();
         LOGGER.debug("Username: {}", () -> backslashEscapeString(username));
         output.appendString(username, StandardCharsets.UTF_8);

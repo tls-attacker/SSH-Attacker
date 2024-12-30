@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUsersGroupsByIdMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpIdEntryParser;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +31,7 @@ public class SftpRequestUsersGroupsByIdMessageParser
     }
 
     private void parseUserIds() {
-        int userIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int userIdsLength = parseIntField();
         message.setUserIdsLength(userIdsLength);
         LOGGER.debug("UserIdsLength: {}", userIdsLength);
 
@@ -46,7 +45,7 @@ public class SftpRequestUsersGroupsByIdMessageParser
     }
 
     private void parseGroupIds() {
-        int groupIdsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int groupIdsLength = parseIntField();
         message.setGroupIdsLength(groupIdsLength);
         LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
         int oldPointer = getPointer();

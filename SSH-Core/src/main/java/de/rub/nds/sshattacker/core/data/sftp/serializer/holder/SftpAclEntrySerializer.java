@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -24,25 +23,25 @@ public class SftpAclEntrySerializer extends Serializer<SftpAclEntry> {
     private static void serializeType(SftpAclEntry object, SerializerStream output) {
         Integer type = object.getType().getValue();
         LOGGER.debug("Type: {}", type);
-        output.appendInt(type, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(type);
     }
 
     private static void serializeFlags(SftpAclEntry object, SerializerStream output) {
         Integer flags = object.getFlags().getValue();
         LOGGER.debug("Flags: {}", flags);
-        output.appendInt(flags, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(flags);
     }
 
     private static void serializeMask(SftpAclEntry object, SerializerStream output) {
         Integer mask = object.getMask().getValue();
         LOGGER.debug("Mask: {}", mask);
-        output.appendInt(mask, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(mask);
     }
 
     private static void serializeWho(SftpAclEntry object, SerializerStream output) {
         Integer whoLength = object.getWhoLength().getValue();
         LOGGER.debug("Who length: {}", whoLength);
-        output.appendInt(whoLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(whoLength);
         String who = object.getWho().getValue();
         LOGGER.debug("Who: {}", () -> backslashEscapeString(who));
         output.appendString(who, StandardCharsets.UTF_8);

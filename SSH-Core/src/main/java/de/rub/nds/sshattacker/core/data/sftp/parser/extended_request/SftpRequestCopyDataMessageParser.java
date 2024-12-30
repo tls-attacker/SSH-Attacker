@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCopyDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,19 +26,19 @@ public class SftpRequestCopyDataMessageParser
     }
 
     private void parseReadFromOffset() {
-        long readFromOffset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long readFromOffset = parseLongField();
         message.setReadFromOffset(readFromOffset);
         LOGGER.debug("ReadFromOffset: {}", readFromOffset);
     }
 
     private void parseReadDataLength() {
-        long readDataLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long readDataLength = parseLongField();
         message.setReadDataLength(readDataLength);
         LOGGER.debug("ReadDataLength: {}", readDataLength);
     }
 
     private void parseWriteToHandle() {
-        int writeToHandleLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int writeToHandleLength = parseIntField();
         message.setWriteToHandleLength(writeToHandleLength);
         LOGGER.debug("WriteToHandle length: {}", writeToHandleLength);
         byte[] writeToHandle = parseByteArrayField(writeToHandleLength);
@@ -48,7 +47,7 @@ public class SftpRequestCopyDataMessageParser
     }
 
     private void parseWriteToOffset() {
-        long writeToOffset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long writeToOffset = parseLongField();
         message.setWriteToOffset(writeToOffset);
         LOGGER.debug("WriteToOffset: {}", writeToOffset);
     }

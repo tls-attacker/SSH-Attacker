@@ -49,7 +49,7 @@ public final class PublicKeyHelper {
     public static SshPublicKey<?, ?> parse(byte[] encodedPublicKeyBytes) {
         try {
             int keyFormatLength =
-                    ArrayConverter.bytesToInt(
+                    ArrayConverter.fourBytesToInt(
                             Arrays.copyOfRange(
                                     encodedPublicKeyBytes,
                                     0,

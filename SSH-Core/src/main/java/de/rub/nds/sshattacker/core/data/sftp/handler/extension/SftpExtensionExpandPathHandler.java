@@ -26,9 +26,7 @@ public class SftpExtensionExpandPathHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionExpandPath> getParser(byte[] array) {

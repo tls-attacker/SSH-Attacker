@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -24,7 +23,7 @@ public class SftpFileNameEntrySerializer extends Serializer<SftpFileNameEntry> {
     private static void serializeFilename(SftpFileNameEntry object, SerializerStream output) {
         Integer filenameLength = object.getFilenameLength().getValue();
         LOGGER.debug("Filename length: {}", filenameLength);
-        output.appendInt(filenameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(filenameLength);
         String filename = object.getFilename().getValue();
         LOGGER.debug("Filename: {}", () -> backslashEscapeString(filename));
         output.appendString(filename, StandardCharsets.UTF_8);
@@ -34,7 +33,7 @@ public class SftpFileNameEntrySerializer extends Serializer<SftpFileNameEntry> {
         if (object.getLongName() != null) {
             Integer longNameLength = object.getLongNameLength().getValue();
             LOGGER.debug("LongName length: {}", longNameLength);
-            output.appendInt(longNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(longNameLength);
             String longName = object.getLongName().getValue();
             LOGGER.debug("LongName: {}", () -> backslashEscapeString(longName));
             output.appendString(longName, StandardCharsets.UTF_8);

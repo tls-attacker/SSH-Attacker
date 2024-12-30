@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +30,7 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     }
 
     private void parseData() {
-        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int dataLength = parseIntField();
         message.setDataLength(dataLength);
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);

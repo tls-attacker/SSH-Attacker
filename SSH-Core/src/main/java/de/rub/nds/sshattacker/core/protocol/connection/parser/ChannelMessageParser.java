@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +26,7 @@ public abstract class ChannelMessageParser<T extends ChannelMessage<T>>
     }
 
     private void parseRecipientChannel() {
-        int recipientChannelId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int recipientChannelId = parseIntField();
         message.setRecipientChannelId(recipientChannelId);
         LOGGER.debug("Recipient channel id: {}", recipientChannelId);
     }

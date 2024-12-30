@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,7 @@ public class UserAuthHostbasedMessageSerializer
             UserAuthHostbasedMessage object, SerializerStream output) {
         Integer pubKeyAlgorithmLength = object.getPubKeyAlgorithmLength().getValue();
         LOGGER.debug("Public key algorithm length: {}", pubKeyAlgorithmLength);
-        output.appendInt(pubKeyAlgorithmLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(pubKeyAlgorithmLength);
         String pubKeyAlgorithm = object.getPubKeyAlgorithm().getValue();
         LOGGER.debug("Public key algorithm: {}", () -> backslashEscapeString(pubKeyAlgorithm));
         output.appendString(pubKeyAlgorithm);
@@ -35,7 +34,7 @@ public class UserAuthHostbasedMessageSerializer
             UserAuthHostbasedMessage object, SerializerStream output) {
         Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key length: {}", hostKeyBytesLength);
-        output.appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(hostKeyBytesLength);
         byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
         LOGGER.debug("Host key: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
         output.appendBytes(hostKeyBytes);
@@ -45,7 +44,7 @@ public class UserAuthHostbasedMessageSerializer
             UserAuthHostbasedMessage object, SerializerStream output) {
         Integer hostNameLength = object.getHostNameLength().getValue();
         LOGGER.debug("Host name length: {}", hostNameLength);
-        output.appendInt(hostNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(hostNameLength);
         String hostName = object.getHostName().getValue();
         LOGGER.debug("Host name: {}", () -> backslashEscapeString(hostName));
         output.appendString(hostName);
@@ -55,7 +54,7 @@ public class UserAuthHostbasedMessageSerializer
             UserAuthHostbasedMessage object, SerializerStream output) {
         Integer clientUserNameLength = object.getClientUserNameLength().getValue();
         LOGGER.debug("Client user name length: {}", clientUserNameLength);
-        output.appendInt(clientUserNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(clientUserNameLength);
         String clientUserName = object.getClientUserName().getValue();
         LOGGER.debug("Client user name: {}", () -> backslashEscapeString(clientUserName));
         output.appendString(clientUserName);
@@ -65,7 +64,7 @@ public class UserAuthHostbasedMessageSerializer
             UserAuthHostbasedMessage object, SerializerStream output) {
         Integer signatureLength = object.getSignatureLength().getValue();
         LOGGER.debug("Signature length: {}", signatureLength);
-        output.appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(signatureLength);
         byte[] signature = object.getSignature().getValue();
         LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
         output.appendBytes(signature);

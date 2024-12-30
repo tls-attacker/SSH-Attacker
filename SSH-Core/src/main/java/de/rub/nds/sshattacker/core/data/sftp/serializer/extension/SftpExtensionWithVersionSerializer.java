@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extension;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionWithVersion;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +23,7 @@ public class SftpExtensionWithVersionSerializer<T extends SftpExtensionWithVersi
     private void serializeVersion(T object, SerializerStream output) {
         Integer versionLength = object.getVersionLength().getValue();
         LOGGER.debug("Version length: {}", versionLength);
-        output.appendInt(versionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(versionLength);
         String version = object.getVersion().getValue();
         LOGGER.debug("Version: {}", () -> backslashEscapeString(version));
         output.appendString(version, StandardCharsets.US_ASCII);

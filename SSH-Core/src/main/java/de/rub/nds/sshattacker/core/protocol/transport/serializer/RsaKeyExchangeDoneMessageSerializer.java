@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
@@ -23,7 +22,7 @@ public class RsaKeyExchangeDoneMessageSerializer
             RsaKeyExchangeDoneMessage object, SerializerStream output) {
         Integer signatureLength = object.getSignatureLength().getValue();
         LOGGER.debug("Signature length: {}", signatureLength);
-        output.appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(signatureLength);
         LOGGER.debug("Signature: {}", object.getSignature());
         output.appendBytes(object.getSignature().getValue());
     }

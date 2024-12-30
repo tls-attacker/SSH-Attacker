@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
@@ -22,7 +21,7 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
             ExtensionInfoMessage object, SerializerStream output) {
         Integer extensionCount = object.getExtensionCount().getValue();
         LOGGER.debug("Extension count: {}", extensionCount);
-        output.appendInt(extensionCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(extensionCount);
     }
 
     private static void serializeExtensions(ExtensionInfoMessage object, SerializerStream output) {

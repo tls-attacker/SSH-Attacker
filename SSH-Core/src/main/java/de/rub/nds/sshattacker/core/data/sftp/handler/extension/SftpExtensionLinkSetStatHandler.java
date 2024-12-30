@@ -26,9 +26,7 @@ public class SftpExtensionLinkSetStatHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionLinkSetStat> getParser(byte[] array) {

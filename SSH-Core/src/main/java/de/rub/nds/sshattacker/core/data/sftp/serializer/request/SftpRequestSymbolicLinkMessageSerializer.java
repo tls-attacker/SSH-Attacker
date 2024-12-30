@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestSymbolicLinkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class SftpRequestSymbolicLinkMessageSerializer
             SftpRequestSymbolicLinkMessage object, SerializerStream output) {
         Integer targetPathLength = object.getTargetPathLength().getValue();
         LOGGER.debug("TargetPath length: {}", targetPathLength);
-        output.appendInt(targetPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(targetPathLength);
         String targetPath = object.getTargetPath().getValue();
         LOGGER.debug("TargetPath: {}", () -> backslashEscapeString(targetPath));
         output.appendString(targetPath, StandardCharsets.UTF_8);

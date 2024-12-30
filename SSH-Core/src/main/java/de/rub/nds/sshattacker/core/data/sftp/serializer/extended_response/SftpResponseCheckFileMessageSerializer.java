@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseCheckFileMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -27,7 +26,7 @@ public class SftpResponseCheckFileMessageSerializer
             SftpResponseCheckFileMessage object, SerializerStream output) {
         Integer usedHashAlgorithmLength = object.getUsedHashAlgorithmLength().getValue();
         LOGGER.debug("UsedHashAlgorithm length: {}", usedHashAlgorithmLength);
-        output.appendInt(usedHashAlgorithmLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(usedHashAlgorithmLength);
         String usedHashAlgorithm = object.getUsedHashAlgorithm().getValue();
         LOGGER.debug("UsedHashAlgorithm: {}", () -> backslashEscapeString(usedHashAlgorithm));
         output.appendString(usedHashAlgorithm, StandardCharsets.US_ASCII);

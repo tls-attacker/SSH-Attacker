@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,19 +30,19 @@ public class ChannelOpenConfirmationMessageParser
     }
 
     private void parseSenderChannel() {
-        int senderChannelId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int senderChannelId = parseIntField();
         message.setSenderChannelId(senderChannelId);
         LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
     private void parseWindowSize() {
-        int windowSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int windowSize = parseIntField();
         message.setWindowSize(windowSize);
         LOGGER.debug("Initial window size: {}", windowSize);
     }
 
     private void parsePacketSize() {
-        int packetSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int packetSize = parseIntField();
         message.setPacketSize(packetSize);
         LOGGER.debug("Maximum packet size: {}", packetSize);
     }

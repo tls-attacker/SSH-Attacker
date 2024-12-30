@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileExtendedAttribute;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -25,7 +24,7 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
     private static void serializeType(SftpFileExtendedAttribute object, SerializerStream output) {
         Integer typeLength = object.getTypeLength().getValue();
         LOGGER.debug("Type length: {}", typeLength);
-        output.appendInt(typeLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(typeLength);
         String type = object.getType().getValue();
         LOGGER.debug("Type: {}", () -> backslashEscapeString(type));
         output.appendString(type, StandardCharsets.US_ASCII);
@@ -34,7 +33,7 @@ public class SftpFileExtendedAttributeSerializer extends Serializer<SftpFileExte
     private static void serializeData(SftpFileExtendedAttribute object, SerializerStream output) {
         Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(dataLength);
         byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
         output.appendBytes(data);

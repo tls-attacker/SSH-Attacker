@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -28,14 +27,14 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
     }
 
     private void parseMessage() {
-        message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        message.setMessageLength(parseIntField());
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8),
                 false);
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        message.setLanguageTagLength(parseIntField());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII),

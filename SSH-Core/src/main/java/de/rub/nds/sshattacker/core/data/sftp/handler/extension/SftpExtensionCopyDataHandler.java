@@ -26,9 +26,7 @@ public class SftpExtensionCopyDataHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionCopyData> getParser(byte[] array) {

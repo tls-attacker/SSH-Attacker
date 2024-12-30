@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class ChannelRequestExitSignalMessageParser
     }
 
     private void parseSignalName() {
-        int signalNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int signalNameLength = parseIntField();
         message.setSignalNameLength(signalNameLength);
         LOGGER.debug("Signal name length: {}", signalNameLength);
         String signalName = parseByteString(signalNameLength);
@@ -43,13 +42,13 @@ public class ChannelRequestExitSignalMessageParser
     }
 
     private void parseCoreDump() {
-        byte coreDump = parseByteField(1);
+        byte coreDump = parseByteField();
         message.setCoreDump(coreDump);
         LOGGER.debug("Core dumped: {}", coreDump);
     }
 
     private void parseErrorMessage() {
-        int errorMessageLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int errorMessageLength = parseIntField();
         message.setErrorMessageLength(errorMessageLength);
         LOGGER.debug("Error message length: {}", errorMessageLength);
         String errorMessage = parseByteString(errorMessageLength);
@@ -58,7 +57,7 @@ public class ChannelRequestExitSignalMessageParser
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);

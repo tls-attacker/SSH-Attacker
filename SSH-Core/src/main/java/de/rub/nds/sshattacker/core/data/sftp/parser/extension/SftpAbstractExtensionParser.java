@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -43,7 +42,7 @@ public abstract class SftpAbstractExtensionParser<E extends SftpAbstractExtensio
     }
 
     protected void parseExtensionName() {
-        int nameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int nameLength = parseIntField();
         extension.setNameLength(nameLength);
         LOGGER.debug("Extension name length: {}", nameLength);
         String name = parseByteString(nameLength, StandardCharsets.US_ASCII);

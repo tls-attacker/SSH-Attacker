@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +32,7 @@ public class ChannelRequestSubsystemMessageParser
     }
 
     private void parseSubsystemName() {
-        int subsystemNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int subsystemNameLength = parseIntField();
         message.setSubsystemNameLength(subsystemNameLength);
         LOGGER.debug("Subsystem name length: {}", subsystemNameLength);
         String subsystemName = parseByteString(subsystemNameLength, StandardCharsets.UTF_8);

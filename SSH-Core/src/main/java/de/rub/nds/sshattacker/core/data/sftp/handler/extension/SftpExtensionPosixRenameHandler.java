@@ -26,9 +26,7 @@ public class SftpExtensionPosixRenameHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionPosixRename> getParser(byte[] array) {

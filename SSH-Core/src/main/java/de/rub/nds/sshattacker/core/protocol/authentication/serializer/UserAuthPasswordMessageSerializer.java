@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -30,7 +29,7 @@ public class UserAuthPasswordMessageSerializer
     private static void serializePassword(UserAuthPasswordMessage object, SerializerStream output) {
         Integer passwordLength = object.getPasswordLength().getValue();
         LOGGER.debug("Password length: {}", passwordLength);
-        output.appendInt(passwordLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(passwordLength);
         LOGGER.debug("Password: {}", object.getPassword().getValue());
         output.appendString(object.getPassword().getValue(), StandardCharsets.UTF_8);
     }
@@ -39,7 +38,7 @@ public class UserAuthPasswordMessageSerializer
             UserAuthPasswordMessage object, SerializerStream output) {
         Integer newPasswordLength = object.getNewPasswordLength().getValue();
         LOGGER.debug("New password length: {}", newPasswordLength);
-        output.appendInt(newPasswordLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(newPasswordLength);
         LOGGER.debug("New password: {}", object.getNewPassword().getValue());
         output.appendString(object.getNewPassword().getValue(), StandardCharsets.UTF_8);
     }

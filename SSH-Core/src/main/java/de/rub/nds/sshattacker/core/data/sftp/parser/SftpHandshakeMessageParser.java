@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpHandshakeMessage;
@@ -31,7 +30,7 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
     }
 
     private void parseVersion() {
-        int version = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int version = parseIntField();
         message.setVersion(version);
         LOGGER.debug("Version: {}", version);
     }
@@ -42,7 +41,7 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
         while (getBytesLeft() > 0) {
             extensionStartPointer = getPointer();
             // Parse extension name to determine the parser to use
-            int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+            int extensionNameLength = parseIntField();
             SftpExtension extension =
                     SftpExtension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));

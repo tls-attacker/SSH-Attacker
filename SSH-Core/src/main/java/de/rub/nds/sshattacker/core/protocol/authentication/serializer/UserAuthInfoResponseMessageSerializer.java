@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -22,7 +21,7 @@ public class UserAuthInfoResponseMessageSerializer
             UserAuthInfoResponseMessage object, SerializerStream output) {
         Integer responseEntryCount = object.getResponseEntriesCount().getValue();
         LOGGER.debug("Number of response entries: {}", responseEntryCount);
-        output.appendInt(responseEntryCount, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(responseEntryCount);
 
         object.getResponseEntries()
                 .forEach(responseEntry -> output.appendBytes(responseEntry.serialize()));

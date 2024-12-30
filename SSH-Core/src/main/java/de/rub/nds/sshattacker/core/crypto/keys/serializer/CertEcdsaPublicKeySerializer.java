@@ -67,8 +67,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
+                                .length);
                 output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
@@ -78,8 +77,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
+                                .length);
                 output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
@@ -89,8 +87,7 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                         PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
+                                .length);
                 output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
@@ -99,37 +96,27 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                 throw new IllegalArgumentException("Unsupported curve: " + curve);
         }
         // Nonce
-        byte[] nonce = object.getNonce();
-        output.appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(nonce);
+        output.appendLengthPrefixedBytes(object.getNonce());
 
         // Curve name
         // String curveName = publicKey.getCurveName();
-        output.appendInt(
-                curve.getIdentifier().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(curve.getIdentifier(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedString(curve.getIdentifier(), StandardCharsets.US_ASCII);
 
         // Public Key (Q)
-        byte[] encodedQ =
+        output.appendLengthPrefixedBytes(
                 PointFormatter.formatToByteArray(
-                        object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
-        output.appendInt(encodedQ.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(encodedQ);
+                        object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED));
 
         // Serial (uint64)
         output.appendBigInteger(
                 BigInteger.valueOf(object.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // Certificate type (uint32)
-        output.appendInt(Integer.parseInt(object.getCertType()), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(Integer.parseInt(object.getCertType()));
 
         // Key ID (string)
         String keyId = object.getKeyId();
-        output.appendInt(
-                keyId.getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(keyId, StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedString(keyId, StandardCharsets.US_ASCII);
 
         // Valid Principals (string list)
         String[] validPrincipals = object.getValidPrincipals();
@@ -147,10 +134,9 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
             principalsBuffer.flip();
             principalsBuffer.get(principalsSerialized);
 
-            output.appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(principalsSerialized);
+            output.appendLengthPrefixedBytes(principalsSerialized);
         } else {
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty principals list
+            output.appendInt(0); // Empty principals list
         }
 
         // Valid After (uint64)
@@ -173,10 +159,9 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
         String reserved = object.getReserved();
         if (reserved != null) {
             byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
-            output.appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(reservedBytes);
+            output.appendLengthPrefixedBytes(reservedBytes);
         } else {
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(0);
         }
 
         // Signature Key
@@ -184,15 +169,13 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
         if (signatureKey == null) {
             throw new IllegalStateException("Signature Key is not set in the publicKey");
         }
-        output.appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(signatureKey);
+        output.appendLengthPrefixedBytes(signatureKey);
 
         // Signature
         byte[] signature = object.getSignature();
         if (signature == null) {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }
-        output.appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(signature);
+        output.appendLengthPrefixedBytes(signature);
     }
 }

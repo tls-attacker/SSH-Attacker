@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -27,13 +26,13 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
                 "Reason: {} (Code: {})",
                 DisconnectReason.fromId(object.getReasonCode().getValue()),
                 object.getReasonCode().getValue());
-        output.appendInt(object.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(object.getReasonCode().getValue());
     }
 
     private static void serializeDescription(DisconnectMessage object, SerializerStream output) {
         Integer descriptionLength = object.getDescriptionLength().getValue();
         LOGGER.debug("Description length: {}", descriptionLength);
-        output.appendInt(descriptionLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(descriptionLength);
         LOGGER.debug("Description: {}", object.getDescription().getValue());
         output.appendString(object.getDescription().getValue(), StandardCharsets.UTF_8);
     }
@@ -41,7 +40,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
     private static void serializeLanguageTag(DisconnectMessage object, SerializerStream output) {
         Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languageTagLength);
         String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
         output.appendString(languageTag, StandardCharsets.US_ASCII);

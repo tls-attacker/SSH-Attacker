@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +26,7 @@ public abstract class SftpRequestMessageParser<T extends SftpRequestMessage<T>>
     }
 
     private void parseRequestId() {
-        int requestId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int requestId = parseIntField();
         message.setRequestId(requestId);
         LOGGER.debug("RequestId: {}", requestId);
     }

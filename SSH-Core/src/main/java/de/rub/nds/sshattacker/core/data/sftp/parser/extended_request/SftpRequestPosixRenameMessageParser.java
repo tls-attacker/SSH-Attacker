@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestPosixRenameMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class SftpRequestPosixRenameMessageParser
     }
 
     private void parseNewPath() {
-        int newPathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int newPathLength = parseIntField();
         message.setNewPathLength(newPathLength);
         LOGGER.debug("NewPath length: {}", newPathLength);
         String newPath = parseByteString(newPathLength, StandardCharsets.UTF_8);

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
@@ -24,7 +23,7 @@ public class EcdhKeyExchangeInitMessageSerializer
             EcdhKeyExchangeInitMessage object, SerializerStream output) {
         Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
-        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(ephemeralPublicKeyLength);
         byte[] ephemeralPublicKey = object.getEphemeralPublicKey().getValue();
         LOGGER.debug(
                 "Ephemeral public key (client): {}",

@@ -27,9 +27,7 @@ public class SftpExtensionSpaceAvailableHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionSpaceAvailable> getParser(byte[] array) {

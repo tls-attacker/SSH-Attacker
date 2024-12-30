@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +37,7 @@ public abstract class AbstractExtensionParser<E extends AbstractExtension<E>> ex
     }
 
     protected void parseExtensionName() {
-        int nameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int nameLength = parseIntField();
         extension.setNameLength(nameLength);
         LOGGER.debug("Extension name length: {}", nameLength);
         String name = parseByteString(nameLength, StandardCharsets.US_ASCII);

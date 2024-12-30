@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.holder.AuthenticationPromptEntryParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -34,7 +33,7 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parseUserName() {
-        int userNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int userNameLength = parseIntField();
         message.setUserNameLength(userNameLength);
         LOGGER.debug("User name length: {}", userNameLength);
         String userName = parseByteString(userNameLength);
@@ -43,7 +42,7 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parseInstruction() {
-        int instructionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int instructionLength = parseIntField();
         message.setInstructionLength(instructionLength);
         LOGGER.debug("Instruction length: {}", instructionLength);
         String instruction = parseByteString(instructionLength);
@@ -52,7 +51,7 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength);
@@ -61,7 +60,7 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     }
 
     private void parsePromptEntries() {
-        int promptEntriesCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int promptEntriesCount = parseIntField();
         message.setPromptEntriesCount(promptEntriesCount);
         LOGGER.debug("Number of prompt entries: {}", promptEntriesCount);
 

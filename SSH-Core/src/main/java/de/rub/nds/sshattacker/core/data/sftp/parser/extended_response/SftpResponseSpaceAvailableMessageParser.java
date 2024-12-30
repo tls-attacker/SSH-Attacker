@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseSpaceAvailableMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
 import org.apache.logging.log4j.LogManager;
@@ -33,23 +32,23 @@ public class SftpResponseSpaceAvailableMessageParser
 
     @Override
     protected void parseResponseSpecificContents() {
-        long bytesOnDevice = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long bytesOnDevice = parseLongField();
         message.setBytesOnDevice(bytesOnDevice);
         LOGGER.debug("BytesOnDevice: {}", bytesOnDevice);
 
-        long unusedBytesOnDevice = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long unusedBytesOnDevice = parseLongField();
         message.setUnusedBytesOnDevice(unusedBytesOnDevice);
         LOGGER.debug("UnusedBytesOnDevice: {}", unusedBytesOnDevice);
 
-        long bytesAvailableToUser = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long bytesAvailableToUser = parseLongField();
         message.setBytesAvailableToUser(bytesAvailableToUser);
         LOGGER.debug("BytesAvailableToUser: {}", bytesAvailableToUser);
 
-        long unusedBytesAvailableToUser = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long unusedBytesAvailableToUser = parseLongField();
         message.setUnusedBytesAvailableToUser(unusedBytesAvailableToUser);
         LOGGER.debug("UnusedBytesAvailableToUser: {}", unusedBytesAvailableToUser);
 
-        int bytesPerAllocationUnit = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int bytesPerAllocationUnit = parseIntField();
         message.setBytesPerAllocationUnit(bytesPerAllocationUnit);
         LOGGER.debug("BytesPerAllocationUnit: {}", bytesPerAllocationUnit);
     }

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class ChannelRequestEnvMessageSerializer
             ChannelRequestEnvMessage object, SerializerStream output) {
         Integer variableNameLength = object.getVariableNameLength().getValue();
         LOGGER.debug("Variable name length: {}", variableNameLength);
-        output.appendInt(variableNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(variableNameLength);
         String variableName = object.getVariableName().getValue();
         LOGGER.debug("Variable name: {}", () -> backslashEscapeString(variableName));
         output.appendString(variableName, StandardCharsets.UTF_8);
@@ -35,7 +34,7 @@ public class ChannelRequestEnvMessageSerializer
             ChannelRequestEnvMessage object, SerializerStream output) {
         Integer variableValueLength = object.getVariableValueLength().getValue();
         LOGGER.debug("Variable value length: {}", variableValueLength);
-        output.appendInt(variableValueLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(variableValueLength);
         String variableValue = object.getVariableValue().getValue();
         LOGGER.debug("Variable value: {}", () -> backslashEscapeString(variableValue));
         output.appendString(variableValue, StandardCharsets.UTF_8);

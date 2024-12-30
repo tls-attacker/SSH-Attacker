@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,7 @@ public class ChannelWindowAdjustMessageSerializer
             ChannelWindowAdjustMessage object, SerializerStream output) {
         Integer bytesToAdd = object.getBytesToAdd().getValue();
         LOGGER.debug("Bytes to add: {}", bytesToAdd);
-        output.appendInt(bytesToAdd, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(bytesToAdd);
     }
 
     @Override

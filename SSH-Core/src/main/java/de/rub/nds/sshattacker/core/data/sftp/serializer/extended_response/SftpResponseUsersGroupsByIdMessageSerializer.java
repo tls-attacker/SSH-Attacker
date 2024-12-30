@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUsersGroupsByIdMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -23,7 +22,7 @@ public class SftpResponseUsersGroupsByIdMessageSerializer
             SftpResponseUsersGroupsByIdMessage object, SerializerStream output) {
         Integer userNamesLength = object.getUserNamesLength().getValue();
         LOGGER.debug("UserNames length: {}", userNamesLength);
-        output.appendInt(userNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(userNamesLength);
 
         object.getUserNames().forEach(userName -> output.appendBytes(userName.serialize()));
     }
@@ -32,7 +31,7 @@ public class SftpResponseUsersGroupsByIdMessageSerializer
             SftpResponseUsersGroupsByIdMessage object, SerializerStream output) {
         Integer groupNamesLength = object.getGroupNamesLength().getValue();
         LOGGER.debug("GroupNames length: {}", groupNamesLength);
-        output.appendInt(groupNamesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(groupNamesLength);
 
         object.getGroupNames().forEach(groupName -> output.appendBytes(groupName.serialize()));
     }

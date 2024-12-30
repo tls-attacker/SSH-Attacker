@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
@@ -31,7 +30,7 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
     private static void serializeMessage(DebugMessage object, SerializerStream output) {
         Integer messageLength = object.getMessageLength().getValue();
         LOGGER.debug("Message length: {}", messageLength);
-        output.appendInt(messageLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(messageLength);
         String messageStr = object.getMessage().getValue();
         LOGGER.debug("Message: {}", () -> backslashEscapeString(messageStr));
         output.appendString(messageStr, StandardCharsets.UTF_8);
@@ -40,7 +39,7 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
     private static void serializeLanguageTag(DebugMessage object, SerializerStream output) {
         Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languageTagLength);
         String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
         output.appendString(languageTag, StandardCharsets.US_ASCII);

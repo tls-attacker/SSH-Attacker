@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseNameMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpFileNameEntryParser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -36,7 +35,7 @@ public class SftpResponseNameMessageParser
     }
 
     private void parseNameEntries() {
-        int countNameEntries = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int countNameEntries = parseIntField();
         message.setNameEntriesCount(countNameEntries);
         LOGGER.debug("CountNameEntries: {}", countNameEntries);
 

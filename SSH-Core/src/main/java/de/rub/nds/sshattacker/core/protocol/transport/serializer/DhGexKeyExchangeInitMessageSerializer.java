@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
@@ -23,7 +22,7 @@ public class DhGexKeyExchangeInitMessageSerializer
             DhGexKeyExchangeInitMessage object, SerializerStream output) {
         Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
-        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.MPINT_SIZE_LENGTH);
+        output.appendInt(ephemeralPublicKeyLength);
         LOGGER.debug(
                 "Ephemeral public key (client): {}", object.getEphemeralPublicKey().getValue());
         output.appendBytes(object.getEphemeralPublicKey().getValue().toByteArray());

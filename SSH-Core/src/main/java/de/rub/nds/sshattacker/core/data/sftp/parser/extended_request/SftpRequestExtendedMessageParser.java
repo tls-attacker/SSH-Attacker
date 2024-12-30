@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.request.SftpRequestMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,7 @@ public abstract class SftpRequestExtendedMessageParser<T extends SftpRequestExte
     }
 
     private void parseExtendedRequestName() {
-        int extendedRequestNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int extendedRequestNameLength = parseIntField();
         message.setExtendedRequestNameLength(extendedRequestNameLength);
         LOGGER.debug("ExtendedRequestName length: {}", extendedRequestNameLength);
         String extendedRequestName =

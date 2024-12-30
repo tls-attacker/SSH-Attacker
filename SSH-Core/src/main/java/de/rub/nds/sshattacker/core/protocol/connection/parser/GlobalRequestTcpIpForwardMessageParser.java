@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +26,7 @@ public class GlobalRequestTcpIpForwardMessageParser
     }
 
     private void parseIPAddressToBind() {
-        int ipAddressToBindLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int ipAddressToBindLength = parseIntField();
         message.setIpAddressToBindLength(ipAddressToBindLength);
         LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
         String ipAddressToBind = parseByteString(ipAddressToBindLength, StandardCharsets.US_ASCII);
@@ -36,7 +35,7 @@ public class GlobalRequestTcpIpForwardMessageParser
     }
 
     private void parsePortToBind() {
-        int portToBind = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int portToBind = parseIntField();
         message.setPortToBind(portToBind);
         LOGGER.debug("Port to bind: {}", portToBind);
     }

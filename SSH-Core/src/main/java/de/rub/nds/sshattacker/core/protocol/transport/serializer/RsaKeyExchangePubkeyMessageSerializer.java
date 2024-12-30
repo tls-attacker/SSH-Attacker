@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
@@ -24,7 +23,7 @@ public class RsaKeyExchangePubkeyMessageSerializer
             RsaKeyExchangePubkeyMessage object, SerializerStream output) {
         Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
-        output.appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(hostKeyBytesLength);
 
         byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
         LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
@@ -36,7 +35,7 @@ public class RsaKeyExchangePubkeyMessageSerializer
         Integer transientPublicKeyBytesLength =
                 object.getTransientPublicKeyBytesLength().getValue();
         LOGGER.debug("Transient public key length: {}", transientPublicKeyBytesLength);
-        output.appendInt(transientPublicKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(transientPublicKeyBytesLength);
 
         byte[] transientPublicKeyBytes = object.getTransientPublicKeyBytes().getValue();
         LOGGER.debug(

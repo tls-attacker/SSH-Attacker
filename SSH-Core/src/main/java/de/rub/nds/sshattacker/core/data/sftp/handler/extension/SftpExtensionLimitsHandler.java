@@ -25,9 +25,7 @@ public class SftpExtensionLimitsHandler extends SftpAbstractExtensionHandler<Sft
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionLimits> getParser(byte[] array) {

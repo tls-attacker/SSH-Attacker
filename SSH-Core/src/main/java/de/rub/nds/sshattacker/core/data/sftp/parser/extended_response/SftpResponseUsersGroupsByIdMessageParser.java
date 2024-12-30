@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseUsersGroupsByIdMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpNameEntryParser;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
@@ -33,7 +32,7 @@ public class SftpResponseUsersGroupsByIdMessageParser
     }
 
     private void parseUserNames() {
-        int userNamesLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int userNamesLength = parseIntField();
         message.setUserNamesLength(userNamesLength);
         LOGGER.debug("UserNames length: {}", userNamesLength);
         int oldPointer = getPointer();
@@ -46,7 +45,7 @@ public class SftpResponseUsersGroupsByIdMessageParser
     }
 
     private void parseGroupNames() {
-        int groupNamesLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int groupNamesLength = parseIntField();
         message.setGroupNamesLength(groupNamesLength);
         LOGGER.debug("GroupNames length: {}", groupNamesLength);
         int oldPointer = getPointer();

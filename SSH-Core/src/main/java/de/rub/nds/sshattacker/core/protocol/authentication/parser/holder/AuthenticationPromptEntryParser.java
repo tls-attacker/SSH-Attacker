@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -32,13 +31,13 @@ public class AuthenticationPromptEntryParser extends Parser<AuthenticationPrompt
     }
 
     private void parseEcho() {
-        byte echo = parseByteField(1);
+        byte echo = parseByteField();
         authenticationPromptEntry.setEcho(echo);
         LOGGER.debug("Echo: {}", echo);
     }
 
     private void parsePrompt() {
-        int promptLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int promptLength = parseIntField();
         authenticationPromptEntry.setPromptLength(promptLength);
         LOGGER.debug("Prompt length: {}", promptLength);
         String prompt = parseByteString(promptLength, StandardCharsets.UTF_8);

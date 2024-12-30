@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCopyFileMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class SftpRequestCopyFileMessageParser
     }
 
     private void parseDestinationPath() {
-        int destinationPathLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int destinationPathLength = parseIntField();
         message.setDestinationPathLength(destinationPathLength);
         LOGGER.debug("DestinationPath length: {}", destinationPathLength);
         String destinationPath = parseByteString(destinationPathLength, StandardCharsets.UTF_8);
@@ -43,7 +42,7 @@ public class SftpRequestCopyFileMessageParser
     }
 
     private void parseOverwriteDestination() {
-        byte overwriteDestination = parseByteField(1);
+        byte overwriteDestination = parseByteField();
         message.setOverwriteDestination(overwriteDestination);
         LOGGER.debug("OverwriteDestination: {}", overwriteDestination);
     }

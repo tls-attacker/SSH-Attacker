@@ -213,7 +213,7 @@ public class PacketMacedCipher extends PacketCipher {
                 new DecryptionParser(
                         computations.getPlainPacketBytes().getValue(),
                         isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
-        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()

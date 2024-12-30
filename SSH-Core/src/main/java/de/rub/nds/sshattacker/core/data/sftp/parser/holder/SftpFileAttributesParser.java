@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
@@ -37,92 +36,92 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     }
 
     private void parseFlags() {
-        int flags = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int flags = parseIntField();
         attributes.setFlags(flags);
         LOGGER.debug("Flags: {}", flags);
     }
 
     private void parseType() {
-        byte type = parseByteField(1);
+        byte type = parseByteField();
         attributes.setType(type);
         LOGGER.debug("Type: {}", SftpFileType.getNameByType(type));
     }
 
     private void parseSize() {
-        long size = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long size = parseLongField();
         attributes.setSize(size);
         LOGGER.debug("Size: {}", size);
     }
 
     private void parseUIdGId() {
-        int uId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int uId = parseIntField();
         attributes.setUserId(uId);
         LOGGER.debug("UId: {}", uId);
-        int gId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int gId = parseIntField();
         attributes.setGroupId(gId);
         LOGGER.debug("GId: {}", gId);
     }
 
     private void parsePermissions() {
-        int permissions = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int permissions = parseIntField();
         attributes.setPermissions(permissions);
         LOGGER.debug("Permissions: {}", permissions);
     }
 
     private void parseAcModTime() {
-        int aTime = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int aTime = parseIntField();
         attributes.setAccessTime(aTime);
         LOGGER.debug("ATime: {}", aTime);
-        int mTime = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int mTime = parseIntField();
         attributes.setModifyTime(mTime);
         LOGGER.debug("MTime: {}", mTime);
     }
 
     private void parseAccessTime() {
-        long accessTimeLong = parseIntField(DataFormatConstants.UINT64_SIZE);
+        long accessTimeLong = parseLongField();
         attributes.setAccessTimeLong(accessTimeLong);
         LOGGER.debug("AccessTime: {}", accessTimeLong);
     }
 
     private void parseAccessTimeNanoseconds() {
-        int accessTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int accessTimeNanoseconds = parseIntField();
         attributes.setAccessTimeNanoseconds(accessTimeNanoseconds);
         LOGGER.debug("AccessTimeNanoseconds: {}", accessTimeNanoseconds);
     }
 
     private void parseCreateTime() {
-        long createTimeLong = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long createTimeLong = parseLongField();
         attributes.setCreateTimeLong(createTimeLong);
         LOGGER.debug("CreateTime: {}", createTimeLong);
     }
 
     private void parseCreateTimeNanoseconds() {
-        int createTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int createTimeNanoseconds = parseIntField();
         attributes.setCreateTimeNanoseconds(createTimeNanoseconds);
         LOGGER.debug("CreateTimeNanoseconds: {}", createTimeNanoseconds);
     }
 
     private void parseModifyTime() {
-        long modifyTimeLong = parseIntField(DataFormatConstants.UINT64_SIZE);
+        long modifyTimeLong = parseLongField();
         attributes.setModifyTimeLong(modifyTimeLong);
         LOGGER.debug("ModifyTime: {}", modifyTimeLong);
     }
 
     private void parseModifyTimeNanoseconds() {
-        int modifyTimeNanoseconds = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int modifyTimeNanoseconds = parseIntField();
         attributes.setModifyTimeNanoseconds(modifyTimeNanoseconds);
         LOGGER.debug("ModifyTimeNanoseconds: {}", modifyTimeNanoseconds);
     }
 
     private void parseOwnerGroup() {
-        int ownerLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int ownerLength = parseIntField();
         attributes.setOwnerLength(ownerLength);
         LOGGER.debug("Owner length: {}", ownerLength);
         String owner = parseByteString(ownerLength, StandardCharsets.UTF_8);
         attributes.setOwner(owner);
         LOGGER.debug("Owner: {}", () -> backslashEscapeString(owner));
 
-        int groupLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int groupLength = parseIntField();
         attributes.setGroupLength(groupLength);
         LOGGER.debug("Group length: {}", groupLength);
         String group = parseByteString(groupLength, StandardCharsets.UTF_8);
@@ -131,11 +130,11 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     }
 
     private void parseAcl() {
-        int aclLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int aclLength = parseIntField();
         attributes.setAclLength(aclLength);
         LOGGER.debug("AclLength: {}", aclLength);
 
-        int aclEntriesCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int aclEntriesCount = parseIntField();
         attributes.setAclEntriesCount(aclEntriesCount);
         LOGGER.debug("setAclEntriesCount: {}", aclEntriesCount);
 
@@ -152,7 +151,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     }
 
     private void parseExtendedAttributes() {
-        int extendedCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int extendedCount = parseIntField();
         attributes.setExtendedCount(extendedCount);
         LOGGER.debug("ExtendedCount: {}", extendedCount);
 

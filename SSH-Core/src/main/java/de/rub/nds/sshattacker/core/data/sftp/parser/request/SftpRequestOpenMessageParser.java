@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestOpenMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.holder.SftpFileAttributesParser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -36,7 +35,7 @@ public class SftpRequestOpenMessageParser
     }
 
     private void parsePFlags() {
-        int pFlags = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int pFlags = parseIntField();
         message.setPFlags(pFlags);
         LOGGER.debug("PFlags: {}", pFlags);
     }

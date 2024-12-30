@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
@@ -26,13 +25,13 @@ public class ChannelExtendedDataMessageSerializer
         LOGGER.debug(
                 "Data type: {}",
                 ExtendedChannelDataType.fromDataTypeCode(object.getDataTypeCode().getValue()));
-        output.appendInt(object.getDataTypeCode().getValue(), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(object.getDataTypeCode().getValue());
     }
 
     private static void serializeData(ChannelExtendedDataMessage object, SerializerStream output) {
         Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(dataLength);
         byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
         output.appendBytes(data);

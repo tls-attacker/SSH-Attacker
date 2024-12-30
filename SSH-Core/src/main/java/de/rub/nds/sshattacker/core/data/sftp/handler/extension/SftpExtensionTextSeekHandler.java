@@ -26,9 +26,7 @@ public class SftpExtensionTextSeekHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionTextSeek> getParser(byte[] array) {

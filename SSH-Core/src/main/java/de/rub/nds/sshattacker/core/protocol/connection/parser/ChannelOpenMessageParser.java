@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,7 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
     }
 
     private void parseChannelType() {
-        int channelTypeLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int channelTypeLength = parseIntField();
         message.setChannelTypeLength(channelTypeLength);
         LOGGER.debug("Channel type length: {}", channelTypeLength);
         String channelType = parseByteString(channelTypeLength, StandardCharsets.US_ASCII);
@@ -39,19 +38,19 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
     }
 
     private void parseSenderChannel() {
-        int senderChannelId = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int senderChannelId = parseIntField();
         message.setSenderChannelId(senderChannelId);
         LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
     private void parseWindowSize() {
-        int windowSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int windowSize = parseIntField();
         message.setWindowSize(windowSize);
         LOGGER.debug("Initial window size: {}", windowSize);
     }
 
     private void parsePacketSize() {
-        int packetSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int packetSize = parseIntField();
         message.setPacketSize(packetSize);
         LOGGER.debug("Maximum packet size: {}", packetSize);
     }

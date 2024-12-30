@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -26,7 +25,7 @@ public class UserAuthPkOkMessageSerializer extends SshMessageSerializer<UserAuth
             UserAuthPkOkMessage object, SerializerStream output) {
         Integer pubkeyAlgNameLength = object.getPubkeyAlgNameLength().getValue();
         LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
-        output.appendInt(pubkeyAlgNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(pubkeyAlgNameLength);
         String pubkeyAlgName = object.getPubkeyAlgName().getValue();
         LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
         output.appendString(pubkeyAlgName, StandardCharsets.US_ASCII);
@@ -35,7 +34,7 @@ public class UserAuthPkOkMessageSerializer extends SshMessageSerializer<UserAuth
     private static void serializePubkey(UserAuthPkOkMessage object, SerializerStream output) {
         Integer pubkeyLength = object.getPubkeyLength().getValue();
         LOGGER.debug("Pubkey length: {}", pubkeyLength);
-        output.appendInt(pubkeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(pubkeyLength);
         byte[] pubkey = object.getPubkey().getValue();
         LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
         output.appendBytes(pubkey);

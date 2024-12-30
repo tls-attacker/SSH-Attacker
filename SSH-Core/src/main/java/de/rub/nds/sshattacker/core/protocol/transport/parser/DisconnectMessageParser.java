@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
@@ -35,7 +34,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
+        message.setReasonCode(parseIntField());
         if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
             LOGGER.debug(
                     "Reason: {} (Code: {})",
@@ -47,7 +46,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseDescription() {
-        int descriptionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int descriptionLength = parseIntField();
         message.setDescriptionLength(descriptionLength);
         LOGGER.debug("Description length: {}", descriptionLength);
         String description = parseByteString(descriptionLength, StandardCharsets.UTF_8);
@@ -56,7 +55,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);

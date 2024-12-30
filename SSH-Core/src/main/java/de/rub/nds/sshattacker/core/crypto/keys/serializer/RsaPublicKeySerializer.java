@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -25,15 +24,9 @@ public class RsaPublicKeySerializer extends Serializer<CustomRsaPublicKey> {
          *   mpint     e
          *   mpint     n
          */
-        output.appendInt(
-                PublicKeyFormat.SSH_RSA.toString().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(PublicKeyFormat.SSH_RSA.toString(), StandardCharsets.US_ASCII);
-        byte[] encodedExponent = object.getPublicExponent().toByteArray();
-        output.appendInt(encodedExponent.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedExponent);
-        byte[] encodedModulus = object.getModulus().toByteArray();
-        output.appendInt(encodedModulus.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedModulus);
+        output.appendLengthPrefixedString(
+                PublicKeyFormat.SSH_RSA.toString(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedBigInteger(object.getPublicExponent());
+        output.appendLengthPrefixedBigInteger(object.getModulus());
     }
 }

@@ -44,43 +44,31 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
          */
 
         // Format identifier (ssh-rsa-cert-v01@openssh.com)
-        output.appendInt(
-                PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM
-                        .toString()
-                        .getBytes(StandardCharsets.US_ASCII)
-                        .length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(
+        output.appendLengthPrefixedString(
                 PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.toString(), StandardCharsets.US_ASCII);
 
         // Nonce
         byte[] nonce = object.getNonce();
-        output.appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(nonce);
+        output.appendLengthPrefixedBytes(nonce);
 
         // Public Exponent (e)
         byte[] encodedExponent = object.getPublicExponent().toByteArray();
-        output.appendInt(encodedExponent.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedExponent);
+        output.appendLengthPrefixedBytes(encodedExponent);
 
         // Modulus (n)
         byte[] encodedModulus = object.getModulus().toByteArray();
-        output.appendInt(encodedModulus.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedModulus);
+        output.appendLengthPrefixedBytes(encodedModulus);
 
         // Serial (uint64) -- using BigInteger instead of long
         output.appendBigInteger(
                 BigInteger.valueOf(object.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // Certificate type (uint32)
-        output.appendInt(Integer.parseInt(object.getCertType()), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(Integer.parseInt(object.getCertType()));
 
         // Key ID (string)
         String keyId = object.getKeyId();
-        output.appendInt(
-                keyId.getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(keyId, StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedString(keyId, StandardCharsets.US_ASCII);
 
         // Valid Principals (string list)
         String[] validPrincipals = object.getValidPrincipals();
@@ -98,10 +86,9 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
             principalsBuffer.flip();
             principalsBuffer.get(principalsSerialized);
 
-            output.appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(principalsSerialized);
+            output.appendLengthPrefixedBytes(principalsSerialized);
         } else {
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty principals list
+            output.appendInt(0); // Empty principals list
         }
 
         // Valid After (uint64) -- using BigInteger instead of long
@@ -124,11 +111,10 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         String reserved = object.getReserved();
         if (reserved != null) {
             byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
-            output.appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(reservedBytes);
+            output.appendLengthPrefixedBytes(reservedBytes);
         } else {
             // Assuming no reserved data, add an empty string field
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(0);
         }
 
         // Signature Key (The public key used to sign this certificate)
@@ -136,15 +122,13 @@ public class CertRsaPublicKeySerializer extends Serializer<CustomCertRsaPublicKe
         if (signatureKey == null) {
             throw new IllegalStateException("Signature Key is not set in the publicKey");
         }
-        output.appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(signatureKey);
+        output.appendLengthPrefixedBytes(signatureKey);
 
         // Signature (The actual signature on the certificate)
         byte[] signature = object.getSignature();
         if (signature == null) {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }
-        output.appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(signature);
+        output.appendLengthPrefixedBytes(signature);
     }
 }

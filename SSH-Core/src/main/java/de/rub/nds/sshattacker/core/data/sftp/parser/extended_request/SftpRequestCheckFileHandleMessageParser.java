@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCheckFileHandleMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class SftpRequestCheckFileHandleMessageParser
     }
 
     private void parseHashAlgorithms() {
-        int hashAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int hashAlgorithmsLength = parseIntField();
         message.setHashAlgorithmsLength(hashAlgorithmsLength);
         LOGGER.debug("HashAlgorithms length: {}", hashAlgorithmsLength);
         String hashAlgorithms = parseByteString(hashAlgorithmsLength, StandardCharsets.US_ASCII);
@@ -43,19 +42,19 @@ public class SftpRequestCheckFileHandleMessageParser
     }
 
     private void parseStartOffset() {
-        long startOffset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long startOffset = parseLongField();
         message.setStartOffset(startOffset);
         LOGGER.debug("StartOffset: {}", startOffset);
     }
 
     private void parseLength() {
-        long length = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long length = parseLongField();
         message.setLength(length);
         LOGGER.debug("Length: {}", length);
     }
 
     private void parseBlockSize() {
-        int blockSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int blockSize = parseIntField();
         message.setBlockSize(blockSize);
         LOGGER.debug("BlockSize: {}", blockSize);
     }

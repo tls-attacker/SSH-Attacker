@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestRenameMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +23,7 @@ public class SftpRequestRenameMessageSerializer
     private static void serializeNewPath(SftpRequestRenameMessage object, SerializerStream output) {
         Integer newPathLength = object.getNewPathLength().getValue();
         LOGGER.debug("NewPath length: {}", newPathLength);
-        output.appendInt(newPathLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(newPathLength);
         String newPath = object.getNewPath().getValue();
         LOGGER.debug("NewPath: {}", () -> backslashEscapeString(newPath));
         output.appendString(newPath, StandardCharsets.UTF_8);

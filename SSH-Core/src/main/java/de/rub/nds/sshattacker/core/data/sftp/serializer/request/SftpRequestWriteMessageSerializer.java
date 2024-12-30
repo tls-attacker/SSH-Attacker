@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWriteMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -22,13 +21,13 @@ public class SftpRequestWriteMessageSerializer
     private static void serializeOffset(SftpRequestWriteMessage object, SerializerStream output) {
         Long offset = object.getOffset().getValue();
         LOGGER.debug("Offset: {}", offset);
-        output.appendLong(offset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(offset);
     }
 
     private static void serializeData(SftpRequestWriteMessage object, SerializerStream output) {
         Integer dataLength = object.getDataLength().getValue();
         LOGGER.debug("Data length: {}", dataLength);
-        output.appendInt(dataLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(dataLength);
         byte[] data = object.getData().getValue();
         LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
         output.appendBytes(data);

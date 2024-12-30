@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import java.nio.charset.StandardCharsets;
@@ -24,9 +23,7 @@ public class ChannelRequestPtyMessageSerializer
             ChannelRequestPtyMessage object, SerializerStream output) {
         LOGGER.debug(
                 "TERM environment variable length: {}", object.getTermEnvVariable().getValue());
-        output.appendInt(
-                object.getTermEnvVariableLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(object.getTermEnvVariableLength().getValue());
         LOGGER.debug("TERM environment variable: {}", object.getTermEnvVariable().getValue());
         output.appendString(object.getTermEnvVariable().getValue(), StandardCharsets.UTF_8);
     }
@@ -35,35 +32,35 @@ public class ChannelRequestPtyMessageSerializer
             ChannelRequestPtyMessage object, SerializerStream output) {
         Integer widthCharacters = object.getWidthCharacters().getValue();
         LOGGER.debug("Terminal width in characters: {}", widthCharacters);
-        output.appendInt(widthCharacters, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(widthCharacters);
     }
 
     private static void serializeHeightRows(
             ChannelRequestPtyMessage object, SerializerStream output) {
         Integer heightRows = object.getHeightRows().getValue();
         LOGGER.debug("Terminal height in rows: {}", heightRows);
-        output.appendInt(heightRows, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(heightRows);
     }
 
     private static void serializeWidthPixels(
             ChannelRequestPtyMessage object, SerializerStream output) {
         Integer widthPixels = object.getWidthPixels().getValue();
         LOGGER.debug("Terminal width in pixels: {}", widthPixels);
-        output.appendInt(widthPixels, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(widthPixels);
     }
 
     private static void serializeHeightPixels(
             ChannelRequestPtyMessage object, SerializerStream output) {
         Integer heightPixels = object.getHeightPixels().getValue();
         LOGGER.debug("Terminal height in pixels: {}", heightPixels);
-        output.appendInt(heightPixels, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(heightPixels);
     }
 
     private static void serializeEncodedTerminalModes(
             ChannelRequestPtyMessage object, SerializerStream output) {
         Integer encodedTerminalModesLength = object.getEncodedTerminalModesLength().getValue();
         LOGGER.debug("Encoded terminal modes length: {}", encodedTerminalModesLength);
-        output.appendInt(encodedTerminalModesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(encodedTerminalModesLength);
         byte[] encodedTerminalModes = object.getEncodedTerminalModes().getValue();
         LOGGER.debug(
                 "Endcoded terminal modes: {}",

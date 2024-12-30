@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestCopyDataMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -23,21 +22,21 @@ public class SftpRequestCopyDataMessageSerializer
             SftpRequestCopyDataMessage object, SerializerStream output) {
         Long readFromOffset = object.getReadFromOffset().getValue();
         LOGGER.debug("ReadFromOffset: {}", readFromOffset);
-        output.appendLong(readFromOffset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(readFromOffset);
     }
 
     private static void serializeReadDataLength(
             SftpRequestCopyDataMessage object, SerializerStream output) {
         Long readDataLength = object.getReadDataLength().getValue();
         LOGGER.debug("ReadDataLength: {}", readDataLength);
-        output.appendLong(readDataLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(readDataLength);
     }
 
     private static void serializeWriteToHandle(
             SftpRequestCopyDataMessage object, SerializerStream output) {
         Integer writeToHandleLength = object.getWriteToHandleLength().getValue();
         LOGGER.debug("WriteToHandle length: {}", writeToHandleLength);
-        output.appendInt(writeToHandleLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(writeToHandleLength);
         byte[] writeToHandle = object.getWriteToHandle().getValue();
         LOGGER.debug("WriteToHandle: {}", () -> ArrayConverter.bytesToRawHexString(writeToHandle));
         output.appendBytes(writeToHandle);
@@ -47,7 +46,7 @@ public class SftpRequestCopyDataMessageSerializer
             SftpRequestCopyDataMessage object, SerializerStream output) {
         Long writeToOffset = object.getWriteToOffset().getValue();
         LOGGER.debug("WriteToOffset: {}", writeToOffset);
-        output.appendLong(writeToOffset, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(writeToOffset);
     }
 
     @Override

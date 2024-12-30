@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWithHandleMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +22,7 @@ public abstract class SftpRequestWithHandleMessageSerializer<
     private void serializeHandle(T object, SerializerStream output) {
         Integer handleLength = object.getHandleLength().getValue();
         LOGGER.debug("Handle length: {}", handleLength);
-        output.appendInt(handleLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(handleLength);
         byte[] handle = object.getHandle().getValue();
         LOGGER.debug("Handle: {}", () -> ArrayConverter.bytesToRawHexString(handle));
         output.appendBytes(handle);

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -39,13 +38,13 @@ public class DelayCompressionExtensionParser
     }
 
     private void parseCompressionMethodsLength() {
-        int compressionMethodsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int compressionMethodsLength = parseIntField();
         extension.setCompressionMethodsLength(compressionMethodsLength);
         LOGGER.debug("Compression methods length: {}", compressionMethodsLength);
     }
 
     private void parseCompressionMethodsClientToServer() {
-        int compressionMethodsClientToServerLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int compressionMethodsClientToServerLength = parseIntField();
         extension.setCompressionMethodsClientToServerLength(compressionMethodsClientToServerLength);
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
@@ -58,7 +57,7 @@ public class DelayCompressionExtensionParser
     }
 
     private void parseCompressionMethodsServerToClient() {
-        int compressionMethodsServerToClientLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int compressionMethodsServerToClientLength = parseIntField();
         extension.setCompressionMethodsServerToClientLength(compressionMethodsServerToClientLength);
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",

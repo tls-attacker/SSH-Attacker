@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.packet.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.packet.DataPacket;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +23,7 @@ public class DataPacketSerializer extends AbstractDataPacketSerializer<DataPacke
 
         Integer length = object.getLength().getValue();
         LOGGER.debug("Packet length: {}", length);
-        output.appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(length);
 
         byte[] payload = object.getPayload().getValue();
         LOGGER.trace("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));

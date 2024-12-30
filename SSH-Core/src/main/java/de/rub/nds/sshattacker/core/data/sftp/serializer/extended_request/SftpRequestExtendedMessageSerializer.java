@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.request.SftpRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -25,7 +24,7 @@ public abstract class SftpRequestExtendedMessageSerializer<T extends SftpRequest
     private void serializeExtendedRequestName(T object, SerializerStream output) {
         Integer extendedRequestNameLength = object.getExtendedRequestNameLength().getValue();
         LOGGER.debug("ExtendedRequestName length: {}", extendedRequestNameLength);
-        output.appendInt(extendedRequestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(extendedRequestNameLength);
         String extendedRequestName = object.getExtendedRequestName().getValue();
         LOGGER.debug("ExtendedRequestName: {}", () -> backslashEscapeString(extendedRequestName));
         output.appendString(extendedRequestName, StandardCharsets.US_ASCII);

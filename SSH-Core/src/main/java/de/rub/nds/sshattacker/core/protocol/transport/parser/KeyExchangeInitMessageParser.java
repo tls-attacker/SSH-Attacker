@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -41,7 +40,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseKeyExchangeAlgorithms() {
-        int keyExchangeAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int keyExchangeAlgorithmsLength = parseIntField();
         message.setKeyExchangeAlgorithmsLength(keyExchangeAlgorithmsLength);
         LOGGER.debug("Key exchange algorithms length: {}", keyExchangeAlgorithmsLength);
         String keyExchangeAlgorithms =
@@ -52,7 +51,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseServerHostKeyAlgorithms() {
-        int serverHostKeyAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int serverHostKeyAlgorithmsLength = parseIntField();
         message.setServerHostKeyAlgorithmsLength(serverHostKeyAlgorithmsLength);
         LOGGER.debug("Server host key algorithms length: {}", serverHostKeyAlgorithmsLength);
         String serverHostKeyAlgorithms =
@@ -64,8 +63,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseEncryptionAlgorithmsClientToServer() {
-        int encryptionAlgorithmsClientToServerLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int encryptionAlgorithmsClientToServerLength = parseIntField();
         message.setEncryptionAlgorithmsClientToServerLength(
                 encryptionAlgorithmsClientToServerLength);
         LOGGER.debug(
@@ -81,8 +79,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseEncryptionAlgorithmsServerToClient() {
-        int encryptionAlgorithmsServerToClientLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int encryptionAlgorithmsServerToClientLength = parseIntField();
         message.setEncryptionAlgorithmsServerToClientLength(
                 encryptionAlgorithmsServerToClientLength);
         LOGGER.debug(
@@ -98,8 +95,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseMacAlgorithmsClientToServer() {
-        int macAlgorithmsClientToServerLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int macAlgorithmsClientToServerLength = parseIntField();
         message.setMacAlgorithmsClientToServerLength(macAlgorithmsClientToServerLength);
         LOGGER.debug(
                 "MAC algorithms length (client to server): {}", macAlgorithmsClientToServerLength);
@@ -112,8 +108,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseMacAlgorithmsServerToClient() {
-        int macAlgorithmsServerToClientLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int macAlgorithmsServerToClientLength = parseIntField();
         message.setMacAlgorithmsServerToClientLength(macAlgorithmsServerToClientLength);
         LOGGER.debug(
                 "MAC algorithms length (server to client): {}", macAlgorithmsServerToClientLength);
@@ -126,8 +121,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseCompressionMethodsClientToServer() {
-        int compressionMethodsClientToServerLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int compressionMethodsClientToServerLength = parseIntField();
         message.setCompressionMethodsClientToServerLength(compressionMethodsClientToServerLength);
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
@@ -141,8 +135,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseCompressionMethodsServerToClient() {
-        int compressionMethodsServerToClientLength =
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int compressionMethodsServerToClientLength = parseIntField();
         message.setCompressionMethodsServerToClientLength(compressionMethodsServerToClientLength);
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
@@ -156,7 +149,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseLanguagesClientToServer() {
-        int languagesClientToServerLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languagesClientToServerLength = parseIntField();
         message.setLanguagesClientToServerLength(languagesClientToServerLength);
         LOGGER.debug("Languages length (client to server): {}", languagesClientToServerLength);
         String languagesClientToServer =
@@ -168,7 +161,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseLanguagesServerToClient() {
-        int languagesServerToClientLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languagesServerToClientLength = parseIntField();
         message.setLanguagesServerToClientLength(languagesServerToClientLength);
         LOGGER.debug("Languages length (server to client): {}", languagesServerToClientLength);
         String languagesServerToClient =
@@ -180,7 +173,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseFirstKeyExchangePacketFollows() {
-        byte firstKeyExchangePacketFollows = parseByteField(1);
+        byte firstKeyExchangePacketFollows = parseByteField();
         message.setFirstKeyExchangePacketFollows(firstKeyExchangePacketFollows);
         LOGGER.debug(
                 "First key exchange packet follows: {}",
@@ -188,7 +181,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseReserved() {
-        int reserved = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int reserved = parseIntField();
         message.setReserved(reserved);
         LOGGER.debug("Reserved: {}", reserved);
     }

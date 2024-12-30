@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseLimitsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
 import org.apache.logging.log4j.LogManager;
@@ -33,19 +32,19 @@ public class SftpResponseLimitsMessageParser
 
     @Override
     protected void parseResponseSpecificContents() {
-        long maximumPacketLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long maximumPacketLength = parseLongField();
         message.setMaximumPacketLength(maximumPacketLength);
         LOGGER.debug("MaximumPacketLength: {}", maximumPacketLength);
 
-        long maximumReadLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long maximumReadLength = parseLongField();
         message.setMaximumReadLength(maximumReadLength);
         LOGGER.debug("MaximumReadLength: {}", maximumReadLength);
 
-        long maximumWriteLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long maximumWriteLength = parseLongField();
         message.setMaximumWriteLength(maximumWriteLength);
         LOGGER.debug("MaximumWriteLength: {}", maximumWriteLength);
 
-        long maximumOpenHandles = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long maximumOpenHandles = parseLongField();
         message.setMaximumOpenHandles(maximumOpenHandles);
         LOGGER.debug("MaximumOpenHandles: {}", maximumOpenHandles);
     }

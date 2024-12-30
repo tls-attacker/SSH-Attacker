@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseLimitsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -24,18 +23,18 @@ public class SftpResponseLimitsMessageSerializer
             SftpResponseLimitsMessage object, SerializerStream output) {
         Long maximumPacketLength = object.getMaximumPacketLength().getValue();
         LOGGER.debug("MaximumPacketLength: {}", maximumPacketLength);
-        output.appendLong(maximumPacketLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumPacketLength);
 
         Long maximumReadLength = object.getMaximumReadLength().getValue();
         LOGGER.debug("MaximumReadLength: {}", maximumReadLength);
-        output.appendLong(maximumReadLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumReadLength);
 
         Long maximumWriteLength = object.getMaximumWriteLength().getValue();
         LOGGER.debug("MaximumWriteLength: {}", maximumWriteLength);
-        output.appendLong(maximumWriteLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumWriteLength);
 
         Long maximumOpenHandles = object.getMaximumOpenHandles().getValue();
         LOGGER.debug("MaximumOpenHandles: {}", maximumOpenHandles);
-        output.appendLong(maximumOpenHandles, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumOpenHandles);
     }
 }

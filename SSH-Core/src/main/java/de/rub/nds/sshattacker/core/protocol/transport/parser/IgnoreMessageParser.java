@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +31,7 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
     }
 
     private void parseData() {
-        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int dataLength = parseIntField();
         message.setDataLength(dataLength);
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);

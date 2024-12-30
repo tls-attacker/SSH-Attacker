@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
@@ -26,7 +25,7 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
     private void serializeRequestName(T object, SerializerStream output) {
         Integer requestNameLength = object.getRequestNameLength().getValue();
         LOGGER.debug("Request name length: {}", requestNameLength);
-        output.appendInt(requestNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(requestNameLength);
         String requestName = object.getRequestName().getValue();
         LOGGER.debug("Request name: {}", () -> backslashEscapeString(requestName));
         output.appendString(requestName, StandardCharsets.US_ASCII);

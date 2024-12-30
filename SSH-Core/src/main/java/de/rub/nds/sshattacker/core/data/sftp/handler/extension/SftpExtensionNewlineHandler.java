@@ -25,9 +25,7 @@ public class SftpExtensionNewlineHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionNewlineParser getParser(byte[] array) {

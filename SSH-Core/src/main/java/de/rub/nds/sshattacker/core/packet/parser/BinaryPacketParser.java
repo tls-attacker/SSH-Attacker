@@ -101,7 +101,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = packet_length
          *  byte[m] auth_tag        ; m = length of authentication tag
          */
-        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        binaryPacket.setLength(parseIntField());
         binaryPacket.setCiphertext(parseByteArrayField(binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getEncryptionAlgorithm().getAuthTagSize()));
@@ -141,7 +141,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = packet_length
          *  byte[m] mac             ; m = length of mac output
          */
-        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        binaryPacket.setLength(parseIntField());
         binaryPacket.setCiphertext(parseByteArrayField(binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
@@ -180,7 +180,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
-                ArrayConverter.bytesToInt(
+                ArrayConverter.fourBytesToInt(
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(

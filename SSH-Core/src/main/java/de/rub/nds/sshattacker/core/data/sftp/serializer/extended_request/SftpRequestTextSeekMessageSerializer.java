@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestTextSeekMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,7 @@ public class SftpRequestTextSeekMessageSerializer
             SftpRequestTextSeekMessage object, SerializerStream output) {
         Long lineNumber = object.getLineNumber().getValue();
         LOGGER.debug("LineNumber: {}", lineNumber);
-        output.appendLong(lineNumber, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(lineNumber);
     }
 
     @Override

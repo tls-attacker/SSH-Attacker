@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ public class ChannelRequestBreakMessageParser
     }
 
     private void parseBreakLength() {
-        int breakLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int breakLength = parseIntField();
         message.setBreakLength(breakLength);
         LOGGER.debug("Break length in milliseconds: {}", breakLength);
     }

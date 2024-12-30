@@ -27,9 +27,7 @@ public class SftpExtensionGetTempFolderHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionGetTempFolder> getParser(byte[] array) {

@@ -53,8 +53,7 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
                 PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM
                         .toString()
                         .getBytes(StandardCharsets.US_ASCII)
-                        .length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                        .length);
         output.appendString(
                 PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM.toString(),
                 StandardCharsets.US_ASCII);
@@ -62,18 +61,15 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         // 2. Nonce
         byte[] nonce = object.getNonce();
         if (nonce != null) {
-            output.appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(nonce);
+            output.appendLengthPrefixedBytes(nonce);
         } else {
-            output.appendInt(
-                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing nonce
+            output.appendInt(0); // Fallback for missing nonce
         }
 
         // 3. Public Key (Corresponds to "pk" in the Ed25519 format)
         byte[] publicKeyBytes = object.getCoordinate();
         if (publicKeyBytes != null) {
-            output.appendInt(publicKeyBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(publicKeyBytes);
+            output.appendLengthPrefixedBytes(publicKeyBytes);
         } else {
             throw new IllegalStateException("Public Key is not set in the publicKey object");
         }
@@ -83,18 +79,14 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
                 BigInteger.valueOf(object.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // 5. Certificate type (uint32)
-        output.appendInt(Integer.parseInt(object.getCertType()), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(Integer.parseInt(object.getCertType()));
 
         // 6. Key ID (string)
         String keyId = object.getKeyId();
         if (keyId != null) {
-            output.appendInt(
-                    keyId.getBytes(StandardCharsets.US_ASCII).length,
-                    DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendString(keyId, StandardCharsets.US_ASCII);
+            output.appendLengthPrefixedString(keyId, StandardCharsets.US_ASCII);
         } else {
-            output.appendInt(
-                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Fallback for missing Key ID
+            output.appendInt(0); // Fallback for missing Key ID
         }
 
         // 7. Valid Principals (string list)
@@ -114,10 +106,9 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
             principalsBuffer.flip();
             principalsBuffer.get(principalsSerialized);
 
-            output.appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(principalsSerialized);
+            output.appendLengthPrefixedBytes(principalsSerialized);
         } else {
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No valid principals
+            output.appendInt(0); // No valid principals
         }
 
         // 8. Valid After (uint64) - Convert long to BigInteger
@@ -140,17 +131,15 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         String reserved = object.getReserved();
         if (reserved != null) {
             byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
-            output.appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(reservedBytes);
+            output.appendLengthPrefixedBytes(reservedBytes);
         } else {
-            output.appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // No reserved field
+            output.appendInt(0); // No reserved field
         }
 
         // 13. Signature Key (The public key used to sign this certificate)
         byte[] signatureKey = object.getSignatureKey();
         if (signatureKey != null) {
-            output.appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(signatureKey);
+            output.appendLengthPrefixedBytes(signatureKey);
         } else {
             throw new IllegalStateException("Signature Key is not set in the publicKey");
         }
@@ -158,8 +147,7 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         // 14. Signature (The actual signature on the certificate)
         byte[] signature = object.getSignature();
         if (signature != null) {
-            output.appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(signature);
+            output.appendLengthPrefixedBytes(signature);
         } else {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }

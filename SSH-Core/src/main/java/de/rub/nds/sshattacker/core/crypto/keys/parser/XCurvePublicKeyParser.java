@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
@@ -29,7 +28,7 @@ public class XCurvePublicKeyParser
 
     @Override
     public SshPublicKey<XCurveEcPublicKey, XCurveEcPrivateKey> parse() {
-        int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int formatLength = parseIntField();
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         NamedEcGroup group;
         if (format.equals(PublicKeyFormat.SSH_ED25519.getName())) {
@@ -43,7 +42,7 @@ public class XCurvePublicKeyParser
             group = NamedEcGroup.CURVE25519;
         }
 
-        int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int publicKeyLength = parseIntField();
         byte[] publicKeyBytes = parseByteArrayField(publicKeyLength);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
 

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class UserAuthKeyboardInteractiveMessageSerializer
             UserAuthKeyboardInteractiveMessage object, SerializerStream output) {
         Integer languageTagLength = object.getLanguageTagLength().getValue();
         LOGGER.debug("Language tag length: {}", languageTagLength);
-        output.appendInt(languageTagLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languageTagLength);
         String languageTag = object.getLanguageTag().getValue();
         LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
         output.appendString(languageTag, StandardCharsets.US_ASCII);
@@ -35,7 +34,7 @@ public class UserAuthKeyboardInteractiveMessageSerializer
             UserAuthKeyboardInteractiveMessage object, SerializerStream output) {
         Integer subMethodsLength = object.getSubMethodsLength().getValue();
         LOGGER.debug("Sub methods length: {}", subMethodsLength);
-        output.appendInt(subMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(subMethodsLength);
         String subMethods = object.getSubMethods().getValue();
         LOGGER.debug("Sub methods: {}", () -> backslashEscapeString(subMethods));
         output.appendString(subMethods, StandardCharsets.UTF_8);

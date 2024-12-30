@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
     }
 
     private void parseUserName() {
-        int userNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int userNameLength = parseIntField();
         message.setUserNameLength(userNameLength);
         LOGGER.debug("Username length: {}", userNameLength);
         String userName = parseByteString(userNameLength, StandardCharsets.US_ASCII);
@@ -39,7 +38,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
     }
 
     private void parseServiceName() {
-        int serviceNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int serviceNameLength = parseIntField();
         message.setServiceNameLength(serviceNameLength);
         LOGGER.debug("Servicename length: {}", serviceNameLength);
         String serviceName = parseByteString(serviceNameLength, StandardCharsets.US_ASCII);
@@ -48,7 +47,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
     }
 
     private void parseMethodName() {
-        int methodNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int methodNameLength = parseIntField();
         message.setMethodNameLength(methodNameLength);
         LOGGER.debug("Methodname length: {}", methodNameLength);
         String methodName = parseByteString(methodNameLength, StandardCharsets.US_ASCII);

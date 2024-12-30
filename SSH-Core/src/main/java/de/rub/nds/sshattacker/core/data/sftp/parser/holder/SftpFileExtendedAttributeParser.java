@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileExtendedAttribute;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +31,7 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
     }
 
     private void parseType() {
-        int typeLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int typeLength = parseIntField();
         attribute.setTypeLength(typeLength);
         LOGGER.debug("Type length: {}", typeLength);
         String type = parseByteString(typeLength, StandardCharsets.US_ASCII);
@@ -41,7 +40,7 @@ public class SftpFileExtendedAttributeParser extends Parser<SftpFileExtendedAttr
     }
 
     private void parseData() {
-        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int dataLength = parseIntField();
         attribute.setDataLength(dataLength);
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpIdEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -21,7 +20,7 @@ public class SftpIdEntrySerializer extends Serializer<SftpIdEntry> {
     private static void serializeId(SftpIdEntry object, SerializerStream output) {
         Integer id = object.getId().getValue();
         LOGGER.debug("Id: {}", id);
-        output.appendInt(id, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(id);
     }
 
     @Override

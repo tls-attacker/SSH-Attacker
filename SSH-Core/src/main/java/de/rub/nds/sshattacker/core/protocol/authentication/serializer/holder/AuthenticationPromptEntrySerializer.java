@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -30,7 +29,7 @@ public class AuthenticationPromptEntrySerializer extends Serializer<Authenticati
     private static void serializePrompt(AuthenticationPromptEntry object, SerializerStream output) {
         Integer promptLength = object.getPromptLength().getValue();
         LOGGER.debug("Prompt length: {}", promptLength);
-        output.appendInt(promptLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(promptLength);
         String prompt = object.getPrompt().getValue();
         LOGGER.debug("Prompt: {}", () -> backslashEscapeString(prompt));
         output.appendString(prompt, StandardCharsets.UTF_8);

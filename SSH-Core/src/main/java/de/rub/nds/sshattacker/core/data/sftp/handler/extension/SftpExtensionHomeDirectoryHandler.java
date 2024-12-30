@@ -27,9 +27,7 @@ public class SftpExtensionHomeDirectoryHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionHomeDirectory> getParser(byte[] array) {

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseHandleMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,7 @@ public class SftpResponseHandleMessageParser
     }
 
     private void parseHandle() {
-        int handleLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int handleLength = parseIntField();
         message.setHandleLength(handleLength);
         LOGGER.debug("Handle length: {}", handleLength);
         byte[] handle = parseByteArrayField(handleLength);

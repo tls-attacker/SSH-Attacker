@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestTextSeekMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +30,7 @@ public class SftpRequestTextSeekMessageParser
     }
 
     private void parseLineNumber() {
-        long lineNumber = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long lineNumber = parseLongField();
         message.setLineNumber(lineNumber);
         LOGGER.debug("LineNumber: {}", lineNumber);
     }

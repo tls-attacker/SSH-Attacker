@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +28,7 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
     }
 
     private void parseServiceName() {
-        int serviceNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int serviceNameLength = parseIntField();
         message.setServiceNameLength(serviceNameLength);
         LOGGER.debug("Service name length: {}", serviceNameLength);
         String serviceName = parseByteString(serviceNameLength, StandardCharsets.US_ASCII);

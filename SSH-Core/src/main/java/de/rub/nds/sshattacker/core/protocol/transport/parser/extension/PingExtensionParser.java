@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +35,7 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
     }
 
     private void parseVersionLength() {
-        int versionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int versionLength = parseIntField();
         extension.setVersionLength(versionLength);
         LOGGER.debug("Version length: {}", versionLength);
     }

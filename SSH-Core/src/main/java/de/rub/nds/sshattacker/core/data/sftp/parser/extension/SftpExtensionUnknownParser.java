@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +26,7 @@ public class SftpExtensionUnknownParser extends SftpAbstractExtensionParser<Sftp
 
     @Override
     protected void parseExtensionValue() {
-        extension.setValueLength(parseIntField(DataFormatConstants.UINT32_SIZE));
+        extension.setValueLength(parseIntField());
         extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
         LOGGER.debug(
                 "Extension value: {}",

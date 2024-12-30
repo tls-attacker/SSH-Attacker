@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.packet.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -29,7 +28,7 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
         if (!encryptedFields.contains(BinaryPacketField.PACKET_LENGTH)) {
             Integer length = object.getLength().getValue();
             LOGGER.debug("Packet length: {}", length);
-            output.appendInt(length, BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+            output.appendInt(length);
         }
         if (!encryptedFields.contains(BinaryPacketField.PADDING_LENGTH)) {
             Byte paddingLength = object.getPaddingLength().getValue();

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
@@ -32,7 +31,7 @@ public class HybridKeyExchangeReplyMessageSerializer
             HybridKeyExchangeReplyMessage object, SerializerStream output) {
         Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
-        output.appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(hostKeyBytesLength);
 
         byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
         LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
@@ -42,10 +41,9 @@ public class HybridKeyExchangeReplyMessageSerializer
     private void serializeHybridKey(HybridKeyExchangeReplyMessage object, SerializerStream output) {
         int length = object.getConcatenatedHybridKeysLength().getValue();
         LOGGER.debug("Hybrid Key (server) length: {}", length);
-        output.appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(length);
 
         byte[] keys = object.getConcatenatedHybridKeys().getValue();
-        ;
         LOGGER.debug("Hybrid Key (server): {}", () -> ArrayConverter.bytesToHexString(keys));
         output.appendBytes(keys);
     }
@@ -54,7 +52,7 @@ public class HybridKeyExchangeReplyMessageSerializer
             HybridKeyExchangeReplyMessage object, SerializerStream output) {
         Integer signatureLength = object.getSignatureLength().getValue();
         LOGGER.debug("Signature length: {}", signatureLength);
-        output.appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(signatureLength);
         output.appendBytes(object.getSignature().getValue());
         LOGGER.debug("Signature: {}", object.getSignature());
     }

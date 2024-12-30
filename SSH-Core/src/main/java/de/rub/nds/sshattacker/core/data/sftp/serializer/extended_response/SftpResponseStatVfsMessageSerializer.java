@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseStatVfsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.response.SftpResponseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -24,46 +23,46 @@ public class SftpResponseStatVfsMessageSerializer
             SftpResponseStatVfsMessage object, SerializerStream output) {
         Long blockSize = object.getBlockSize().getValue();
         LOGGER.debug("BlockSize: {}", blockSize);
-        output.appendLong(blockSize, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(blockSize);
 
         Long fundamentalBlockSize = object.getFundamentalBlockSize().getValue();
         LOGGER.debug("FundamentalBlockSize: {}", fundamentalBlockSize);
-        output.appendLong(fundamentalBlockSize, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(fundamentalBlockSize);
 
         Long countBlocks = object.getCountBlocks().getValue();
         LOGGER.debug("CountBlocks: {}", countBlocks);
-        output.appendLong(countBlocks, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(countBlocks);
 
         Long freeBlocks = object.getFreeBlocks().getValue();
         LOGGER.debug("FreeBlocks: {}", freeBlocks);
-        output.appendLong(freeBlocks, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(freeBlocks);
 
         Long freeBlocksNonRoot = object.getFreeBlocksNonRoot().getValue();
         LOGGER.debug("FreeBlocksNonRoot: {}", freeBlocksNonRoot);
-        output.appendLong(freeBlocksNonRoot, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(freeBlocksNonRoot);
 
         Long fileInodes = object.getFileInodes().getValue();
         LOGGER.debug("FileInodes: {}", fileInodes);
-        output.appendLong(fileInodes, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(fileInodes);
 
         Long freeInodes = object.getFreeInodes().getValue();
         LOGGER.debug("FreeInodes: {}", freeInodes);
-        output.appendLong(freeInodes, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(freeInodes);
 
         Long freeInodesNonRoot = object.getFreeInodesNonRoot().getValue();
         LOGGER.debug("FreeInodesNonRoot: {}", freeInodesNonRoot);
-        output.appendLong(freeInodesNonRoot, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(freeInodesNonRoot);
 
         Long systemId = object.getSystemId().getValue();
         LOGGER.debug("SystemId: {}", systemId);
-        output.appendLong(systemId, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(systemId);
 
         Long flags = object.getFlags().getValue();
         LOGGER.debug("Flags: {}", flags);
-        output.appendLong(flags, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(flags);
 
         Long maximumFilenameLength = object.getMaximumFilenameLength().getValue();
         LOGGER.debug("MaximumFilenameLength: {}", maximumFilenameLength);
-        output.appendLong(maximumFilenameLength, DataFormatConstants.UINT64_SIZE);
+        output.appendLong(maximumFilenameLength);
     }
 }

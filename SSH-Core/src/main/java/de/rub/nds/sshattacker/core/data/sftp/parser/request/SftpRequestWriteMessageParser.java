@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestWriteMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,13 +31,13 @@ public class SftpRequestWriteMessageParser
     }
 
     private void parseOffset() {
-        long offset = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long offset = parseLongField();
         message.setOffset(offset);
         LOGGER.debug("Offset: {}", offset);
     }
 
     private void parseData() {
-        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int dataLength = parseIntField();
         message.setDataLength(dataLength);
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);

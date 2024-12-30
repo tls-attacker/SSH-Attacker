@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestVendorIdMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class SftpRequestVendorIdMessageParser
     }
 
     private void parseVendorName() {
-        int vendorNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int vendorNameLength = parseIntField();
         message.setVendorNameLength(vendorNameLength);
         LOGGER.debug("VendorName length: {}", vendorNameLength);
         String vendorName = parseByteString(vendorNameLength, StandardCharsets.UTF_8);
@@ -43,7 +42,7 @@ public class SftpRequestVendorIdMessageParser
     }
 
     private void parseProductName() {
-        int productNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int productNameLength = parseIntField();
         message.setProductNameLength(productNameLength);
         LOGGER.debug("ProductName length: {}", productNameLength);
         String productName = parseByteString(productNameLength, StandardCharsets.UTF_8);
@@ -52,7 +51,7 @@ public class SftpRequestVendorIdMessageParser
     }
 
     private void parseProductVersion() {
-        int productVersionLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int productVersionLength = parseIntField();
         message.setProductVersionLength(productVersionLength);
         LOGGER.debug("ProductVersion length: {}", productVersionLength);
         String productVersion = parseByteString(productVersionLength, StandardCharsets.UTF_8);
@@ -61,7 +60,7 @@ public class SftpRequestVendorIdMessageParser
     }
 
     private void parseProductBuildNumber() {
-        long productBuildNumber = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long productBuildNumber = parseLongField();
         message.setProductBuildNumber(productBuildNumber);
         LOGGER.debug("ProductBuildNumber: {}", productBuildNumber);
     }

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +24,7 @@ public class ChannelRequestSignalMessageSerializer
             ChannelRequestSignalMessage object, SerializerStream output) {
         Integer signalNameLength = object.getSignalNameLength().getValue();
         LOGGER.debug("Signal name length: {}", signalNameLength);
-        output.appendInt(signalNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(signalNameLength);
         String signalName = object.getSignalName().getValue();
         LOGGER.debug("Signal name: {}", () -> backslashEscapeString(signalName));
         output.appendString(signalName, StandardCharsets.UTF_8);

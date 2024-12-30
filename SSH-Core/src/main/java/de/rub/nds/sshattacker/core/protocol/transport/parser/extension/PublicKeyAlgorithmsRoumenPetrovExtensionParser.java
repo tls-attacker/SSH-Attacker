@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +37,7 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionParser
     }
 
     private void parsePublicKeyAlgorithmsLength() {
-        int publicKeyAlgorithmsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int publicKeyAlgorithmsLength = parseIntField();
         extension.setPublicKeyAlgorithmsLength(publicKeyAlgorithmsLength);
         LOGGER.debug("Public key algorithms length: {}", publicKeyAlgorithmsLength);
     }

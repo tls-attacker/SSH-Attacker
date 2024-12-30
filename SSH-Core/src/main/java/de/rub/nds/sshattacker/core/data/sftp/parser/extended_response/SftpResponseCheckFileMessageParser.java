@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseCheckFileMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +35,7 @@ public class SftpResponseCheckFileMessageParser
     }
 
     private void parseUsedHashAlgorithm() {
-        int usedHashAlgorithmLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int usedHashAlgorithmLength = parseIntField();
         message.setUsedHashAlgorithmLength(usedHashAlgorithmLength);
         LOGGER.debug("UsedHashAlgorithm length: {}", usedHashAlgorithmLength);
         String usedHashAlgorithm =

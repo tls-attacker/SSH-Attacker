@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,7 +60,7 @@ public class PacketGCMCipher extends PacketCipher {
                         0,
                         4);
         ivCtr =
-                Converter.byteArrayToLong(
+                ArrayConverter.eigthBytesToLong(
                         Arrays.copyOfRange(
                                 mode == CipherMode.ENCRYPT
                                         ? keySet.getWriteIv(getLocalConnectionEndType())
@@ -91,7 +90,7 @@ public class PacketGCMCipher extends PacketCipher {
                         packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
         computations.setIv(
-                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
+                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToEightBytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         byte[] authenticatedCiphertext =
@@ -125,7 +124,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToEightBytes(ivCtr));
         packet.setCiphertext(
                 cipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
         ivCtr++;
@@ -142,7 +141,7 @@ public class PacketGCMCipher extends PacketCipher {
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
 
         computations.setIv(
-                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
+                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToEightBytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         try {
@@ -169,7 +168,7 @@ public class PacketGCMCipher extends PacketCipher {
 
         DecryptionParser parser =
                 new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
-        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
@@ -185,7 +184,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToEightBytes(ivCtr));
         try {
             packet.setCompressedPayload(
                     cipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));

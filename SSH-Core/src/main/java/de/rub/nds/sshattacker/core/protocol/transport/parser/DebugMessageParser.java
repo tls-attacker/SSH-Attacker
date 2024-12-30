@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -35,13 +34,13 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
     }
 
     private void parseAlwaysDisplay() {
-        byte alwaysDisplay = parseByteField(1);
+        byte alwaysDisplay = parseByteField();
         message.setAlwaysDisplay(alwaysDisplay);
         LOGGER.debug("Always display: {}", Converter.byteToBoolean(alwaysDisplay));
     }
 
     private void parseMessage() {
-        int messageLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int messageLength = parseIntField();
         message.setMessageLength(messageLength);
         LOGGER.debug("Message length: {}", messageLength);
         String messageStr = parseByteString(messageLength, StandardCharsets.UTF_8);
@@ -50,7 +49,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);

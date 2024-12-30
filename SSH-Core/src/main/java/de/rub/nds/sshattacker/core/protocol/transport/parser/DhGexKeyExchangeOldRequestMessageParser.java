@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +31,7 @@ public class DhGexKeyExchangeOldRequestMessageParser
     }
 
     private void parsePreferredGroupSize() {
-        int preferredGroupSize = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int preferredGroupSize = parseIntField();
         message.setPreferredGroupSize(preferredGroupSize);
         LOGGER.debug("Preferred group size: {} bits", preferredGroupSize);
     }

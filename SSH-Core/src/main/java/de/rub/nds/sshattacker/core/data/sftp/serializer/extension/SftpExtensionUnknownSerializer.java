@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionUnknown;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +22,7 @@ public class SftpExtensionUnknownSerializer
     protected void serializeExtensionValue(SftpExtensionUnknown object, SerializerStream output) {
         Integer valueLength = object.getValueLength().getValue();
         LOGGER.debug("Extension value length: {}", valueLength);
-        output.appendInt(valueLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(valueLength);
         byte[] value = object.getValue().getValue();
         LOGGER.debug("Extension value: {}", () -> ArrayConverter.bytesToRawHexString(value));
         output.appendBytes(value);

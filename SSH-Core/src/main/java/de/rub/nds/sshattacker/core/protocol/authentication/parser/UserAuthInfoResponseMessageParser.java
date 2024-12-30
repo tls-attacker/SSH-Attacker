@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.holder.AuthenticationResponseEntryParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -33,7 +32,7 @@ public class UserAuthInfoResponseMessageParser
     }
 
     private void parseResponseEntries() {
-        int responseEntriesCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int responseEntriesCount = parseIntField();
         message.setResponseEntriesCount(responseEntriesCount);
         LOGGER.debug("Number of response entries: {}", responseEntriesCount);
 

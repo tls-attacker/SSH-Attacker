@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
@@ -26,10 +25,9 @@ public class HybridKeyExchangeInitMessageSerializer
 
         int length = object.getConcatenatedHybridKeysLength().getValue();
         LOGGER.debug("HybridKeyLength: {}", length);
-        output.appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(length);
 
         byte[] keys = object.getConcatenatedHybridKeys().getValue();
-        ;
         LOGGER.debug("HybridKeyBytes: {}", () -> ArrayConverter.bytesToHexString(keys));
         output.appendBytes(keys);
     }

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +30,7 @@ public class DelayCompressionExtensionSerializer
             DelayCompressionExtension object, SerializerStream output) {
         Integer compressionMethodsLength = object.getCompressionMethodsLength().getValue();
         LOGGER.debug("Compression methods length: {}", compressionMethodsLength);
-        output.appendInt(compressionMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsLength);
     }
 
     private static void serializeCompressionMethodsClientToServer(
@@ -41,8 +40,7 @@ public class DelayCompressionExtensionSerializer
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
                 compressionMethodsClientToServerLength);
-        output.appendInt(
-                compressionMethodsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsClientToServerLength);
         LOGGER.debug(
                 "Compression algorithms (client to server): {}",
                 object.getCompressionMethodsClientToServer().getValue());
@@ -57,8 +55,7 @@ public class DelayCompressionExtensionSerializer
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
                 compressionMethodsServerToClientLength);
-        output.appendInt(
-                compressionMethodsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsServerToClientLength);
         LOGGER.debug(
                 "Compression algorithms (server to client): {}",
                 object.getCompressionMethodsServerToClient().getValue());

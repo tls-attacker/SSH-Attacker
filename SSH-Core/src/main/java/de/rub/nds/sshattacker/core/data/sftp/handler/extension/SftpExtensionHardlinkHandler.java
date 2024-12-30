@@ -26,9 +26,7 @@ public class SftpExtensionHardlinkHandler
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle SftpUnknownExtension
-    }
+    public void adjustContext() {}
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionHardlink> getParser(byte[] array) {

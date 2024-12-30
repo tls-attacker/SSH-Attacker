@@ -20,43 +20,23 @@ public class SerializerStream extends ByteArrayOutputStream {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Adds a byte[] representation of an int to the final byte[]. If the Integer is greater than
-     * the specified length only the lower length bytes are serialized.
+     * Adds a byte[] representation of an int to the final byte[]. Always four bytes will be
+     * appended.
      *
      * @param i The Integer that should be appended
-     * @param length The number of bytes which should be reserved for this Integer
      */
-    public final void appendInt(int i, int length) {
-        byte[] bytes = ArrayConverter.intToBytes(i, length);
-        int reconvertedInt = ArrayConverter.bytesToInt(bytes);
-        if (reconvertedInt != i) {
-            LOGGER.warn(
-                    "Int \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
-                    i,
-                    length,
-                    length);
-        }
-        appendBytes(bytes);
+    public final void appendInt(int i) {
+        appendBytes(ArrayConverter.intToFourBytes(i));
     }
 
     /**
-     * Adds a byte[] representation of a long to the final byte[]. If the Long is greater than the
-     * specified length only the lower length bytes are serialized.
+     * Adds a byte[] representation of a long to the final byte[]. Always eight bytes will be
+     * appended.
      *
      * @param l The Long that should be appended
-     * @param length The number of bytes which should be reserved for this Long
      */
-    public final void appendLong(long l, int length) {
-        byte[] bytes = ArrayConverter.longToBytes(l, length);
-        long reconvertedLong = ArrayConverter.bytesToLong(bytes);
-        if (reconvertedLong != l) {
-            LOGGER.warn(
-                    "Long \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
-                    l,
-                    length,
-                    length);
-        }
-        appendBytes(bytes);
+    public final void appendLong(long l) {
+        appendBytes(ArrayConverter.longToEightBytes(l));
     }
 
     /**
@@ -116,5 +96,38 @@ public class SerializerStream extends ByteArrayOutputStream {
      */
     public final void appendString(String s, Charset charset) {
         appendBytes(s.getBytes(charset));
+    }
+
+    /**
+     * Adds a length prefixed string (using the specified charset) to the final byte[]
+     *
+     * @param s String which should be added
+     * @param charset Charset used to convert the string into bytes
+     */
+    public final void appendLengthPrefixedString(String s, Charset charset) {
+        byte[] bytes = s.getBytes(charset);
+        appendInt(bytes.length);
+        appendBytes(bytes);
+    }
+
+    /**
+     * Adds a length prefixed BigInteger to the final byte[]
+     *
+     * @param bigInteger BigInteger which should be added
+     */
+    public final void appendLengthPrefixedBigInteger(BigInteger bigInteger) {
+        byte[] bytes = bigInteger.toByteArray();
+        appendInt(bytes.length);
+        appendBytes(bytes);
+    }
+
+    /**
+     * Adds a length prefixed bytes array to the final byte[]
+     *
+     * @param bytes byte array which should be added
+     */
+    public final void appendLengthPrefixedBytes(byte[] bytes) {
+        appendInt(bytes.length);
+        appendBytes(bytes);
     }
 }

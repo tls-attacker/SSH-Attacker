@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +32,7 @@ public class ChannelExtendedDataMessageParser
     }
 
     private void parseDataTypeCode() {
-        int dataTypeCode = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int dataTypeCode = parseIntField();
         message.setDataTypeCode(dataTypeCode);
         LOGGER.debug("Data type code: {}", dataTypeCode);
         LOGGER.debug(
@@ -42,7 +41,7 @@ public class ChannelExtendedDataMessageParser
     }
 
     private void parseData() {
-        int dataLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int dataLength = parseIntField();
         message.setDataLength(dataLength);
         LOGGER.debug("Data length: {}", dataLength);
         byte[] data = parseByteArrayField(dataLength);

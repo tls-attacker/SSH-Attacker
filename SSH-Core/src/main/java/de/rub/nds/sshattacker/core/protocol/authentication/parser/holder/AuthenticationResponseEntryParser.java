@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +31,7 @@ public class AuthenticationResponseEntryParser extends Parser<AuthenticationResp
     }
 
     private void parseResponse() {
-        int responseLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int responseLength = parseIntField();
         authenticationResponseEntry.setResponseLength(responseLength);
         LOGGER.debug("Response length: {}", responseLength);
         String response = parseByteString(responseLength, StandardCharsets.UTF_8);

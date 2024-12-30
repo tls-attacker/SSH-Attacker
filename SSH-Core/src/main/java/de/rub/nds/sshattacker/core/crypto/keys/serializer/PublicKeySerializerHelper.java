@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -30,21 +29,15 @@ public final class PublicKeySerializerHelper {
         if (stringMap != null && !stringMap.isEmpty()) {
             SerializerStream optionsBuilder = new SerializerStream();
             for (Map.Entry<String, String> entry : stringMap.entrySet()) {
-                optionsBuilder.appendInt(
-                        entry.getKey().getBytes(StandardCharsets.US_ASCII).length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
-                optionsBuilder.appendString(entry.getKey(), StandardCharsets.US_ASCII);
-                optionsBuilder.appendInt(
-                        entry.getValue().getBytes(StandardCharsets.US_ASCII).length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
-                optionsBuilder.appendString(entry.getValue(), StandardCharsets.US_ASCII);
+                optionsBuilder.appendLengthPrefixedString(
+                        entry.getKey(), StandardCharsets.US_ASCII);
+                optionsBuilder.appendLengthPrefixedString(
+                        entry.getValue(), StandardCharsets.US_ASCII);
             }
             byte[] optionsBytes = optionsBuilder.toByteArray();
-            output.appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(optionsBytes);
+            output.appendLengthPrefixedBytes(optionsBytes);
         } else {
-            output.appendInt(
-                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty string, if the map is empty
+            output.appendInt(0); // Empty string, if the map is empty
         }
     }
 

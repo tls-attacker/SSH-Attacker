@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.response;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseStatusMessage;
 import java.nio.charset.StandardCharsets;
@@ -35,13 +34,13 @@ public class SftpResponseStatusMessageParser
     }
 
     private void parseStatusCode() {
-        int statusCode = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int statusCode = parseIntField();
         message.setStatusCode(statusCode);
         LOGGER.debug("StatusCode: {}", SftpStatusCode.getNameByCode(statusCode));
     }
 
     private void parseErrorMessage() {
-        int errorMessageLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int errorMessageLength = parseIntField();
         message.setErrorMessageLength(errorMessageLength);
         LOGGER.debug("ErrorMessage length: {}", errorMessageLength);
         String errorMessage = parseByteString(errorMessageLength, StandardCharsets.UTF_8);
@@ -50,7 +49,7 @@ public class SftpResponseStatusMessageParser
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("LanguageTag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);

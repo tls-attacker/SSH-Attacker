@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.packet.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.packet.DataPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +23,7 @@ public class DataPacketParser extends AbstractDataPacketParser<DataPacket> {
     public DataPacket parse() {
         LOGGER.debug("Parsing DataPacket from serialized bytes:");
         DataPacket packet = new DataPacket();
-        packet.setLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        packet.setLength(parseIntField());
         packet.setPayload(parseByteArrayField(packet.getLength().getValue()));
         return packet;
     }

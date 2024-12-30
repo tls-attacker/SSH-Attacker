@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageSerializer;
 import de.rub.nds.sshattacker.core.data.sftp.message.response.SftpResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -22,7 +21,7 @@ public abstract class SftpResponseMessageSerializer<T extends SftpResponseMessag
     private void serializeRequestId(T object, SerializerStream output) {
         Integer requestId = object.getRequestId().getValue();
         LOGGER.debug("RequestId: {}", requestId);
-        output.appendInt(requestId, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(requestId);
     }
 
     protected void serializeMessageSpecificContents(T object, SerializerStream output) {

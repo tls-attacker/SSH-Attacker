@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpExtensionNewline;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +27,7 @@ public class SftpExtensionNewlineParser extends SftpAbstractExtensionParser<Sftp
     }
 
     private void parseNewlineSeperator() {
-        int newlineSeperatorLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int newlineSeperatorLength = parseIntField();
         extension.setNewlineSeperatorLength(newlineSeperatorLength);
         LOGGER.debug("NewlineSeperator length: {}", newlineSeperatorLength);
         String newlineSeperator = parseByteString(newlineSeperatorLength, StandardCharsets.UTF_8);

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -27,21 +26,11 @@ public class DsaPublicKeySerializer extends Serializer<CustomDsaPublicKey> {
          *   mpint     g
          *   mpint     y
          */
-        output.appendInt(
-                PublicKeyFormat.SSH_DSS.getName().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(PublicKeyFormat.SSH_DSS.getName(), StandardCharsets.US_ASCII);
-        byte[] encodedP = object.getParams().getP().toByteArray();
-        output.appendInt(encodedP.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedP);
-        byte[] encodedQ = object.getParams().getQ().toByteArray();
-        output.appendInt(encodedQ.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedQ);
-        byte[] encodedG = object.getParams().getG().toByteArray();
-        output.appendInt(encodedG.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedG);
-        byte[] encodedY = object.getY().toByteArray();
-        output.appendInt(encodedY.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        output.appendBytes(encodedY);
+        output.appendLengthPrefixedString(
+                PublicKeyFormat.SSH_DSS.getName(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedBigInteger(object.getParams().getP());
+        output.appendLengthPrefixedBigInteger(object.getParams().getQ());
+        output.appendLengthPrefixedBigInteger(object.getParams().getG());
+        output.appendLengthPrefixedBigInteger(object.getY());
     }
 }

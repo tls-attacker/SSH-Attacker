@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +32,7 @@ public class ChannelRequestEnvMessageParser
     }
 
     private void parseVariableName() {
-        int variableNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int variableNameLength = parseIntField();
         message.setVariableNameLength(variableNameLength);
         LOGGER.debug("Variable name length: {}", variableNameLength);
         String variableName = parseByteString(variableNameLength);
@@ -42,7 +41,7 @@ public class ChannelRequestEnvMessageParser
     }
 
     private void parseVariableValue() {
-        int variableValueLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int variableValueLength = parseIntField();
         message.setVariableValueLength(variableValueLength);
         LOGGER.debug("Variable value length: {}", variableValueLength);
         String variableValue = parseByteString(variableValueLength);

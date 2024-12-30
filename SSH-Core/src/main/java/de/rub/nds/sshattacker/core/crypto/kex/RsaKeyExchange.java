@@ -102,7 +102,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
             int sharedSecretLength =
-                    ArrayConverter.bytesToInt(
+                    ArrayConverter.fourBytesToInt(
                             Arrays.copyOfRange(
                                     decryptedSecretMpint,
                                     0,

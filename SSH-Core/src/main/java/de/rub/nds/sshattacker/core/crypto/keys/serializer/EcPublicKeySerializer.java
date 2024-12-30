@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
@@ -27,18 +26,14 @@ public class EcPublicKeySerializer extends Serializer<CustomEcPublicKey> {
          *   string    Q
          */
         output.appendInt(
-                11 + object.getGroup().getIdentifier().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                11 + object.getGroup().getIdentifier().getBytes(StandardCharsets.US_ASCII).length);
         output.appendString("ecdsa-sha2-", StandardCharsets.US_ASCII);
         output.appendString(object.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
-        output.appendInt(
-                object.getGroup().getIdentifier().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendString(object.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedString(
+                object.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
         byte[] encodedQ =
                 PointFormatter.formatToByteArray(
                         object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
-        output.appendInt(encodedQ.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        output.appendBytes(encodedQ);
+        output.appendLengthPrefixedBytes(encodedQ);
     }
 }

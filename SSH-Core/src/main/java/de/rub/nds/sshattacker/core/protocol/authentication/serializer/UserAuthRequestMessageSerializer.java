@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -25,7 +24,7 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     private void serializeUserName(T object, SerializerStream output) {
         Integer userNameLength = object.getUserNameLength().getValue();
         LOGGER.debug("User name length: {}", userNameLength);
-        output.appendInt(userNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(userNameLength);
         String userName = object.getUserName().getValue();
         LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
         output.appendString(userName, StandardCharsets.UTF_8);
@@ -34,7 +33,7 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     private void serializeServiceName(T object, SerializerStream output) {
         Integer serviceNameLength = object.getServiceNameLength().getValue();
         LOGGER.debug("Service name length: {}", serviceNameLength);
-        output.appendInt(serviceNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(serviceNameLength);
         String serviceName = object.getServiceName().getValue();
         LOGGER.debug("Service name: {}", () -> backslashEscapeString(serviceName));
         output.appendString(serviceName, StandardCharsets.US_ASCII);
@@ -43,7 +42,7 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     private void serializeMethodName(T object, SerializerStream output) {
         Integer methodNameLength = object.getMethodNameLength().getValue();
         LOGGER.debug("Method name length: {}", methodNameLength);
-        output.appendInt(methodNameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(methodNameLength);
         String methodName = object.getMethodName().getValue();
         LOGGER.debug("Method name: {}", () -> backslashEscapeString(methodName));
         output.appendString(methodName, StandardCharsets.US_ASCII);

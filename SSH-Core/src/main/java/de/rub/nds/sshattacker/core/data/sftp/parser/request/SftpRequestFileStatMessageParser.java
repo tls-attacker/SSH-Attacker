@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestFileStatMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +36,7 @@ public class SftpRequestFileStatMessageParser
 
     private void parseFlags() {
         if (chooser.getSftpNegotiatedVersion() > 3) {
-            int flags = parseIntField(DataFormatConstants.UINT32_SIZE);
+            int flags = parseIntField();
             message.setFlags(flags);
             LOGGER.debug("Flags: {}", flags);
         }

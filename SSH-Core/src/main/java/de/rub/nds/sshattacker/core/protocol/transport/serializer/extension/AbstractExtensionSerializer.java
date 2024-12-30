@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
@@ -29,7 +28,7 @@ public abstract class AbstractExtensionSerializer<T extends AbstractExtension<T>
     private void serializeExtensionName(T object, SerializerStream output) {
         Integer nameLength = object.getNameLength().getValue();
         LOGGER.debug("Extension name length: {}", nameLength);
-        output.appendInt(nameLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(nameLength);
         LOGGER.debug("Extension name: {}", object.getName().getValue());
         output.appendString(object.getName().getValue(), StandardCharsets.US_ASCII);
     }

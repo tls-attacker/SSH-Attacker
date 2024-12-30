@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
@@ -23,7 +22,7 @@ public class DhGexKeyExchangeOldRequestMessageSerializer
             DhGexKeyExchangeOldRequestMessage object, SerializerStream output) {
         Integer preferredGroupSize = object.getPreferredGroupSize().getValue();
         LOGGER.debug("Preferred group size: {}", preferredGroupSize);
-        output.appendInt(preferredGroupSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(preferredGroupSize);
     }
 
     @Override

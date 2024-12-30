@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
@@ -34,7 +33,7 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
     }
 
     private void parseExtensionCount() {
-        int extensionCount = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int extensionCount = parseIntField();
         message.setExtensionCount(extensionCount);
         LOGGER.debug("Extension count: {}", extensionCount);
     }
@@ -45,7 +44,7 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                 extensionIndex++, extensionStartPointer = getPointer()) {
 
             // Extrahiere den Namen der Erweiterung
-            int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+            int extensionNameLength = parseIntField();
             Extension extension =
                     Extension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));

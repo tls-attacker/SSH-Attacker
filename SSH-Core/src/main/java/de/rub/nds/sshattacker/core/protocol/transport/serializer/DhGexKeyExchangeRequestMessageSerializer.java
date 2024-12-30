@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
@@ -23,21 +22,21 @@ public class DhGexKeyExchangeRequestMessageSerializer
             DhGexKeyExchangeRequestMessage object, SerializerStream output) {
         Integer minimalGroupSize = object.getMinimalGroupSize().getValue();
         LOGGER.debug("Minimal group size: {}", minimalGroupSize);
-        output.appendInt(minimalGroupSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(minimalGroupSize);
     }
 
     private static void serializePreferredGroupSize(
             DhGexKeyExchangeRequestMessage object, SerializerStream output) {
         Integer preferredGroupSize = object.getPreferredGroupSize().getValue();
         LOGGER.debug("Preferred group size: {}", preferredGroupSize);
-        output.appendInt(preferredGroupSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(preferredGroupSize);
     }
 
     private static void serializeMaximalGroupSize(
             DhGexKeyExchangeRequestMessage object, SerializerStream output) {
         Integer maximalGroupSize = object.getMaximalGroupSize().getValue();
         LOGGER.debug("Maximal group size: {}", maximalGroupSize);
-        output.appendInt(maximalGroupSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(maximalGroupSize);
     }
 
     @Override

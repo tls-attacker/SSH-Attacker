@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,7 @@ public class ChannelRequestPtyMessageParser
     }
 
     private void parseTermEnvVariable() {
-        int termEnvVariableLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int termEnvVariableLength = parseIntField();
         message.setTermEnvVariableLength(termEnvVariableLength);
         LOGGER.debug("TERM environment variable length: {}", termEnvVariableLength);
         String termEnvVariable = parseByteString(termEnvVariableLength);
@@ -41,31 +40,31 @@ public class ChannelRequestPtyMessageParser
     }
 
     private void parseWidthCharacters() {
-        int widthCharacters = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int widthCharacters = parseIntField();
         message.setWidthCharacters(widthCharacters);
         LOGGER.debug("Terminal width in characters: {}", widthCharacters);
     }
 
     private void parseHeightRows() {
-        int heightRows = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int heightRows = parseIntField();
         message.setHeightRows(heightRows);
         LOGGER.debug("Terminal height in rows: {}", heightRows);
     }
 
     private void parseWidthPixels() {
-        int widthPixels = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int widthPixels = parseIntField();
         message.setWidthPixels(widthPixels);
         LOGGER.debug("Terminal width in pixels: {}", widthPixels);
     }
 
     private void parseHeightPixels() {
-        int heightPixels = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int heightPixels = parseIntField();
         message.setHeightPixels(heightPixels);
         LOGGER.debug("Terminal height in pixels: {}", heightPixels);
     }
 
     private void parseEncodedTerminalModes() {
-        int encodedTerminalModesLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int encodedTerminalModesLength = parseIntField();
         message.setEncodedTerminalModesLength(encodedTerminalModesLength);
         LOGGER.debug("Encoded terminal modes length: {}", encodedTerminalModesLength);
         byte[] encodedTerminalModes = parseByteArrayField(encodedTerminalModesLength);

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpAclEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -31,25 +30,25 @@ public class SftpAclEntryParser extends Parser<SftpAclEntry> {
     }
 
     private void parseType() {
-        int type = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int type = parseIntField();
         aclEntry.setType(type);
         LOGGER.debug("Type: {}", type);
     }
 
     private void parseFlags() {
-        int flags = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int flags = parseIntField();
         aclEntry.setFlags(flags);
         LOGGER.debug("Flags: {}", flags);
     }
 
     private void parseMask() {
-        int mask = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int mask = parseIntField();
         aclEntry.setMask(mask);
         LOGGER.debug("Mask: {}", mask);
     }
 
     private void parseWho() {
-        int whoLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int whoLength = parseIntField();
         aclEntry.setWhoLength(whoLength);
         LOGGER.debug("Who length: {}", whoLength);
         String who = parseByteString(whoLength, StandardCharsets.UTF_8);

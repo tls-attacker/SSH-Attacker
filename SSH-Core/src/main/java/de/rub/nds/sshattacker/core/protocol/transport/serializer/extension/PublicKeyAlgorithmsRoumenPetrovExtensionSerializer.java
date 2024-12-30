@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,7 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionSerializer
             PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
         Integer publicKeyAlgorithmsLength = object.getPublicKeyAlgorithmsLength().getValue();
         LOGGER.debug("Public key algorithms length: {}", publicKeyAlgorithmsLength);
-        output.appendInt(publicKeyAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(publicKeyAlgorithmsLength);
     }
 
     private static void serializePublicKeyAlgorithms(

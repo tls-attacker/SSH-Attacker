@@ -177,6 +177,11 @@ public abstract class PacketCipher {
         }
 
         @Override
+        public byte parseByteField() {
+            return super.parseByteField();
+        }
+
+        @Override
         public int getBytesLeft() {
             return super.getBytesLeft();
         }

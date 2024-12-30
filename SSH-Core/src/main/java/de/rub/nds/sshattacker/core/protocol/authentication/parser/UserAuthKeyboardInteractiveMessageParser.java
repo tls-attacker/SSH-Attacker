@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class UserAuthKeyboardInteractiveMessageParser
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);
@@ -43,7 +42,7 @@ public class UserAuthKeyboardInteractiveMessageParser
     }
 
     private void parseSubMethods() {
-        int subMethodsLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int subMethodsLength = parseIntField();
         message.setSubMethodsLength(subMethodsLength);
         LOGGER.debug("Sub methods length: {}", subMethodsLength);
         String subMethods = parseByteString(subMethodsLength, StandardCharsets.UTF_8);

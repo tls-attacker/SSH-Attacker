@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +30,7 @@ public class SftpNameEntryParser extends Parser<SftpNameEntry> {
     }
 
     private void parseName() {
-        int nameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int nameLength = parseIntField();
         nameEntry.setNameLength(nameLength);
         LOGGER.debug("Name length: {}", nameLength);
         String name = parseByteString(nameLength, StandardCharsets.UTF_8);

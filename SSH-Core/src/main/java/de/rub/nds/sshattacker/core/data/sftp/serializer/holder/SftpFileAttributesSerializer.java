@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.serializer.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -25,7 +24,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
     private static void serializeFlags(SftpFileAttributes object, SerializerStream output) {
         Integer flags = object.getFlags().getValue();
         LOGGER.debug("Flags: {}", flags);
-        output.appendInt(flags, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(flags);
     }
 
     private static void serializeType(SftpFileAttributes object, SerializerStream output) {
@@ -40,7 +39,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getSize() != null) {
             Long size = object.getSize().getValue();
             LOGGER.debug("Size: {}", size);
-            output.appendLong(size, DataFormatConstants.UINT64_SIZE);
+            output.appendLong(size);
         }
     }
 
@@ -48,12 +47,12 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getUserId() != null) {
             Integer uId = object.getUserId().getValue();
             LOGGER.debug("UId: {}", uId);
-            output.appendInt(uId, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(uId);
         }
         if (object.getGroupId() != null) {
             Integer gId = object.getGroupId().getValue();
             LOGGER.debug("GId: {}", gId);
-            output.appendInt(gId, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(gId);
         }
     }
 
@@ -61,7 +60,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getOwner() != null) {
             Integer ownerLength = object.getOwnerLength().getValue();
             LOGGER.debug("Owner length: {}", ownerLength);
-            output.appendInt(ownerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(ownerLength);
             String owner = object.getOwner().getValue();
             LOGGER.debug("Owner: {}", () -> backslashEscapeString(owner));
             output.appendString(owner, StandardCharsets.UTF_8);
@@ -69,7 +68,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getGroup() != null) {
             Integer groupLength = object.getGroupLength().getValue();
             LOGGER.debug("Group length: {}", groupLength);
-            output.appendInt(groupLength, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(groupLength);
             String group = object.getGroup().getValue();
             LOGGER.debug("Group: {}", () -> backslashEscapeString(group));
             output.appendString(group, StandardCharsets.UTF_8);
@@ -80,7 +79,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getPermissions() != null) {
             Integer permissions = object.getPermissions().getValue();
             LOGGER.debug("Permissions: {}", permissions);
-            output.appendInt(permissions, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(permissions);
         }
     }
 
@@ -89,44 +88,44 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getAccessTime() != null) {
             Integer aTime = object.getAccessTime().getValue();
             LOGGER.debug("ATime: {}", aTime);
-            output.appendInt(aTime, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(aTime);
         }
         if (object.getModifyTime() != null) {
             Integer mTime = object.getModifyTime().getValue();
             LOGGER.debug("MTime: {}", mTime);
-            output.appendInt(mTime, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(mTime);
         }
 
         // SFTP v4
         if (object.getAccessTimeLong() != null) {
             Long aTime = object.getAccessTimeLong().getValue();
             LOGGER.debug("ATime: {}", aTime);
-            output.appendLong(aTime, DataFormatConstants.UINT64_SIZE);
+            output.appendLong(aTime);
         }
         if (object.getAccessTimeNanoseconds() != null) {
             Integer aTimeNanoseconds = object.getAccessTimeNanoseconds().getValue();
             LOGGER.debug("ATime Nanoseconds: {}", aTimeNanoseconds);
-            output.appendInt(aTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(aTimeNanoseconds);
         }
         if (object.getCreateTimeLong() != null) {
             Long cTime = object.getCreateTimeLong().getValue();
             LOGGER.debug("CTime: {}", cTime);
-            output.appendLong(cTime, DataFormatConstants.UINT64_SIZE);
+            output.appendLong(cTime);
         }
         if (object.getCreateTimeNanoseconds() != null) {
             Integer cTimeNanoseconds = object.getCreateTimeNanoseconds().getValue();
             LOGGER.debug("CTime Nanoseconds: {}", cTimeNanoseconds);
-            output.appendInt(cTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(cTimeNanoseconds);
         }
         if (object.getModifyTimeLong() != null) {
             Long mTime = object.getModifyTimeLong().getValue();
             LOGGER.debug("MTime: {}", mTime);
-            output.appendLong(mTime, DataFormatConstants.UINT64_SIZE);
+            output.appendLong(mTime);
         }
         if (object.getModifyTimeNanoseconds() != null) {
             Integer mTimeNanoseconds = object.getModifyTimeNanoseconds().getValue();
             LOGGER.debug("MTime Nanoseconds: {}", mTimeNanoseconds);
-            output.appendInt(mTimeNanoseconds, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(mTimeNanoseconds);
         }
     }
 
@@ -134,11 +133,11 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getAclEntriesCount() != null) {
             Integer aclLength = object.getAclLength().getValue();
             LOGGER.debug("AclLength: {}", aclLength);
-            output.appendInt(aclLength, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(aclLength);
 
             Integer aclEntriesCount = object.getAclEntriesCount().getValue();
             LOGGER.debug("AclEntriesCount: {}", aclEntriesCount);
-            output.appendInt(aclEntriesCount, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(aclEntriesCount);
 
             object.getAclEntries().forEach(aclEntry -> output.appendBytes(aclEntry.serialize()));
         }
@@ -149,7 +148,7 @@ public class SftpFileAttributesSerializer extends Serializer<SftpFileAttributes>
         if (object.getExtendedCount() != null) {
             Integer extendedCount = object.getExtendedCount().getValue();
             LOGGER.debug("ExtendedCount: {}", extendedCount);
-            output.appendInt(extendedCount, DataFormatConstants.UINT32_SIZE);
+            output.appendInt(extendedCount);
 
             object.getExtendedAttributes()
                     .forEach(

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import java.math.BigInteger;
@@ -34,7 +33,7 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     private void parseGroupModulus() {
-        int groupModulusLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int groupModulusLength = parseIntField();
         message.setGroupModulusLength(groupModulusLength);
         LOGGER.debug("Group modulus length: {}", groupModulusLength);
         BigInteger groupModulus = parseBigIntField(groupModulusLength);
@@ -47,7 +46,7 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     private void parseGroupGenerator() {
-        int groupGeneratorLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int groupGeneratorLength = parseIntField();
         message.setGroupGeneratorLength(groupGeneratorLength);
         LOGGER.debug("Group generator length: {}", groupGeneratorLength);
         BigInteger groupGenerator = parseBigIntField(groupGeneratorLength);

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
@@ -24,7 +23,7 @@ public class EcdhKeyExchangeReplyMessageSerializer
             EcdhKeyExchangeReplyMessage object, SerializerStream output) {
         Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
         LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
-        output.appendInt(hostKeyBytesLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(hostKeyBytesLength);
         byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
         LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
         output.appendBytes(hostKeyBytes);
@@ -34,7 +33,7 @@ public class EcdhKeyExchangeReplyMessageSerializer
             EcdhKeyExchangeReplyMessage object, SerializerStream output) {
         Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
-        output.appendInt(ephemeralPublicKeyLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(ephemeralPublicKeyLength);
         output.appendBytes(object.getEphemeralPublicKey().getValue());
         LOGGER.debug("Ephemeral public key (server): {}", object.getEphemeralPublicKey());
     }
@@ -43,7 +42,7 @@ public class EcdhKeyExchangeReplyMessageSerializer
             EcdhKeyExchangeReplyMessage object, SerializerStream output) {
         Integer signatureLength = object.getSignatureLength().getValue();
         LOGGER.debug("Signature length: {}", signatureLength);
-        output.appendInt(signatureLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(signatureLength);
         output.appendBytes(object.getSignature().getValue());
         LOGGER.debug("Signature: {}", object.getSignature());
     }

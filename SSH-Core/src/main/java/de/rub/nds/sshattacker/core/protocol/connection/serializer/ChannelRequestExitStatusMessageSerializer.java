@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,7 @@ public class ChannelRequestExitStatusMessageSerializer
             ChannelRequestExitStatusMessage object, SerializerStream output) {
         Integer exitStatus = object.getExitStatus().getValue();
         LOGGER.debug("Exit status: {}", exitStatus);
-        output.appendInt(exitStatus, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(exitStatus);
     }
 
     @Override

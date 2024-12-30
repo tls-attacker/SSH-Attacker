@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.extended_response;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.SftpResponseStatVfsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.SftpResponseMessageParser;
 import org.apache.logging.log4j.LogManager;
@@ -32,67 +31,67 @@ public class SftpResponseStatVfsMessageParser
     }
 
     private void parseBlockSize() {
-        long blockSize = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long blockSize = parseLongField();
         message.setBlockSize(blockSize);
         LOGGER.debug("BlockSize: {}", blockSize);
     }
 
     private void parseFundamentalBlockSize() {
-        long fundamentalBlockSize = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long fundamentalBlockSize = parseLongField();
         message.setFundamentalBlockSize(fundamentalBlockSize);
         LOGGER.debug("FundamentalBlockSize: {}", fundamentalBlockSize);
     }
 
     private void parseCountBlocks() {
-        long countBlocks = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long countBlocks = parseLongField();
         message.setCountBlocks(countBlocks);
         LOGGER.debug("CountBlocks: {}", countBlocks);
     }
 
     private void parseFreeBlocks() {
-        long freeBlocks = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long freeBlocks = parseLongField();
         message.setFreeBlocks(freeBlocks);
         LOGGER.debug("FreeBlocks: {}", freeBlocks);
     }
 
     private void parseFreeBlocksNonRoot() {
-        long freeBlocksNonRoot = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long freeBlocksNonRoot = parseLongField();
         message.setFreeBlocksNonRoot(freeBlocksNonRoot);
         LOGGER.debug("FreeBlocksNonRoot: {}", freeBlocksNonRoot);
     }
 
     private void parseFileInodes() {
-        long fileInodes = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long fileInodes = parseLongField();
         message.setFileInodes(fileInodes);
         LOGGER.debug("FileInodes: {}", fileInodes);
     }
 
     private void parseFreeInodes() {
-        long freeInodes = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long freeInodes = parseLongField();
         message.setFreeInodes(freeInodes);
         LOGGER.debug("FreeInodes: {}", freeInodes);
     }
 
     private void parseFreeInodesNonRoot() {
-        long freeInodesNonRoot = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long freeInodesNonRoot = parseLongField();
         message.setFreeInodesNonRoot(freeInodesNonRoot);
         LOGGER.debug("FreeInodesNonRoot: {}", freeInodesNonRoot);
     }
 
     private void parseSystemId() {
-        long systemId = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long systemId = parseLongField();
         message.setSystemId(systemId);
         LOGGER.debug("SystemId: {}", systemId);
     }
 
     private void parseFlags() {
-        long flags = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long flags = parseLongField();
         message.setFlags(flags);
         LOGGER.debug("Flags: {}", flags);
     }
 
     private void parseMaximumFilenameLength() {
-        long maximumFilenameLength = parseLongField(DataFormatConstants.UINT64_SIZE);
+        long maximumFilenameLength = parseLongField();
         message.setMaximumFilenameLength(maximumFilenameLength);
         LOGGER.debug("MaximumFilenameLength: {}", maximumFilenameLength);
     }

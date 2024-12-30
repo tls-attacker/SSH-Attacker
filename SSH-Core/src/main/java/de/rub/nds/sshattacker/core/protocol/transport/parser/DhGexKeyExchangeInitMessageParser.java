@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import java.math.BigInteger;
@@ -33,7 +32,7 @@ public class DhGexKeyExchangeInitMessageParser
     }
 
     private void parseEphemeralPublicKey() {
-        int ephemeralPublicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int ephemeralPublicKeyLength = parseIntField();
         message.setEphemeralPublicKeyLength(ephemeralPublicKeyLength);
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
         BigInteger ephemeralPublicKey = parseBigIntField(ephemeralPublicKeyLength);

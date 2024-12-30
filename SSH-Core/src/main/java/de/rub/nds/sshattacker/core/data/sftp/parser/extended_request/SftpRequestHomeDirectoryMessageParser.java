@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.extended_request;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestHomeDirectoryMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +33,7 @@ public class SftpRequestHomeDirectoryMessageParser
     }
 
     private void parseUsername() {
-        int usernameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int usernameLength = parseIntField();
         message.setUsernameLength(usernameLength);
         LOGGER.debug("Username length: {}", usernameLength);
         String username = parseByteString(usernameLength, StandardCharsets.UTF_8);

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpIdEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +27,7 @@ public class SftpIdEntryParser extends Parser<SftpIdEntry> {
     }
 
     private void parseId() {
-        int id = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int id = parseIntField();
         idEntry.setId(id);
         LOGGER.debug("Id: {}", id);
     }

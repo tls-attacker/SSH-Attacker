@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -33,13 +32,13 @@ public class UserAuthPasswordMessageParser
     }
 
     private void parseChangePassword() {
-        byte changePassword = parseByteField(1);
+        byte changePassword = parseByteField();
         message.setChangePassword(changePassword);
         LOGGER.debug("Change password: {}", changePassword);
     }
 
     private void parsePassword() {
-        int passwordLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int passwordLength = parseIntField();
         message.setPasswordLength(passwordLength);
         LOGGER.debug("Password length: {}", passwordLength);
         String password = parseByteString(passwordLength, StandardCharsets.UTF_8);
@@ -48,7 +47,7 @@ public class UserAuthPasswordMessageParser
     }
 
     private void parseNewPassword() {
-        int newPasswordLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int newPasswordLength = parseIntField();
         message.setNewPasswordLength(newPasswordLength);
         LOGGER.debug("New password length: {}", newPasswordLength);
         String newPassword = parseByteString(newPasswordLength, StandardCharsets.UTF_8);

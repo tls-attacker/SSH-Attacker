@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,7 @@ public class ChannelRequestX11MessageSerializer
         Integer x11AuthenticationProtocolLength =
                 object.getX11AuthenticationProtocolLength().getValue();
         LOGGER.debug("X11 authentication protocol length: {}", x11AuthenticationProtocolLength);
-        output.appendInt(x11AuthenticationProtocolLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(x11AuthenticationProtocolLength);
         LOGGER.debug(
                 "X11 authentication protocol: {}",
                 object.getX11AuthenticationProtocol().getValue());
@@ -43,7 +42,7 @@ public class ChannelRequestX11MessageSerializer
         Integer x11AuthenticationCookieLength =
                 object.getX11AuthenticationCookieLength().getValue();
         LOGGER.debug("X11 authenticaton cookie length: {}", x11AuthenticationCookieLength);
-        output.appendInt(x11AuthenticationCookieLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(x11AuthenticationCookieLength);
         LOGGER.debug(
                 "X11 authentication cookie: {}", object.getX11AuthenticationCookie().getValue());
         output.appendString(object.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
@@ -53,7 +52,7 @@ public class ChannelRequestX11MessageSerializer
             ChannelRequestX11Message object, SerializerStream output) {
         Integer x11ScreenNumber = object.getX11ScreenNumber().getValue();
         LOGGER.debug("X11 screen number: {}", x11ScreenNumber);
-        output.appendInt(x11ScreenNumber, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(x11ScreenNumber);
     }
 
     @Override

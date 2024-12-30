@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageSerializer;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpHandshakeMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -22,7 +21,7 @@ public abstract class SftpHandshakeMessageSerializer<T extends SftpHandshakeMess
     private void serializeVersion(T object, SerializerStream output) {
         Integer version = object.getVersion().getValue();
         LOGGER.debug("Version: {}", version);
-        output.appendInt(version, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(version);
     }
 
     private void serializeExtensions(T object, SerializerStream output) {

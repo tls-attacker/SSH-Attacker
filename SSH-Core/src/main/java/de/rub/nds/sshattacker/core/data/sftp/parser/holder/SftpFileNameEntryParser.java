@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.parser.holder;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -36,7 +35,7 @@ public class SftpFileNameEntryParser extends Parser<SftpFileNameEntry> {
     }
 
     private void parseFilename() {
-        int filenameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int filenameLength = parseIntField();
         nameEntry.setFilenameLength(filenameLength);
         LOGGER.debug("Filename length: {}", filenameLength);
         String filename = parseByteString(filenameLength, StandardCharsets.UTF_8);
@@ -46,7 +45,7 @@ public class SftpFileNameEntryParser extends Parser<SftpFileNameEntry> {
 
     private void parseLongName() {
         if (chooser.getSftpNegotiatedVersion() <= 3) {
-            int longNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+            int longNameLength = parseIntField();
             nameEntry.setLongNameLength(longNameLength);
             LOGGER.debug("LongName length: {}", longNameLength);
             String longName = parseByteString(longNameLength, StandardCharsets.UTF_8);

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
@@ -24,7 +23,7 @@ public class RsaKeyExchangeSecretMessageSerializer
             RsaKeyExchangeSecretMessage object, SerializerStream output) {
         Integer encryptedSecretLength = object.getEncryptedSecretLength().getValue();
         LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
-        output.appendInt(encryptedSecretLength, DataFormatConstants.MPINT_SIZE_LENGTH);
+        output.appendInt(encryptedSecretLength);
         byte[] encryptedSecret = object.getEncryptedSecret().getValue();
         LOGGER.debug(
                 "Encrypted secret: {}", () -> ArrayConverter.bytesToRawHexString(encryptedSecret));

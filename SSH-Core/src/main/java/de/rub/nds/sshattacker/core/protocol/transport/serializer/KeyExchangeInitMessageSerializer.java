@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -31,7 +30,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
             KeyExchangeInitMessage object, SerializerStream output) {
         Integer keyExchangeAlgorithmsLength = object.getKeyExchangeAlgorithmsLength().getValue();
         LOGGER.debug("Key exchange algorithms: {}", keyExchangeAlgorithmsLength);
-        output.appendInt(keyExchangeAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(keyExchangeAlgorithmsLength);
         String keyExchangeAlgorithms = object.getKeyExchangeAlgorithms().getValue();
         LOGGER.debug(
                 "Key exchange algorithms: {}", () -> backslashEscapeString(keyExchangeAlgorithms));
@@ -43,7 +42,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         Integer serverHostKeyAlgorithmsLength =
                 object.getServerHostKeyAlgorithmsLength().getValue();
         LOGGER.debug("Server host key algorithms: {}", serverHostKeyAlgorithmsLength);
-        output.appendInt(serverHostKeyAlgorithmsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(serverHostKeyAlgorithmsLength);
         String serverHostKeyAlgorithms = object.getServerHostKeyAlgorithms().getValue();
         LOGGER.debug(
                 "Server host key algorithms: {}",
@@ -58,8 +57,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         LOGGER.debug(
                 "Encryption algorithms length (client to server): {}",
                 encryptionAlgorithmsClientToServerLength);
-        output.appendInt(
-                encryptionAlgorithmsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(encryptionAlgorithmsClientToServerLength);
         String encryptionAlgorithmsClientToServer =
                 object.getEncryptionAlgorithmsClientToServer().getValue();
         LOGGER.debug(
@@ -75,8 +73,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         LOGGER.debug(
                 "Encryption algorithms length (server to client): {}",
                 encryptionAlgorithmsServerToClientLength);
-        output.appendInt(
-                encryptionAlgorithmsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(encryptionAlgorithmsServerToClientLength);
         String encryptionAlgorithmsServerToClient =
                 object.getEncryptionAlgorithmsServerToClient().getValue();
         LOGGER.debug(
@@ -91,7 +88,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 object.getMacAlgorithmsClientToServerLength().getValue();
         LOGGER.debug(
                 "MAC algorithms length (client to server): {}", macAlgorithmsClientToServerLength);
-        output.appendInt(macAlgorithmsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(macAlgorithmsClientToServerLength);
         String macAlgorithmsClientToServer = object.getMacAlgorithmsClientToServer().getValue();
         LOGGER.debug(
                 "MAC algorithms (client to server): {}",
@@ -105,7 +102,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
                 object.getMacAlgorithmsServerToClientLength().getValue();
         LOGGER.debug(
                 "MAC algorithms length (server to client): {}", macAlgorithmsServerToClientLength);
-        output.appendInt(macAlgorithmsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(macAlgorithmsServerToClientLength);
         String macAlgorithmsServerToClient = object.getMacAlgorithmsServerToClient().getValue();
         LOGGER.debug(
                 "MAC algorithms (server to client): {}",
@@ -120,8 +117,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
                 compressionMethodsClientToServerLength);
-        output.appendInt(
-                compressionMethodsClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsClientToServerLength);
         String compressionMethodsClientToServer =
                 object.getCompressionMethodsClientToServer().getValue();
         LOGGER.debug(
@@ -137,8 +133,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
                 compressionMethodsServerToClientLength);
-        output.appendInt(
-                compressionMethodsServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(compressionMethodsServerToClientLength);
         String compressionMethodsServerToClient =
                 object.getCompressionMethodsServerToClient().getValue();
         LOGGER.debug(
@@ -152,7 +147,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         Integer languagesClientToServerLength =
                 object.getLanguagesClientToServerLength().getValue();
         LOGGER.debug("Languages length (client to server): {}", languagesClientToServerLength);
-        output.appendInt(languagesClientToServerLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languagesClientToServerLength);
         String languagesClientToServer = object.getLanguagesClientToServer().getValue();
         LOGGER.debug(
                 "Languages (client to server): {}",
@@ -165,7 +160,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
         Integer languagesServerToClientLength =
                 object.getLanguagesServerToClientLength().getValue();
         LOGGER.debug("Languages length (server to client): {}", languagesServerToClientLength);
-        output.appendInt(languagesServerToClientLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(languagesServerToClientLength);
         String languagesServerToClient = object.getLanguagesServerToClient().getValue();
         LOGGER.debug(
                 "Languages (server to client): {}",
@@ -185,7 +180,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
     private static void serializeReserved(KeyExchangeInitMessage object, SerializerStream output) {
         Integer reserved = object.getReserved().getValue();
         LOGGER.debug("Reserved: {}", reserved);
-        output.appendInt(reserved, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(reserved);
     }
 
     @Override

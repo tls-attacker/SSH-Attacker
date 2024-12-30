@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +34,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     }
 
     private void parsePubkey() {
-        int pubkeyLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int pubkeyLength = parseIntField();
         message.setPubkeyLength(pubkeyLength);
         LOGGER.debug("Pubkey length: {}", pubkeyLength);
         byte[] pubkey = parseByteArrayField(pubkeyLength);
@@ -44,7 +43,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     }
 
     private void parsePubkeyAlgName() {
-        int pubkeyAlgNameLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int pubkeyAlgNameLength = parseIntField();
         message.setPubkeyAlgNameLength(pubkeyAlgNameLength);
         LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
         String pubkeyAlgName = parseByteString(pubkeyAlgNameLength, StandardCharsets.US_ASCII);

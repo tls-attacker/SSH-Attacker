@@ -31,7 +31,7 @@ public class ChannelRequestXonXoffMessageParser
     }
 
     private void parseClientFlowControl() {
-        byte clientFlowControl = parseByteField(1);
+        byte clientFlowControl = parseByteField();
         message.setClientFlowControl(clientFlowControl);
         LOGGER.debug("Client can do flow control: {}", Converter.byteToBoolean(clientFlowControl));
     }

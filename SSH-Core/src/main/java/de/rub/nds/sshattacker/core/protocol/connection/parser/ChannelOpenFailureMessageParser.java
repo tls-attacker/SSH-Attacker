@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,12 +33,12 @@ public class ChannelOpenFailureMessageParser
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
+        message.setReasonCode(parseIntField());
         LOGGER.debug("Reason code: {}", message.getReasonCode());
     }
 
     private void parseReason() {
-        int reasonLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int reasonLength = parseIntField();
         message.setReasonLength(reasonLength);
         LOGGER.debug("Reason length: {}", reasonLength);
         String reason = parseByteString(reasonLength, StandardCharsets.UTF_8);
@@ -48,7 +47,7 @@ public class ChannelOpenFailureMessageParser
     }
 
     private void parseLanguageTag() {
-        int languageTagLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int languageTagLength = parseIntField();
         message.setLanguageTagLength(languageTagLength);
         LOGGER.debug("Language tag length: {}", languageTagLength);
         String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);

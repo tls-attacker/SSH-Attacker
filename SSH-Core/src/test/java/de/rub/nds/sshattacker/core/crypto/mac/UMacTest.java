@@ -243,50 +243,50 @@ public class UMacTest {
 
     @Test
     public void testAdd64Identity() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xABCDEF00ABCDEF00L);
-        byte[] zero = ArrayConverter.longToUint64Bytes(0);
+        byte[] a = ArrayConverter.longToEightBytes(0xABCDEF00ABCDEF00L);
+        byte[] zero = ArrayConverter.longToEightBytes(0);
         byte[] actualSum = UMac.add64(a, zero);
         Assertions.assertArrayEquals(a, actualSum);
     }
 
     @Test
     public void testAdd64NoOverflow() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xABCDEF00ABCDEF00L);
-        byte[] b = ArrayConverter.longToUint64Bytes(0x0123456789ABCDEFL);
-        byte[] expectedSum = ArrayConverter.longToUint64Bytes(0xACF134683579BCEFL);
+        byte[] a = ArrayConverter.longToEightBytes(0xABCDEF00ABCDEF00L);
+        byte[] b = ArrayConverter.longToEightBytes(0x0123456789ABCDEFL);
+        byte[] expectedSum = ArrayConverter.longToEightBytes(0xACF134683579BCEFL);
         byte[] actualSum = UMac.add64(a, b);
         Assertions.assertArrayEquals(actualSum, expectedSum);
     }
 
     @Test
     public void testAdd64Overflow() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xABCDEF00ABCDEF00L);
-        byte[] expectedSum = ArrayConverter.longToUint64Bytes(0x579BDE01579BDE00L);
+        byte[] a = ArrayConverter.longToEightBytes(0xABCDEF00ABCDEF00L);
+        byte[] expectedSum = ArrayConverter.longToEightBytes(0x579BDE01579BDE00L);
         byte[] actualSum = UMac.add64(a, a);
         Assertions.assertArrayEquals(actualSum, expectedSum);
     }
 
     @Test
     public void testMult64Identity() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xDEADC0DEL);
-        byte[] one = ArrayConverter.longToUint64Bytes(1L);
+        byte[] a = ArrayConverter.longToEightBytes(0xDEADC0DEL);
+        byte[] one = ArrayConverter.longToEightBytes(1L);
         byte[] actualProduct = UMac.mult64(a, one);
         Assertions.assertArrayEquals(a, actualProduct);
     }
 
     @Test
     public void testMult64NoOverflow() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xDEADC0DEL);
-        byte[] b = ArrayConverter.longToUint64Bytes(0xC0DEL);
-        byte[] expectedProduct = ArrayConverter.longToUint64Bytes(0xA7C36B53C084L);
+        byte[] a = ArrayConverter.longToEightBytes(0xDEADC0DEL);
+        byte[] b = ArrayConverter.longToEightBytes(0xC0DEL);
+        byte[] expectedProduct = ArrayConverter.longToEightBytes(0xA7C36B53C084L);
         byte[] actualProduct = UMac.mult64(a, b);
         Assertions.assertArrayEquals(expectedProduct, actualProduct);
     }
 
     @Test
     public void testMult64WithOverflow() {
-        byte[] a = ArrayConverter.longToUint64Bytes(0xDEADC0DEDEADC0DEL);
-        byte[] expectedProduct = ArrayConverter.longToUint64Bytes(0x4C6551774559C084L);
+        byte[] a = ArrayConverter.longToEightBytes(0xDEADC0DEDEADC0DEL);
+        byte[] expectedProduct = ArrayConverter.longToEightBytes(0x4C6551774559C084L);
         byte[] actualProduct = UMac.mult64(a, a);
         Assertions.assertArrayEquals(expectedProduct, actualProduct);
     }

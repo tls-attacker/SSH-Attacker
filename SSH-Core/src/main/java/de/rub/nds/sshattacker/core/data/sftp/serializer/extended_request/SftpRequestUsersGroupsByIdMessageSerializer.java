@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUsersGroupsByIdMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,7 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
             SftpRequestUsersGroupsByIdMessage object, SerializerStream output) {
         Integer userIdsLength = object.getUserIdsLength().getValue();
         LOGGER.debug("UserIdsLength: {}", userIdsLength);
-        output.appendInt(userIdsLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(userIdsLength);
 
         object.getUserIds().forEach(userId -> output.appendBytes(userId.serialize()));
     }
@@ -31,7 +30,7 @@ public class SftpRequestUsersGroupsByIdMessageSerializer
             SftpRequestUsersGroupsByIdMessage object, SerializerStream output) {
         Integer groupIdsLength = object.getGroupIdsLength().getValue();
         LOGGER.debug("GroupIdsLength: {}", groupIdsLength);
-        output.appendInt(groupIdsLength, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(groupIdsLength);
 
         object.getGroupIds().forEach(groupId -> output.appendBytes(groupId.serialize()));
     }

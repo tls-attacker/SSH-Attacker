@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
@@ -31,17 +30,17 @@ public class RsaPublicKeyParser
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> parse() {
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey();
         // The ssh-rsa format specifies the ssh-rsa to be part of the key
-        int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int formatLength = parseIntField();
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_RSA.getName())) {
             LOGGER.warn(
                     "Trying to parse RSA public key, but encountered unexpected public key format '{}'. Parsing will continue but may not yield the expected results.",
                     format);
         }
-        int publicExponentLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int publicExponentLength = parseIntField();
         publicKey.setPublicExponent(parseBigIntField(publicExponentLength));
 
-        int modulusLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int modulusLength = parseIntField();
         publicKey.setModulus(parseBigIntField(modulusLength));
 
         return new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +22,7 @@ public class GlobalRequestCancelTcpIpForwardMessageSerializer
             GlobalRequestCancelTcpIpForwardMessage object, SerializerStream output) {
         Integer ipAddressToBindLength = object.getIpAddressToBindLength().getValue();
         LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
-        output.appendInt(ipAddressToBindLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(ipAddressToBindLength);
         LOGGER.debug("IP address to bind: {}", object.getIpAddressToBind().getValue());
         output.appendString(object.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
@@ -32,7 +31,7 @@ public class GlobalRequestCancelTcpIpForwardMessageSerializer
             GlobalRequestCancelTcpIpForwardMessage object, SerializerStream output) {
         Integer portToBind = object.getPortToBind().getValue();
         LOGGER.debug("Port to bind: {}", portToBind);
-        output.appendInt(portToBind, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(portToBind);
     }
 
     @Override

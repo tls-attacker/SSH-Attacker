@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -26,8 +25,7 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
                 object.getPossibleAuthenticationMethodsLength().getValue();
         LOGGER.debug(
                 "Possible authentication methods length: {}", possibleAuthenticationMethodsLength);
-        output.appendInt(
-                possibleAuthenticationMethodsLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(possibleAuthenticationMethodsLength);
         LOGGER.debug(
                 "Possible authentication methods: {}",
                 object.getPossibleAuthenticationMethods().getValue());

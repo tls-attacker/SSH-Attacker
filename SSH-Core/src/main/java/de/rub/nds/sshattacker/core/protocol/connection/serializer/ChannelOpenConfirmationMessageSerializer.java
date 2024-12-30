@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,20 +21,20 @@ public class ChannelOpenConfirmationMessageSerializer
             ChannelOpenConfirmationMessage object, SerializerStream output) {
         Integer senderChannelId = object.getSenderChannelId().getValue();
         LOGGER.debug("Sender channel id: {}", senderChannelId);
-        output.appendInt(senderChannelId, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(senderChannelId);
     }
 
     private static void serializeWindowSize(
             ChannelOpenConfirmationMessage object, SerializerStream output) {
         Integer windowSize = object.getWindowSize().getValue();
         LOGGER.debug("Initial window size: {}", windowSize);
-        output.appendInt(windowSize, DataFormatConstants.UINT32_SIZE);
+        output.appendInt(windowSize);
     }
 
     private static void serializePacketSize(
             ChannelOpenConfirmationMessage object, SerializerStream output) {
         LOGGER.debug("Maximum packet size: {}", object.getWindowSize().getValue());
-        output.appendInt(object.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(object.getPacketSize().getValue());
     }
 
     @Override

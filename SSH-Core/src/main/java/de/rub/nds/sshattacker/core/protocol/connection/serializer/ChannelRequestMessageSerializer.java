@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -23,7 +22,7 @@ public class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
     private void serializeRequestType(T object, SerializerStream output) {
         Integer requestTypeLength = object.getRequestTypeLength().getValue();
         LOGGER.debug("Request type length: {}", requestTypeLength);
-        output.appendInt(requestTypeLength, DataFormatConstants.STRING_SIZE_LENGTH);
+        output.appendInt(requestTypeLength);
         LOGGER.debug("Request type: {}", object.getRequestType().getValue());
         output.appendString(object.getRequestType().getValue(), StandardCharsets.US_ASCII);
     }
