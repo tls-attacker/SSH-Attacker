@@ -12,12 +12,8 @@ import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.bouncycastle.asn1.*;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -44,16 +40,20 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
+            ASN1Sequence issuerSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getIssuer(), false);
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
+                    PublicKeySerializerHelper.getValidityPeriodAsASN1(
+                            object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
+            ASN1Sequence subjectSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(
+                            object.getSubject(), false);
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for ED25519 with NULL parameter)
@@ -86,39 +86,6 @@ public class X509XCurvePublicKeySerializer extends Serializer<CustomX509XCurvePu
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 ED25519 Public Key", e);
-        }
-    }
-
-    /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
-    private static ASN1Sequence getDistinguishedNameAsASN1(String dn) {
-        if (dn != null && !dn.isEmpty()) {
-            try {
-                X500Name x500Name = new X500Name(dn);
-                return (ASN1Sequence)
-                        x500Name.toASN1Primitive(); // Correct typecasting to ASN1Sequence
-            } catch (Exception e) {
-                throw new RuntimeException("Error encoding Distinguished Name", e);
-            }
-        } else {
-            throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
-        }
-    }
-
-    /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
-    private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
-        try {
-            DateTimeFormatter dateTimeFormatter =
-                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'").withZone(ZoneOffset.UTC);
-            String validAfterStr = dateTimeFormatter.format(Instant.ofEpochSecond(validAfter));
-            String validBeforeStr = dateTimeFormatter.format(Instant.ofEpochSecond(validBefore));
-
-            ASN1EncodableVector validityVector = new ASN1EncodableVector();
-            validityVector.add(new ASN1GeneralizedTime(validAfterStr));
-            validityVector.add(new ASN1GeneralizedTime(validBeforeStr));
-
-            return new DERSequence(validityVector);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encoding Validity Period", e);
         }
     }
 

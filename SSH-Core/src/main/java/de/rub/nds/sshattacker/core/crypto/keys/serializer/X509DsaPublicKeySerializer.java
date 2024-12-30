@@ -11,12 +11,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomX509DsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.bouncycastle.asn1.*;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -58,16 +54,20 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
+            ASN1Sequence issuerSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getIssuer(), false);
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
+                    PublicKeySerializerHelper.getValidityPeriodAsASN1(
+                            object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
+            ASN1Sequence subjectSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(
+                            object.getSubject(), false);
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for DSA with NULL parameter)
@@ -103,41 +103,6 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
         }
     }
 
-    /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
-    private static ASN1Sequence getDistinguishedNameAsASN1(String dn) {
-        if (dn != null && !dn.isEmpty()) {
-            try {
-                X500Name x500Name = new X500Name(dn);
-                return (ASN1Sequence) x500Name.toASN1Primitive();
-            } catch (Exception e) {
-                throw new RuntimeException("Error encoding Distinguished Name", e);
-            }
-        } else {
-            throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
-        }
-    }
-
-    /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
-    private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
-        try {
-            DateTimeFormatter dateTimeFormatter =
-                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'").withZone(ZoneOffset.UTC);
-            String validAfterStr = dateTimeFormatter.format(Instant.ofEpochSecond(validAfter));
-            String validBeforeStr = dateTimeFormatter.format(Instant.ofEpochSecond(validBefore));
-
-            ASN1GeneralizedTime notBefore = new ASN1GeneralizedTime(validAfterStr);
-            ASN1GeneralizedTime notAfter = new ASN1GeneralizedTime(validBeforeStr);
-
-            ASN1EncodableVector validityVector = new ASN1EncodableVector();
-            validityVector.add(notBefore);
-            validityVector.add(notAfter);
-
-            return new DERSequence(validityVector);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encoding Validity Period", e);
-        }
-    }
-
     /** Utility method to serialize extensions as ASN.1 Extensions. */
     private static Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
@@ -151,11 +116,17 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
                     switch (key) {
                         case "SubjectKeyIdentifier":
                             oid = Extension.subjectKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         case "AuthorityKeyIdentifier":
                             oid = Extension.authorityKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         default:
                             throw new IllegalArgumentException("Unsupported extension key: " + key);
@@ -170,38 +141,5 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
             }
         }
         return null;
-    }
-
-    /** Utility method to parse the extension value which could be a hex string or a raw string. */
-    private static byte[] parseExtensionValue(String value) {
-        if (value.startsWith("[")) {
-            // Assuming value is in byte array format [4, 22, ...]
-            value = value.replaceAll("[\\[\\]\\s]", "");
-            String[] byteValues = value.split(",");
-            byte[] data = new byte[byteValues.length];
-            for (int i = 0; i < byteValues.length; i++) {
-                data[i] = Byte.parseByte(byteValues[i]);
-            }
-            return data;
-        } else {
-            // Assuming value is a hex string
-            return hexStringToByteArray(value);
-        }
-    }
-
-    /** Utility method to convert hex string to byte array. */
-    private static byte[] hexStringToByteArray(String s) {
-        if (s.length() % 2 != 0) {
-            throw new IllegalArgumentException("Hex string must have an even length");
-        }
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] =
-                    (byte)
-                            ((Character.digit(s.charAt(i), 16) << 4)
-                                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
     }
 }

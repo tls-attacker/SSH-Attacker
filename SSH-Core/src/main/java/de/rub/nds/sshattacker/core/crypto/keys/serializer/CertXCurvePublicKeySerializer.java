@@ -130,11 +130,11 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
 
         // 10. Critical Options
         Map<String, String> criticalOptions = object.getCriticalOptions();
-        appendStringMap(criticalOptions, output);
+        PublicKeySerializerHelper.appendStringMap(criticalOptions, output);
 
         // 11. Extensions
         Map<String, String> extensions = object.getExtensions();
-        appendStringMap(extensions, output);
+        PublicKeySerializerHelper.appendStringMap(extensions, output);
 
         // 12. Reserved
         String reserved = object.getReserved();
@@ -163,34 +163,5 @@ public class CertXCurvePublicKeySerializer extends Serializer<CustomCertXCurvePu
         } else {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }
-    }
-
-    private static void appendStringMap(Map<String, String> stringMap, SerializerStream output) {
-        if (stringMap != null && !stringMap.isEmpty()) {
-            StringBuilder optionsBuilder = new StringBuilder();
-            for (Map.Entry<String, String> entry : stringMap.entrySet()) {
-                optionsBuilder.append(serializeString(entry.getKey()));
-                optionsBuilder.append(serializeString(entry.getValue()));
-            }
-            byte[] optionsBytes = optionsBuilder.toString().getBytes(StandardCharsets.US_ASCII);
-            output.appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            output.appendBytes(optionsBytes);
-        } else {
-            output.appendInt(
-                    0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty field if map is empty
-        }
-    }
-
-    private static String serializeString(String value) {
-        byte[] valueBytes = value.getBytes(StandardCharsets.US_ASCII);
-        return buildStringWithLength(valueBytes);
-    }
-
-    private static String buildStringWithLength(byte[] valueBytes) {
-        return new String(
-                        ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH)
-                                .putInt(valueBytes.length)
-                                .array())
-                + new String(valueBytes, StandardCharsets.US_ASCII);
     }
 }

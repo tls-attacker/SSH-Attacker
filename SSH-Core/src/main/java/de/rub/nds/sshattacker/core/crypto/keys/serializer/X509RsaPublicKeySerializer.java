@@ -11,12 +11,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomX509RsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.bouncycastle.asn1.*;
-import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -56,7 +53,8 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(signatureAlgorithm);
 
             // 4. Issuer (Distinguished Name)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(object.getIssuer());
+            ASN1Sequence issuerSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getIssuer(), true);
             topLevelVector.add(issuerSequence);
 
             // 5. Validity Period (ASN.1 GeneralizedTime)
@@ -65,7 +63,8 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(validitySequence);
 
             // 6. Subject (Distinguished Name)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(object.getSubject());
+            ASN1Sequence subjectSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getSubject(), true);
             topLevelVector.add(subjectSequence);
 
             // 7. Public Key Algorithm (OID)
@@ -112,32 +111,6 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
         }
     }
 
-    /** Helper method to serialize Distinguished Names (DN) in ASN.1 format. */
-    private static ASN1Sequence getDistinguishedNameAsASN1(String dn) {
-        if (dn == null || dn.trim().isEmpty()) {
-            throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
-        }
-        try {
-            X500Name x500Name = new X500Name(reverseDistinguishedName(dn));
-            return (ASN1Sequence) x500Name.toASN1Primitive();
-        } catch (Exception e) {
-            throw new RuntimeException("Error encoding Distinguished Name", e);
-        }
-    }
-
-    /** Helper method to reverse the order of Distinguished Name components. */
-    private static String reverseDistinguishedName(String dn) {
-        return Arrays.stream(dn.split(","))
-                .map(String::trim)
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                lst -> {
-                                    java.util.Collections.reverse(lst);
-                                    return String.join(", ", lst);
-                                }));
-    }
-
     /** Helper method to serialize the validity period in ASN.1 format. */
     private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
@@ -166,23 +139,38 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
                     switch (entry.getKey()) {
                         case "SubjectKeyIdentifier":
                             oid = Extension.subjectKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         case "AuthorityKeyIdentifier":
                             oid = Extension.authorityKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         case "KeyUsage":
                             oid = Extension.keyUsage;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         case "ExtendedKeyUsage":
                             oid = Extension.extendedKeyUsage;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         case "BasicConstraints":
                             oid = Extension.basicConstraints;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
+                            value =
+                                    new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                             break;
                         default:
                             throw new IllegalArgumentException(
@@ -198,37 +186,6 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             }
         }
         return null;
-    }
-
-    /** Helper method to convert an extension from String to byte array. */
-    private static byte[] parseExtensionValue(String value) {
-        if (value.startsWith("[")) {
-            value = value.replaceAll("[\\[\\]\\s]", "");
-            String[] byteValues = value.split(",");
-            byte[] data = new byte[byteValues.length];
-            for (int i = 0; i < byteValues.length; i++) {
-                data[i] = Byte.parseByte(byteValues[i]);
-            }
-            return data;
-        } else {
-            return hexStringToByteArray(value);
-        }
-    }
-
-    /** Helper method to convert a hex string into a byte array. */
-    private static byte[] hexStringToByteArray(String s) {
-        if (s.length() % 2 != 0) {
-            throw new IllegalArgumentException("Hex string must have an even length");
-        }
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] =
-                    (byte)
-                            ((Character.digit(s.charAt(i), 16) << 4)
-                                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
     }
 
     /** Helper method to serialize a BigInteger (mpint) in SSH format. */
