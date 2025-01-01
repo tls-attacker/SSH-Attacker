@@ -26,9 +26,16 @@ public class SftpExtensionCheckFile extends SftpExtensionWithVersion<SftpExtensi
         return new SftpExtensionCheckFile(this);
     }
 
+    public static final SftpExtensionCheckFileHandler HANDLER = new SftpExtensionCheckFileHandler();
+
     @Override
-    public SftpExtensionCheckFileHandler getHandler(SshContext context) {
-        return new SftpExtensionCheckFileHandler(context, this);
+    public SftpExtensionCheckFileHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

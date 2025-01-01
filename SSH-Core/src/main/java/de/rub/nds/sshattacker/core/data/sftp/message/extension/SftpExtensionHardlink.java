@@ -26,9 +26,16 @@ public class SftpExtensionHardlink extends SftpExtensionWithVersion<SftpExtensio
         return new SftpExtensionHardlink(this);
     }
 
+    public static final SftpExtensionHardlinkHandler HANDLER = new SftpExtensionHardlinkHandler();
+
     @Override
-    public SftpExtensionHardlinkHandler getHandler(SshContext context) {
-        return new SftpExtensionHardlinkHandler(context, this);
+    public SftpExtensionHardlinkHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

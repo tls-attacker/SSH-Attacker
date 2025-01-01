@@ -17,29 +17,22 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyExchangeDoneMessage> {
 
-    public RsaKeyExchangeDoneMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public RsaKeyExchangeDoneMessageHandler(SshContext context, RsaKeyExchangeDoneMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, RsaKeyExchangeDoneMessage object) {
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
     @Override
-    public RsaKeyExchangeDoneMessageParser getParser(byte[] array) {
+    public RsaKeyExchangeDoneMessageParser getParser(byte[] array, SshContext context) {
         return new RsaKeyExchangeDoneMessageParser(array);
     }
 
     @Override
-    public RsaKeyExchangeDoneMessageParser getParser(byte[] array, int startPosition) {
+    public RsaKeyExchangeDoneMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new RsaKeyExchangeDoneMessageParser(array, startPosition);
     }
 

@@ -63,9 +63,22 @@ public class SftpRequestFileStatMessage
         flags = null;
     }
 
+    public static final SftpRequestFileStatMessageHandler HANDLER =
+            new SftpRequestFileStatMessageHandler();
+
     @Override
-    public SftpRequestFileStatMessageHandler getHandler(SshContext context) {
-        return new SftpRequestFileStatMessageHandler(context, this);
+    public SftpRequestFileStatMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

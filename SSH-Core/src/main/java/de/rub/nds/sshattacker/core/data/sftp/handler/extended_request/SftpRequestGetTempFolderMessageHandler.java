@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestGetTempFolderMessageHandler
         extends SftpRequestMessageHandler<SftpRequestGetTempFolderMessage> {
 
-    public SftpRequestGetTempFolderMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestGetTempFolderMessageHandler(
-            SshContext context, SftpRequestGetTempFolderMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestGetTempFolderMessageParser getParser(byte[] array) {
+    public SftpRequestGetTempFolderMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestGetTempFolderMessageParser(array);
     }
 
     @Override
-    public SftpRequestGetTempFolderMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestGetTempFolderMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestGetTempFolderMessageParser(array, startPosition);
     }
 

@@ -241,9 +241,22 @@ public class SftpRequestVendorIdMessage
         }
     }
 
+    public static final SftpRequestVendorIdMessageHandler HANDLER =
+            new SftpRequestVendorIdMessageHandler();
+
     @Override
-    public SftpRequestVendorIdMessageHandler getHandler(SshContext context) {
-        return new SftpRequestVendorIdMessageHandler(context, this);
+    public SftpRequestVendorIdMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

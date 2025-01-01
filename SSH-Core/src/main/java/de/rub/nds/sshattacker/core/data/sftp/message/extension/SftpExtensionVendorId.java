@@ -270,9 +270,16 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         }
     }
 
+    public static final SftpExtensionVendorIdHandler HANDLER = new SftpExtensionVendorIdHandler();
+
     @Override
-    public SftpExtensionVendorIdHandler getHandler(SshContext context) {
-        return new SftpExtensionVendorIdHandler(context, this);
+    public SftpExtensionVendorIdHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -16,22 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestSymbolicLinkMessageHandler
         extends SftpRequestMessageHandler<SftpRequestSymbolicLinkMessage> {
 
-    public SftpRequestSymbolicLinkMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestSymbolicLinkMessageHandler(
-            SshContext context, SftpRequestSymbolicLinkMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestSymbolicLinkMessageParser getParser(byte[] array) {
+    public SftpRequestSymbolicLinkMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestSymbolicLinkMessageParser(array);
     }
 
     @Override
-    public SftpRequestSymbolicLinkMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestSymbolicLinkMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestSymbolicLinkMessageParser(array, startPosition);
     }
 

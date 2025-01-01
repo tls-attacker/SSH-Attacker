@@ -17,40 +17,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExitStatusMessageHandler
-        extends SshMessageHandler<ChannelRequestExitStatusMessage> implements MessageSentHandler {
-
-    public ChannelRequestExitStatusMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestExitStatusMessageHandler(
-            SshContext context, ChannelRequestExitStatusMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestExitStatusMessage>
+        implements MessageSentHandler<ChannelRequestExitStatusMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContext(SshContext context, ChannelRequestExitStatusMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestExitStatusMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestExitStatusMessageParser getParser(byte[] array) {
+    public ChannelRequestExitStatusMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestExitStatusMessageParser(array);
     }
 
     @Override
-    public ChannelRequestExitStatusMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestExitStatusMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestExitStatusMessageParser(array, startPosition);
     }
 

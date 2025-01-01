@@ -54,9 +54,16 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
         return getClass().getSimpleName();
     }
 
+    public static final UnknownDataMessageHandler HANDLER = new UnknownDataMessageHandler();
+
     @Override
-    public UnknownDataMessageHandler getHandler(SshContext context) {
-        return new UnknownDataMessageHandler(context, this);
+    public UnknownDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

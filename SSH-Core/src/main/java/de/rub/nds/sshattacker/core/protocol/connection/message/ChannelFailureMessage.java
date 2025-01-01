@@ -26,9 +26,16 @@ public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage>
         return new ChannelFailureMessage(this);
     }
 
+    public static final ChannelFailureMessageHandler HANDLER = new ChannelFailureMessageHandler();
+
     @Override
-    public ChannelFailureMessageHandler getHandler(SshContext context) {
-        return new ChannelFailureMessageHandler(context, this);
+    public ChannelFailureMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

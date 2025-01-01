@@ -96,9 +96,16 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
         extensions.add(extension);
     }
 
+    public static final ExtensionInfoMessageHandler HANDLER = new ExtensionInfoMessageHandler();
+
     @Override
-    public ExtensionInfoMessageHandler getHandler(SshContext context) {
-        return new ExtensionInfoMessageHandler(context, this);
+    public ExtensionInfoMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

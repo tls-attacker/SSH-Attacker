@@ -12,12 +12,14 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage> {
+public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger termEnvVariableLength;
     private ModifiableString termEnvVariable;
@@ -255,9 +257,22 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
         }
     }
 
+    public static final ChannelRequestPtyMessageHandler HANDLER =
+            new ChannelRequestPtyMessageHandler();
+
     @Override
-    public ChannelRequestPtyMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestPtyMessageHandler(context, this);
+    public ChannelRequestPtyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

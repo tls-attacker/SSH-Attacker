@@ -62,9 +62,21 @@ public class SftpRequestStatMessage extends SftpRequestWithPathMessage<SftpReque
         flags = null;
     }
 
+    public static final SftpRequestStatMessageHandler HANDLER = new SftpRequestStatMessageHandler();
+
     @Override
-    public SftpRequestStatMessageHandler getHandler(SshContext context) {
-        return new SftpRequestStatMessageHandler(context, this);
+    public SftpRequestStatMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

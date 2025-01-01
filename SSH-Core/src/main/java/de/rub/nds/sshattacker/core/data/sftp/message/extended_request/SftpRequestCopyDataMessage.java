@@ -164,9 +164,22 @@ public class SftpRequestCopyDataMessage
         }
     }
 
+    public static final SftpRequestCopyDataMessageHandler HANDLER =
+            new SftpRequestCopyDataMessageHandler();
+
     @Override
-    public SftpRequestCopyDataMessageHandler getHandler(SshContext context) {
-        return new SftpRequestCopyDataMessageHandler(context, this);
+    public SftpRequestCopyDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

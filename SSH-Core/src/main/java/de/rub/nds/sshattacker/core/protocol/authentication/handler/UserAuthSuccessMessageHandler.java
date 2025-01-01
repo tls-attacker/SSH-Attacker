@@ -18,26 +18,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuccessMessage>
-        implements MessageSentHandler {
+        implements MessageSentHandler<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthSuccessMessageHandler(SshContext context, UserAuthSuccessMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, UserAuthSuccessMessage object) {
+        // Enable delayed compression if negotiated
+        activateCompression(context);
     }
 
     @Override
-    public void adjustContext() {
+    public void adjustContextAfterMessageSent(SshContext context, UserAuthSuccessMessage object) {
         // Enable delayed compression if negotiated
-        activateCompression();
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent() {
-        // Enable delayed compression if negotiated
-        activateCompression();
+        activateCompression(context);
         if (!context.isClient()
                 && context.delayCompressionExtensionReceived()
                 && context.getConfig().getRespectDelayCompressionExtension()
@@ -49,7 +41,7 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         }
     }
 
-    private void activateCompression() {
+    private static void activateCompression(SshContext context) {
         Chooser chooser = context.getChooser();
         if (chooser.getCompressionMethodClientToServer() == CompressionMethod.ZLIB_OPENSSH_COM) {
             context.getPacketLayer()
@@ -80,12 +72,13 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     }
 
     @Override
-    public UserAuthSuccessMessageParser getParser(byte[] array) {
+    public UserAuthSuccessMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthSuccessMessageParser(array);
     }
 
     @Override
-    public UserAuthSuccessMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthSuccessMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthSuccessMessageParser(array, startPosition);
     }
 

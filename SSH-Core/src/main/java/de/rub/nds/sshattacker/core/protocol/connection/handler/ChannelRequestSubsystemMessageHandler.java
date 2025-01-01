@@ -17,37 +17,32 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSubsystemMessageHandler
-        extends SshMessageHandler<ChannelRequestSubsystemMessage> implements MessageSentHandler {
-    public ChannelRequestSubsystemMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestSubsystemMessageHandler(
-            SshContext context, ChannelRequestSubsystemMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestSubsystemMessage>
+        implements MessageSentHandler<ChannelRequestSubsystemMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestSubsystemMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestSubsystemMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array) {
+    public ChannelRequestSubsystemMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestSubsystemMessageParser(array);
     }
 
     @Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestSubsystemMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestSubsystemMessageParser(array, startPosition);
     }
 

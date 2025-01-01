@@ -59,9 +59,17 @@ public class DhGexKeyExchangeOldRequestMessage
         }
     }
 
+    public static final DhGexKeyExchangeOldRequestMessageHandler HANDLER =
+            new DhGexKeyExchangeOldRequestMessageHandler();
+
     @Override
-    public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeOldRequestMessageHandler(context, this);
+    public DhGexKeyExchangeOldRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

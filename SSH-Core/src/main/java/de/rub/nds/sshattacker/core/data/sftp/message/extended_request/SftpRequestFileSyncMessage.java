@@ -27,9 +27,22 @@ public class SftpRequestFileSyncMessage
         return new SftpRequestFileSyncMessage(this);
     }
 
+    public static final SftpRequestFileSyncMessageHandler HANDLER =
+            new SftpRequestFileSyncMessageHandler();
+
     @Override
-    public SftpRequestFileSyncMessageHandler getHandler(SshContext context) {
-        return new SftpRequestFileSyncMessageHandler(context, this);
+    public SftpRequestFileSyncMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

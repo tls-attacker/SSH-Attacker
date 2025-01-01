@@ -13,28 +13,20 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownDataMessageHandler extends ProtocolMessageHandler<UnknownDataMessage> {
 
-    public UnknownDataMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UnknownDataMessageHandler(SshContext context, UnknownDataMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UnknownDataMessage object) {
         LOGGER.debug(
                 "Received unknown data message:\n{}",
-                () -> ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(object.getPayload()));
     }
 
     @Override
-    public UnknownDataMessageParser getParser(byte[] array) {
+    public UnknownDataMessageParser getParser(byte[] array, SshContext context) {
         return new UnknownDataMessageParser(array);
     }
 
     @Override
-    public UnknownDataMessageParser getParser(byte[] array, int startPosition) {
+    public UnknownDataMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new UnknownDataMessageParser(array, startPosition);
     }
 

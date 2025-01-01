@@ -27,9 +27,17 @@ public class SftpExtensionHomeDirectory
         return new SftpExtensionHomeDirectory(this);
     }
 
+    public static final SftpExtensionHomeDirectoryHandler HANDLER =
+            new SftpExtensionHomeDirectoryHandler();
+
     @Override
-    public SftpExtensionHomeDirectoryHandler getHandler(SshContext context) {
-        return new SftpExtensionHomeDirectoryHandler(context, this);
+    public SftpExtensionHomeDirectoryHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

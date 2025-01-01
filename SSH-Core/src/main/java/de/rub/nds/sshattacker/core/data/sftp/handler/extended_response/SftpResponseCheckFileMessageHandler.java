@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpResponseCheckFileMessageHandler
         extends SftpResponseMessageHandler<SftpResponseCheckFileMessage> {
 
-    public SftpResponseCheckFileMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpResponseCheckFileMessageHandler(
-            SshContext context, SftpResponseCheckFileMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpResponseCheckFileMessageParser getParser(byte[] array) {
+    public SftpResponseCheckFileMessageParser getParser(byte[] array, SshContext context) {
         return new SftpResponseCheckFileMessageParser(array);
     }
 
     @Override
-    public SftpResponseCheckFileMessageParser getParser(byte[] array, int startPosition) {
+    public SftpResponseCheckFileMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpResponseCheckFileMessageParser(array, startPosition);
     }
 

@@ -16,31 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class AuthenticationPromptEntryHandler implements Handler<AuthenticationPromptEntry> {
 
-    private final SshContext context;
-
-    private final AuthenticationPromptEntry authenticationPromptEntry;
-
-    public AuthenticationPromptEntryHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public AuthenticationPromptEntryHandler(
-            SshContext context, AuthenticationPromptEntry authenticationPromptEntry) {
-        super();
-        this.context = context;
-        this.authenticationPromptEntry = authenticationPromptEntry;
-    }
+    @Override
+    public void adjustContext(SshContext context, AuthenticationPromptEntry object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public AuthenticationPromptEntryParser getParser(byte[] array) {
+    public AuthenticationPromptEntryParser getParser(byte[] array, SshContext context) {
         return new AuthenticationPromptEntryParser(array);
     }
 
     @Override
-    public AuthenticationPromptEntryParser getParser(byte[] array, int startPosition) {
+    public AuthenticationPromptEntryParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new AuthenticationPromptEntryParser(array, startPosition);
     }
 

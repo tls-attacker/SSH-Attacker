@@ -52,9 +52,16 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
         }
     }
 
+    public static final UnimplementedMessageHandler HANDLER = new UnimplementedMessageHandler();
+
     @Override
-    public UnimplementedMessageHandler getHandler(SshContext context) {
-        return new UnimplementedMessageHandler(context, this);
+    public UnimplementedMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

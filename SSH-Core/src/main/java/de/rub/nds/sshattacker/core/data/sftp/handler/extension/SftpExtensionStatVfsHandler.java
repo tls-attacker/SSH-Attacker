@@ -16,25 +16,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionStatVfsHandler
         extends SftpAbstractExtensionHandler<SftpExtensionStatVfs> {
 
-    public SftpExtensionStatVfsHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionStatVfsHandler(SshContext context, SftpExtensionStatVfs extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionStatVfs object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionStatVfs> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionStatVfs> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionStatVfs::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionStatVfs> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionStatVfs::new, array, startPosition);
     }

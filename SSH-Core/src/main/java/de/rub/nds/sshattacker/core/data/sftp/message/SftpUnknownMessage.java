@@ -61,9 +61,16 @@ public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
         return "SftpUnknownMessage (no id set)";
     }
 
+    public static final SftpUnknownMessageHandler HANDLER = new SftpUnknownMessageHandler();
+
     @Override
-    public SftpUnknownMessageHandler getHandler(SshContext context) {
-        return new SftpUnknownMessageHandler(context, this);
+    public SftpUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

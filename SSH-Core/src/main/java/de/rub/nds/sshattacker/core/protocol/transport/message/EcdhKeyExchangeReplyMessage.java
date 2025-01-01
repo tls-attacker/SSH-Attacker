@@ -248,9 +248,17 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         }
     }
 
+    public static final EcdhKeyExchangeReplyMessageHandler HANDLER =
+            new EcdhKeyExchangeReplyMessageHandler();
+
     @Override
-    public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeReplyMessageHandler(context, this);
+    public EcdhKeyExchangeReplyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

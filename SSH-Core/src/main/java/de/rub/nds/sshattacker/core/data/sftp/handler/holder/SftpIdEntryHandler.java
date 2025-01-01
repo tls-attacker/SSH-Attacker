@@ -16,30 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpIdEntryHandler implements Handler<SftpIdEntry> {
 
-    private final SshContext context;
-
-    private final SftpIdEntry idEntry;
-
-    public SftpIdEntryHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public SftpIdEntryHandler(SshContext context, SftpIdEntry idEntry) {
-        super();
-        this.context = context;
-        this.idEntry = idEntry;
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpIdEntry object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpIdEntryParser getParser(byte[] array) {
+    public SftpIdEntryParser getParser(byte[] array, SshContext context) {
         return new SftpIdEntryParser(array);
     }
 
     @Override
-    public SftpIdEntryParser getParser(byte[] array, int startPosition) {
+    public SftpIdEntryParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpIdEntryParser(array, startPosition);
     }
 

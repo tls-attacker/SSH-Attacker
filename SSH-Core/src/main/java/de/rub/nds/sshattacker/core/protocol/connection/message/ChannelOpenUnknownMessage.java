@@ -53,9 +53,17 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
         this.typeSpecificData = typeSpecificData;
     }
 
+    public static final ChannelOpenUnknownMessageHandler HANDLER =
+            new ChannelOpenUnknownMessageHandler();
+
     @Override
-    public ChannelOpenUnknownMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenUnknownMessageHandler(context, this);
+    public ChannelOpenUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -9,12 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestWindowChangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestWindowChangeMessage
-        extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> {
+        extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> implements HasSentHandler {
 
     private ModifiableInteger widthColumns;
     private ModifiableInteger heightRows;
@@ -115,9 +116,22 @@ public class ChannelRequestWindowChangeMessage
         }
     }
 
+    public static final ChannelRequestWindowChangeMessageHandler HANDLER =
+            new ChannelRequestWindowChangeMessageHandler();
+
     @Override
-    public ChannelRequestWindowChangeMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestWindowChangeMessageHandler(context, this);
+    public ChannelRequestWindowChangeMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

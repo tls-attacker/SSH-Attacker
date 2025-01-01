@@ -21,28 +21,20 @@ public class SftpUnknownMessageHandler extends SftpMessageHandler<SftpUnknownMes
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SftpUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpUnknownMessageHandler(SshContext context, SftpUnknownMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, SftpUnknownMessage object) {
         LOGGER.debug(
                 "Received unknown message:\n{}",
-                () -> ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(object.getPayload()));
     }
 
     @Override
-    public SftpUnknownMessageParser getParser(byte[] array) {
+    public SftpUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new SftpUnknownMessageParser(array);
     }
 
     @Override
-    public SftpUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public SftpUnknownMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpUnknownMessageParser(array, startPosition);
     }
 

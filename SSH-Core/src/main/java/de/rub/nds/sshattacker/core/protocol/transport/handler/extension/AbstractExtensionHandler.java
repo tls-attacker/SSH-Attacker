@@ -9,22 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
-public abstract class AbstractExtensionHandler<E extends AbstractExtension<E>>
-        implements Handler<E> {
-
-    protected final SshContext context;
-
-    protected final E extension;
-
-    protected AbstractExtensionHandler(SshContext context) {
-        this(context, null);
-    }
-
-    protected AbstractExtensionHandler(SshContext context, E extension) {
-        super();
-        this.context = context;
-        this.extension = extension;
-    }
-}
+public abstract class AbstractExtensionHandler<T extends AbstractExtension<T>>
+        implements Handler<T> {}

@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionFileSyncHandler
         extends SftpAbstractExtensionHandler<SftpExtensionFileSync> {
 
-    public SftpExtensionFileSyncHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionFileSyncHandler(SshContext context, SftpExtensionFileSync extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionFileSync object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionFileSync> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionFileSync> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionFileSync::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionFileSync> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionFileSync::new, array, startPosition);
     }

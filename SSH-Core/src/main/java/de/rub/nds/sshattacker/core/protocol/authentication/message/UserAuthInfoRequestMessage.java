@@ -303,9 +303,17 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
+    public static final UserAuthInfoRequestMessageHandler HANDLER =
+            new UserAuthInfoRequestMessageHandler();
+
     @Override
-    public UserAuthInfoRequestMessageHandler getHandler(SshContext context) {
-        return new UserAuthInfoRequestMessageHandler(context, this);
+    public UserAuthInfoRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

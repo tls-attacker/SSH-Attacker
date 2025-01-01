@@ -107,9 +107,22 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
         }
     }
 
+    public static final SftpRequestWriteMessageHandler HANDLER =
+            new SftpRequestWriteMessageHandler();
+
     @Override
-    public SftpRequestWriteMessageHandler getHandler(SshContext context) {
-        return new SftpRequestWriteMessageHandler(context, this);
+    public SftpRequestWriteMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

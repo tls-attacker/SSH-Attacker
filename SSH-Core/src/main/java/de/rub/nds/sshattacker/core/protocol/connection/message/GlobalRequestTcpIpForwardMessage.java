@@ -120,9 +120,17 @@ public class GlobalRequestTcpIpForwardMessage
         }
     }
 
+    public static final GlobalRequestTcpIpForwardMessageHandler HANDLER =
+            new GlobalRequestTcpIpForwardMessageHandler();
+
     @Override
-    public GlobalRequestTcpIpForwardMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestTcpIpForwardMessageHandler(context, this);
+    public GlobalRequestTcpIpForwardMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

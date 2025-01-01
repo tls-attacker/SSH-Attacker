@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestLinkSetStatMessageHandler
         extends SftpRequestMessageHandler<SftpRequestLinkSetStatMessage> {
 
-    public SftpRequestLinkSetStatMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestLinkSetStatMessageHandler(
-            SshContext context, SftpRequestLinkSetStatMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestLinkSetStatMessageParser getParser(byte[] array) {
+    public SftpRequestLinkSetStatMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestLinkSetStatMessageParser(array, context.getChooser());
     }
 
     @Override
-    public SftpRequestLinkSetStatMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestLinkSetStatMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestLinkSetStatMessageParser(array, startPosition, context.getChooser());
     }
 

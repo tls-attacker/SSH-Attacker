@@ -172,9 +172,22 @@ public class SftpRequestUsersGroupsByIdMessage
         groupIds.add(groupId);
     }
 
+    public static final SftpRequestUsersGroupsByIdMessageHandler HANDLER =
+            new SftpRequestUsersGroupsByIdMessageHandler();
+
     @Override
-    public SftpRequestUsersGroupsByIdMessageHandler getHandler(SshContext context) {
-        return new SftpRequestUsersGroupsByIdMessageHandler(context, this);
+    public SftpRequestUsersGroupsByIdMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

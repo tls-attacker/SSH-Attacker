@@ -17,26 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionHomeDirectoryHandler
         extends SftpAbstractExtensionHandler<SftpExtensionHomeDirectory> {
 
-    public SftpExtensionHomeDirectoryHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionHomeDirectoryHandler(
-            SshContext context, SftpExtensionHomeDirectory extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionHomeDirectory object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionHomeDirectory> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionHomeDirectory> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionHomeDirectory::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionHomeDirectory> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionHomeDirectory::new, array, startPosition);
     }

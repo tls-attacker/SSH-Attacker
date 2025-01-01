@@ -27,9 +27,22 @@ public class SftpRequestRemoveDirMessage
         return new SftpRequestRemoveDirMessage(this);
     }
 
+    public static final SftpRequestRemoveDirMessageHandler HANDLER =
+            new SftpRequestRemoveDirMessageHandler();
+
     @Override
-    public SftpRequestRemoveDirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestRemoveDirMessageHandler(context, this);
+    public SftpRequestRemoveDirMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

@@ -91,9 +91,22 @@ public class SftpRequestPosixRenameMessage
         }
     }
 
+    public static final SftpRequestPosixRenameMessageHandler HANDLER =
+            new SftpRequestPosixRenameMessageHandler();
+
     @Override
-    public SftpRequestPosixRenameMessageHandler getHandler(SshContext context) {
-        return new SftpRequestPosixRenameMessageHandler(context, this);
+    public SftpRequestPosixRenameMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

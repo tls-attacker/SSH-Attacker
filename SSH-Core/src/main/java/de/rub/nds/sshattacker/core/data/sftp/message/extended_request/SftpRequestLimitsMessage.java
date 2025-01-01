@@ -26,9 +26,22 @@ public class SftpRequestLimitsMessage extends SftpRequestExtendedMessage<SftpReq
         return new SftpRequestLimitsMessage(this);
     }
 
+    public static final SftpRequestLimitsMessageHandler HANDLER =
+            new SftpRequestLimitsMessageHandler();
+
     @Override
-    public SftpRequestLimitsMessageHandler getHandler(SshContext context) {
-        return new SftpRequestLimitsMessageHandler(context, this);
+    public SftpRequestLimitsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

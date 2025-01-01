@@ -28,9 +28,22 @@ public class SftpRequestRemoveMessage extends SftpRequestWithPathMessage<SftpReq
         return new SftpRequestRemoveMessage(this);
     }
 
+    public static final SftpRequestRemoveMessageHandler HANDLER =
+            new SftpRequestRemoveMessageHandler();
+
     @Override
-    public SftpRequestRemoveMessageHandler getHandler(SshContext context) {
-        return new SftpRequestRemoveMessageHandler(context, this);
+    public SftpRequestRemoveMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

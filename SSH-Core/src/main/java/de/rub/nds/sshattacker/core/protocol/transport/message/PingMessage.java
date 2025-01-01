@@ -87,9 +87,16 @@ public class PingMessage extends SshMessage<PingMessage> {
         }
     }
 
+    public static final PingMessageHandler HANDLER = new PingMessageHandler();
+
     @Override
-    public PingMessageHandler getHandler(SshContext context) {
-        return new PingMessageHandler(context, this);
+    public PingMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

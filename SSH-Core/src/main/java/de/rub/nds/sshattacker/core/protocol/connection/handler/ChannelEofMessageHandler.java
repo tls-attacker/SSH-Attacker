@@ -16,26 +16,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessage> {
 
-    public ChannelEofMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelEofMessageHandler(SshContext context, ChannelEofMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelEofMessage object) {
         // TODO: Handle ChannelEofMessage
     }
 
     @Override
-    public ChannelEofMessageParser getParser(byte[] array) {
+    public ChannelEofMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelEofMessageParser(array);
     }
 
     @Override
-    public ChannelEofMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelEofMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new ChannelEofMessageParser(array, startPosition);
     }
 

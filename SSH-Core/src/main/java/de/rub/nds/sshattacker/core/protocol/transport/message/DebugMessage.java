@@ -182,9 +182,16 @@ public class DebugMessage extends SshMessage<DebugMessage> {
         }
     }
 
+    public static final DebugMessageHandler HANDLER = new DebugMessageHandler();
+
     @Override
-    public DebugMessageHandler getHandler(SshContext context) {
-        return new DebugMessageHandler(context, this);
+    public DebugMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

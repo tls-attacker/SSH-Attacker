@@ -26,9 +26,16 @@ public class SftpInitMessage extends SftpHandshakeMessage<SftpInitMessage> {
         return new SftpInitMessage(this);
     }
 
+    public static final SftpInitMessageHandler HANDLER = new SftpInitMessageHandler();
+
     @Override
-    public SftpInitMessageHandler getHandler(SshContext context) {
-        return new SftpInitMessageHandler(context, this);
+    public SftpInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

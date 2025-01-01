@@ -14,16 +14,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public abstract class SftpResponseMessageHandler<T extends SftpResponseMessage<T>>
         extends SftpMessageHandler<T> {
 
-    protected SftpResponseMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    protected SftpResponseMessageHandler(SshContext context, T message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        context.getSftpManager().removeRequestById(message.getRequestId().getValue());
+    public void adjustContext(SshContext context, T object) {
+        context.getSftpManager().removeRequestById(object.getRequestId().getValue());
     }
 }

@@ -59,9 +59,16 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
         return "UnknownMessage (no id set)";
     }
 
+    public static final UnknownMessageHandler HANDLER = new UnknownMessageHandler();
+
     @Override
-    public UnknownMessageHandler getHandler(SshContext context) {
-        return new UnknownMessageHandler(context, this);
+    public UnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

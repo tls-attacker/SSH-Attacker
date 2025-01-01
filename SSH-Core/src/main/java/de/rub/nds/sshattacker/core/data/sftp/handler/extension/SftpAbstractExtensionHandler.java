@@ -9,22 +9,6 @@ package de.rub.nds.sshattacker.core.data.sftp.handler.extension;
 
 import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public abstract class SftpAbstractExtensionHandler<T extends SftpAbstractExtension<T>>
-        implements Handler<T> {
-
-    protected final SshContext context;
-
-    protected final T extension;
-
-    protected SftpAbstractExtensionHandler(SshContext context) {
-        this(context, null);
-    }
-
-    protected SftpAbstractExtensionHandler(SshContext context, T extension) {
-        super();
-        this.context = context;
-        this.extension = extension;
-    }
-}
+        implements Handler<T> {}

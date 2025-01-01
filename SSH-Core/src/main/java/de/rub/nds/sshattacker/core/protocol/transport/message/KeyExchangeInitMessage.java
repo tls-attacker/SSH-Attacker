@@ -1200,9 +1200,16 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         }
     }
 
+    public static final KeyExchangeInitMessageHandler HANDLER = new KeyExchangeInitMessageHandler();
+
     @Override
-    public KeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new KeyExchangeInitMessageHandler(context, this);
+    public KeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

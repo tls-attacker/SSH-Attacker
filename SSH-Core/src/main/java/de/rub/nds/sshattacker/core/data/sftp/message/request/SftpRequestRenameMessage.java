@@ -92,9 +92,22 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
         }
     }
 
+    public static final SftpRequestRenameMessageHandler HANDLER =
+            new SftpRequestRenameMessageHandler();
+
     @Override
-    public SftpRequestRenameMessageHandler getHandler(SshContext context) {
-        return new SftpRequestRenameMessageHandler(context, this);
+    public SftpRequestRenameMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

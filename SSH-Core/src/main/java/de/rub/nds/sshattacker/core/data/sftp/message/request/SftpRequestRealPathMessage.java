@@ -27,9 +27,22 @@ public class SftpRequestRealPathMessage
         return new SftpRequestRealPathMessage(this);
     }
 
+    public static final SftpRequestRealPathMessageHandler HANDLER =
+            new SftpRequestRealPathMessageHandler();
+
     @Override
-    public SftpRequestRealPathMessageHandler getHandler(SshContext context) {
-        return new SftpRequestRealPathMessageHandler(context, this);
+    public SftpRequestRealPathMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

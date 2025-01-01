@@ -7,12 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestAuthAgentMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestAuthAgentMessage
-        extends ChannelRequestMessage<ChannelRequestAuthAgentMessage> {
+        extends ChannelRequestMessage<ChannelRequestAuthAgentMessage> implements HasSentHandler {
 
     public ChannelRequestAuthAgentMessage() {
         super();
@@ -27,9 +28,22 @@ public class ChannelRequestAuthAgentMessage
         return new ChannelRequestAuthAgentMessage(this);
     }
 
+    public static final ChannelRequestAuthAgentMessageHandler HANDLER =
+            new ChannelRequestAuthAgentMessageHandler();
+
     @Override
-    public ChannelRequestAuthAgentMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestAuthAgentMessageHandler(context, this);
+    public ChannelRequestAuthAgentMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

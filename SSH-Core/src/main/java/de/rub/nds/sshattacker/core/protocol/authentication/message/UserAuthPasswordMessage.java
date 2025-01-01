@@ -183,9 +183,17 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         }
     }
 
+    public static final UserAuthPasswordMessageHandler HANDLER =
+            new UserAuthPasswordMessageHandler();
+
     @Override
-    public UserAuthPasswordMessageHandler getHandler(SshContext context) {
-        return new UserAuthPasswordMessageHandler(context, this);
+    public UserAuthPasswordMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

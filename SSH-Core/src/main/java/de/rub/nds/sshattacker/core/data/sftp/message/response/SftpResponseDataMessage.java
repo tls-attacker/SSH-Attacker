@@ -86,9 +86,17 @@ public class SftpResponseDataMessage extends SftpResponseMessage<SftpResponseDat
         }
     }
 
+    public static final SftpResponseDataMessageHandler HANDLER =
+            new SftpResponseDataMessageHandler();
+
     @Override
-    public SftpResponseDataMessageHandler getHandler(SshContext context) {
-        return new SftpResponseDataMessageHandler(context, this);
+    public SftpResponseDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

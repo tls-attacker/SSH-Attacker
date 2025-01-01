@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestCheckFileNameMessageHandler
         extends SftpRequestMessageHandler<SftpRequestCheckFileNameMessage> {
 
-    public SftpRequestCheckFileNameMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestCheckFileNameMessageHandler(
-            SshContext context, SftpRequestCheckFileNameMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestCheckFileNameMessageParser getParser(byte[] array) {
+    public SftpRequestCheckFileNameMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestCheckFileNameMessageParser(array);
     }
 
     @Override
-    public SftpRequestCheckFileNameMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestCheckFileNameMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestCheckFileNameMessageParser(array, startPosition);
     }
 

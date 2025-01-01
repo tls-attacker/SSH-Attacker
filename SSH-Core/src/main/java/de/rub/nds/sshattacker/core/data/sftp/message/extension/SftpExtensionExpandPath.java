@@ -26,9 +26,17 @@ public class SftpExtensionExpandPath extends SftpExtensionWithVersion<SftpExtens
         return new SftpExtensionExpandPath(this);
     }
 
+    public static final SftpExtensionExpandPathHandler HANDLER =
+            new SftpExtensionExpandPathHandler();
+
     @Override
-    public SftpExtensionExpandPathHandler getHandler(SshContext context) {
-        return new SftpExtensionExpandPathHandler(context, this);
+    public SftpExtensionExpandPathHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

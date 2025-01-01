@@ -26,9 +26,17 @@ public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSes
         return new ChannelOpenSessionMessage(this);
     }
 
+    public static final ChannelOpenSessionMessageHandler HANDLER =
+            new ChannelOpenSessionMessageHandler();
+
     @Override
-    public ChannelOpenSessionMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenSessionMessageHandler(context, this);
+    public ChannelOpenSessionMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

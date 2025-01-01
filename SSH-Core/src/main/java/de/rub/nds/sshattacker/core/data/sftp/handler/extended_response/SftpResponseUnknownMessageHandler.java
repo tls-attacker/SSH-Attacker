@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpResponseUnknownMessageHandler
         extends SftpResponseMessageHandler<SftpResponseUnknownMessage> {
 
-    public SftpResponseUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpResponseUnknownMessageHandler(
-            SshContext context, SftpResponseUnknownMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpResponseUnknownMessageParser getParser(byte[] array) {
+    public SftpResponseUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new SftpResponseUnknownMessageParser(array);
     }
 
     @Override
-    public SftpResponseUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public SftpResponseUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpResponseUnknownMessageParser(array, startPosition);
     }
 

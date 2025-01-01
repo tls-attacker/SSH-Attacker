@@ -27,9 +27,22 @@ public class SftpRequestStatVfsMessage
         return new SftpRequestStatVfsMessage(this);
     }
 
+    public static final SftpRequestStatVfsMessageHandler HANDLER =
+            new SftpRequestStatVfsMessageHandler();
+
     @Override
-    public SftpRequestStatVfsMessageHandler getHandler(SshContext context) {
-        return new SftpRequestStatVfsMessageHandler(context, this);
+    public SftpRequestStatVfsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

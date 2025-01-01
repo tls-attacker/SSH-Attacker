@@ -162,9 +162,17 @@ public class SftpResponseSpaceAvailableMessage
         }
     }
 
+    public static final SftpResponseSpaceAvailableMessageHandler HANDLER =
+            new SftpResponseSpaceAvailableMessageHandler();
+
     @Override
-    public SftpResponseSpaceAvailableMessageHandler getHandler(SshContext context) {
-        return new SftpResponseSpaceAvailableMessageHandler(context, this);
+    public SftpResponseSpaceAvailableMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

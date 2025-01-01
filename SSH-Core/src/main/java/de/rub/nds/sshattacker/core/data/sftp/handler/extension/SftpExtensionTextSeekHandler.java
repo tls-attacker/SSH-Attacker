@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionTextSeekHandler
         extends SftpAbstractExtensionHandler<SftpExtensionTextSeek> {
 
-    public SftpExtensionTextSeekHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionTextSeekHandler(SshContext context, SftpExtensionTextSeek extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionTextSeek object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionTextSeek> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionTextSeek> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionTextSeek::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionTextSeek> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionTextSeek::new, array, startPosition);
     }

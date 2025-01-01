@@ -100,9 +100,16 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
         }
     }
 
+    public static final SftpExtensionNewlineHandler HANDLER = new SftpExtensionNewlineHandler();
+
     @Override
-    public SftpExtensionNewlineHandler getHandler(SshContext context) {
-        return new SftpExtensionNewlineHandler(context, this);
+    public SftpExtensionNewlineHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

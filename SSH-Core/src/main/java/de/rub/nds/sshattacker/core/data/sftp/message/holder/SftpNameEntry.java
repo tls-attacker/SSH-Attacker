@@ -93,8 +93,10 @@ public class SftpNameEntry extends ModifiableVariableHolder {
         }
     }
 
-    public SftpNameEntryHandler getHandler(SshContext context) {
-        return new SftpNameEntryHandler(context, this);
+    public static final SftpNameEntryHandler HANDLER = new SftpNameEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

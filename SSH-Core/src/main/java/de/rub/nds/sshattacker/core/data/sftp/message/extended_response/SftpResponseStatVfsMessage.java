@@ -282,9 +282,17 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         }
     }
 
+    public static final SftpResponseStatVfsMessageHandler HANDLER =
+            new SftpResponseStatVfsMessageHandler();
+
     @Override
-    public SftpResponseStatVfsMessageHandler getHandler(SshContext context) {
-        return new SftpResponseStatVfsMessageHandler(context, this);
+    public SftpResponseStatVfsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

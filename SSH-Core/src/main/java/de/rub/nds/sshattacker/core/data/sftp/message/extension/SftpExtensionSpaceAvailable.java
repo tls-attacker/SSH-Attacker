@@ -27,9 +27,17 @@ public class SftpExtensionSpaceAvailable
         return new SftpExtensionSpaceAvailable(this);
     }
 
+    public static final SftpExtensionSpaceAvailableHandler HANDLER =
+            new SftpExtensionSpaceAvailableHandler();
+
     @Override
-    public SftpExtensionSpaceAvailableHandler getHandler(SshContext context) {
-        return new SftpExtensionSpaceAvailableHandler(context, this);
+    public SftpExtensionSpaceAvailableHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

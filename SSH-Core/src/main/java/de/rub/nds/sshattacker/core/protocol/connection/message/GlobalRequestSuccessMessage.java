@@ -47,9 +47,17 @@ public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccess
                         this.responseSpecificData, responseSpecificData);
     }
 
+    public static final GlobalRequestSuccessMessageHandler HANDLER =
+            new GlobalRequestSuccessMessageHandler();
+
     @Override
-    public GlobalRequestSuccessMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestSuccessMessageHandler(context, this);
+    public GlobalRequestSuccessMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

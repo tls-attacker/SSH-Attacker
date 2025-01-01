@@ -27,9 +27,17 @@ public class SftpExtensionUsersGroupsById
         return new SftpExtensionUsersGroupsById(this);
     }
 
+    public static final SftpExtensionUsersGroupsByIdHandler HANDLER =
+            new SftpExtensionUsersGroupsByIdHandler();
+
     @Override
-    public SftpExtensionUsersGroupsByIdHandler getHandler(SshContext context) {
-        return new SftpExtensionUsersGroupsByIdHandler(context, this);
+    public SftpExtensionUsersGroupsByIdHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -20,25 +20,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class RsaKeyExchangeSecretMessageHandler
         extends SshMessageHandler<RsaKeyExchangeSecretMessage> {
 
-    public RsaKeyExchangeSecretMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public RsaKeyExchangeSecretMessageHandler(
-            SshContext context, RsaKeyExchangeSecretMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        decryptSharedSecret();
-        updateExchangeHashWithSecrets();
+    public void adjustContext(SshContext context, RsaKeyExchangeSecretMessage object) {
+        decryptSharedSecret(context, object);
+        updateExchangeHashWithSecrets(context, object);
     }
 
-    private void decryptSharedSecret() {
+    private static void decryptSharedSecret(
+            SshContext context, RsaKeyExchangeSecretMessage object) {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         try {
-            keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
+            keyExchange.decryptSharedSecret(object.getEncryptedSecret().getValue());
             context.setSharedSecret(keyExchange.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn(
@@ -47,10 +39,11 @@ public class RsaKeyExchangeSecretMessageHandler
         }
     }
 
-    private void updateExchangeHashWithSecrets() {
+    private static void updateExchangeHashWithSecrets(
+            SshContext context, RsaKeyExchangeSecretMessage object) {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
-        inputHolder.setRsaEncryptedSecret(message.getEncryptedSecret().getValue());
+        inputHolder.setRsaEncryptedSecret(object.getEncryptedSecret().getValue());
         if (keyExchange.isComplete()) {
             inputHolder.setSharedSecret(keyExchange.getSharedSecret());
         } else {
@@ -60,12 +53,13 @@ public class RsaKeyExchangeSecretMessageHandler
     }
 
     @Override
-    public RsaKeyExchangeSecretMessageParser getParser(byte[] array) {
+    public RsaKeyExchangeSecretMessageParser getParser(byte[] array, SshContext context) {
         return new RsaKeyExchangeSecretMessageParser(array);
     }
 
     @Override
-    public RsaKeyExchangeSecretMessageParser getParser(byte[] array, int startPosition) {
+    public RsaKeyExchangeSecretMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new RsaKeyExchangeSecretMessageParser(array, startPosition);
     }
 

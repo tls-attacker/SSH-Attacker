@@ -27,9 +27,22 @@ public class SftpRequestExpandPathMessage
         return new SftpRequestExpandPathMessage(this);
     }
 
+    public static final SftpRequestExpandPathMessageHandler HANDLER =
+            new SftpRequestExpandPathMessageHandler();
+
     @Override
-    public SftpRequestExpandPathMessageHandler getHandler(SshContext context) {
-        return new SftpRequestExpandPathMessageHandler(context, this);
+    public SftpRequestExpandPathMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

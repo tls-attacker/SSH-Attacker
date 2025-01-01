@@ -16,24 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPubkeyMessageHandler extends SshMessageHandler<UserAuthPubkeyMessage> {
 
-    public UserAuthPubkeyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthPubkeyMessageHandler(SshContext context, UserAuthPubkeyMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, UserAuthPubkeyMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthPubkeyMessageParser getParser(byte[] array) {
+    public UserAuthPubkeyMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthPubkeyMessageParser(array);
     }
 
     @Override
-    public UserAuthPubkeyMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthPubkeyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthPubkeyMessageParser(array, startPosition);
     }
 

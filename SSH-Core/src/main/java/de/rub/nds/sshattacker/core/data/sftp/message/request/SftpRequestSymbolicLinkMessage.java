@@ -96,9 +96,22 @@ public class SftpRequestSymbolicLinkMessage
         }
     }
 
+    public static final SftpRequestSymbolicLinkMessageHandler HANDLER =
+            new SftpRequestSymbolicLinkMessageHandler();
+
     @Override
-    public SftpRequestSymbolicLinkMessageHandler getHandler(SshContext context) {
-        return new SftpRequestSymbolicLinkMessageHandler(context, this);
+    public SftpRequestSymbolicLinkMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

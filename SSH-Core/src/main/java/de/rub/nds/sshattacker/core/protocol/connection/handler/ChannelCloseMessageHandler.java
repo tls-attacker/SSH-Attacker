@@ -20,22 +20,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMessage>
-        implements MessageSentHandler {
+        implements MessageSentHandler<ChannelCloseMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelCloseMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelCloseMessageHandler(SshContext context, ChannelCloseMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelCloseMessage object) {
         ChannelManager channelManager = context.getChannelManager();
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
         Channel channel = channelManager.getChannelByLocalId(recipientChannelId);
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
@@ -58,9 +50,9 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(SshContext context, ChannelCloseMessage object) {
         ChannelManager channelManager = context.getChannelManager();
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
         Channel channel = channelManager.getChannelByRemoteId(recipientChannelId);
         if (channel != null) {
             channel.setCloseMessageSent(true);
@@ -76,12 +68,13 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     }
 
     @Override
-    public ChannelCloseMessageParser getParser(byte[] array) {
+    public ChannelCloseMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelCloseMessageParser(array);
     }
 
     @Override
-    public ChannelCloseMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelCloseMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelCloseMessageParser(array, startPosition);
     }
 

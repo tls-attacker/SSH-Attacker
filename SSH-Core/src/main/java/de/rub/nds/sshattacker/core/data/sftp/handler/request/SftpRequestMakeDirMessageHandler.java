@@ -16,21 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestMakeDirMessageHandler
         extends SftpRequestMessageHandler<SftpRequestMakeDirMessage> {
 
-    public SftpRequestMakeDirMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestMakeDirMessageHandler(SshContext context, SftpRequestMakeDirMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestMakeDirMessageParser getParser(byte[] array) {
+    public SftpRequestMakeDirMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestMakeDirMessageParser(array, context.getChooser());
     }
 
     @Override
-    public SftpRequestMakeDirMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestMakeDirMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestMakeDirMessageParser(array, startPosition, context.getChooser());
     }
 

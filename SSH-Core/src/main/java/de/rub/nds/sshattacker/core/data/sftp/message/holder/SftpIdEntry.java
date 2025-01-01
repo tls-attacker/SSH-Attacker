@@ -55,8 +55,10 @@ public class SftpIdEntry extends ModifiableVariableHolder {
         }
     }
 
-    public SftpIdEntryHandler getHandler(SshContext context) {
-        return new SftpIdEntryHandler(context, this);
+    public static final SftpIdEntryHandler HANDLER = new SftpIdEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

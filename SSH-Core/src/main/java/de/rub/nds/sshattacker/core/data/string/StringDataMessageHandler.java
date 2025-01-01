@@ -12,24 +12,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class StringDataMessageHandler extends ProtocolMessageHandler<StringDataMessage> {
 
-    public StringDataMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public StringDataMessageHandler(SshContext context, StringDataMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, StringDataMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public StringDataMessageParser getParser(byte[] array) {
+    public StringDataMessageParser getParser(byte[] array, SshContext context) {
         return new StringDataMessageParser(array);
     }
 
     @Override
-    public StringDataMessageParser getParser(byte[] array, int startPosition) {
+    public StringDataMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new StringDataMessageParser(array, startPosition);
     }
 

@@ -27,9 +27,22 @@ public class SftpRequestMakeTempFolderMessage
         return new SftpRequestMakeTempFolderMessage(this);
     }
 
+    public static final SftpRequestMakeTempFolderMessageHandler HANDLER =
+            new SftpRequestMakeTempFolderMessageHandler();
+
     @Override
-    public SftpRequestMakeTempFolderMessageHandler getHandler(SshContext context) {
-        return new SftpRequestMakeTempFolderMessageHandler(context, this);
+    public SftpRequestMakeTempFolderMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

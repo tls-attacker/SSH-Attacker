@@ -87,9 +87,16 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
         }
     }
 
+    public static final IgnoreMessageHandler HANDLER = new IgnoreMessageHandler();
+
     @Override
-    public IgnoreMessageHandler getHandler(SshContext context) {
-        return new IgnoreMessageHandler(context, this);
+    public IgnoreMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

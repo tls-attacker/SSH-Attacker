@@ -11,12 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequestExecMessage> {
+public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequestExecMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger commandLength;
     private ModifiableString command;
@@ -88,9 +90,22 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
         }
     }
 
+    public static final ChannelRequestExecMessageHandler HANDLER =
+            new ChannelRequestExecMessageHandler();
+
     @Override
-    public ChannelRequestExecMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExecMessageHandler(context, this);
+    public ChannelRequestExecMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

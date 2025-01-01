@@ -99,9 +99,17 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
         }
     }
 
+    public static final RsaKeyExchangeDoneMessageHandler HANDLER =
+            new RsaKeyExchangeDoneMessageHandler();
+
     @Override
-    public RsaKeyExchangeDoneMessageHandler getHandler(SshContext context) {
-        return new RsaKeyExchangeDoneMessageHandler(context, this);
+    public RsaKeyExchangeDoneMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

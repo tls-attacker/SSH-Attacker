@@ -141,7 +141,7 @@ public final class ReceiveMessageHelper {
             Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
             if (parsedPacket.isPresent()) {
                 ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
-                message.getHandler(context).adjustContext();
+                message.adjustContext(context);
                 retrievedPackets.add(parsedPacket.get());
                 parsedMessages.add(message);
 
@@ -149,7 +149,7 @@ public final class ReceiveMessageHelper {
                     // Parse ChannelDataMessage
                     ProtocolMessage<?> innerMessage =
                             context.getDataMessageLayer().parse((ChannelDataMessage) message);
-                    innerMessage.getHandler(context).adjustContext();
+                    innerMessage.adjustContext(context);
                     parsedMessages.add(innerMessage);
                 }
             }

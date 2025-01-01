@@ -50,9 +50,22 @@ public class SftpRequestTextSeekMessage
         }
     }
 
+    public static final SftpRequestTextSeekMessageHandler HANDLER =
+            new SftpRequestTextSeekMessageHandler();
+
     @Override
-    public SftpRequestTextSeekMessageHandler getHandler(SshContext context) {
-        return new SftpRequestTextSeekMessageHandler(context, this);
+    public SftpRequestTextSeekMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

@@ -13,23 +13,15 @@ import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public abstract class SftpRequestMessageHandler<T extends SftpRequestMessage<T>>
-        extends SftpMessageHandler<T> implements MessageSentHandler {
+        extends SftpMessageHandler<T> implements MessageSentHandler<T> {
 
-    protected SftpRequestMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    protected SftpRequestMessageHandler(SshContext context, T message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, T object) {
+        context.getSftpManager().handleRequestMessage(object);
     }
 
     @Override
-    public void adjustContext() {
-        context.getSftpManager().handleRequestMessage(message);
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent() {
-        context.getSftpManager().addRequest(message);
+    public void adjustContextAfterMessageSent(SshContext context, T object) {
+        context.getSftpManager().addRequest(object);
     }
 }

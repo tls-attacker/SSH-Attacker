@@ -727,8 +727,10 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         }
     }
 
-    public SftpFileAttributesHandler getHandler(SshContext context) {
-        return new SftpFileAttributesHandler(context, this);
+    public static final SftpFileAttributesHandler HANDLER = new SftpFileAttributesHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

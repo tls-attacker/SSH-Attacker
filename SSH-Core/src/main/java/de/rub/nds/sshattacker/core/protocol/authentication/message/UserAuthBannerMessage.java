@@ -150,9 +150,16 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
         }
     }
 
+    public static final UserAuthBannerMessageHandler HANDLER = new UserAuthBannerMessageHandler();
+
     @Override
-    public UserAuthBannerMessageHandler getHandler(SshContext context) {
-        return new UserAuthBannerMessageHandler(context, this);
+    public UserAuthBannerMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

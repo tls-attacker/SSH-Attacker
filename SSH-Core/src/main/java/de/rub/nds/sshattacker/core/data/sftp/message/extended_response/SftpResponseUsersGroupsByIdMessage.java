@@ -176,9 +176,17 @@ public class SftpResponseUsersGroupsByIdMessage
         groupNames.add(new SftpNameEntry(new ModifiableString(groupName)));
     }
 
+    public static final SftpResponseUsersGroupsByIdMessageHandler HANDLER =
+            new SftpResponseUsersGroupsByIdMessageHandler();
+
     @Override
-    public SftpResponseUsersGroupsByIdMessageHandler getHandler(SshContext context) {
-        return new SftpResponseUsersGroupsByIdMessageHandler(context, this);
+    public SftpResponseUsersGroupsByIdMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

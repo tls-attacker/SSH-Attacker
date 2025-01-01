@@ -16,30 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpNameEntryHandler implements Handler<SftpNameEntry> {
 
-    private final SshContext context;
-
-    private final SftpNameEntry nameEntry;
-
-    public SftpNameEntryHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public SftpNameEntryHandler(SshContext context, SftpNameEntry nameEntry) {
-        super();
-        this.context = context;
-        this.nameEntry = nameEntry;
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpNameEntry object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpNameEntryParser getParser(byte[] array) {
+    public SftpNameEntryParser getParser(byte[] array, SshContext context) {
         return new SftpNameEntryParser(array);
     }
 
     @Override
-    public SftpNameEntryParser getParser(byte[] array, int startPosition) {
+    public SftpNameEntryParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpNameEntryParser(array, startPosition);
     }
 

@@ -18,41 +18,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class EcdhKeyExchangeReplyMessageHandler
         extends SshMessageHandler<EcdhKeyExchangeReplyMessage> {
 
-    public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public EcdhKeyExchangeReplyMessageHandler(
-            SshContext context, EcdhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithRemotePublicKey();
+    public void adjustContext(SshContext context, EcdhKeyExchangeReplyMessage object) {
+        KeyExchangeUtil.handleHostKeyMessage(context, object);
+        updateContextWithRemotePublicKey(context, object);
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void updateContextWithRemotePublicKey() {
+    private static void updateContextWithRemotePublicKey(
+            SshContext context, EcdhKeyExchangeReplyMessage object) {
         context.getChooser()
                 .getEcdhKeyExchange()
-                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                .setRemotePublicKey(object.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setEcdhServerPublicKey(message.getEphemeralPublicKey().getValue());
+                .setEcdhServerPublicKey(object.getEphemeralPublicKey().getValue());
     }
 
     @Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array) {
+    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, SshContext context) {
         return new EcdhKeyExchangeReplyMessageParser(array);
     }
 
     @Override
-    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+    public EcdhKeyExchangeReplyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
     }
 

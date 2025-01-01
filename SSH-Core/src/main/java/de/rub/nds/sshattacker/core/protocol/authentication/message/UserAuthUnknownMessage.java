@@ -54,9 +54,16 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
         }
     }
 
+    public static final UserAuthUnknownMessageHandler HANDLER = new UserAuthUnknownMessageHandler();
+
     @Override
-    public UserAuthUnknownMessageHandler getHandler(SshContext context) {
-        return new UserAuthUnknownMessageHandler(context, this);
+    public UserAuthUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

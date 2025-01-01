@@ -16,30 +16,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExchangeInitMessage> {
 
-    public DhKeyExchangeInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhKeyExchangeInitMessageHandler(SshContext context, DhKeyExchangeInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, DhKeyExchangeInitMessage object) {
         context.getChooser()
                 .getDhKeyExchange()
-                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                .setRemotePublicKey(object.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setDhClientPublicKey(message.getEphemeralPublicKey().getValue());
+                .setDhClientPublicKey(object.getEphemeralPublicKey().getValue());
     }
 
     @Override
-    public DhKeyExchangeInitMessageParser getParser(byte[] array) {
+    public DhKeyExchangeInitMessageParser getParser(byte[] array, SshContext context) {
         return new DhKeyExchangeInitMessageParser(array);
     }
 
     @Override
-    public DhKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
+    public DhKeyExchangeInitMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhKeyExchangeInitMessageParser(array, startPosition);
     }
 

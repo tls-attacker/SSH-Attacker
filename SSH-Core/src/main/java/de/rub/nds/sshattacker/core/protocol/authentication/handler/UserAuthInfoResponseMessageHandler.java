@@ -17,25 +17,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthInfoResponseMessageHandler
         extends SshMessageHandler<UserAuthInfoResponseMessage> {
 
-    public UserAuthInfoResponseMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthInfoResponseMessageHandler(
-            SshContext context, UserAuthInfoResponseMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, UserAuthInfoResponseMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthInfoResponseMessageParser getParser(byte[] array) {
+    public UserAuthInfoResponseMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthInfoResponseMessageParser(array);
     }
 
     @Override
-    public UserAuthInfoResponseMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthInfoResponseMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthInfoResponseMessageParser(array, startPosition);
     }
 

@@ -118,7 +118,9 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
+    public abstract ProtocolMessageHandler<T> getHandler();
+
+    public abstract void adjustContext(SshContext context);
 
     public abstract void prepare(Chooser chooser);
 

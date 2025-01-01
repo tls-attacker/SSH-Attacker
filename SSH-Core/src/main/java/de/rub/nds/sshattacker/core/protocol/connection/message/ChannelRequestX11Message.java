@@ -12,13 +12,15 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelRequestX11Message> {
+public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelRequestX11Message>
+        implements HasSentHandler {
 
     private ModifiableByte singleConnection;
     private ModifiableInteger x11AuthenticationProtocolLength;
@@ -259,9 +261,22 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
         }
     }
 
+    public static final ChannelRequestX11MessageHandler HANDLER =
+            new ChannelRequestX11MessageHandler();
+
     @Override
-    public ChannelRequestX11MessageHandler getHandler(SshContext context) {
-        return new ChannelRequestX11MessageHandler(context, this);
+    public ChannelRequestX11MessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

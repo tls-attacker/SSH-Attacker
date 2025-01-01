@@ -17,27 +17,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelExtendedDataMessageHandler
         extends SshMessageHandler<ChannelExtendedDataMessage> {
 
-    public ChannelExtendedDataMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelExtendedDataMessageHandler(
-            SshContext context, ChannelExtendedDataMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelExtendedDataMessage object) {
         // TODO: Handle ChannelExtendedDataMessage
     }
 
     @Override
-    public ChannelExtendedDataMessageParser getParser(byte[] array) {
+    public ChannelExtendedDataMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelExtendedDataMessageParser(array);
     }
 
     @Override
-    public ChannelExtendedDataMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelExtendedDataMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelExtendedDataMessageParser(array, startPosition);
     }
 

@@ -26,9 +26,22 @@ public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRe
         return new SftpRequestCloseMessage(this);
     }
 
+    public static final SftpRequestCloseMessageHandler HANDLER =
+            new SftpRequestCloseMessageHandler();
+
     @Override
-    public SftpRequestCloseMessageHandler getHandler(SshContext context) {
-        return new SftpRequestCloseMessageHandler(context, this);
+    public SftpRequestCloseMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

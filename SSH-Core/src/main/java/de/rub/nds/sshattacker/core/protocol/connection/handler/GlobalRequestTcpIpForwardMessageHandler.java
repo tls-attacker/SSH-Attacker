@@ -17,25 +17,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestTcpIpForwardMessageHandler
         extends SshMessageHandler<GlobalRequestTcpIpForwardMessage> {
 
-    public GlobalRequestTcpIpForwardMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestTcpIpForwardMessageHandler(
-            SshContext context, GlobalRequestTcpIpForwardMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestTcpIpForwardMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array) {
+    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestTcpIpForwardMessageParser(array);
     }
 
     @Override
-    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestTcpIpForwardMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestTcpIpForwardMessageParser(array, startPosition);
     }
 

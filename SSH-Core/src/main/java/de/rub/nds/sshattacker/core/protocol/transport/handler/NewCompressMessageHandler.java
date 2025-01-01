@@ -17,18 +17,10 @@ import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewCompressMess
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMessage>
-        implements MessageSentHandler {
-
-    public NewCompressMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public NewCompressMessageHandler(SshContext context, NewCompressMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<NewCompressMessage> {
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, NewCompressMessage object) {
         // receiving NewCompressMessage when acting as server -> update compression algorithm
         if (!context.isHandleAsClient()
                 && context.delayCompressionExtensionReceived()
@@ -42,12 +34,12 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
     }
 
     @Override
-    public NewCompressMessageParser getParser(byte[] array) {
+    public NewCompressMessageParser getParser(byte[] array, SshContext context) {
         return new NewCompressMessageParser(array);
     }
 
     @Override
-    public NewCompressMessageParser getParser(byte[] array, int startPosition) {
+    public NewCompressMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new NewCompressMessageParser(array, startPosition);
     }
 
@@ -58,7 +50,7 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
             new NewCompressMessageSerializer();
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(SshContext context, NewCompressMessage object) {
         if (context.isClient()
                 && context.delayCompressionExtensionReceived()
                 && context.getConfig().getRespectDelayCompressionExtension()) {

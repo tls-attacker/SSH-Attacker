@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestHomeDirectoryMessageHandler
         extends SftpRequestMessageHandler<SftpRequestHomeDirectoryMessage> {
 
-    public SftpRequestHomeDirectoryMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestHomeDirectoryMessageHandler(
-            SshContext context, SftpRequestHomeDirectoryMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestHomeDirectoryMessageParser getParser(byte[] array) {
+    public SftpRequestHomeDirectoryMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestHomeDirectoryMessageParser(array);
     }
 
     @Override
-    public SftpRequestHomeDirectoryMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestHomeDirectoryMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestHomeDirectoryMessageParser(array, startPosition);
     }
 

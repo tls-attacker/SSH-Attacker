@@ -16,25 +16,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpExtensionLimitsHandler extends SftpAbstractExtensionHandler<SftpExtensionLimits> {
 
-    public SftpExtensionLimitsHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionLimitsHandler(SshContext context, SftpExtensionLimits extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionLimits object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionLimits> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionLimits> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionLimits::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionLimits> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionLimits::new, array, startPosition);
     }
 

@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestSpaceAvailableMessageHandler
         extends SftpRequestMessageHandler<SftpRequestSpaceAvailableMessage> {
 
-    public SftpRequestSpaceAvailableMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestSpaceAvailableMessageHandler(
-            SshContext context, SftpRequestSpaceAvailableMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestSpaceAvailableMessageParser getParser(byte[] array) {
+    public SftpRequestSpaceAvailableMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestSpaceAvailableMessageParser(array);
     }
 
     @Override
-    public SftpRequestSpaceAvailableMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestSpaceAvailableMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestSpaceAvailableMessageParser(array, startPosition);
     }
 

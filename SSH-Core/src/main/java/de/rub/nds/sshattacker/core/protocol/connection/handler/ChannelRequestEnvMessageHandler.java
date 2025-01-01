@@ -17,37 +17,30 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRequestEnvMessage>
-        implements MessageSentHandler {
-
-    public ChannelRequestEnvMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestEnvMessageHandler(SshContext context, ChannelRequestEnvMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestEnvMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestEnvMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(SshContext context, ChannelRequestEnvMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array) {
+    public ChannelRequestEnvMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestEnvMessageParser(array);
     }
 
     @Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestEnvMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestEnvMessageParser(array, startPosition);
     }
 

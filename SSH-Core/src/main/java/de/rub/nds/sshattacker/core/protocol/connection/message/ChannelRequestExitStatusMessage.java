@@ -9,12 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestExitStatusMessage
-        extends ChannelRequestMessage<ChannelRequestExitStatusMessage> {
+        extends ChannelRequestMessage<ChannelRequestExitStatusMessage> implements HasSentHandler {
 
     private ModifiableInteger exitStatus;
 
@@ -50,9 +51,22 @@ public class ChannelRequestExitStatusMessage
         }
     }
 
+    public static final ChannelRequestExitStatusMessageHandler HANDLER =
+            new ChannelRequestExitStatusMessageHandler();
+
     @Override
-    public ChannelRequestExitStatusMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExitStatusMessageHandler(context, this);
+    public ChannelRequestExitStatusMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

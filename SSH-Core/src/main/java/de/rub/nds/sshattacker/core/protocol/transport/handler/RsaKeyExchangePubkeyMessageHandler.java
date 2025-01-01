@@ -18,33 +18,26 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class RsaKeyExchangePubkeyMessageHandler
         extends SshMessageHandler<RsaKeyExchangePubkeyMessage> {
 
-    public RsaKeyExchangePubkeyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public RsaKeyExchangePubkeyMessageHandler(
-            SshContext context, RsaKeyExchangePubkeyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithTransientPublicKey(message);
+    public void adjustContext(SshContext context, RsaKeyExchangePubkeyMessage object) {
+        KeyExchangeUtil.handleHostKeyMessage(context, object);
+        updateContextWithTransientPublicKey(context, object);
     }
 
-    private void updateContextWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
+    private static void updateContextWithTransientPublicKey(
+            SshContext context, RsaKeyExchangePubkeyMessage message) {
         context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
         context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 
     @Override
-    public RsaKeyExchangePubkeyMessageParser getParser(byte[] array) {
+    public RsaKeyExchangePubkeyMessageParser getParser(byte[] array, SshContext context) {
         return new RsaKeyExchangePubkeyMessageParser(array);
     }
 
     @Override
-    public RsaKeyExchangePubkeyMessageParser getParser(byte[] array, int startPosition) {
+    public RsaKeyExchangePubkeyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new RsaKeyExchangePubkeyMessageParser(array, startPosition);
     }
 

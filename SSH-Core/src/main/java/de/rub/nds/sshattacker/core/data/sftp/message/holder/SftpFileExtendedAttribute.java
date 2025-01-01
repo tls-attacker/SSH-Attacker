@@ -144,8 +144,11 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
         }
     }
 
-    public SftpFileExtendedAttributeHandler getHandler(SshContext context) {
-        return new SftpFileExtendedAttributeHandler(context, this);
+    public static final SftpFileExtendedAttributeHandler HANDLER =
+            new SftpFileExtendedAttributeHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

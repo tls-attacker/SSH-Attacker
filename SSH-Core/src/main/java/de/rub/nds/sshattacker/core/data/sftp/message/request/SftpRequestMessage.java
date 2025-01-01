@@ -10,8 +10,10 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 
-public abstract class SftpRequestMessage<T extends SftpRequestMessage<T>> extends SftpMessage<T> {
+public abstract class SftpRequestMessage<T extends SftpRequestMessage<T>> extends SftpMessage<T>
+        implements HasSentHandler {
 
     private ModifiableInteger requestId;
 

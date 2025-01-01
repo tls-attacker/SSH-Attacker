@@ -12,13 +12,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestSignalMessage
-        extends ChannelRequestMessage<ChannelRequestSignalMessage> {
+public class ChannelRequestSignalMessage extends ChannelRequestMessage<ChannelRequestSignalMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
@@ -105,9 +106,22 @@ public class ChannelRequestSignalMessage
         setSoftlySignalName(signalName.toString(), adjustLengthField, config);
     }
 
+    public static final ChannelRequestSignalMessageHandler HANDLER =
+            new ChannelRequestSignalMessageHandler();
+
     @Override
-    public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestSignalMessageHandler(context, this);
+    public ChannelRequestSignalMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

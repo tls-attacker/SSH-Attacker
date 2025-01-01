@@ -103,9 +103,17 @@ public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInit
         }
     }
 
+    public static final DhGexKeyExchangeInitMessageHandler HANDLER =
+            new DhGexKeyExchangeInitMessageHandler();
+
     @Override
-    public DhGexKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeInitMessageHandler(context, this);
+    public DhGexKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -9,11 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestBreakMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage> {
+public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger breakLength;
 
@@ -50,9 +52,22 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
         }
     }
 
+    public static final ChannelRequestBreakMessageHandler HANDLER =
+            new ChannelRequestBreakMessageHandler();
+
     @Override
-    public ChannelRequestBreakMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestBreakMessageHandler(context, this);
+    public ChannelRequestBreakMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

@@ -10,11 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger senderChannelId;
     private ModifiableInteger windowSize;
@@ -94,9 +96,22 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         }
     }
 
+    public static final ChannelOpenConfirmationMessageHandler HANDLER =
+            new ChannelOpenConfirmationMessageHandler();
+
     @Override
-    public ChannelOpenConfirmationMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenConfirmationMessageHandler(context, this);
+    public ChannelOpenConfirmationMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

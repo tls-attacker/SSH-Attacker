@@ -89,9 +89,22 @@ public class SftpRequestHomeDirectoryMessage
         }
     }
 
+    public static final SftpRequestHomeDirectoryMessageHandler HANDLER =
+            new SftpRequestHomeDirectoryMessageHandler();
+
     @Override
-    public SftpRequestHomeDirectoryMessageHandler getHandler(SshContext context) {
-        return new SftpRequestHomeDirectoryMessageHandler(context, this);
+    public SftpRequestHomeDirectoryMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

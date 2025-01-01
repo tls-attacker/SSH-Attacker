@@ -17,21 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpResponseLimitsMessageHandler
         extends SftpResponseMessageHandler<SftpResponseLimitsMessage> {
 
-    public SftpResponseLimitsMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpResponseLimitsMessageHandler(SshContext context, SftpResponseLimitsMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpResponseLimitsMessageParser getParser(byte[] array) {
+    public SftpResponseLimitsMessageParser getParser(byte[] array, SshContext context) {
         return new SftpResponseLimitsMessageParser(array);
     }
 
     @Override
-    public SftpResponseLimitsMessageParser getParser(byte[] array, int startPosition) {
+    public SftpResponseLimitsMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpResponseLimitsMessageParser(array, startPosition);
     }
 

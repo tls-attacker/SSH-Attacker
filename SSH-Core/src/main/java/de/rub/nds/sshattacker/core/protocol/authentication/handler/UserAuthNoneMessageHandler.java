@@ -16,26 +16,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMessage> {
 
-    public UserAuthNoneMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthNoneMessageHandler(SshContext context, UserAuthNoneMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthNoneMessage object) {
         // TODO: Handle UserAuthNoneMessage
     }
 
     @Override
-    public UserAuthNoneMessageParser getParser(byte[] array) {
+    public UserAuthNoneMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthNoneMessageParser(array);
     }
 
     @Override
-    public UserAuthNoneMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthNoneMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthNoneMessageParser(array, startPosition);
     }
 

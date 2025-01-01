@@ -16,26 +16,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthBannerMessageHandler(SshContext context, UserAuthBannerMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthBannerMessage object) {
         // TODO: Handle UserAuthBannerMessage
     }
 
     @Override
-    public UserAuthBannerMessageParser getParser(byte[] array) {
+    public UserAuthBannerMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthBannerMessageParser(array);
     }
 
     @Override
-    public UserAuthBannerMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthBannerMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthBannerMessageParser(array, startPosition);
     }
 

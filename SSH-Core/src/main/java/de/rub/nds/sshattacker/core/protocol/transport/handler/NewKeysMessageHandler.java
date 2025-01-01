@@ -23,41 +23,33 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
-        implements MessageSentHandler {
-
-    public NewKeysMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<NewKeysMessage> {
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, NewKeysMessage object) {
         if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
-            adjustEncryptionForDirection(true);
+            adjustEncryptionForDirection(true, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting read sequence number to 0 because of strict key exchange");
                 context.setReadSequenceNumber(0);
             }
         }
-        adjustCompressionForDirection(true);
+        adjustCompressionForDirection(true, context);
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(SshContext context, NewKeysMessage object) {
         if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
-            adjustEncryptionForDirection(false);
+            adjustEncryptionForDirection(false, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting write sequence number to 0 because of strict key exchange");
                 context.setWriteSequenceNumber(0);
             }
         }
-        adjustCompressionForDirection(false);
+        adjustCompressionForDirection(false, context);
     }
 
-    private void adjustEncryptionForDirection(boolean receive) {
+    private static void adjustEncryptionForDirection(boolean receive, SshContext context) {
         Chooser chooser = context.getChooser();
         Optional<KeySet> keySet = context.getKeySet();
         if (keySet.isEmpty()) {
@@ -126,7 +118,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         }
     }
 
-    private void adjustCompressionForDirection(boolean receive) {
+    private static void adjustCompressionForDirection(boolean receive, SshContext context) {
         Chooser chooser = context.getChooser();
         CompressionMethod method =
                 receive
@@ -142,12 +134,12 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     }
 
     @Override
-    public NewKeysMessageParser getParser(byte[] array) {
+    public NewKeysMessageParser getParser(byte[] array, SshContext context) {
         return new NewKeysMessageParser(array);
     }
 
     @Override
-    public NewKeysMessageParser getParser(byte[] array, int startPosition) {
+    public NewKeysMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new NewKeysMessageParser(array, startPosition);
     }
 

@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionLinkSetStatHandler
         extends SftpAbstractExtensionHandler<SftpExtensionLinkSetStat> {
 
-    public SftpExtensionLinkSetStatHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionLinkSetStatHandler(SshContext context, SftpExtensionLinkSetStat extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionLinkSetStat object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionLinkSetStat> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionLinkSetStat> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionLinkSetStat::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionLinkSetStat> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionLinkSetStat::new, array, startPosition);
     }

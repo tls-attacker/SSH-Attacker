@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.DelayCompressionExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -20,7 +21,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class DelayCompressionExtension extends AbstractExtension<DelayCompressionExtension> {
+public class DelayCompressionExtension extends AbstractExtension<DelayCompressionExtension>
+        implements HasSentHandler {
 
     private ModifiableInteger compressionMethodsLength;
 
@@ -301,9 +303,22 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                         : 0);
     }
 
+    public static final DelayCompressionExtensionHandler HANDLER =
+            new DelayCompressionExtensionHandler();
+
     @Override
-    public DelayCompressionExtensionHandler getHandler(SshContext context) {
-        return new DelayCompressionExtensionHandler(context, this);
+    public DelayCompressionExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

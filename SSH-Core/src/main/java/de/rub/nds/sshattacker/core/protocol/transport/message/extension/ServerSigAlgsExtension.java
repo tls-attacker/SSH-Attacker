@@ -154,9 +154,16 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
                 Converter.listOfNamesToString(acceptedPublicKeyAlgorithms), adjustLengthField);
     }
 
+    public static final ServerSigAlgsExtensionHandler HANDLER = new ServerSigAlgsExtensionHandler();
+
     @Override
-    public ServerSigAlgsExtensionHandler getHandler(SshContext context) {
-        return new ServerSigAlgsExtensionHandler(context, this);
+    public ServerSigAlgsExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

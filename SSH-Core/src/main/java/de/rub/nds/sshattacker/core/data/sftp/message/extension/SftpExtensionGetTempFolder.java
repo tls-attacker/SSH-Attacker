@@ -27,9 +27,17 @@ public class SftpExtensionGetTempFolder
         return new SftpExtensionGetTempFolder(this);
     }
 
+    public static final SftpExtensionGetTempFolderHandler HANDLER =
+            new SftpExtensionGetTempFolderHandler();
+
     @Override
-    public SftpExtensionGetTempFolderHandler getHandler(SshContext context) {
-        return new SftpExtensionGetTempFolderHandler(context, this);
+    public SftpExtensionGetTempFolderHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -54,9 +54,16 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
         return getClass().getSimpleName();
     }
 
+    public static final StringDataMessageHandler HANDLER = new StringDataMessageHandler();
+
     @Override
-    public StringDataMessageHandler getHandler(SshContext context) {
-        return new StringDataMessageHandler(context, this);
+    public StringDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

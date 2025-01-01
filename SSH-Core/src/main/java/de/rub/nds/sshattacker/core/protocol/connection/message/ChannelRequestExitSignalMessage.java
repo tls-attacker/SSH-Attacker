@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -20,7 +21,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
-        extends ChannelRequestMessage<ChannelRequestExitSignalMessage> {
+        extends ChannelRequestMessage<ChannelRequestExitSignalMessage> implements HasSentHandler {
 
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
@@ -261,9 +262,22 @@ public class ChannelRequestExitSignalMessage
         }
     }
 
+    public static final ChannelRequestExitSignalMessageHandler HANDLER =
+            new ChannelRequestExitSignalMessageHandler();
+
     @Override
-    public ChannelRequestExitSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExitSignalMessageHandler(context, this);
+    public ChannelRequestExitSignalMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

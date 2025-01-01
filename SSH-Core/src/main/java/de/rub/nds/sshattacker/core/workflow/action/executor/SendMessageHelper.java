@@ -10,8 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.action.executor;
 import de.rub.nds.sshattacker.core.data.DataMessage;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -47,9 +46,8 @@ public final class SendMessageHelper {
             if (message instanceof DataMessage<?>) {
                 // Serialize data message to ChannelDataMessage
                 innerMessage = message;
-                Handler<?> handler = innerMessage.getHandler(context);
-                if (handler instanceof MessageSentHandler) {
-                    ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+                if (innerMessage instanceof HasSentHandler) {
+                    ((HasSentHandler) innerMessage).adjustContextAfterSent(context);
                 }
                 // TODO: decide if we should pass prepareBeforeSending
                 // serialize also prepares the ChannelDataMessage
@@ -58,9 +56,8 @@ public final class SendMessageHelper {
 
             AbstractPacket packet = context.getMessageLayer().serialize(message);
             sendPacket(context, packet);
-            Handler<?> handler = message.getHandler(context);
-            if (handler instanceof MessageSentHandler) {
-                ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+            if (message instanceof HasSentHandler) {
+                ((HasSentHandler) message).adjustContextAfterSent(context);
             }
             ArrayList<AbstractPacket> packetList = new ArrayList<>(1);
             packetList.add(packet);

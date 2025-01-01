@@ -87,9 +87,16 @@ public class SftpExtensionUnknown extends SftpAbstractExtension<SftpExtensionUnk
         }
     }
 
+    public static final SftpExtensionUnknownHandler HANDLER = new SftpExtensionUnknownHandler();
+
     @Override
-    public SftpExtensionUnknownHandler getHandler(SshContext context) {
-        return new SftpExtensionUnknownHandler(context, this);
+    public SftpExtensionUnknownHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

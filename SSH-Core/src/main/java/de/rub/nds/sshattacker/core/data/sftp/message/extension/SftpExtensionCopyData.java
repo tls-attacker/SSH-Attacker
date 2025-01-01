@@ -26,9 +26,16 @@ public class SftpExtensionCopyData extends SftpExtensionWithVersion<SftpExtensio
         return new SftpExtensionCopyData(this);
     }
 
+    public static final SftpExtensionCopyDataHandler HANDLER = new SftpExtensionCopyDataHandler();
+
     @Override
-    public SftpExtensionCopyDataHandler getHandler(SshContext context) {
-        return new SftpExtensionCopyDataHandler(context, this);
+    public SftpExtensionCopyDataHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

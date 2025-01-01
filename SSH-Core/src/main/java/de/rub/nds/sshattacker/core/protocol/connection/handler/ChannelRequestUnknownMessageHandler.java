@@ -17,38 +17,32 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
-        extends SshMessageHandler<ChannelRequestUnknownMessage> implements MessageSentHandler {
-
-    public ChannelRequestUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestUnknownMessageHandler(
-            SshContext context, ChannelRequestUnknownMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestUnknownMessage>
+        implements MessageSentHandler<ChannelRequestUnknownMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestUnknownMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestUnknownMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array) {
+    public ChannelRequestUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestUnknownMessageParser(array);
     }
 
     @Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestUnknownMessageParser(array, startPosition);
     }
 

@@ -16,20 +16,12 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> {
 
-    public SftpInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpInitMessageHandler(SshContext context, SftpInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        int receivedClientVersion = message.getVersion().getValue();
+    public void adjustContext(SshContext context, SftpInitMessage object) {
+        int receivedClientVersion = object.getVersion().getValue();
         context.setSftpClientVersion(receivedClientVersion);
-        context.setSftpClientSupportedExtensions(message.getExtensions());
-        message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
+        context.setSftpClientSupportedExtensions(object.getExtensions());
+        object.getExtensions().forEach(extension -> extension.adjustContext(context));
 
         // Set negotiated SFTP version based on own server version and received client version
         if (receivedClientVersion < context.getConfig().getSftpServerVersion()) {
@@ -40,12 +32,12 @@ public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> 
     }
 
     @Override
-    public SftpInitMessageParser getParser(byte[] array) {
+    public SftpInitMessageParser getParser(byte[] array, SshContext context) {
         return new SftpInitMessageParser(array);
     }
 
     @Override
-    public SftpInitMessageParser getParser(byte[] array, int startPosition) {
+    public SftpInitMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpInitMessageParser(array, startPosition);
     }
 

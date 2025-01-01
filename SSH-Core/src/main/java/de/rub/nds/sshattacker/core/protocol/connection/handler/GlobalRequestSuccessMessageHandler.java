@@ -17,27 +17,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestSuccessMessageHandler
         extends SshMessageHandler<GlobalRequestSuccessMessage> {
 
-    public GlobalRequestSuccessMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestSuccessMessageHandler(
-            SshContext context, GlobalRequestSuccessMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, GlobalRequestSuccessMessage object) {
         // TODO: Handle RequestSuccessMessage
     }
 
     @Override
-    public GlobalRequestSuccessMessageParser getParser(byte[] array) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestSuccessMessageParser(array);
     }
 
     @Override
-    public GlobalRequestSuccessMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestSuccessMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestSuccessMessageParser(array, startPosition);
     }
 

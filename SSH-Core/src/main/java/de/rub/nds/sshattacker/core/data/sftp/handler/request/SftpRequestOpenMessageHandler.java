@@ -16,21 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestOpenMessageHandler
         extends SftpRequestMessageHandler<SftpRequestOpenMessage> {
 
-    public SftpRequestOpenMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestOpenMessageHandler(SshContext context, SftpRequestOpenMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestOpenMessageParser getParser(byte[] array) {
+    public SftpRequestOpenMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestOpenMessageParser(array, context.getChooser());
     }
 
     @Override
-    public SftpRequestOpenMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestOpenMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestOpenMessageParser(array, startPosition, context.getChooser());
     }
 

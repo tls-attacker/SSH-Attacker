@@ -113,9 +113,17 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
         }
     }
 
+    public static final ChannelExtendedDataMessageHandler HANDLER =
+            new ChannelExtendedDataMessageHandler();
+
     @Override
-    public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
-        return new ChannelExtendedDataMessageHandler(context, this);
+    public ChannelExtendedDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

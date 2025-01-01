@@ -102,9 +102,16 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
         }
     }
 
+    public static final VersionExchangeMessageHandler HANDLER = new VersionExchangeMessageHandler();
+
     @Override
-    public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context, this);
+    public VersionExchangeMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

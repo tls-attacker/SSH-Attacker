@@ -22,30 +22,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DelayCompressionExtensionHandler
-        extends AbstractExtensionHandler<DelayCompressionExtension> implements MessageSentHandler {
+        extends AbstractExtensionHandler<DelayCompressionExtension>
+        implements MessageSentHandler<DelayCompressionExtension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DelayCompressionExtensionHandler(SshContext context) {
-        super(context);
-    }
-
-    public DelayCompressionExtensionHandler(
-            SshContext context, DelayCompressionExtension extension) {
-        super(context, extension);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, DelayCompressionExtension object) {
         if (context.isHandleAsClient()) {
             context.setServerSupportedDelayCompressionMethods(
                     Converter.nameListToEnumValues(
-                            extension.getCompressionMethodsServerToClient().getValue(),
+                            object.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
         } else {
             context.setClientSupportedDelayCompressionMethods(
                     Converter.nameListToEnumValues(
-                            extension.getCompressionMethodsClientToServer().getValue(),
+                            object.getCompressionMethodsClientToServer().getValue(),
                             CompressionMethod.class));
         }
         // get client supported compression methods
@@ -57,24 +49,28 @@ public class DelayCompressionExtensionHandler
         // determine common compression method
         CompressionMethod commonCompressionMethod =
                 getCommonCompressionMethod(
-                        clientSupportedCompressionMethods, serverSupportedCompressionMethods);
+                        clientSupportedCompressionMethods,
+                        serverSupportedCompressionMethods,
+                        context);
         // set in context
         context.setSelectedDelayCompressionMethod(commonCompressionMethod);
         context.setDelayCompressionExtensionReceived(true);
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(
+            SshContext context, DelayCompressionExtension object) {
         context.setDelayCompressionExtensionSent(true);
     }
 
     @Override
-    public DelayCompressionExtensionParser getParser(byte[] array) {
+    public DelayCompressionExtensionParser getParser(byte[] array, SshContext context) {
         return new DelayCompressionExtensionParser(array);
     }
 
     @Override
-    public DelayCompressionExtensionParser getParser(byte[] array, int startPosition) {
+    public DelayCompressionExtensionParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DelayCompressionExtensionParser(array, startPosition);
     }
 
@@ -84,9 +80,10 @@ public class DelayCompressionExtensionHandler
     public static final DelayCompressionExtensionSerializer SERIALIZER =
             new DelayCompressionExtensionSerializer();
 
-    private CompressionMethod getCommonCompressionMethod(
+    private static CompressionMethod getCommonCompressionMethod(
             List<CompressionMethod> clientSupportedCompressionMethods,
-            List<CompressionMethod> serverSupportedCompressionMethods) {
+            List<CompressionMethod> serverSupportedCompressionMethods,
+            SshContext context) {
         Optional<CompressionMethod> commonCompressionMethod =
                 AlgorithmPicker.pickAlgorithm(
                         clientSupportedCompressionMethods, serverSupportedCompressionMethods);

@@ -140,9 +140,17 @@ public class SftpResponseCheckFileMessage
         }
     }
 
+    public static final SftpResponseCheckFileMessageHandler HANDLER =
+            new SftpResponseCheckFileMessageHandler();
+
     @Override
-    public SftpResponseCheckFileMessageHandler getHandler(SshContext context) {
-        return new SftpResponseCheckFileMessageHandler(context, this);
+    public SftpResponseCheckFileMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

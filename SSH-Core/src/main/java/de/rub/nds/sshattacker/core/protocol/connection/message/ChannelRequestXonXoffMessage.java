@@ -9,13 +9,14 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestXonXoffMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestXonXoffMessage
-        extends ChannelRequestMessage<ChannelRequestXonXoffMessage> {
+        extends ChannelRequestMessage<ChannelRequestXonXoffMessage> implements HasSentHandler {
 
     private ModifiableByte clientFlowControl;
 
@@ -59,9 +60,22 @@ public class ChannelRequestXonXoffMessage
         setClientFlowControl(Converter.booleanToByte(clientFlowControl));
     }
 
+    public static final ChannelRequestXonXoffMessageHandler HANDLER =
+            new ChannelRequestXonXoffMessageHandler();
+
     @Override
-    public ChannelRequestXonXoffMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestXonXoffMessageHandler(context, this);
+    public ChannelRequestXonXoffMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

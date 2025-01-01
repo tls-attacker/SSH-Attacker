@@ -17,26 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionGetTempFolderHandler
         extends SftpAbstractExtensionHandler<SftpExtensionGetTempFolder> {
 
-    public SftpExtensionGetTempFolderHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionGetTempFolderHandler(
-            SshContext context, SftpExtensionGetTempFolder extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionGetTempFolder object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionGetTempFolder> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionGetTempFolder> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionGetTempFolder::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionGetTempFolder> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionGetTempFolder::new, array, startPosition);
     }

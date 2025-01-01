@@ -9,12 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestUnknownMessage
-        extends ChannelRequestMessage<ChannelRequestUnknownMessage> {
+        extends ChannelRequestMessage<ChannelRequestUnknownMessage> implements HasSentHandler {
 
     private ModifiableByteArray typeSpecificData;
 
@@ -54,9 +55,22 @@ public class ChannelRequestUnknownMessage
         }
     }
 
+    public static final ChannelRequestUnknownMessageHandler HANDLER =
+            new ChannelRequestUnknownMessageHandler();
+
     @Override
-    public ChannelRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestUnknownMessageHandler(context, this);
+    public ChannelRequestUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

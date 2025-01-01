@@ -17,25 +17,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestOpenSshHostKeysMessageHandler
         extends SshMessageHandler<GlobalRequestOpenSshHostKeysMessage> {
 
-    public GlobalRequestOpenSshHostKeysMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestOpenSshHostKeysMessageHandler(
-            SshContext context, GlobalRequestOpenSshHostKeysMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestOpenSshHostKeysMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestOpenSshHostKeysMessageParser getParser(byte[] array) {
+    public GlobalRequestOpenSshHostKeysMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestOpenSshHostKeysMessageParser(array);
     }
 
     @Override
-    public GlobalRequestOpenSshHostKeysMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestOpenSshHostKeysMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestOpenSshHostKeysMessageParser(array, startPosition);
     }
 

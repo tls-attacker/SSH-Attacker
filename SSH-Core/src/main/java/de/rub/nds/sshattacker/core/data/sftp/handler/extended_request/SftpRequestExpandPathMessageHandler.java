@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestExpandPathMessageHandler
         extends SftpRequestMessageHandler<SftpRequestExpandPathMessage> {
 
-    public SftpRequestExpandPathMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestExpandPathMessageHandler(
-            SshContext context, SftpRequestExpandPathMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestExpandPathMessageParser getParser(byte[] array) {
+    public SftpRequestExpandPathMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestExpandPathMessageParser(array);
     }
 
     @Override
-    public SftpRequestExpandPathMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestExpandPathMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestExpandPathMessageParser(array, startPosition);
     }
 

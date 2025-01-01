@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestHardlinkMessageHandler
         extends SftpRequestMessageHandler<SftpRequestHardlinkMessage> {
 
-    public SftpRequestHardlinkMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestHardlinkMessageHandler(
-            SshContext context, SftpRequestHardlinkMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestHardlinkMessageParser getParser(byte[] array) {
+    public SftpRequestHardlinkMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestHardlinkMessageParser(array);
     }
 
     @Override
-    public SftpRequestHardlinkMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestHardlinkMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestHardlinkMessageParser(array, startPosition);
     }
 

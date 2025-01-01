@@ -17,38 +17,31 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestShellMessageHandler extends SshMessageHandler<ChannelRequestShellMessage>
-        implements MessageSentHandler {
-
-    public ChannelRequestShellMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestShellMessageHandler(
-            SshContext context, ChannelRequestShellMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestShellMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestShellMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestShellMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestShellMessageParser getParser(byte[] array) {
+    public ChannelRequestShellMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestShellMessageParser(array);
     }
 
     @Override
-    public ChannelRequestShellMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestShellMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestShellMessageParser(array, startPosition);
     }
 

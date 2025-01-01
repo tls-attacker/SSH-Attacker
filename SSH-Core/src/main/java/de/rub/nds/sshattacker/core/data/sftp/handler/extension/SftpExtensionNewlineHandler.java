@@ -16,24 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionNewlineHandler
         extends SftpAbstractExtensionHandler<SftpExtensionNewline> {
 
-    public SftpExtensionNewlineHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionNewlineHandler(SshContext context, SftpExtensionNewline extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionNewline object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionNewlineParser getParser(byte[] array) {
+    public SftpExtensionNewlineParser getParser(byte[] array, SshContext context) {
         return new SftpExtensionNewlineParser(array);
     }
 
     @Override
-    public SftpExtensionNewlineParser getParser(byte[] array, int startPosition) {
+    public SftpExtensionNewlineParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionNewlineParser(array, startPosition);
     }
 

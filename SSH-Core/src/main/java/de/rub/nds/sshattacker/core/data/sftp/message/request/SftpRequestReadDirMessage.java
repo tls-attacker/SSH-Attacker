@@ -27,9 +27,22 @@ public class SftpRequestReadDirMessage
         return new SftpRequestReadDirMessage(this);
     }
 
+    public static final SftpRequestReadDirMessageHandler HANDLER =
+            new SftpRequestReadDirMessageHandler();
+
     @Override
-    public SftpRequestReadDirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestReadDirMessageHandler(context, this);
+    public SftpRequestReadDirMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

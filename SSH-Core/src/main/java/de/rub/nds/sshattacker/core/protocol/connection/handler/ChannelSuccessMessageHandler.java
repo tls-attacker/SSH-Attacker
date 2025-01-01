@@ -21,19 +21,11 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSuccessMessage> {
 
-    public ChannelSuccessMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelSuccessMessageHandler(SshContext context, ChannelSuccessMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelSuccessMessage object) {
         // TODO: This only works if wantReply is true, add a way to set the channel type also if
         //  wantReply is false -> In the handlers of channel request messages
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
         Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
         if (channel != null) {
             ChannelRequestMessage<?> requestMessage = channel.removeFirstSentRequestThatWantReply();
@@ -73,24 +65,25 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
             } else {
                 LOGGER.warn(
                         "{} received but no channel request was send before on channel with id {}.",
-                        message.getClass().getSimpleName(),
-                        message.getRecipientChannelId().getValue());
+                        object.getClass().getSimpleName(),
+                        object.getRecipientChannelId().getValue());
             }
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    message.getClass().getSimpleName(),
-                    message.getRecipientChannelId().getValue());
+                    object.getClass().getSimpleName(),
+                    object.getRecipientChannelId().getValue());
         }
     }
 
     @Override
-    public ChannelSuccessMessageParser getParser(byte[] array) {
+    public ChannelSuccessMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelSuccessMessageParser(array);
     }
 
     @Override
-    public ChannelSuccessMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelSuccessMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelSuccessMessageParser(array, startPosition);
     }
 

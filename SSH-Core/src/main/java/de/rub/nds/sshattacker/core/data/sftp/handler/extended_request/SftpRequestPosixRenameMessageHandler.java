@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestPosixRenameMessageHandler
         extends SftpRequestMessageHandler<SftpRequestPosixRenameMessage> {
 
-    public SftpRequestPosixRenameMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestPosixRenameMessageHandler(
-            SshContext context, SftpRequestPosixRenameMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestPosixRenameMessageParser getParser(byte[] array) {
+    public SftpRequestPosixRenameMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestPosixRenameMessageParser(array);
     }
 
     @Override
-    public SftpRequestPosixRenameMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestPosixRenameMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestPosixRenameMessageParser(array, startPosition);
     }
 

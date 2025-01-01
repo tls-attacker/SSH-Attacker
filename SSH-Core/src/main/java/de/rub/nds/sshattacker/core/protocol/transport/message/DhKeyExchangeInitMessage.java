@@ -102,9 +102,17 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
         }
     }
 
+    public static final DhKeyExchangeInitMessageHandler HANDLER =
+            new DhKeyExchangeInitMessageHandler();
+
     @Override
-    public DhKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeInitMessageHandler(context, this);
+    public DhKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

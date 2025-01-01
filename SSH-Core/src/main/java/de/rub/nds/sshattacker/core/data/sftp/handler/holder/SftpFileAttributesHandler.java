@@ -16,30 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpFileAttributesHandler implements Handler<SftpFileAttributes> {
 
-    private final SshContext context;
-
-    private final SftpFileAttributes attributes;
-
-    public SftpFileAttributesHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public SftpFileAttributesHandler(SshContext context, SftpFileAttributes attributes) {
-        super();
-        this.context = context;
-        this.attributes = attributes;
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpFileAttributes object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpFileAttributesParser getParser(byte[] array) {
+    public SftpFileAttributesParser getParser(byte[] array, SshContext context) {
         return new SftpFileAttributesParser(array, context.getChooser());
     }
 
     @Override
-    public SftpFileAttributesParser getParser(byte[] array, int startPosition) {
+    public SftpFileAttributesParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpFileAttributesParser(array, startPosition, context.getChooser());
     }
 

@@ -93,9 +93,17 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
         }
     }
 
+    public static final RsaKeyExchangeSecretMessageHandler HANDLER =
+            new RsaKeyExchangeSecretMessageHandler();
+
     @Override
-    public RsaKeyExchangeSecretMessageHandler getHandler(SshContext context) {
-        return new RsaKeyExchangeSecretMessageHandler(context, this);
+    public RsaKeyExchangeSecretMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

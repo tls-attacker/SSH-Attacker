@@ -16,22 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestRemoveDirMessageHandler
         extends SftpRequestMessageHandler<SftpRequestRemoveDirMessage> {
 
-    public SftpRequestRemoveDirMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestRemoveDirMessageHandler(
-            SshContext context, SftpRequestRemoveDirMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestRemoveDirMessageParser getParser(byte[] array) {
+    public SftpRequestRemoveDirMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestRemoveDirMessageParser(array);
     }
 
     @Override
-    public SftpRequestRemoveDirMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestRemoveDirMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestRemoveDirMessageParser(array, startPosition);
     }
 

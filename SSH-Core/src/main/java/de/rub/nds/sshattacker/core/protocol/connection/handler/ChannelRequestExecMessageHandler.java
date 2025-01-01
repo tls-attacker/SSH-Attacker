@@ -17,37 +17,31 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage>
-        implements MessageSentHandler {
-
-    public ChannelRequestExecMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestExecMessageHandler(SshContext context, ChannelRequestExecMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestExecMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestExecMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestExecMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestExecMessageParser getParser(byte[] array) {
+    public ChannelRequestExecMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestExecMessageParser(array);
     }
 
     @Override
-    public ChannelRequestExecMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestExecMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestExecMessageParser(array, startPosition);
     }
 

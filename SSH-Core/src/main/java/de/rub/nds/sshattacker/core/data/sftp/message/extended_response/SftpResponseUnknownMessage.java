@@ -55,9 +55,17 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
         }
     }
 
+    public static final SftpResponseUnknownMessageHandler HANDLER =
+            new SftpResponseUnknownMessageHandler();
+
     @Override
-    public SftpResponseUnknownMessageHandler getHandler(SshContext context) {
-        return new SftpResponseUnknownMessageHandler(context, this);
+    public SftpResponseUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

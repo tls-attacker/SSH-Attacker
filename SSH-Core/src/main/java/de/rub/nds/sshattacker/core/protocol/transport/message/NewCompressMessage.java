@@ -7,12 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.NewCompressMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class NewCompressMessage extends SshMessage<NewCompressMessage> {
+public class NewCompressMessage extends SshMessage<NewCompressMessage> implements HasSentHandler {
 
     public NewCompressMessage() {
         super();
@@ -27,9 +28,21 @@ public class NewCompressMessage extends SshMessage<NewCompressMessage> {
         return new NewCompressMessage(this);
     }
 
+    public static final NewCompressMessageHandler HANDLER = new NewCompressMessageHandler();
+
     @Override
-    public NewCompressMessageHandler getHandler(SshContext context) {
-        return new NewCompressMessageHandler(context, this);
+    public NewCompressMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

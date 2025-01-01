@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestCopyFileMessageHandler
         extends SftpRequestMessageHandler<SftpRequestCopyFileMessage> {
 
-    public SftpRequestCopyFileMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestCopyFileMessageHandler(
-            SshContext context, SftpRequestCopyFileMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestCopyFileMessageParser getParser(byte[] array) {
+    public SftpRequestCopyFileMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestCopyFileMessageParser(array);
     }
 
     @Override
-    public SftpRequestCopyFileMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestCopyFileMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestCopyFileMessageParser(array, startPosition);
     }
 

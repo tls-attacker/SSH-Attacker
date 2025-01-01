@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestCancelTcpIpForwardMessageHandler
         extends SshMessageHandler<GlobalRequestCancelTcpIpForwardMessage> {
 
-    public GlobalRequestCancelTcpIpForwardMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestCancelTcpIpForwardMessageHandler(
-            SshContext context, GlobalRequestCancelTcpIpForwardMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestCancelTcpIpForwardMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestCancelTcpIpForwardMessageParser getParser(byte[] array) {
+    public GlobalRequestCancelTcpIpForwardMessageParser getParser(
+            byte[] array, SshContext context) {
         return new GlobalRequestCancelTcpIpForwardMessageParser(array);
     }
 
     @Override
-    public GlobalRequestCancelTcpIpForwardMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestCancelTcpIpForwardMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestCancelTcpIpForwardMessageParser(array, startPosition);
     }
 

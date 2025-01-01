@@ -16,24 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
 
-    public IgnoreMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public IgnoreMessageHandler(SshContext context, IgnoreMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, IgnoreMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public IgnoreMessageParser getParser(byte[] array) {
+    public IgnoreMessageParser getParser(byte[] array, SshContext context) {
         return new IgnoreMessageParser(array);
     }
 
     @Override
-    public IgnoreMessageParser getParser(byte[] array, int startPosition) {
+    public IgnoreMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new IgnoreMessageParser(array, startPosition);
     }
 

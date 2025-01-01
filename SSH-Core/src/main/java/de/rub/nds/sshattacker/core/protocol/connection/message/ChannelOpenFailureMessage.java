@@ -169,9 +169,17 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
         }
     }
 
+    public static final ChannelOpenFailureMessageHandler HANDLER =
+            new ChannelOpenFailureMessageHandler();
+
     @Override
-    public ChannelOpenFailureMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenFailureMessageHandler(context, this);
+    public ChannelOpenFailureMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

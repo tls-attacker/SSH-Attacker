@@ -27,34 +27,26 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthHostbasedMessage> {
 
-    public UserAuthHostbasedMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthHostbasedMessageHandler(SshContext context, UserAuthHostbasedMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        checkSignature();
+    public void adjustContext(SshContext context, UserAuthHostbasedMessage object) {
+        checkSignature(context, object);
     }
 
-    public void checkSignature() {
-        if (message.getHostKeyBytes() != null && message.getHostKeyBytes().getValue() != null) {
+    public static void checkSignature(SshContext context, UserAuthHostbasedMessage object) {
+        if (object.getHostKeyBytes() != null && object.getHostKeyBytes().getValue() != null) {
             PublicKeyAlgorithm hostKeyAlgorithm =
-                    PublicKeyAlgorithm.fromName(message.getPubKeyAlgorithm().getValue());
+                    PublicKeyAlgorithm.fromName(object.getPubKeyAlgorithm().getValue());
             SshPublicKey<?, ?> hostKey =
                     PublicKeyHelper.parse(
-                            hostKeyAlgorithm.getKeyFormat(), message.getHostKeyBytes().getValue());
+                            hostKeyAlgorithm.getKeyFormat(), object.getHostKeyBytes().getValue());
 
             RawSignature signature =
-                    new SignatureParser(message.getSignature().getValue(), 0).parse();
+                    new SignatureParser(object.getSignature().getValue(), 0).parse();
             try {
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey);
                 if (verifyingSignature.verify(
-                        prepareSignatureInput(), signature.getSignatureBytes())) {
+                        prepareSignatureInput(context, object), signature.getSignatureBytes())) {
                     LOGGER.info("Signature verification successful: Signature is valid.");
                 } else {
                     LOGGER.warn(
@@ -70,29 +62,31 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         }
     }
 
-    public byte[] prepareSignatureInput() {
+    public static byte[] prepareSignatureInput(
+            SshContext context, UserAuthHostbasedMessage object) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         context.getSessionID().orElse(new byte[] {})),
-                new byte[] {message.getMessageId().getValue()},
-                Converter.stringToLengthPrefixedBinaryString(message.getUserName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getServiceName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getMethodName().getValue()),
+                new byte[] {object.getMessageId().getValue()},
+                Converter.stringToLengthPrefixedBinaryString(object.getUserName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getServiceName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getMethodName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(
-                        message.getPubKeyAlgorithm().getValue()),
-                Converter.bytesToLengthPrefixedBinaryString(message.getHostKeyBytes().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getHostName().getValue()),
+                        object.getPubKeyAlgorithm().getValue()),
+                Converter.bytesToLengthPrefixedBinaryString(object.getHostKeyBytes().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getHostName().getValue()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        message.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
+                        object.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
     }
 
     @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array) {
+    public UserAuthHostbasedMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthHostbasedMessageParser(array);
     }
 
     @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthHostbasedMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthHostbasedMessageParser(array, startPosition);
     }
 

@@ -26,9 +26,16 @@ public class SftpExtensionLimits extends SftpExtensionWithVersion<SftpExtensionL
         return new SftpExtensionLimits(this);
     }
 
+    public static final SftpExtensionLimitsHandler HANDLER = new SftpExtensionLimitsHandler();
+
     @Override
-    public SftpExtensionLimitsHandler getHandler(SshContext context) {
-        return new SftpExtensionLimitsHandler(context, this);
+    public SftpExtensionLimitsHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

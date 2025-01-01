@@ -94,8 +94,11 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
         }
     }
 
-    public AuthenticationResponseEntryHandler getHandler(SshContext context) {
-        return new AuthenticationResponseEntryHandler(context, this);
+    public static final AuthenticationResponseEntryHandler HANDLER =
+            new AuthenticationResponseEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

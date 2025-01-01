@@ -87,9 +87,16 @@ public class PongMessage extends SshMessage<PongMessage> {
         }
     }
 
+    public static final PongMessageHandler HANDLER = new PongMessageHandler();
+
     @Override
-    public PongMessageHandler getHandler(SshContext context) {
-        return new PongMessageHandler(context, this);
+    public PongMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

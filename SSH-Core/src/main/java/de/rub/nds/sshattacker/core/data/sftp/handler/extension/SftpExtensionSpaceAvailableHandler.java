@@ -17,26 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionSpaceAvailableHandler
         extends SftpAbstractExtensionHandler<SftpExtensionSpaceAvailable> {
 
-    public SftpExtensionSpaceAvailableHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionSpaceAvailableHandler(
-            SshContext context, SftpExtensionSpaceAvailable extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionSpaceAvailable object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionSpaceAvailable> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionSpaceAvailable> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionSpaceAvailable::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionSpaceAvailable> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionSpaceAvailable::new, array, startPosition);
     }

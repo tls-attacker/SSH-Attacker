@@ -17,40 +17,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestXonXoffMessageHandler
-        extends SshMessageHandler<ChannelRequestXonXoffMessage> implements MessageSentHandler {
-
-    public ChannelRequestXonXoffMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestXonXoffMessageHandler(
-            SshContext context, ChannelRequestXonXoffMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestXonXoffMessage>
+        implements MessageSentHandler<ChannelRequestXonXoffMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContext(SshContext context, ChannelRequestXonXoffMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestXonXoffMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array) {
+    public ChannelRequestXonXoffMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestXonXoffMessageParser(array);
     }
 
     @Override
-    public ChannelRequestXonXoffMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestXonXoffMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestXonXoffMessageParser(array, startPosition);
     }
 

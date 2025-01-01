@@ -16,30 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpAclEntryHandler implements Handler<SftpAclEntry> {
 
-    private final SshContext context;
-
-    private final SftpAclEntry aclEntry;
-
-    public SftpAclEntryHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public SftpAclEntryHandler(SshContext context, SftpAclEntry aclEntry) {
-        super();
-        this.context = context;
-        this.aclEntry = aclEntry;
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpAclEntry object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpAclEntryParser getParser(byte[] array) {
+    public SftpAclEntryParser getParser(byte[] array, SshContext context) {
         return new SftpAclEntryParser(array);
     }
 
     @Override
-    public SftpAclEntryParser getParser(byte[] array, int startPosition) {
+    public SftpAclEntryParser getParser(byte[] array, int startPosition, SshContext context) {
         return new SftpAclEntryParser(array, startPosition);
     }
 

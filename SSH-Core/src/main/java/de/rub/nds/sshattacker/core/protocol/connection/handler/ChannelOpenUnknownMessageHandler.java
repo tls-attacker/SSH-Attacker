@@ -16,24 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelOpenUnknownMessage> {
 
-    public ChannelOpenUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenUnknownMessageHandler(SshContext context, ChannelOpenUnknownMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, ChannelOpenUnknownMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public ChannelOpenUnknownMessageParser getParser(byte[] array) {
+    public ChannelOpenUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenUnknownMessageParser(array);
     }
 
     @Override
-    public ChannelOpenUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenUnknownMessageParser(array, startPosition);
     }
 

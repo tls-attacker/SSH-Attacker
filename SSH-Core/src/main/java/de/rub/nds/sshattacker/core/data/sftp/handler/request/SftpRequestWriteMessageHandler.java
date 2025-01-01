@@ -16,21 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestWriteMessageHandler
         extends SftpRequestMessageHandler<SftpRequestWriteMessage> {
 
-    public SftpRequestWriteMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestWriteMessageHandler(SshContext context, SftpRequestWriteMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestWriteMessageParser getParser(byte[] array) {
+    public SftpRequestWriteMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestWriteMessageParser(array);
     }
 
     @Override
-    public SftpRequestWriteMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestWriteMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestWriteMessageParser(array, startPosition);
     }
 

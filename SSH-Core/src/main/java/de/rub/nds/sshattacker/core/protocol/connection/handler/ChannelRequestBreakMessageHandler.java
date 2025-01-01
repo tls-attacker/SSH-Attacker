@@ -17,37 +17,31 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestBreakMessageHandler extends SshMessageHandler<ChannelRequestBreakMessage>
-        implements MessageSentHandler {
-    public ChannelRequestBreakMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestBreakMessageHandler(
-            SshContext context, ChannelRequestBreakMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestBreakMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestBreakMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestBreakMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array) {
+    public ChannelRequestBreakMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestBreakMessageParser(array);
     }
 
     @Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestBreakMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestBreakMessageParser(array, startPosition);
     }
 

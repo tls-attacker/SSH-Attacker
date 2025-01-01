@@ -27,9 +27,17 @@ public class GlobalRequestNoMoreSessionsMessage
         return new GlobalRequestNoMoreSessionsMessage(this);
     }
 
+    public static final GlobalRequestNoMoreSessionsMessageHandler HANDLER =
+            new GlobalRequestNoMoreSessionsMessageHandler();
+
     @Override
-    public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestNoMoreSessionsMessageHandler(context, this);
+    public GlobalRequestNoMoreSessionsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -17,40 +17,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSignalMessageHandler
-        extends SshMessageHandler<ChannelRequestSignalMessage> implements MessageSentHandler {
-
-    public ChannelRequestSignalMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestSignalMessageHandler(
-            SshContext context, ChannelRequestSignalMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestSignalMessage>
+        implements MessageSentHandler<ChannelRequestSignalMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContext(SshContext context, ChannelRequestSignalMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestSignalMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array) {
+    public ChannelRequestSignalMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestSignalMessageParser(array);
     }
 
     @Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestSignalMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestSignalMessageParser(array, startPosition);
     }
 

@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionCopyFileHandler
         extends SftpAbstractExtensionHandler<SftpExtensionCopyFile> {
 
-    public SftpExtensionCopyFileHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionCopyFileHandler(SshContext context, SftpExtensionCopyFile extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionCopyFile object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionCopyFile> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionCopyFile> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionCopyFile::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionCopyFile> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionCopyFile::new, array, startPosition);
     }

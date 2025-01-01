@@ -17,39 +17,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
-        extends SshMessageHandler<ChannelRequestWindowChangeMessage> implements MessageSentHandler {
-    public ChannelRequestWindowChangeMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestWindowChangeMessageHandler(
-            SshContext context, ChannelRequestWindowChangeMessage message) {
-        super(context, message);
-    }
+        extends SshMessageHandler<ChannelRequestWindowChangeMessage>
+        implements MessageSentHandler<ChannelRequestWindowChangeMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContext(SshContext context, ChannelRequestWindowChangeMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelRequestWindowChangeMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
             // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array) {
+    public ChannelRequestWindowChangeMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestWindowChangeMessageParser(array);
     }
 
     @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestWindowChangeMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestWindowChangeMessageParser(array, startPosition);
     }
 

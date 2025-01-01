@@ -16,31 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class AuthenticationResponseEntryHandler implements Handler<AuthenticationResponseEntry> {
 
-    private final SshContext context;
-
-    private final AuthenticationResponseEntry authenticationResponseEntry;
-
-    public AuthenticationResponseEntryHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public AuthenticationResponseEntryHandler(
-            SshContext context, AuthenticationResponseEntry authenticationResponseEntry) {
-        super();
-        this.context = context;
-        this.authenticationResponseEntry = authenticationResponseEntry;
-    }
+    @Override
+    public void adjustContext(SshContext context, AuthenticationResponseEntry object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public AuthenticationResponseEntryParser getParser(byte[] array) {
+    public AuthenticationResponseEntryParser getParser(byte[] array, SshContext context) {
         return new AuthenticationResponseEntryParser(array);
     }
 
     @Override
-    public AuthenticationResponseEntryParser getParser(byte[] array, int startPosition) {
+    public AuthenticationResponseEntryParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new AuthenticationResponseEntryParser(array, startPosition);
     }
 

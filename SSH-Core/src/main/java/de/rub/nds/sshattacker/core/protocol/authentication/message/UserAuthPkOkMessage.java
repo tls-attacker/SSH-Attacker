@@ -154,9 +154,16 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         return pubkey;
     }
 
+    public static final UserAuthPkOkMessageHandler HANDLER = new UserAuthPkOkMessageHandler();
+
     @Override
-    public UserAuthPkOkMessageHandler getHandler(SshContext context) {
-        return new UserAuthPkOkMessageHandler(context, this);
+    public UserAuthPkOkMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

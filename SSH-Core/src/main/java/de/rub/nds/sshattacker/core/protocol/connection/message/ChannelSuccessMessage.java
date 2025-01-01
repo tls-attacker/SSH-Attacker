@@ -26,9 +26,16 @@ public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage>
         return new ChannelSuccessMessage(this);
     }
 
+    public static final ChannelSuccessMessageHandler HANDLER = new ChannelSuccessMessageHandler();
+
     @Override
-    public ChannelSuccessMessageHandler getHandler(SshContext context) {
-        return new ChannelSuccessMessageHandler(context, this);
+    public ChannelSuccessMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

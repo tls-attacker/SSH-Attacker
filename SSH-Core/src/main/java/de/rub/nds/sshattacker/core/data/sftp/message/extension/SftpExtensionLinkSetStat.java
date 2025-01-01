@@ -26,9 +26,17 @@ public class SftpExtensionLinkSetStat extends SftpExtensionWithVersion<SftpExten
         return new SftpExtensionLinkSetStat(this);
     }
 
+    public static final SftpExtensionLinkSetStatHandler HANDLER =
+            new SftpExtensionLinkSetStatHandler();
+
     @Override
-    public SftpExtensionLinkSetStatHandler getHandler(SshContext context) {
-        return new SftpExtensionLinkSetStatHandler(context, this);
+    public SftpExtensionLinkSetStatHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

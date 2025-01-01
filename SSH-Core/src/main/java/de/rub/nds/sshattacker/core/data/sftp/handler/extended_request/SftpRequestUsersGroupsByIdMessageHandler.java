@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestUsersGroupsByIdMessageHandler
         extends SftpRequestMessageHandler<SftpRequestUsersGroupsByIdMessage> {
 
-    public SftpRequestUsersGroupsByIdMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestUsersGroupsByIdMessageHandler(
-            SshContext context, SftpRequestUsersGroupsByIdMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestUsersGroupsByIdMessageParser getParser(byte[] array) {
+    public SftpRequestUsersGroupsByIdMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestUsersGroupsByIdMessageParser(array);
     }
 
     @Override
-    public SftpRequestUsersGroupsByIdMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestUsersGroupsByIdMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestUsersGroupsByIdMessageParser(array, startPosition);
     }
 

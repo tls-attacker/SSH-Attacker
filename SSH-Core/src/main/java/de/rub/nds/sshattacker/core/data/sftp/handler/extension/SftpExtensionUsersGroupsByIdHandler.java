@@ -17,26 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionUsersGroupsByIdHandler
         extends SftpAbstractExtensionHandler<SftpExtensionUsersGroupsById> {
 
-    public SftpExtensionUsersGroupsByIdHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionUsersGroupsByIdHandler(
-            SshContext context, SftpExtensionUsersGroupsById extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionUsersGroupsById object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionUsersGroupsById> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionUsersGroupsById> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionUsersGroupsById::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionUsersGroupsById> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionUsersGroupsById::new, array, startPosition);
     }

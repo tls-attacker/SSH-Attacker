@@ -26,9 +26,16 @@ public class UserAuthNoneMessage extends UserAuthRequestMessage<UserAuthNoneMess
         return new UserAuthNoneMessage(this);
     }
 
+    public static final UserAuthNoneMessageHandler HANDLER = new UserAuthNoneMessageHandler();
+
     @Override
-    public UserAuthNoneMessageHandler getHandler(SshContext context) {
-        return new UserAuthNoneMessageHandler(context, this);
+    public UserAuthNoneMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

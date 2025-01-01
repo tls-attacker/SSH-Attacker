@@ -15,23 +15,10 @@ public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> imple
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected final SshContext context;
-
-    protected final T message;
-
-    protected ProtocolMessageHandler(SshContext context) {
-        this(context, null);
-    }
-
-    protected ProtocolMessageHandler(SshContext context, T message) {
-        super();
-        this.context = context;
-        this.message = message;
-    }
+    @Override
+    public abstract ProtocolMessageParser<T> getParser(byte[] array, SshContext context);
 
     @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array);
-
-    @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array, int startPosition);
+    public abstract ProtocolMessageParser<T> getParser(
+            byte[] array, int startPosition, SshContext context);
 }

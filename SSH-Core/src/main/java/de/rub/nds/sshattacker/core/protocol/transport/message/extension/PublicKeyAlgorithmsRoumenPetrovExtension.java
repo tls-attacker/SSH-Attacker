@@ -136,9 +136,17 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
         }
     }
 
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionHandler HANDLER =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionHandler();
+
     @Override
-    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler getHandler(SshContext context) {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionHandler(context, this);
+    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -251,9 +251,17 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
         }
     }
 
+    public static final DhKeyExchangeReplyMessageHandler HANDLER =
+            new DhKeyExchangeReplyMessageHandler();
+
     @Override
-    public DhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeReplyMessageHandler(context, this);
+    public DhKeyExchangeReplyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

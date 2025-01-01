@@ -374,9 +374,17 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
+    public static final UserAuthHostbasedMessageHandler HANDLER =
+            new UserAuthHostbasedMessageHandler();
+
     @Override
-    public UserAuthHostbasedMessageHandler getHandler(SshContext context) {
-        return new UserAuthHostbasedMessageHandler(context, this);
+    public UserAuthHostbasedMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

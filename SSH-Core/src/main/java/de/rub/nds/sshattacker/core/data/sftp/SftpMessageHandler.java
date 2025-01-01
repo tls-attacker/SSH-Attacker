@@ -13,17 +13,10 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public abstract class SftpMessageHandler<T extends SftpMessage<T>>
         extends ProtocolMessageHandler<T> {
 
-    protected SftpMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    protected SftpMessageHandler(SshContext context, T message) {
-        super(context, message);
-    }
+    @Override
+    public abstract SftpMessageParser<T> getParser(byte[] array, SshContext context);
 
     @Override
-    public abstract SftpMessageParser<T> getParser(byte[] array);
-
-    @Override
-    public abstract SftpMessageParser<T> getParser(byte[] array, int startPosition);
+    public abstract SftpMessageParser<T> getParser(
+            byte[] array, int startPosition, SshContext context);
 }

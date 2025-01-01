@@ -179,9 +179,22 @@ public class SftpRequestCheckFileHandleMessage
         }
     }
 
+    public static final SftpRequestCheckFileHandleMessageHandler HANDLER =
+            new SftpRequestCheckFileHandleMessageHandler();
+
     @Override
-    public SftpRequestCheckFileHandleMessageHandler getHandler(SshContext context) {
-        return new SftpRequestCheckFileHandleMessageHandler(context, this);
+    public SftpRequestCheckFileHandleMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

@@ -103,9 +103,16 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public static final ServiceAcceptMessageHandler HANDLER = new ServiceAcceptMessageHandler();
+
     @Override
-    public ServiceAcceptMessageHandler getHandler(SshContext context) {
-        return new ServiceAcceptMessageHandler(context, this);
+    public ServiceAcceptMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

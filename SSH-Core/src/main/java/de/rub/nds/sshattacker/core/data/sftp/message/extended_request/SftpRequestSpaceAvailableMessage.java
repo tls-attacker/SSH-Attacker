@@ -27,9 +27,22 @@ public class SftpRequestSpaceAvailableMessage
         return new SftpRequestSpaceAvailableMessage(this);
     }
 
+    public static final SftpRequestSpaceAvailableMessageHandler HANDLER =
+            new SftpRequestSpaceAvailableMessageHandler();
+
     @Override
-    public SftpRequestSpaceAvailableMessageHandler getHandler(SshContext context) {
-        return new SftpRequestSpaceAvailableMessageHandler(context, this);
+    public SftpRequestSpaceAvailableMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

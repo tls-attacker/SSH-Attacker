@@ -26,9 +26,16 @@ public class SftpExtensionTextSeek extends SftpExtensionWithVersion<SftpExtensio
         return new SftpExtensionTextSeek(this);
     }
 
+    public static final SftpExtensionTextSeekHandler HANDLER = new SftpExtensionTextSeekHandler();
+
     @Override
-    public SftpExtensionTextSeekHandler getHandler(SshContext context) {
-        return new SftpExtensionTextSeekHandler(context, this);
+    public SftpExtensionTextSeekHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

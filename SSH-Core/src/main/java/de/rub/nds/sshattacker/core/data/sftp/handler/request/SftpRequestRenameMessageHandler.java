@@ -16,21 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestRenameMessageHandler
         extends SftpRequestMessageHandler<SftpRequestRenameMessage> {
 
-    public SftpRequestRenameMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestRenameMessageHandler(SshContext context, SftpRequestRenameMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestRenameMessageParser getParser(byte[] array) {
+    public SftpRequestRenameMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestRenameMessageParser(array);
     }
 
     @Override
-    public SftpRequestRenameMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestRenameMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestRenameMessageParser(array, startPosition);
     }
 

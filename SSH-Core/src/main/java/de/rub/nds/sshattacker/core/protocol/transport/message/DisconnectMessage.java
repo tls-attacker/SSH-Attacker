@@ -184,9 +184,16 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         }
     }
 
+    public static final DisconnectMessageHandler HANDLER = new DisconnectMessageHandler();
+
     @Override
-    public DisconnectMessageHandler getHandler(SshContext context) {
-        return new DisconnectMessageHandler(context, this);
+    public DisconnectMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
@@ -214,8 +213,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         changeSshContextHandling(ctx);
         for (ProtocolMessage<?> msg : receivedMessages) {
             LOGGER.debug("Applying {} to forward context {}", msg.toCompactString(), ctx);
-            ProtocolMessageHandler<?> h = msg.getHandler(ctx);
-            h.adjustContext();
+            msg.adjustContext(ctx);
         }
         changeSshContextHandling(ctx);
     }

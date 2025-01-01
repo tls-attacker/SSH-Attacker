@@ -11,13 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSubsystemMessage
-        extends ChannelRequestMessage<ChannelRequestSubsystemMessage> {
+        extends ChannelRequestMessage<ChannelRequestSubsystemMessage> implements HasSentHandler {
 
     private ModifiableInteger subsystemNameLength;
     private ModifiableString subsystemName;
@@ -98,9 +99,22 @@ public class ChannelRequestSubsystemMessage
         }
     }
 
+    public static final ChannelRequestSubsystemMessageHandler HANDLER =
+            new ChannelRequestSubsystemMessageHandler();
+
     @Override
-    public ChannelRequestSubsystemMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestSubsystemMessageHandler(context, this);
+    public ChannelRequestSubsystemMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

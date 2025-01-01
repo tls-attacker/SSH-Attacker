@@ -21,22 +21,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeInitMessageHandler
-        extends SshMessageHandler<HybridKeyExchangeInitMessage> implements MessageSentHandler {
+        extends SshMessageHandler<HybridKeyExchangeInitMessage>
+        implements MessageSentHandler<HybridKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HybridKeyExchangeInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public HybridKeyExchangeInitMessageHandler(
-            SshContext context, HybridKeyExchangeInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        byte[] concatenatedHybridKeys = message.getConcatenatedHybridKeys().getValue();
+    public void adjustContext(SshContext context, HybridKeyExchangeInitMessage object) {
+        byte[] concatenatedHybridKeys = object.getConcatenatedHybridKeys().getValue();
 
         HybridKeyExchange hybridKeyExchange = context.getChooser().getHybridKeyExchange();
         switch (hybridKeyExchange.getCombiner()) {
@@ -87,19 +79,21 @@ public class HybridKeyExchangeInitMessageHandler
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(
+            SshContext context, HybridKeyExchangeInitMessage object) {
         context.getExchangeHashInputHolder()
-                .setHybridClientPublicKey(message.getConcatenatedHybridKeys().getValue());
+                .setHybridClientPublicKey(object.getConcatenatedHybridKeys().getValue());
     }
 
     @Override
-    public HybridKeyExchangeInitMessageParser getParser(byte[] array) {
+    public HybridKeyExchangeInitMessageParser getParser(byte[] array, SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeInitMessageParser(array);
     }
 
     @Override
-    public HybridKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
+    public HybridKeyExchangeInitMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeInitMessageParser(array, startPosition);
     }

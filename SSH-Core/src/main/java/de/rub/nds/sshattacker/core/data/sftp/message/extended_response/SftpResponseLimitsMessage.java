@@ -130,9 +130,17 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
         }
     }
 
+    public static final SftpResponseLimitsMessageHandler HANDLER =
+            new SftpResponseLimitsMessageHandler();
+
     @Override
-    public SftpResponseLimitsMessageHandler getHandler(SshContext context) {
-        return new SftpResponseLimitsMessageHandler(context, this);
+    public SftpResponseLimitsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

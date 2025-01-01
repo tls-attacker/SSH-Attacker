@@ -18,42 +18,36 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeRequestMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeRequestMessage> {
 
-    public DhGexKeyExchangeRequestMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhGexKeyExchangeRequestMessageHandler(
-            SshContext context, DhGexKeyExchangeRequestMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        updateContextWithAcceptableGroupSize();
-        updateExchangeHashWithAcceptableGroupSize();
+    public void adjustContext(SshContext context, DhGexKeyExchangeRequestMessage object) {
+        updateContextWithAcceptableGroupSize(context, object);
+        updateExchangeHashWithAcceptableGroupSize(context, object);
         context.setOldGroupRequestReceived(false);
     }
 
-    private void updateContextWithAcceptableGroupSize() {
-        context.setMinimalDhGroupSize(message.getMinimalGroupSize().getValue());
-        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
-        context.setMaximalDhGroupSize(message.getMaximalGroupSize().getValue());
+    private static void updateContextWithAcceptableGroupSize(
+            SshContext context, DhGexKeyExchangeRequestMessage object) {
+        context.setMinimalDhGroupSize(object.getMinimalGroupSize().getValue());
+        context.setPreferredDhGroupSize(object.getPreferredGroupSize().getValue());
+        context.setMaximalDhGroupSize(object.getMaximalGroupSize().getValue());
     }
 
-    private void updateExchangeHashWithAcceptableGroupSize() {
+    private static void updateExchangeHashWithAcceptableGroupSize(
+            SshContext context, DhGexKeyExchangeRequestMessage object) {
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
-        inputHolder.setDhGexMinimalGroupSize(message.getMinimalGroupSize().getValue());
-        inputHolder.setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
-        inputHolder.setDhGexMaximalGroupSize(message.getMaximalGroupSize().getValue());
+        inputHolder.setDhGexMinimalGroupSize(object.getMinimalGroupSize().getValue());
+        inputHolder.setDhGexPreferredGroupSize(object.getPreferredGroupSize().getValue());
+        inputHolder.setDhGexMaximalGroupSize(object.getMaximalGroupSize().getValue());
     }
 
     @Override
-    public DhGexKeyExchangeRequestMessageParser getParser(byte[] array) {
+    public DhGexKeyExchangeRequestMessageParser getParser(byte[] array, SshContext context) {
         return new DhGexKeyExchangeRequestMessageParser(array);
     }
 
     @Override
-    public DhGexKeyExchangeRequestMessageParser getParser(byte[] array, int startPosition) {
+    public DhGexKeyExchangeRequestMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhGexKeyExchangeRequestMessageParser(array, startPosition);
     }
 

@@ -186,9 +186,17 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
         }
     }
 
+    public static final SftpResponseStatusMessageHandler HANDLER =
+            new SftpResponseStatusMessageHandler();
+
     @Override
-    public SftpResponseStatusMessageHandler getHandler(SshContext context) {
-        return new SftpResponseStatusMessageHandler(context, this);
+    public SftpResponseStatusMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

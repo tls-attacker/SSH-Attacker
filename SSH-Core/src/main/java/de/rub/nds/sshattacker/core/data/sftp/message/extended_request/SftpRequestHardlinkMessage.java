@@ -91,9 +91,22 @@ public class SftpRequestHardlinkMessage
         }
     }
 
+    public static final SftpRequestHardlinkMessageHandler HANDLER =
+            new SftpRequestHardlinkMessageHandler();
+
     @Override
-    public SftpRequestHardlinkMessageHandler getHandler(SshContext context) {
-        return new SftpRequestHardlinkMessageHandler(context, this);
+    public SftpRequestHardlinkMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

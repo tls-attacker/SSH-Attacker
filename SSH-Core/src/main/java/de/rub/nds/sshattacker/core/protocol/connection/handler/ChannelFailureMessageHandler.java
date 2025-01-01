@@ -17,41 +17,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailureMessage> {
 
-    public ChannelFailureMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelFailureMessageHandler(SshContext context, ChannelFailureMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+    public void adjustContext(SshContext context, ChannelFailureMessage object) {
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
         Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
         if (channel != null) {
             // Remove the failed request from the queue
             if (channel.removeFirstSentRequestThatWantReply() == null) {
                 LOGGER.warn(
                         "{} received but no channel request was send before on channel with id {}.",
-                        message.getClass().getSimpleName(),
-                        message.getRecipientChannelId().getValue());
+                        object.getClass().getSimpleName(),
+                        object.getRecipientChannelId().getValue());
             }
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    message.getClass().getSimpleName(),
-                    message.getRecipientChannelId().getValue());
+                    object.getClass().getSimpleName(),
+                    object.getRecipientChannelId().getValue());
         }
     }
 
     @Override
-    public ChannelFailureMessageParser getParser(byte[] array) {
+    public ChannelFailureMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelFailureMessageParser(array);
     }
 
     @Override
-    public ChannelFailureMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelFailureMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelFailureMessageParser(array, startPosition);
     }
 

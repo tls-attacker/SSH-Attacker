@@ -42,9 +42,22 @@ public class SftpRequestMakeDirMessage
         this.attributes = attributes;
     }
 
+    public static final SftpRequestMakeDirMessageHandler HANDLER =
+            new SftpRequestMakeDirMessageHandler();
+
     @Override
-    public SftpRequestMakeDirMessageHandler getHandler(SshContext context) {
-        return new SftpRequestMakeDirMessageHandler(context, this);
+    public SftpRequestMakeDirMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

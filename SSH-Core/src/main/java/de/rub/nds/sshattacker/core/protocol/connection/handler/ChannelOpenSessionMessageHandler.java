@@ -15,26 +15,20 @@ import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenSes
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenSessionMessageHandler extends SshMessageHandler<ChannelOpenSessionMessage> {
-    public ChannelOpenSessionMessageHandler(SshContext context) {
-        super(context);
-    }
 
-    public ChannelOpenSessionMessageHandler(SshContext context, ChannelOpenSessionMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, ChannelOpenSessionMessage object) {
+        context.getChannelManager().handleChannelOpenMessage(object);
     }
 
     @Override
-    public void adjustContext() {
-        context.getChannelManager().handleChannelOpenMessage(message);
-    }
-
-    @Override
-    public ChannelOpenSessionMessageParser getParser(byte[] array) {
+    public ChannelOpenSessionMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenSessionMessageParser(array);
     }
 
     @Override
-    public ChannelOpenSessionMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenSessionMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenSessionMessageParser(array, startPosition);
     }
 

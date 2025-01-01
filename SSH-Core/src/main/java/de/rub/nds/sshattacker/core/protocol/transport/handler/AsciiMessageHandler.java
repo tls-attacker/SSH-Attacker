@@ -18,28 +18,20 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
-    public AsciiMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public AsciiMessageHandler(SshContext context, AsciiMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, AsciiMessage object) {
         LOGGER.debug(
                 "Received text message: {}",
-                () -> backslashEscapeString(message.getText().getValue()));
+                () -> backslashEscapeString(object.getText().getValue()));
     }
 
     @Override
-    public AsciiMessageParser getParser(byte[] array) {
+    public AsciiMessageParser getParser(byte[] array, SshContext context) {
         return new AsciiMessageParser(array);
     }
 
     @Override
-    public AsciiMessageParser getParser(byte[] array, int startPosition) {
+    public AsciiMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new AsciiMessageParser(array, startPosition);
     }
 

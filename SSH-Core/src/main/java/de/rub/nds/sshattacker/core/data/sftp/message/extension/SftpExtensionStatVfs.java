@@ -26,9 +26,16 @@ public class SftpExtensionStatVfs extends SftpExtensionWithVersion<SftpExtension
         return new SftpExtensionStatVfs(this);
     }
 
+    public static final SftpExtensionStatVfsHandler HANDLER = new SftpExtensionStatVfsHandler();
+
     @Override
-    public SftpExtensionStatVfsHandler getHandler(SshContext context) {
-        return new SftpExtensionStatVfsHandler(context, this);
+    public SftpExtensionStatVfsHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

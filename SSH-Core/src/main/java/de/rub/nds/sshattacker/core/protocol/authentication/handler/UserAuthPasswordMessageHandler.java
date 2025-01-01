@@ -16,26 +16,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPasswordMessage> {
 
-    public UserAuthPasswordMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthPasswordMessageHandler(SshContext context, UserAuthPasswordMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthPasswordMessage object) {
         // TODO: Handle UserAuthPasswordMessage
     }
 
     @Override
-    public UserAuthPasswordMessageParser getParser(byte[] array) {
+    public UserAuthPasswordMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthPasswordMessageParser(array);
     }
 
     @Override
-    public UserAuthPasswordMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthPasswordMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthPasswordMessageParser(array, startPosition);
     }
 

@@ -16,34 +16,27 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class VersionExchangeMessageHandler extends ProtocolMessageHandler<VersionExchangeMessage> {
 
-    public VersionExchangeMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, VersionExchangeMessage object) {
         if (context.isHandleAsClient()) {
-            context.setServerVersion(message.getVersion().getValue());
-            context.setServerComment(message.getComment().getValue());
-            context.getExchangeHashInputHolder().setServerVersion(message);
+            context.setServerVersion(object.getVersion().getValue());
+            context.setServerComment(object.getComment().getValue());
+            context.getExchangeHashInputHolder().setServerVersion(object);
         } else {
-            context.setClientVersion(message.getVersion().getValue());
-            context.setClientComment(message.getComment().getValue());
-            context.getExchangeHashInputHolder().setClientVersion(message);
+            context.setClientVersion(object.getVersion().getValue());
+            context.setClientComment(object.getComment().getValue());
+            context.getExchangeHashInputHolder().setClientVersion(object);
         }
     }
 
     @Override
-    public VersionExchangeMessageParser getParser(byte[] array) {
+    public VersionExchangeMessageParser getParser(byte[] array, SshContext context) {
         return new VersionExchangeMessageParser(array);
     }
 
     @Override
-    public VersionExchangeMessageParser getParser(byte[] array, int startPosition) {
+    public VersionExchangeMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new VersionExchangeMessageParser(array, startPosition);
     }
 

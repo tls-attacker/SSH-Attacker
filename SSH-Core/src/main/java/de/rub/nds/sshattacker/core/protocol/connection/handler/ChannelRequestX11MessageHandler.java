@@ -17,36 +17,30 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRequestX11Message>
-        implements MessageSentHandler {
-    public ChannelRequestX11MessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestX11MessageHandler(SshContext context, ChannelRequestX11Message message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestX11Message> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestX11Message object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(SshContext context, ChannelRequestX11Message object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestX11MessageParser getParser(byte[] array) {
+    public ChannelRequestX11MessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestX11MessageParser(array);
     }
 
     @Override
-    public ChannelRequestX11MessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestX11MessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestX11MessageParser(array, startPosition);
     }
 

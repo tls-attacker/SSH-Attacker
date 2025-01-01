@@ -15,26 +15,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownExtensionHandler extends AbstractExtensionHandler<UnknownExtension> {
 
-    public UnknownExtensionHandler(SshContext context) {
-        super(context);
-    }
-
-    public UnknownExtensionHandler(SshContext context, UnknownExtension extension) {
-        super(context, extension);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UnknownExtension object) {
         // TODO: Handle UnknownExtension
     }
 
     @Override
-    public UnknownExtensionParser getParser(byte[] array) {
+    public UnknownExtensionParser getParser(byte[] array, SshContext context) {
         return new UnknownExtensionParser(array);
     }
 
     @Override
-    public UnknownExtensionParser getParser(byte[] array, int startPosition) {
+    public UnknownExtensionParser getParser(byte[] array, int startPosition, SshContext context) {
         return new UnknownExtensionParser(array, startPosition);
     }
 

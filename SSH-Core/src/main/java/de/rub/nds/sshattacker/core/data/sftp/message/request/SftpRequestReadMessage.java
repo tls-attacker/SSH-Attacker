@@ -70,9 +70,21 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
         }
     }
 
+    public static final SftpRequestReadMessageHandler HANDLER = new SftpRequestReadMessageHandler();
+
     @Override
-    public SftpRequestReadMessageHandler getHandler(SshContext context) {
-        return new SftpRequestReadMessageHandler(context, this);
+    public SftpRequestReadMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

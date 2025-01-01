@@ -26,9 +26,17 @@ public class SftpExtensionPosixRename extends SftpExtensionWithVersion<SftpExten
         return new SftpExtensionPosixRename(this);
     }
 
+    public static final SftpExtensionPosixRenameHandler HANDLER =
+            new SftpExtensionPosixRenameHandler();
+
     @Override
-    public SftpExtensionPosixRenameHandler getHandler(SshContext context) {
-        return new SftpExtensionPosixRenameHandler(context, this);
+    public SftpExtensionPosixRenameHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -89,9 +89,16 @@ public class PingExtension extends AbstractExtension<PingExtension> {
         }
     }
 
+    public static final PingExtensionHandler HANDLER = new PingExtensionHandler();
+
     @Override
-    public PingExtensionHandler getHandler(SshContext context) {
-        return new PingExtensionHandler(context, this);
+    public PingExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

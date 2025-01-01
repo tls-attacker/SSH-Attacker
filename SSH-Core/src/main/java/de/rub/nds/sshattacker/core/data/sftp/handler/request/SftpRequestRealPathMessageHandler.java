@@ -16,22 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestRealPathMessageHandler
         extends SftpRequestMessageHandler<SftpRequestRealPathMessage> {
 
-    public SftpRequestRealPathMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestRealPathMessageHandler(
-            SshContext context, SftpRequestRealPathMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestRealPathMessageParser getParser(byte[] array) {
+    public SftpRequestRealPathMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestRealPathMessageParser(array);
     }
 
     @Override
-    public SftpRequestRealPathMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestRealPathMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestRealPathMessageParser(array, startPosition);
     }
 

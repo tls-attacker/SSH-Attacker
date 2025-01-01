@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.handler.extended_request;
 
-import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestTextSeekMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.SftpRequestTextSeekMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.extended_request.SftpRequestTextSeekMessagePreparator;
@@ -15,29 +15,21 @@ import de.rub.nds.sshattacker.core.data.sftp.serializer.extended_request.SftpReq
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class SftpRequestTextSeekMessageHandler
-        extends SftpMessageHandler<SftpRequestTextSeekMessage> {
-
-    public SftpRequestTextSeekMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestTextSeekMessageHandler(
-            SshContext context, SftpRequestTextSeekMessage message) {
-        super(context, message);
-    }
+        extends SftpRequestMessageHandler<SftpRequestTextSeekMessage> {
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, SftpRequestTextSeekMessage object) {
         // TODO: Handle SftpRequestTextSeekMessage
     }
 
     @Override
-    public SftpRequestTextSeekMessageParser getParser(byte[] array) {
+    public SftpRequestTextSeekMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestTextSeekMessageParser(array);
     }
 
     @Override
-    public SftpRequestTextSeekMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestTextSeekMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestTextSeekMessageParser(array, startPosition);
     }
 

@@ -11,12 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
+public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger concatenatedHybridKeysLength;
     private ModifiableByteArray concatenatedHybridKeys;
@@ -179,9 +181,22 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
                         this.certificatePublicKeyDataLength, certificatePublicKeyDataLength);
     }
 
+    public static final HybridKeyExchangeInitMessageHandler HANDLER =
+            new HybridKeyExchangeInitMessageHandler();
+
     @Override
-    public HybridKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new HybridKeyExchangeInitMessageHandler(context, this);
+    public HybridKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

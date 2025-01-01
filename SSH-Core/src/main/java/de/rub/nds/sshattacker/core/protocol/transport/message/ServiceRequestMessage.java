@@ -105,9 +105,16 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public static final ServiceRequestMessageHandler HANDLER = new ServiceRequestMessageHandler();
+
     @Override
-    public ServiceRequestMessageHandler getHandler(SshContext context) {
-        return new ServiceRequestMessageHandler(context, this);
+    public ServiceRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

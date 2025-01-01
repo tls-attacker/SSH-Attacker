@@ -56,9 +56,22 @@ public class SftpRequestUnknownMessage
         }
     }
 
+    public static final SftpRequestUnknownMessageHandler HANDLER =
+            new SftpRequestUnknownMessageHandler();
+
     @Override
-    public SftpRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new SftpRequestUnknownMessageHandler(context, this);
+    public SftpRequestUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

@@ -16,24 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionVendorIdHandler
         extends SftpAbstractExtensionHandler<SftpExtensionVendorId> {
 
-    public SftpExtensionVendorIdHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionVendorIdHandler(SshContext context, SftpExtensionVendorId extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionVendorId object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionVendorIdParser getParser(byte[] array) {
+    public SftpExtensionVendorIdParser getParser(byte[] array, SshContext context) {
         return new SftpExtensionVendorIdParser(array);
     }
 
     @Override
-    public SftpExtensionVendorIdParser getParser(byte[] array, int startPosition) {
+    public SftpExtensionVendorIdParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionVendorIdParser(array, startPosition);
     }
 

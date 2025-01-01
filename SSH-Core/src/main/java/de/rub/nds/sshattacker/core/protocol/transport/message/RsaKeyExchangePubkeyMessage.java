@@ -204,9 +204,17 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
         return getTransientPublicKey().getPublicKey().getPublicExponent();
     }
 
+    public static final RsaKeyExchangePubkeyMessageHandler HANDLER =
+            new RsaKeyExchangePubkeyMessageHandler();
+
     @Override
-    public RsaKeyExchangePubkeyMessageHandler getHandler(SshContext context) {
-        return new RsaKeyExchangePubkeyMessageHandler(context, this);
+    public RsaKeyExchangePubkeyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

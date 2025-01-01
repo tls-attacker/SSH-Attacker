@@ -11,17 +11,10 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public abstract class SshMessageHandler<T extends SshMessage<T>> extends ProtocolMessageHandler<T> {
 
-    protected SshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    protected SshMessageHandler(SshContext context, T message) {
-        super(context, message);
-    }
+    @Override
+    public abstract SshMessageParser<T> getParser(byte[] array, SshContext context);
 
     @Override
-    public abstract SshMessageParser<T> getParser(byte[] array);
-
-    @Override
-    public abstract SshMessageParser<T> getParser(byte[] array, int startPosition);
+    public abstract SshMessageParser<T> getParser(
+            byte[] array, int startPosition, SshContext context);
 }

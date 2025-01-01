@@ -22,35 +22,27 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeReplyMessageHandler
-        extends SshMessageHandler<HybridKeyExchangeReplyMessage> implements MessageSentHandler {
+        extends SshMessageHandler<HybridKeyExchangeReplyMessage>
+        implements MessageSentHandler<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HybridKeyExchangeReplyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
-        setRemoteValues();
+    public void adjustContext(SshContext context, HybridKeyExchangeReplyMessage object) {
+        KeyExchangeUtil.handleHostKeyMessage(context, object);
+        setRemoteValues(context, object);
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
                 .setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void setRemoteValues() {
-        byte[] concatenatedHybridKeys = message.getConcatenatedHybridKeys().getValue();
+    private static void setRemoteValues(SshContext context, HybridKeyExchangeReplyMessage object) {
+        byte[] concatenatedHybridKeys = object.getConcatenatedHybridKeys().getValue();
 
         HybridKeyExchange hybridKeyExchange = context.getChooser().getHybridKeyExchange();
         if (concatenatedHybridKeys.length
@@ -113,19 +105,21 @@ public class HybridKeyExchangeReplyMessageHandler
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(
+            SshContext context, HybridKeyExchangeReplyMessage object) {
         context.getExchangeHashInputHolder()
-                .setHybridServerPublicKey(message.getConcatenatedHybridKeys().getValue());
+                .setHybridServerPublicKey(object.getConcatenatedHybridKeys().getValue());
     }
 
     @Override
-    public HybridKeyExchangeReplyMessageParser getParser(byte[] array) {
+    public HybridKeyExchangeReplyMessageParser getParser(byte[] array, SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(array);
     }
 
     @Override
-    public HybridKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+    public HybridKeyExchangeReplyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(array, startPosition);
     }

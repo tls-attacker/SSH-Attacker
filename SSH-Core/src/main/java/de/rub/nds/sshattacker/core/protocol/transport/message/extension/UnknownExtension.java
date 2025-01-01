@@ -87,9 +87,16 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
         }
     }
 
+    public static final UnknownExtensionHandler HANDLER = new UnknownExtensionHandler();
+
     @Override
-    public UnknownExtensionHandler getHandler(SshContext context) {
-        return new UnknownExtensionHandler(context, this);
+    public UnknownExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

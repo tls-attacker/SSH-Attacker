@@ -53,9 +53,17 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
         this.typeSpecificData = typeSpecificData;
     }
 
+    public static final GlobalRequestUnknownMessageHandler HANDLER =
+            new GlobalRequestUnknownMessageHandler();
+
     @Override
-    public GlobalRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestUnknownMessageHandler(context, this);
+    public GlobalRequestUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-public interface MessageSentHandler {
+import de.rub.nds.sshattacker.core.state.SshContext;
 
-    void adjustContextAfterMessageSent();
+public interface MessageSentHandler<T> {
+
+    void adjustContextAfterMessageSent(SshContext context, T object);
 }

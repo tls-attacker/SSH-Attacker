@@ -239,9 +239,16 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return signature;
     }
 
+    public static final UserAuthPubkeyMessageHandler HANDLER = new UserAuthPubkeyMessageHandler();
+
     @Override
-    public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
-        return new UserAuthPubkeyMessageHandler(context, this);
+    public UserAuthPubkeyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

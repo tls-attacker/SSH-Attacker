@@ -101,9 +101,17 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
         }
     }
 
+    public static final EcdhKeyExchangeInitMessageHandler HANDLER =
+            new EcdhKeyExchangeInitMessageHandler();
+
     @Override
-    public EcdhKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeInitMessageHandler(context, this);
+    public EcdhKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

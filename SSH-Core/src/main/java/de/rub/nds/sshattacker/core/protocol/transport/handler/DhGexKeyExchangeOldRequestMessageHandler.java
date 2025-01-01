@@ -17,34 +17,27 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeOldRequestMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeOldRequestMessage> {
 
-    public DhGexKeyExchangeOldRequestMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhGexKeyExchangeOldRequestMessageHandler(
-            SshContext context, DhGexKeyExchangeOldRequestMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        updateContextWithPreferredGroupSize();
+    public void adjustContext(SshContext context, DhGexKeyExchangeOldRequestMessage object) {
+        updateContextWithPreferredGroupSize(context, object);
         context.setOldGroupRequestReceived(true);
     }
 
-    private void updateContextWithPreferredGroupSize() {
-        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
+    private static void updateContextWithPreferredGroupSize(
+            SshContext context, DhGexKeyExchangeOldRequestMessage object) {
+        context.setPreferredDhGroupSize(object.getPreferredGroupSize().getValue());
         context.getExchangeHashInputHolder()
-                .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
+                .setDhGexPreferredGroupSize(object.getPreferredGroupSize().getValue());
     }
 
     @Override
-    public DhGexKeyExchangeOldRequestMessageParser getParser(byte[] array) {
+    public DhGexKeyExchangeOldRequestMessageParser getParser(byte[] array, SshContext context) {
         return new DhGexKeyExchangeOldRequestMessageParser(array);
     }
 
     @Override
-    public DhGexKeyExchangeOldRequestMessageParser getParser(byte[] array, int startPosition) {
+    public DhGexKeyExchangeOldRequestMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhGexKeyExchangeOldRequestMessageParser(array, startPosition);
     }
 

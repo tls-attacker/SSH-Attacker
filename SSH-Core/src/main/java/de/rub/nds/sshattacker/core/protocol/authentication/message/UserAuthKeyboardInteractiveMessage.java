@@ -152,9 +152,17 @@ public class UserAuthKeyboardInteractiveMessage
         }
     }
 
+    public static final UserAuthKeyboardInteractiveMessageHandler HANDLER =
+            new UserAuthKeyboardInteractiveMessageHandler();
+
     @Override
-    public UserAuthKeyboardInteractiveMessageHandler getHandler(SshContext context) {
-        return new UserAuthKeyboardInteractiveMessageHandler(context, this);
+    public UserAuthKeyboardInteractiveMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

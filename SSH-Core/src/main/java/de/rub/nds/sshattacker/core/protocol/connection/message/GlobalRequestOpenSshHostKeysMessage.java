@@ -61,9 +61,17 @@ public class GlobalRequestOpenSshHostKeysMessage
         }
     }
 
+    public static final GlobalRequestOpenSshHostKeysMessageHandler HANDLER =
+            new GlobalRequestOpenSshHostKeysMessageHandler();
+
     @Override
-    public GlobalRequestOpenSshHostKeysMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestOpenSshHostKeysMessageHandler(context, this);
+    public GlobalRequestOpenSshHostKeysMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -19,40 +19,34 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeGroupMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeGroupMessage> {
 
-    public DhGexKeyExchangeGroupMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhGexKeyExchangeGroupMessageHandler(
-            SshContext context, DhGexKeyExchangeGroupMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        setGroupParametersFromMessage(message);
-        updateExchangeHashWithGroupParameters(message);
+    public void adjustContext(SshContext context, DhGexKeyExchangeGroupMessage object) {
+        setGroupParametersFromMessage(context, object);
+        updateExchangeHashWithGroupParameters(context, object);
     }
 
-    private void setGroupParametersFromMessage(DhGexKeyExchangeGroupMessage msg) {
+    private static void setGroupParametersFromMessage(
+            SshContext context, DhGexKeyExchangeGroupMessage msg) {
         DhKeyExchange keyExchange = context.getChooser().getDhGexKeyExchange();
         keyExchange.setModulus(msg.getGroupModulus().getValue());
         keyExchange.setGenerator(msg.getGroupGenerator().getValue());
     }
 
-    private void updateExchangeHashWithGroupParameters(DhGexKeyExchangeGroupMessage msg) {
+    private static void updateExchangeHashWithGroupParameters(
+            SshContext context, DhGexKeyExchangeGroupMessage msg) {
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
         inputHolder.setDhGexGroupModulus(msg.getGroupModulus().getValue());
         inputHolder.setDhGexGroupGenerator(msg.getGroupGenerator().getValue());
     }
 
     @Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array) {
+    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, SshContext context) {
         return new DhGexKeyExchangeGroupMessageParser(array);
     }
 
     @Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, int startPosition) {
+    public DhGexKeyExchangeGroupMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
     }
 

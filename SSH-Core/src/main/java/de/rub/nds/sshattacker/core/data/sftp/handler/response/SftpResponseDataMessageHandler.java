@@ -16,21 +16,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpResponseDataMessageHandler
         extends SftpResponseMessageHandler<SftpResponseDataMessage> {
 
-    public SftpResponseDataMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpResponseDataMessageHandler(SshContext context, SftpResponseDataMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpResponseDataMessageParser getParser(byte[] array) {
+    public SftpResponseDataMessageParser getParser(byte[] array, SshContext context) {
         return new SftpResponseDataMessageParser(array);
     }
 
     @Override
-    public SftpResponseDataMessageParser getParser(byte[] array, int startPosition) {
+    public SftpResponseDataMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpResponseDataMessageParser(array, startPosition);
     }
 

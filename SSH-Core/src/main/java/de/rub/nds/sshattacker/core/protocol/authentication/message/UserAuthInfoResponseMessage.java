@@ -126,9 +126,17 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
         }
     }
 
+    public static final UserAuthInfoResponseMessageHandler HANDLER =
+            new UserAuthInfoResponseMessageHandler();
+
     @Override
-    public UserAuthInfoResponseMessageHandler getHandler(SshContext context) {
-        return new UserAuthInfoResponseMessageHandler(context, this);
+    public UserAuthInfoResponseMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

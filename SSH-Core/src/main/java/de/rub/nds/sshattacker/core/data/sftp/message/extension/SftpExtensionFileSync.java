@@ -26,9 +26,16 @@ public class SftpExtensionFileSync extends SftpExtensionWithVersion<SftpExtensio
         return new SftpExtensionFileSync(this);
     }
 
+    public static final SftpExtensionFileSyncHandler HANDLER = new SftpExtensionFileSyncHandler();
+
     @Override
-    public SftpExtensionFileSyncHandler getHandler(SshContext context) {
-        return new SftpExtensionFileSyncHandler(context, this);
+    public SftpExtensionFileSyncHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

@@ -97,7 +97,9 @@ public abstract class SftpAbstractExtension<T extends SftpAbstractExtension<T>>
         setName(extension.getName(), adjustLengthField);
     }
 
-    public abstract SftpAbstractExtensionHandler<T> getHandler(SshContext context);
+    public abstract SftpAbstractExtensionHandler<T> getHandler();
+
+    public abstract void adjustContext(SshContext context);
 
     public abstract void prepare(Chooser chooser);
 

@@ -17,25 +17,18 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionHardlinkHandler
         extends SftpAbstractExtensionHandler<SftpExtensionHardlink> {
 
-    public SftpExtensionHardlinkHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionHardlinkHandler(SshContext context, SftpExtensionHardlink extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionHardlink object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionWithVersionParser<SftpExtensionHardlink> getParser(byte[] array) {
+    public SftpExtensionWithVersionParser<SftpExtensionHardlink> getParser(
+            byte[] array, SshContext context) {
         return new SftpExtensionWithVersionParser<>(SftpExtensionHardlink::new, array);
     }
 
     @Override
     public SftpExtensionWithVersionParser<SftpExtensionHardlink> getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionWithVersionParser<>(
                 SftpExtensionHardlink::new, array, startPosition);
     }

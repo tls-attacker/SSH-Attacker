@@ -20,14 +20,9 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler(
-            SshContext context, PublicKeyAlgorithmsRoumenPetrovExtension extension) {
-        super(context, extension);
-    }
-
     @Override
-    public void adjustContext() {
-        String acceptedAlgorithms = extension.getPublicKeyAlgorithms().getValue();
+    public void adjustContext(SshContext context, PublicKeyAlgorithmsRoumenPetrovExtension object) {
+        String acceptedAlgorithms = object.getPublicKeyAlgorithms().getValue();
 
         if (acceptedAlgorithms != null) {
             LOGGER.debug(
@@ -40,13 +35,14 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
     }
 
     @Override
-    public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(byte[] array) {
+    public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(
+            byte[] array, SshContext context) {
         return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array);
     }
 
     @Override
     public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array, startPosition);
     }
 

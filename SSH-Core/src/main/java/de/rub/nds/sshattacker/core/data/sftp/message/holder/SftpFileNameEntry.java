@@ -163,8 +163,10 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
         this.attributes = attributes;
     }
 
-    public SftpFileNameEntryHandler getHandler(SshContext context) {
-        return new SftpFileNameEntryHandler(context, this);
+    public static final SftpFileNameEntryHandler HANDLER = new SftpFileNameEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

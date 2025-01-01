@@ -86,9 +86,16 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
         }
     }
 
+    public static final ChannelDataMessageHandler HANDLER = new ChannelDataMessageHandler();
+
     @Override
-    public ChannelDataMessageHandler getHandler(SshContext context) {
-        return new ChannelDataMessageHandler(context, this);
+    public ChannelDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

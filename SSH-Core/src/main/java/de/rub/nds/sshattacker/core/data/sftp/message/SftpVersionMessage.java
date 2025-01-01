@@ -26,9 +26,16 @@ public class SftpVersionMessage extends SftpHandshakeMessage<SftpVersionMessage>
         return new SftpVersionMessage(this);
     }
 
+    public static final SftpVersionMessageHandler HANDLER = new SftpVersionMessageHandler();
+
     @Override
-    public SftpVersionMessageHandler getHandler(SshContext context) {
-        return new SftpVersionMessageHandler(context, this);
+    public SftpVersionMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

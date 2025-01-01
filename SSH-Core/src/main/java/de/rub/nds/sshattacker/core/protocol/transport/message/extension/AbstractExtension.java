@@ -88,7 +88,9 @@ public abstract class AbstractExtension<T extends AbstractExtension<T>>
         }
     }
 
-    public abstract AbstractExtensionHandler<T> getHandler(SshContext context);
+    public abstract AbstractExtensionHandler<T> getHandler();
+
+    public abstract void adjustContext(SshContext context);
 
     public abstract void prepare(Chooser chooser);
 

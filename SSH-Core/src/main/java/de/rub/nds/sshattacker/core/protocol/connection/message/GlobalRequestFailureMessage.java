@@ -27,9 +27,17 @@ public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailure
         return new GlobalRequestFailureMessage(this);
     }
 
+    public static final GlobalRequestFailureMessageHandler HANDLER =
+            new GlobalRequestFailureMessageHandler();
+
     @Override
-    public GlobalRequestFailureMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestFailureMessageHandler(context, this);
+    public GlobalRequestFailureMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

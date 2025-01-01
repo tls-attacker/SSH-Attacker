@@ -16,24 +16,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpExtensionUnknownHandler
         extends SftpAbstractExtensionHandler<SftpExtensionUnknown> {
 
-    public SftpExtensionUnknownHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpExtensionUnknownHandler(SshContext context, SftpExtensionUnknown extension) {
-        super(context, extension);
-    }
+    @Override
+    public void adjustContext(SshContext context, SftpExtensionUnknown object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public SftpExtensionUnknownParser getParser(byte[] array) {
+    public SftpExtensionUnknownParser getParser(byte[] array, SshContext context) {
         return new SftpExtensionUnknownParser(array);
     }
 
     @Override
-    public SftpExtensionUnknownParser getParser(byte[] array, int startPosition) {
+    public SftpExtensionUnknownParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpExtensionUnknownParser(array, startPosition);
     }
 

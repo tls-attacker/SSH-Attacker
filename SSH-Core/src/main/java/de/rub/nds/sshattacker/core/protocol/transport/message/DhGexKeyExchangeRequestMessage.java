@@ -110,9 +110,17 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
         }
     }
 
+    public static final DhGexKeyExchangeRequestMessageHandler HANDLER =
+            new DhGexKeyExchangeRequestMessageHandler();
+
     @Override
-    public DhGexKeyExchangeRequestMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeRequestMessageHandler(context, this);
+    public DhGexKeyExchangeRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

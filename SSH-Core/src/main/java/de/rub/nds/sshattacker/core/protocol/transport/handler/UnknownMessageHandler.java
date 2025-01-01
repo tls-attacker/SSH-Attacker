@@ -21,28 +21,20 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UnknownMessageHandler(SshContext context, UnknownMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UnknownMessage object) {
         LOGGER.debug(
                 "Received unknown message:\n{}",
-                () -> ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(object.getPayload()));
     }
 
     @Override
-    public UnknownMessageParser getParser(byte[] array) {
+    public UnknownMessageParser getParser(byte[] array, SshContext context) {
         return new UnknownMessageParser(array);
     }
 
     @Override
-    public UnknownMessageParser getParser(byte[] array, int startPosition) {
+    public UnknownMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new UnknownMessageParser(array, startPosition);
     }
 

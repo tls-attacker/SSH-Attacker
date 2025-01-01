@@ -82,9 +82,16 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
         }
     }
 
+    public static final AsciiMessageHandler HANDLER = new AsciiMessageHandler();
+
     @Override
-    public AsciiMessageHandler getHandler(SshContext context) {
-        return new AsciiMessageHandler(context, this);
+    public AsciiMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

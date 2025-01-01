@@ -159,9 +159,17 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
         }
     }
 
+    public static final DhGexKeyExchangeGroupMessageHandler HANDLER =
+            new DhGexKeyExchangeGroupMessageHandler();
+
     @Override
-    public DhGexKeyExchangeGroupMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeGroupMessageHandler(context, this);
+    public DhGexKeyExchangeGroupMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

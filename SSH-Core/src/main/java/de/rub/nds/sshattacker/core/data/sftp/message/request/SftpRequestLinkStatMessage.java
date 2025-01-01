@@ -27,9 +27,22 @@ public class SftpRequestLinkStatMessage
         return new SftpRequestLinkStatMessage(this);
     }
 
+    public static final SftpRequestLinkStatMessageHandler HANDLER =
+            new SftpRequestLinkStatMessageHandler();
+
     @Override
-    public SftpRequestLinkStatMessageHandler getHandler(SshContext context) {
-        return new SftpRequestLinkStatMessageHandler(context, this);
+    public SftpRequestLinkStatMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
     }
 
     @Override

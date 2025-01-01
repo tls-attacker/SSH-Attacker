@@ -26,9 +26,16 @@ public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
         return new ChannelEofMessage(this);
     }
 
+    public static final ChannelEofMessageHandler HANDLER = new ChannelEofMessageHandler();
+
     @Override
-    public ChannelEofMessageHandler getHandler(SshContext context) {
-        return new ChannelEofMessageHandler(context, this);
+    public ChannelEofMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

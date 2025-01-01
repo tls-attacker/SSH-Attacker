@@ -179,8 +179,10 @@ public class SftpAclEntry extends ModifiableVariableHolder {
         }
     }
 
-    public SftpAclEntryHandler getHandler(SshContext context) {
-        return new SftpAclEntryHandler(context, this);
+    public static final SftpAclEntryHandler HANDLER = new SftpAclEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     public void prepare(Chooser chooser) {

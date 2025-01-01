@@ -42,9 +42,17 @@ public class SftpResponseAttributesMessage
         this.attributes = attributes;
     }
 
+    public static final SftpResponseAttributesMessageHandler HANDLER =
+            new SftpResponseAttributesMessageHandler();
+
     @Override
-    public SftpResponseAttributesMessageHandler getHandler(SshContext context) {
-        return new SftpResponseAttributesMessageHandler(context, this);
+    public SftpResponseAttributesMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

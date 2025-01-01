@@ -17,37 +17,30 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRequestPtyMessage>
-        implements MessageSentHandler {
-
-    public ChannelRequestPtyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestPtyMessageHandler(SshContext context, ChannelRequestPtyMessage message) {
-        super(context, message);
-    }
+        implements MessageSentHandler<ChannelRequestPtyMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(message);
+    public void adjustContext(SshContext context, ChannelRequestPtyMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addReceivedRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(message);
+    public void adjustContextAfterMessageSent(SshContext context, ChannelRequestPtyMessage object) {
+        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
+            context.getChannelManager().addSentRequestThatWantsReply(object);
         }
     }
 
     @Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array) {
+    public ChannelRequestPtyMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestPtyMessageParser(array);
     }
 
     @Override
-    public ChannelRequestPtyMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestPtyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestPtyMessageParser(array, startPosition);
     }
 

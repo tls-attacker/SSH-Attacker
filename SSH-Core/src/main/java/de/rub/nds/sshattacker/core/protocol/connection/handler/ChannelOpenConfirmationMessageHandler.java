@@ -20,24 +20,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenConfirmationMessageHandler
-        extends SshMessageHandler<ChannelOpenConfirmationMessage> implements MessageSentHandler {
+        extends SshMessageHandler<ChannelOpenConfirmationMessage>
+        implements MessageSentHandler<ChannelOpenConfirmationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenConfirmationMessageHandler(
-            SshContext context, ChannelOpenConfirmationMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelOpenConfirmationMessage object) {
         ChannelManager channelManager = context.getChannelManager();
-        Integer recipientChannelId = message.getRecipientChannelId().getValue();
-        Integer senderChannelId = message.getSenderChannelId().getValue();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
+        Integer senderChannelId = object.getSenderChannelId().getValue();
 
         Channel channel = channelManager.getPendingChannelByLocalId(recipientChannelId);
         if (channel == null) {
@@ -53,14 +45,15 @@ public class ChannelOpenConfirmationMessageHandler
             channelManager.confirmPendingChannel(channel);
         }
 
-        channel.setRemotePacketSize(message.getPacketSize());
-        channel.setRemoteWindowSize(message.getWindowSize());
+        channel.setRemotePacketSize(object.getPacketSize());
+        channel.setRemoteWindowSize(object.getWindowSize());
         channel.setOpen(true);
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
-        Integer localChannelId = message.getSenderChannelId().getValue();
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelOpenConfirmationMessage object) {
+        Integer localChannelId = object.getSenderChannelId().getValue();
         Channel cahnnel = context.getChannelManager().getChannelByLocalId(localChannelId);
         if (cahnnel != null) {
             // Channel is already added to the ChannelManager, just need to set it to open
@@ -74,12 +67,13 @@ public class ChannelOpenConfirmationMessageHandler
     }
 
     @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
+    public ChannelOpenConfirmationMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenConfirmationMessageParser(array);
     }
 
     @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenConfirmationMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenConfirmationMessageParser(array, startPosition);
     }
 

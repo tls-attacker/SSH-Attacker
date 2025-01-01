@@ -17,22 +17,14 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class SftpRequestVendorIdMessageHandler
         extends SftpRequestMessageHandler<SftpRequestVendorIdMessage> {
 
-    public SftpRequestVendorIdMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public SftpRequestVendorIdMessageHandler(
-            SshContext context, SftpRequestVendorIdMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public SftpRequestVendorIdMessageParser getParser(byte[] array) {
+    public SftpRequestVendorIdMessageParser getParser(byte[] array, SshContext context) {
         return new SftpRequestVendorIdMessageParser(array);
     }
 
     @Override
-    public SftpRequestVendorIdMessageParser getParser(byte[] array, int startPosition) {
+    public SftpRequestVendorIdMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new SftpRequestVendorIdMessageParser(array, startPosition);
     }
 

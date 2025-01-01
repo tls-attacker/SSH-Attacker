@@ -102,9 +102,17 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
         }
     }
 
+    public static final SftpResponseNameMessageHandler HANDLER =
+            new SftpResponseNameMessageHandler();
+
     @Override
-    public SftpResponseNameMessageHandler getHandler(SshContext context) {
-        return new SftpResponseNameMessageHandler(context, this);
+    public SftpResponseNameMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
     }
 
     @Override

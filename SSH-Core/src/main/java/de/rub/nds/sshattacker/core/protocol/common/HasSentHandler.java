@@ -9,11 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public interface Handler<T> {
+public interface HasSentHandler {
 
-    Parser<T> getParser(byte[] array, SshContext context);
-
-    Parser<T> getParser(byte[] array, int startPosition, SshContext context);
-
-    void adjustContext(SshContext context, T object);
+    void adjustContextAfterSent(SshContext context);
 }
