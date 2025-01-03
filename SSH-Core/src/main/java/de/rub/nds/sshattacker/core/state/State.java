@@ -103,7 +103,7 @@ public class State {
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
         if (config.isFiltersKeepUserSettings()) {
-            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
+            originalWorkflowTrace = workflowTrace.createCopy();
         }
 
         WorkflowTraceNormalizer.normalize(workflowTrace, config, runningMode);
@@ -231,7 +231,7 @@ public class State {
      * @return a copy of the state's (normalized) workflow trace
      */
     public WorkflowTrace getWorkflowTraceCopy() {
-        return WorkflowTrace.copy(workflowTrace);
+        return workflowTrace.createCopy();
     }
 
     /**
@@ -251,7 +251,7 @@ public class State {
      * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
-        WorkflowTrace filtered = WorkflowTrace.copy(trace);
+        WorkflowTrace filtered = trace.createCopy();
         filterTrace(filtered);
         return filtered;
     }
