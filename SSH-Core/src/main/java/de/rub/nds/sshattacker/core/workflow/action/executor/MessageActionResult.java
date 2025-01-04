@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.action.executor;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageActionResult {
 
@@ -22,6 +23,17 @@ public class MessageActionResult {
         super();
         this.packetList = packetList;
         this.messageList = messageList;
+    }
+
+    public MessageActionResult(List<MessageActionResult> results) {
+        super();
+        packetList = new ArrayList<>();
+        messageList = new ArrayList<>();
+
+        for (MessageActionResult result : results) {
+            packetList.addAll(result.packetList);
+            messageList.addAll(result.messageList);
+        }
     }
 
     /** Generates an empty MessageActionResult, that is, a result whose list fields are empty. */

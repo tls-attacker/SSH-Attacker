@@ -16,7 +16,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.stream.Stream;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,11 +80,12 @@ public final class SendMessageHelper {
 
     public static MessageActionResult sendMessages(
             SshContext context,
-            Stream<ProtocolMessage<?>> messageStream,
+            ArrayList<ProtocolMessage<?>> messages,
             boolean prepareBeforeSending) {
-        return messageStream
-                .map(message -> sendMessage(context, message, prepareBeforeSending))
-                .reduce(MessageActionResult::merge)
-                .orElse(new MessageActionResult());
+        LinkedList<MessageActionResult> sendResults = new LinkedList<>();
+        for (ProtocolMessage<?> message : messages) {
+            sendResults.add(sendMessage(context, message, prepareBeforeSending));
+        }
+        return new MessageActionResult(sendResults);
     }
 }

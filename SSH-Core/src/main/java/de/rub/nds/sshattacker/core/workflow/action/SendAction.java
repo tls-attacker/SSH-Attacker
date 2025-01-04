@@ -98,15 +98,16 @@ public class SendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: {}", sending);
+            LOGGER.info("Sending messages: {}", () -> getReadableString(messages));
         } else {
-            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
+            LOGGER.info(
+                    "Sending messages ({}): {}",
+                    () -> connectionAlias,
+                    () -> getReadableString(messages));
         }
 
-        MessageActionResult result =
-                SendMessageHelper.sendMessages(context, messages.stream(), true);
+        MessageActionResult result = SendMessageHelper.sendMessages(context, messages, true);
 
         // Check if all actions that were expected to be sent were actually
         // sent or if some failure occurred.
