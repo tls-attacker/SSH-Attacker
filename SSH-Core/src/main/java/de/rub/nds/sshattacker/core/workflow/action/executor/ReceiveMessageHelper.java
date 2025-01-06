@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -93,8 +94,9 @@ public final class ReceiveMessageHelper {
         if (context.isReceiveAsciiModeEnabled()) {
             byte[] receiveBuffer = new byte[0];
             byte[] readByte;
+            TransportHandler transportHandler = context.getTransportHandler();
             do {
-                readByte = context.getTransportHandler().fetchData(1);
+                readByte = transportHandler.fetchData(1);
                 receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
             return receiveBuffer;
