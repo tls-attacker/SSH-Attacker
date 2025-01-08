@@ -15,13 +15,12 @@ public class GlobalRequestTcpIpForwardMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestTcpIpForwardMessage> {
 
     public GlobalRequestTcpIpForwardMessagePreparator() {
-        super(GlobalRequestType.TCPIP_FORWARD);
+        super(GlobalRequestType.TCPIP_FORWARD, true);
     }
 
     @Override
     public void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestTcpIpForwardMessage object, Chooser chooser) {
-        object.setSoftlyWantReply(true);
         object.setSoftlyIpAddressToBind("127.0.0.1", true, chooser.getConfig());
         object.setSoftlyPortToBind(0);
     }

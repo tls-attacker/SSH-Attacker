@@ -15,7 +15,7 @@ public class GlobalRequestNoMoreSessionsMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestNoMoreSessionsMessage> {
 
     public GlobalRequestNoMoreSessionsMessagePreparator() {
-        super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM);
+        super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
     }
 
     @Override

@@ -31,10 +31,10 @@ public abstract class ChannelRequestMessagePreparator<T extends ChannelRequestMe
 
     @Override
     protected final void prepareChannelMessageSpecificContents(T object, Chooser chooser) {
-        prepareChannelRequestMessageSpecificContents(object, chooser);
         // Always set correct channel request type -> Don't use soft set
         object.setRequestType(channelRequestType, true);
         object.setSoftlyWantReply(wantReply);
+        prepareChannelRequestMessageSpecificContents(object, chooser);
     }
 
     protected abstract void prepareChannelRequestMessageSpecificContents(T object, Chooser chooser);

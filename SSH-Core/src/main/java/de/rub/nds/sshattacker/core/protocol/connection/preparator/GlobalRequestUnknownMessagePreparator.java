@@ -14,7 +14,7 @@ public class GlobalRequestUnknownMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestUnknownMessage> {
 
     public GlobalRequestUnknownMessagePreparator() {
-        super("hello-from@ssh-attacker.de");
+        super("hello-from@ssh-attacker.de", true);
     }
 
     @Override

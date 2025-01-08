@@ -15,7 +15,7 @@ public class GlobalRequestOpenSshHostKeysMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestOpenSshHostKeysMessage> {
 
     public GlobalRequestOpenSshHostKeysMessagePreparator() {
-        super(GlobalRequestType.HOSTKEYS_00_OPENSSH_COM);
+        super(GlobalRequestType.HOSTKEYS_00_OPENSSH_COM, false);
     }
 
     @Override

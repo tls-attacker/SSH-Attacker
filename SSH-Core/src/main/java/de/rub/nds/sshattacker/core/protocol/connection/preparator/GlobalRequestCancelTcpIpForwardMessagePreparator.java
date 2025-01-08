@@ -15,7 +15,7 @@ public class GlobalRequestCancelTcpIpForwardMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestCancelTcpIpForwardMessage> {
 
     public GlobalRequestCancelTcpIpForwardMessagePreparator() {
-        super(GlobalRequestType.CANCEL_TCPIP_FORWARD);
+        super(GlobalRequestType.CANCEL_TCPIP_FORWARD, true);
     }
 
     @Override
