@@ -2433,7 +2433,7 @@ public class Config implements Serializable {
         return workflowExecutorShouldOpen;
     }
 
-    public Boolean getStopActionsAfterDisconnect() {
+    public Boolean isStopActionsAfterDisconnect() {
         return stopActionsAfterDisconnect;
     }
 

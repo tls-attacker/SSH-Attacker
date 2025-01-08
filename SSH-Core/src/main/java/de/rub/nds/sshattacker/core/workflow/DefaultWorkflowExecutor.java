@@ -42,7 +42,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         state.setStartTimestamp(System.currentTimeMillis());
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
-            if (config.isStopReceivingAfterDisconnect() && hasReceivedDisconnectMessage()) {
+            if (config.isStopActionsAfterDisconnect() && hasReceivedDisconnectMessage()) {
                 LOGGER.debug(
                         "Skipping all Actions, received DisconnectMessage, StopActionsAfterDisconnect active");
                 break;

@@ -74,6 +74,7 @@ public final class SendMessageHelper {
             return new MessageActionResult(packetList, messageList);
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: {}", e.getMessage());
+            context.setReceivedTransportHandlerException(true);
             return new MessageActionResult();
         }
     }
