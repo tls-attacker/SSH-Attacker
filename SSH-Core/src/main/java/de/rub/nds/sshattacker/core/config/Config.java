@@ -221,6 +221,8 @@ public class Config implements Serializable {
     // endregion
 
     // region KeyExchange
+    // TODO: Would be nice to have an option to reuse ephemeral keys during key exchange.
+    // TODO: Would be nice to have an option to disable signature checks
     /**
      * Fallback of minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
      * message
