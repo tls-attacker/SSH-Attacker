@@ -354,13 +354,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         receivedPackets = result.getPacketList();
         setExecuted(true);
 
-        String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Expected messages: {}", expected);
-        String received = getReadableString(messages);
+        LOGGER.debug("Expected messages: {}", () -> getReadableString(expectedMessages));
         if (hasDefaultAlias()) {
-            LOGGER.info("Received messages: {}", received);
+            LOGGER.info("Received messages: {}", () -> getReadableString(messages));
         } else {
-            LOGGER.info("Received messages ({}): {}", getConnectionAlias(), received);
+            LOGGER.info(
+                    "Received messages ({}): {}",
+                    this::getConnectionAlias,
+                    () -> getReadableString(messages));
         }
     }
 
