@@ -149,7 +149,7 @@ public class ChannelManager {
     public void addPendingChannel(Channel channel) {
         if (channel.getLocalChannelId().getValue() == null) {
             throw new ChannelManagerException(
-                    "Pending channel cannot have an empty the local channel ID");
+                    "Pending channel cannot have an empty local channel ID");
         }
         pendingChannelsByLocalId.put(channel.getLocalChannelId().getValue(), channel);
     }

@@ -98,9 +98,7 @@ public abstract class WorkflowExecutor {
             LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
             state.setExecutionException(ex);
             throw ex;
-        } catch (UnsupportedOperationException
-                | PreparationException
-                | ActionExecutionException ex) {
+        } catch (UnsupportedOperationException ex) {
             state.setExecutionException(ex);
             LOGGER.error(
                     "Not fatal error during action execution, skipping action: {}", action, ex);

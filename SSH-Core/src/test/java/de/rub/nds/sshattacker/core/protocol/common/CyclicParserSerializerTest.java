@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -117,12 +116,6 @@ public class CyclicParserSerializerTest {
             // Prepare the message given the fresh context
             try {
                 message.prepare(context.getChooser());
-            } catch (PreparationException e) {
-                LOGGER.fatal(e);
-                fail(
-                        "Caught a PreparationException while preparing message of class '"
-                                + messageClassName
-                                + "'");
             } catch (NotImplementedException e) {
                 LOGGER.error(e);
                 throw new TestAbortedException(
