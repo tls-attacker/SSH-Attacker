@@ -39,6 +39,7 @@ public class DynamicKeyExchangeAction extends DynamicMessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
+        // TODO: Fix this so that NewKeysMessage can be received in arbitrary order
         SshContext context = state.getSshContext(connectionAlias);
         KeyExchangeAlgorithm keyExchangeAlgorithm = context.getChooser().getKeyExchangeAlgorithm();
         sshActions =

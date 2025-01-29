@@ -320,6 +320,9 @@ public class WorkflowConfigurationFactory {
                     "Unable to add key exchange actions to workflow trace - key exchange algorithm has no flow type!");
         }
 
+        // TODO: Some Servers send NewKeysMessage first after the client has send its NewKeysMessage
+        //  Make it dynamic, so that the trace can still execute as planed.
+        //  For this maybe keep track in the context about the state of the key (re-)exchange
         switch (flowType) {
             case HYBRID:
                 sshActions.add(
@@ -580,13 +583,8 @@ public class WorkflowConfigurationFactory {
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new SftpInitMessage()),
-                SshActionFactory.withReceiveOptions(
-                        SshActionFactory.createMessageAction(
-                                connection, ConnectionEndType.SERVER, new SftpVersionMessage()),
-                        Set.of(
-                                ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
-                                ReceiveAction.ReceiveOption
-                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpVersionMessage()));
     }
 
     public void addSftpTestActions(WorkflowTrace workflow) {
