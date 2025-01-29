@@ -434,6 +434,8 @@ public class WorkflowConfigurationFactory {
      */
     public void addAuthenticationProtocolActions(
             AuthenticationMethod method, WorkflowTrace workflow) {
+        // TODO: Some servers send UserAuthBannerMessage. Optionally expect UserAuthBannerMessage,
+        //  so that the trace can be completed as expected
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
             case NONE:
