@@ -11,7 +11,6 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-import java.io.IOException;
 import java.net.Socket;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.LogManager;
@@ -86,13 +85,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         connection.setIp(socket.getInetAddress().getHostAddress());
         connection.setPort(socket.getPort());
         ServerTcpTransportHandler th;
-        try {
-            th = new ServerTcpTransportHandler(connection, socket);
-        } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
-            LOGGER.error("Aborting workflow trace execution on {}", socket);
-            return;
-        }
+        th = new ServerTcpTransportHandler(connection, socket);
         context.setTransportHandler(th);
     }
 }
