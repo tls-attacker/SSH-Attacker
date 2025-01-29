@@ -29,12 +29,6 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
         return new ServerSigAlgsExtension();
     }
 
-    @Override
-    protected void parseExtensionValue() {
-        parseAcceptedPublicKeyAlgorithmsLength();
-        parseAcceptedPublicKeyAlgorithms();
-    }
-
     private void parseAcceptedPublicKeyAlgorithmsLength() {
         int acceptedPublicKeyAlgorithmsLength = parseIntField();
         extension.setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength);
@@ -50,5 +44,11 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
         LOGGER.debug(
                 "Accepted public key algorithms: {}",
                 extension.getAcceptedPublicKeyAlgorithms().getValue());
+    }
+
+    @Override
+    protected void parseExtensionValue() {
+        parseAcceptedPublicKeyAlgorithmsLength();
+        parseAcceptedPublicKeyAlgorithms();
     }
 }

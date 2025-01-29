@@ -28,12 +28,6 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
         return new PingExtension();
     }
 
-    @Override
-    protected void parseExtensionValue() {
-        parseVersionLength();
-        parseVersion();
-    }
-
     private void parseVersionLength() {
         int versionLength = parseIntField();
         extension.setVersionLength(versionLength);
@@ -43,5 +37,11 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
     private void parseVersion() {
         extension.setVersion(parseByteString(extension.getVersionLength().getValue()));
         LOGGER.debug("Version: {}", extension.getVersion().getValue());
+    }
+
+    @Override
+    protected void parseExtensionValue() {
+        parseVersionLength();
+        parseVersion();
     }
 }

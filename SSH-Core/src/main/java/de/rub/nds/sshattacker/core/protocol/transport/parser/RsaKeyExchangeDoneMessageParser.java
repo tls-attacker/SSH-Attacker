@@ -30,11 +30,6 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
         return new RsaKeyExchangeDoneMessage();
     }
 
-    @Override
-    protected void parseMessageSpecificContents() {
-        parseSignature();
-    }
-
     private void parseSignature() {
         int signatureLength = parseIntField();
         message.setSignatureLength(signatureLength);
@@ -42,5 +37,10 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
         byte[] signature = parseByteArrayField(signatureLength);
         message.setSignature(signature);
         LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseSignature();
     }
 }

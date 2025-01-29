@@ -30,13 +30,6 @@ public class DelayCompressionExtensionParser
         return new DelayCompressionExtension();
     }
 
-    @Override
-    protected void parseExtensionValue() {
-        parseCompressionMethodsLength();
-        parseCompressionMethodsClientToServer();
-        parseCompressionMethodsServerToClient();
-    }
-
     private void parseCompressionMethodsLength() {
         int compressionMethodsLength = parseIntField();
         extension.setCompressionMethodsLength(compressionMethodsLength);
@@ -67,5 +60,12 @@ public class DelayCompressionExtensionParser
         extension.setCompressionMethodsServerToClient(compressionMethodsServerToClient);
         LOGGER.debug(
                 "Compression algorithms (server to client): {}", compressionMethodsServerToClient);
+    }
+
+    @Override
+    protected void parseExtensionValue() {
+        parseCompressionMethodsLength();
+        parseCompressionMethodsClientToServer();
+        parseCompressionMethodsServerToClient();
     }
 }

@@ -30,12 +30,6 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionParser
         return new PublicKeyAlgorithmsRoumenPetrovExtension();
     }
 
-    @Override
-    protected void parseExtensionValue() {
-        parsePublicKeyAlgorithmsLength();
-        parsePublicKeyAlgorithms();
-    }
-
     private void parsePublicKeyAlgorithmsLength() {
         int publicKeyAlgorithmsLength = parseIntField();
         extension.setPublicKeyAlgorithmsLength(publicKeyAlgorithmsLength);
@@ -48,5 +42,11 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionParser
                         extension.getPublicKeyAlgorithmsLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug("Public key algorithms: {}", extension.getPublicKeyAlgorithms().getValue());
+    }
+
+    @Override
+    protected void parseExtensionValue() {
+        parsePublicKeyAlgorithmsLength();
+        parsePublicKeyAlgorithms();
     }
 }
