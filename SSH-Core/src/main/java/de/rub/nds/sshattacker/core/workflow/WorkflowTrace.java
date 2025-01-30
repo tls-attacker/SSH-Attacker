@@ -165,6 +165,18 @@ public class WorkflowTrace implements Serializable {
         sshActions.addAll(actions);
     }
 
+    public void addSshAction(int position, SshAction[] action) {
+        for (int i = 0; i < action.length; i++) {
+            sshActions.add(position + i, action[i]);
+        }
+    }
+
+    public void addSshAction(int position, List<SshAction> action) {
+        for (int i = 0; i < action.size(); i++) {
+            sshActions.add(position + i, action.get(i));
+        }
+    }
+
     public void addSshAction(int position, SshAction action) {
         sshActions.add(position, action);
     }
