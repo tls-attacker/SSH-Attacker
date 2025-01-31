@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
@@ -30,7 +32,7 @@ public abstract class AbstractExtensionSerializer<T extends AbstractExtension<T>
         LOGGER.debug("Extension name length: {}", nameLength);
         output.appendInt(nameLength);
         String name = object.getName().getValue();
-        LOGGER.debug("Extension name: {}", name);
+        LOGGER.debug("Extension name: {}", () -> backslashEscapeString(name));
         output.appendString(name, StandardCharsets.US_ASCII);
     }
 

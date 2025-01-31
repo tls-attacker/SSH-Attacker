@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
@@ -49,7 +51,7 @@ public class CertEcdsaPublicKeyParser
         int formatLength = parseIntField();
         LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed format: {}", format);
+        LOGGER.debug("Parsed format: {}", () -> backslashEscapeString(format));
         publicKey.setCertFormat(format);
 
         if (!format.startsWith("ecdsa-sha2-")) {
@@ -91,7 +93,7 @@ public class CertEcdsaPublicKeyParser
         int keyIdLength = parseIntField();
         LOGGER.debug("Parsed keyIdLength: {}", keyIdLength);
         String keyId = parseByteString(keyIdLength, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed keyId: {}", keyId);
+        LOGGER.debug("Parsed keyId: {}", () -> backslashEscapeString(keyId));
         publicKey.setKeyId(keyId);
 
         // Principals (string valid principals)
@@ -173,7 +175,7 @@ public class CertEcdsaPublicKeyParser
         int reservedLength = parseIntField();
         byte[] reservedBytes = parseByteArrayField(reservedLength);
         String reserved = new String(reservedBytes, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed reserved: {}", reserved);
+        LOGGER.debug("Parsed reserved: {}", () -> backslashEscapeString(reserved));
         publicKey.setReserved(reserved);
 
         // Signature Key

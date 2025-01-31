@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.signature;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
@@ -27,7 +29,7 @@ public class SignatureParser extends Parser<RawSignature> {
         RawSignature signature = new RawSignature();
         int sigtypeLength = parseIntField();
         String sigtype = parseByteString(sigtypeLength);
-        LOGGER.debug("Signature Type: {}", sigtype);
+        LOGGER.debug("Signature Type: {}", () -> backslashEscapeString(sigtype));
 
         // Try to convert the signature type to get the corresponding signature algorithm
         PublicKeyAlgorithm signatureAlgorithm = PublicKeyAlgorithm.fromName(sigtype);

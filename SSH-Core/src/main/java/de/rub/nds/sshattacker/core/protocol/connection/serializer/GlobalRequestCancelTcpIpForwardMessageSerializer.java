@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +26,7 @@ public class GlobalRequestCancelTcpIpForwardMessageSerializer
         LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
         output.appendInt(ipAddressToBindLength);
         String ipAddressToBind = object.getIpAddressToBind().getValue();
-        LOGGER.debug("IP address to bind: {}", ipAddressToBind);
+        LOGGER.debug("IP address to bind: {}", () -> backslashEscapeString(ipAddressToBind));
         output.appendString(ipAddressToBind, StandardCharsets.US_ASCII);
     }
 

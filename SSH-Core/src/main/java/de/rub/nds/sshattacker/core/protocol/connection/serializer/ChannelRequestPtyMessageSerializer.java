@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
@@ -25,7 +27,7 @@ public class ChannelRequestPtyMessageSerializer
         LOGGER.debug("TERM environment variable length: {}", termEnvVariableLength);
         output.appendInt(termEnvVariableLength);
         String termEnvVariable = object.getTermEnvVariable().getValue();
-        LOGGER.debug("TERM environment variable: {}", termEnvVariable);
+        LOGGER.debug("TERM environment variable: {}", () -> backslashEscapeString(termEnvVariable));
         output.appendString(termEnvVariable, StandardCharsets.UTF_8);
     }
 

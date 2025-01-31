@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +34,9 @@ public class ChannelRequestX11MessageSerializer
         LOGGER.debug("X11 authentication protocol length: {}", x11AuthenticationProtocolLength);
         output.appendInt(x11AuthenticationProtocolLength);
         String x11AuthenticationProtocol = object.getX11AuthenticationProtocol().getValue();
-        LOGGER.debug("X11 authentication protocol: {}", x11AuthenticationProtocol);
+        LOGGER.debug(
+                "X11 authentication protocol: {}",
+                () -> backslashEscapeString(x11AuthenticationProtocol));
         output.appendString(x11AuthenticationProtocol, StandardCharsets.UTF_8);
     }
 
@@ -43,7 +47,9 @@ public class ChannelRequestX11MessageSerializer
         LOGGER.debug("X11 authenticaton cookie length: {}", x11AuthenticationCookieLength);
         output.appendInt(x11AuthenticationCookieLength);
         String x11AuthenticationCookie = object.getX11AuthenticationCookie().getValue();
-        LOGGER.debug("X11 authentication cookie: {}", x11AuthenticationCookie);
+        LOGGER.debug(
+                "X11 authentication cookie: {}",
+                () -> backslashEscapeString(x11AuthenticationCookie));
         output.appendString(x11AuthenticationCookie, StandardCharsets.UTF_8);
     }
 

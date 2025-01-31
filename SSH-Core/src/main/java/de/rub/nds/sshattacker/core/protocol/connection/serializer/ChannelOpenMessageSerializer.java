@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -24,7 +26,7 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
         LOGGER.debug("Channel type length: {}", channelTypeLength);
         output.appendInt(channelTypeLength);
         String channelType = object.getChannelType().getValue();
-        LOGGER.debug("Channel type: {}", channelType);
+        LOGGER.debug("Channel type: {}", () -> backslashEscapeString(channelType));
         output.appendString(channelType, StandardCharsets.US_ASCII);
     }
 

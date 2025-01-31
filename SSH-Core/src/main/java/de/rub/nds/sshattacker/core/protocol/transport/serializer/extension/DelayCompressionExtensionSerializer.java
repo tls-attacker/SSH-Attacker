@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +46,8 @@ public class DelayCompressionExtensionSerializer
         String compressionMethodsClientToServer =
                 object.getCompressionMethodsClientToServer().getValue();
         LOGGER.debug(
-                "Compression algorithms (client to server): {}", compressionMethodsClientToServer);
+                "Compression algorithms (client to server): {}",
+                () -> backslashEscapeString(compressionMethodsClientToServer));
         output.appendString(compressionMethodsClientToServer, StandardCharsets.US_ASCII);
     }
 
@@ -59,7 +62,8 @@ public class DelayCompressionExtensionSerializer
         String compressionMethodsServerToClient =
                 object.getCompressionMethodsServerToClient().getValue();
         LOGGER.debug(
-                "Compression algorithms (server to client): {}", compressionMethodsServerToClient);
+                "Compression algorithms (server to client): {}",
+                () -> backslashEscapeString(compressionMethodsServerToClient));
         output.appendString(compressionMethodsServerToClient, StandardCharsets.US_ASCII);
     }
 }

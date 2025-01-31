@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -31,7 +33,7 @@ public class UserAuthPasswordMessageSerializer
         LOGGER.debug("Password length: {}", passwordLength);
         output.appendInt(passwordLength);
         String password = object.getPassword().getValue();
-        LOGGER.debug("Password: {}", password);
+        LOGGER.debug("Password: {}", () -> backslashEscapeString(password));
         output.appendString(password, StandardCharsets.UTF_8);
     }
 
@@ -41,7 +43,7 @@ public class UserAuthPasswordMessageSerializer
         LOGGER.debug("New password length: {}", newPasswordLength);
         output.appendInt(newPasswordLength);
         String newPassword = object.getNewPassword().getValue();
-        LOGGER.debug("New password: {}", newPassword);
+        LOGGER.debug("New password: {}", () -> backslashEscapeString(newPassword));
         output.appendString(newPassword, StandardCharsets.UTF_8);
     }
 

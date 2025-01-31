@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
@@ -25,7 +27,7 @@ public class VersionExchangeMessageSerializer
             LOGGER.debug("Version: [none]");
         } else {
             String version = object.getVersion().getValue();
-            LOGGER.debug("Version: {}", version);
+            LOGGER.debug("Version: {}", () -> backslashEscapeString(version));
             output.appendString(version, StandardCharsets.US_ASCII);
         }
     }

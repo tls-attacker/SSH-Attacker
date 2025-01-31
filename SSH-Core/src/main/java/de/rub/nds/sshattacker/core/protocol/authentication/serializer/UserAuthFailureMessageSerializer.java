@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -27,7 +29,9 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
                 "Possible authentication methods length: {}", possibleAuthenticationMethodsLength);
         output.appendInt(possibleAuthenticationMethodsLength);
         String possibleAuthenticationMethods = object.getPossibleAuthenticationMethods().getValue();
-        LOGGER.debug("Possible authentication methods: {}", possibleAuthenticationMethods);
+        LOGGER.debug(
+                "Possible authentication methods: {}",
+                () -> backslashEscapeString(possibleAuthenticationMethods));
         output.appendString(possibleAuthenticationMethods, StandardCharsets.US_ASCII);
     }
 

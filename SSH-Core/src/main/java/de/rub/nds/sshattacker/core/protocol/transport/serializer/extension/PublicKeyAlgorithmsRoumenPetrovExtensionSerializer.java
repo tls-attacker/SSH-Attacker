@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +37,7 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionSerializer
     private static void serializePublicKeyAlgorithms(
             PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
         String publicKeyAlgorithms = object.getPublicKeyAlgorithms().getValue();
-        LOGGER.debug("Public key algorithms: {}", publicKeyAlgorithms);
+        LOGGER.debug("Public key algorithms: {}", () -> backslashEscapeString(publicKeyAlgorithms));
         output.appendString(publicKeyAlgorithms, StandardCharsets.US_ASCII);
     }
 }

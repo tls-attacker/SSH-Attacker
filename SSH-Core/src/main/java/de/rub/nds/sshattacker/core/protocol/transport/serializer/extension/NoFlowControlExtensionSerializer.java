@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.NoFlowControlExtension;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +30,7 @@ public class NoFlowControlExtensionSerializer
         LOGGER.debug("Choice length: {}", versionLength);
         output.appendInt(versionLength);
         String choice = object.getChoice().getValue();
-        LOGGER.debug("Choice: {}", choice);
+        LOGGER.debug("Choice: {}", () -> backslashEscapeString(choice));
         output.appendString(choice, StandardCharsets.US_ASCII);
     }
 }

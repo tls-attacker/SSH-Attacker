@@ -34,7 +34,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
         LOGGER.debug("Description length: {}", descriptionLength);
         output.appendInt(descriptionLength);
         String description = object.getDescription().getValue();
-        LOGGER.debug("Description: {}", description);
+        LOGGER.debug("Description: {}", () -> backslashEscapeString(description));
         output.appendString(description, StandardCharsets.UTF_8);
     }
 

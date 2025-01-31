@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import jakarta.xml.bind.DatatypeConverter;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
@@ -76,16 +76,16 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 // X.509-Extensions
                 byte[] authorityKeyIdentifier = cert.getExtensionValue("2.5.29.35");
                 if (authorityKeyIdentifier != null) {
-                    String authorityKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(authorityKeyIdentifier);
-                    LOGGER.debug("Parsed Authority Key Identifier: {}", authorityKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Authority Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(authorityKeyIdentifier));
                 }
 
                 byte[] subjectKeyIdentifier = cert.getExtensionValue("2.5.29.14");
                 if (subjectKeyIdentifier != null) {
-                    String subjectKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(subjectKeyIdentifier);
-                    LOGGER.debug("Parsed Subject Key Identifier: {}", subjectKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Subject Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(subjectKeyIdentifier));
                 }
 
                 boolean[] keyUsage = cert.getKeyUsage();
