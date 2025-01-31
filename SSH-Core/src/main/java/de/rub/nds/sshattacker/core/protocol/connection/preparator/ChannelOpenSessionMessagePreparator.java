@@ -14,13 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelOpenSessionMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenSessionMessage> {
 
+    public ChannelOpenSessionMessagePreparator() {
+        super(ChannelType.SESSION);
+    }
+
     @Override
     public void prepareChannelOpenMessageSpecificContents(
-            ChannelOpenSessionMessage object, Chooser chooser) {
-        // TODO: I think it would be better to do this in ChannelOpenMessagePreparator, and pass
-        //  ChannelType as argument
-        // Always set correct channel type -> Don't use soft set
-        channel.setChannelType(ChannelType.SESSION);
-        object.setChannelType(channel.getChannelType(), true);
-    }
+            ChannelOpenSessionMessage object, Chooser chooser) {}
 }

@@ -28,7 +28,9 @@ public enum ChannelType {
     TUN_OPENSSH_COM("tun@openssh.com"),
     DIRECT_STREAMLOCAL_OPENSSH_COM("direct-streamlocal@openssh.com"),
     FORWARDED_STREAMLOCAL_OPENSSH_COM("forwarded-streamlocal@openssh.com"),
-    AUTH_AGENT_OPENSSH_COM("auth-agent@openssh.com");
+    AUTH_AGENT_OPENSSH_COM("auth-agent@openssh.com"),
+    // For internal ssh-attacker use
+    UNKNOWN(null);
 
     private final String name;
 
@@ -37,7 +39,9 @@ public enum ChannelType {
     static {
         Map<String, ChannelType> mutableMap = new TreeMap<>();
         for (ChannelType channelType : values()) {
-            mutableMap.put(channelType.name, channelType);
+            if (channelType.name != null) {
+                mutableMap.put(channelType.name, channelType);
+            }
         }
         map = Collections.unmodifiableMap(mutableMap);
     }
@@ -56,6 +60,9 @@ public enum ChannelType {
     }
 
     public static ChannelType fromName(String name) {
-        return map.get(name);
+        if (map.containsKey(name)) {
+            return map.get(name);
+        }
+        return UNKNOWN;
     }
 }

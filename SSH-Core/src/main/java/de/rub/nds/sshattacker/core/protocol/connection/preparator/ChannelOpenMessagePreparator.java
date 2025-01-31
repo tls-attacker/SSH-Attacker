@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
@@ -24,8 +25,15 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
 
     protected Channel channel;
 
-    protected ChannelOpenMessagePreparator() {
+    private final String channelType;
+
+    protected ChannelOpenMessagePreparator(ChannelType channelType) {
+        this(channelType.toString());
+    }
+
+    protected ChannelOpenMessagePreparator(String channelType) {
         super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
+        this.channelType = channelType;
     }
 
     @Override
@@ -42,7 +50,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         channel = channelManager.getChannelByLocalId(senderChannelId);
         if (channel != null) {
             LOGGER.warn(
-                    "Channel with id {} is already exists, reusing the existing channel object.",
+                    "Channel with id {} already exists, reusing the existing channel object.",
                     senderChannelId);
             if (channel.isOpen().getValue()) {
                 LOGGER.warn(
@@ -52,7 +60,9 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         } else {
             channel = channelManager.createPrendingChannel(senderChannelId);
         }
-        object.setSoftlyChannelType(channel.getChannelType(), true, chooser.getConfig());
+        channel.setChannelType(ChannelType.fromName(channelType));
+        // Always set correct channel type -> Don't use soft set
+        object.setChannelType(channelType, true);
         object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
         object.setSoftlyPacketSize(32768);
         prepareChannelOpenMessageSpecificContents(object, chooser);
