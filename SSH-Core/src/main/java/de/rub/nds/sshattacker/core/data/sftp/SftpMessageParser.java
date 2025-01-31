@@ -10,11 +10,15 @@ package de.rub.nds.sshattacker.core.data.sftp;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
+import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.*;
+import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestMessage;
 import de.rub.nds.sshattacker.core.data.sftp.parser.SftpInitMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.parser.SftpUnknownMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.parser.SftpVersionMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.parser.extended_request.*;
+import de.rub.nds.sshattacker.core.data.sftp.parser.extended_response.*;
 import de.rub.nds.sshattacker.core.data.sftp.parser.request.*;
 import de.rub.nds.sshattacker.core.data.sftp.parser.response.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
@@ -106,6 +110,8 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                             .parse();
                 case SSH_FXP_EXTENDED:
                     return handleExtendedRequestMessageParsing(raw, context);
+                case SSH_FXP_EXTENDED_REPLY:
+                    return handleExtendedResponseMessageParsing(raw, context);
                 default:
                     LOGGER.debug(
                             "Received unimplemented SFTP Message {} ({})",
@@ -169,6 +175,44 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 LOGGER.debug(
                         "Received unimplemented extended request message type: {}",
                         extendedRequestTypeString);
+                return message;
+        }
+    }
+
+    public static SftpMessage<?> handleExtendedResponseMessageParsing(
+            byte[] raw, SshContext context) {
+        SftpResponseUnknownMessage message = new SftpResponseUnknownMessageParser(raw).parse();
+        SftpRequestMessage<?> relatedRequest =
+                context.getSftpManager().removeRequestById(message.getRequestId().getValue());
+
+        if (!(relatedRequest instanceof SftpRequestExtendedMessage)) {
+            return message;
+        }
+        SftpRequestExtendedMessage<?> relatedExtendedRequest =
+                (SftpRequestExtendedMessage<?>) relatedRequest;
+
+        SftpExtension extendedResponseType =
+                SftpExtension.fromName(relatedExtendedRequest.getExtendedRequestName().getValue());
+        switch (extendedResponseType) {
+                // SFTP
+            case CHECK_FILE:
+            case CHECK_FILE_HANDLE:
+            case CHECK_FILE_NAME:
+                return new SftpResponseCheckFileMessageParser(raw).parse();
+            case SPACE_AVAILABLE:
+                return new SftpResponseSpaceAvailableMessageParser(raw).parse();
+                // Vendor extensions
+            case STAT_VFS_OPENSSH_COM:
+            case F_STAT_VFS_OPENSSH_COM:
+                return new SftpResponseStatVfsMessageParser(raw).parse();
+            case LIMITS:
+                return new SftpResponseLimitsMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID:
+                return new SftpResponseUsersGroupsByIdMessageParser(raw).parse();
+            default:
+                LOGGER.debug(
+                        "Received unimplemented extended response message type: {}",
+                        extendedResponseType);
                 return message;
         }
     }
