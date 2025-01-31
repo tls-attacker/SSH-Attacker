@@ -56,7 +56,8 @@ public class ChannelRequestX11MessageParser
                         message.getX11AuthenticationCookieLength().getValue(),
                         StandardCharsets.UTF_8));
         LOGGER.debug(
-                "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
+                "X11 authentication cookie: {}",
+                () -> message.getX11AuthenticationCookie().getValue());
     }
 
     private void parseX11ScreenNumber() {

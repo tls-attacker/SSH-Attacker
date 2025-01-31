@@ -19,18 +19,15 @@ public class PingExtensionSerializer extends AbstractExtensionSerializer<PingExt
 
     @Override
     protected void serializeExtensionValue(PingExtension object, SerializerStream output) {
-        serializeVersionLength(object, output);
         serializeVersion(object, output);
     }
 
-    private static void serializeVersionLength(PingExtension object, SerializerStream output) {
+    private static void serializeVersion(PingExtension object, SerializerStream output) {
         Integer versionLength = object.getVersionLength().getValue();
         LOGGER.debug("Version length: {}", versionLength);
         output.appendInt(versionLength);
-    }
-
-    private static void serializeVersion(PingExtension object, SerializerStream output) {
-        LOGGER.debug("Version: {}", object.getVersion().getValue());
-        output.appendString(object.getVersion().getValue(), StandardCharsets.US_ASCII);
+        String version = object.getVersion().getValue();
+        LOGGER.debug("Version: {}", version);
+        output.appendString(version, StandardCharsets.US_ASCII);
     }
 }

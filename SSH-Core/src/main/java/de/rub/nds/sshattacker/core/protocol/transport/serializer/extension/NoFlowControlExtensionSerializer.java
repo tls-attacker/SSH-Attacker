@@ -9,11 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.NoFlowControlExtension;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.nio.charset.StandardCharsets;
 
-public class NoFlowControlExtensionSerializer extends AbstractExtensionSerializer<NoFlowControlExtension> {
+public class NoFlowControlExtensionSerializer
+        extends AbstractExtensionSerializer<NoFlowControlExtension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,7 +27,8 @@ public class NoFlowControlExtensionSerializer extends AbstractExtensionSerialize
         Integer versionLength = object.getChoiceLength().getValue();
         LOGGER.debug("Choice length: {}", versionLength);
         output.appendInt(versionLength);
-        LOGGER.debug("Choice: {}", object.getChoice().getValue());
-        output.appendString(object.getChoice().getValue(), StandardCharsets.US_ASCII);
+        String choice = object.getChoice().getValue();
+        LOGGER.debug("Choice: {}", choice);
+        output.appendString(choice, StandardCharsets.US_ASCII);
     }
 }

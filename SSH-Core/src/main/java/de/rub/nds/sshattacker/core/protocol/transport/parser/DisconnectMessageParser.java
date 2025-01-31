@@ -41,7 +41,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
                     DisconnectReason.fromId(message.getReasonCode().getValue()).toString(),
                     message.getReasonCode().getValue());
         } else {
-            LOGGER.debug("Reason: [unknown] (Code: {})", message.getReasonCode().getValue());
+            LOGGER.debug("Reason: [unknown] (Code: {})", () -> message.getReasonCode().getValue());
         }
     }
 

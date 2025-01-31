@@ -24,20 +24,22 @@ public class VersionExchangeMessageSerializer
         if (object.getVersion().getValue().isEmpty()) {
             LOGGER.debug("Version: [none]");
         } else {
-            LOGGER.debug("Version: {}", object.getVersion().getValue());
-            output.appendString(object.getVersion().getValue(), StandardCharsets.US_ASCII);
+            String version = object.getVersion().getValue();
+            LOGGER.debug("Version: {}", version);
+            output.appendString(version, StandardCharsets.US_ASCII);
         }
     }
 
     private static void serializeComment(VersionExchangeMessage object, SerializerStream output) {
-        if (object.getComment().getValue().isEmpty()) {
+        String comment = object.getComment().getValue();
+        if (comment.isEmpty()) {
             LOGGER.debug("Comment: [none]");
         } else {
-            LOGGER.debug("Comment: {}", object.getComment().getValue());
             output.appendString(
                     String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR),
                     StandardCharsets.US_ASCII);
-            output.appendString(object.getComment().getValue(), StandardCharsets.US_ASCII);
+            LOGGER.debug("Comment: {}", comment);
+            output.appendString(comment, StandardCharsets.US_ASCII);
         }
     }
 

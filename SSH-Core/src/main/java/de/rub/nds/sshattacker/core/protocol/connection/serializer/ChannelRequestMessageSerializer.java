@@ -23,8 +23,9 @@ public class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
         Integer requestTypeLength = object.getRequestTypeLength().getValue();
         LOGGER.debug("Request type length: {}", requestTypeLength);
         output.appendInt(requestTypeLength);
-        LOGGER.debug("Request type: {}", object.getRequestType().getValue());
-        output.appendString(object.getRequestType().getValue(), StandardCharsets.US_ASCII);
+        String requestType = object.getRequestType().getValue();
+        LOGGER.debug("Request type: {}", requestType);
+        output.appendString(requestType, StandardCharsets.US_ASCII);
     }
 
     private void serializeWantReply(T object, SerializerStream output) {

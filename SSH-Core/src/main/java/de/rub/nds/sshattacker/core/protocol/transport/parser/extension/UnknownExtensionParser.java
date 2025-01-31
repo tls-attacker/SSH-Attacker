@@ -31,8 +31,9 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
 
     @Override
     protected void parseExtensionValue() {
-        extension.setValueLength(parseIntField());
-        extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
+        int valueLength = parseIntField();
+        extension.setValueLength(valueLength);
+        extension.setValue(parseArrayOrTillEnd(valueLength));
         LOGGER.debug(
                 "Extension value: {}",
                 () -> ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));

@@ -24,7 +24,7 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
     public void adjustContext(SshContext context, PingMessage object) {
         LOGGER.debug(
                 "PingMessage received from remote, data to respond length: {}",
-                object.getDataLength().getValue());
+                () -> object.getDataLength().getValue());
     }
 
     @Override

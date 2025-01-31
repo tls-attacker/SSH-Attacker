@@ -41,11 +41,11 @@ public class DelayCompressionExtensionSerializer
                 "Compression algorithms length (client to server): {}",
                 compressionMethodsClientToServerLength);
         output.appendInt(compressionMethodsClientToServerLength);
+        String compressionMethodsClientToServer =
+                object.getCompressionMethodsClientToServer().getValue();
         LOGGER.debug(
-                "Compression algorithms (client to server): {}",
-                object.getCompressionMethodsClientToServer().getValue());
-        output.appendString(
-                object.getCompressionMethodsClientToServer().getValue(), StandardCharsets.US_ASCII);
+                "Compression algorithms (client to server): {}", compressionMethodsClientToServer);
+        output.appendString(compressionMethodsClientToServer, StandardCharsets.US_ASCII);
     }
 
     private static void serializeCompressionMethodsServerToClient(
@@ -56,10 +56,10 @@ public class DelayCompressionExtensionSerializer
                 "Compression algorithms length (server to client): {}",
                 compressionMethodsServerToClientLength);
         output.appendInt(compressionMethodsServerToClientLength);
+        String compressionMethodsServerToClient =
+                object.getCompressionMethodsServerToClient().getValue();
         LOGGER.debug(
-                "Compression algorithms (server to client): {}",
-                object.getCompressionMethodsServerToClient().getValue());
-        output.appendString(
-                object.getCompressionMethodsServerToClient().getValue(), StandardCharsets.US_ASCII);
+                "Compression algorithms (server to client): {}", compressionMethodsServerToClient);
+        output.appendString(compressionMethodsServerToClient, StandardCharsets.US_ASCII);
     }
 }

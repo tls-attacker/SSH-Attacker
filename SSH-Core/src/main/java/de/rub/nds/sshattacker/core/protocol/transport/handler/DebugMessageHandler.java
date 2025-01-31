@@ -30,7 +30,7 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
         } else {
             LOGGER.debug(
                     "DebugMessage retrieved from remote, message: {}",
-                    object.getMessage().getValue());
+                    () -> object.getMessage().getValue());
         }
     }
 

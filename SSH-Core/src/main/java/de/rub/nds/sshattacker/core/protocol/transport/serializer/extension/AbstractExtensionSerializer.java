@@ -29,8 +29,9 @@ public abstract class AbstractExtensionSerializer<T extends AbstractExtension<T>
         Integer nameLength = object.getNameLength().getValue();
         LOGGER.debug("Extension name length: {}", nameLength);
         output.appendInt(nameLength);
-        LOGGER.debug("Extension name: {}", object.getName().getValue());
-        output.appendString(object.getName().getValue(), StandardCharsets.US_ASCII);
+        String name = object.getName().getValue();
+        LOGGER.debug("Extension name: {}", name);
+        output.appendString(name, StandardCharsets.US_ASCII);
     }
 
     protected abstract void serializeExtensionValue(T object, SerializerStream output);

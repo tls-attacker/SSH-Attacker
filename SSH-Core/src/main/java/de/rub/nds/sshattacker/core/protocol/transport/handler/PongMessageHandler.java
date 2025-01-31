@@ -24,7 +24,7 @@ public class PongMessageHandler extends SshMessageHandler<PongMessage> {
     public void adjustContext(SshContext context, PongMessage object) {
         LOGGER.debug(
                 "PongMessage received from remote, responded data length: {}",
-                object.getDataLength().getValue());
+                () -> object.getDataLength().getValue());
     }
 
     @Override

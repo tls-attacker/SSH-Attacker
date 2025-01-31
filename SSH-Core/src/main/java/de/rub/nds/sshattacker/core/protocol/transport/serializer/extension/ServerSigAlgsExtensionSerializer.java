@@ -35,10 +35,8 @@ public class ServerSigAlgsExtensionSerializer
 
     private static void serializeAcceptedPublicKeyAlgorithms(
             ServerSigAlgsExtension object, SerializerStream output) {
-        LOGGER.debug(
-                "Accepted public key algorithms: {}",
-                object.getAcceptedPublicKeyAlgorithms().getValue());
-        output.appendString(
-                object.getAcceptedPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+        String acceptedPublicKeyAlgorithms = object.getAcceptedPublicKeyAlgorithms().getValue();
+        LOGGER.debug("Accepted public key algorithms: {}", acceptedPublicKeyAlgorithms);
+        output.appendString(acceptedPublicKeyAlgorithms, StandardCharsets.US_ASCII);
     }
 }

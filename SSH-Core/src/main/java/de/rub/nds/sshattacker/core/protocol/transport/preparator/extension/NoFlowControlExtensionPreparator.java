@@ -10,10 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.NoFlowControlExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class NoFlowControlExtensionPreparator extends AbstractExtensionPreparator<NoFlowControlExtension> {
+public class NoFlowControlExtensionPreparator
+        extends AbstractExtensionPreparator<NoFlowControlExtension> {
 
     public NoFlowControlExtensionPreparator() {
         super(Extension.NO_FLOW_CONTROL);

@@ -26,11 +26,9 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
         LOGGER.debug(
                 "Possible authentication methods length: {}", possibleAuthenticationMethodsLength);
         output.appendInt(possibleAuthenticationMethodsLength);
-        LOGGER.debug(
-                "Possible authentication methods: {}",
-                object.getPossibleAuthenticationMethods().getValue());
-        output.appendString(
-                object.getPossibleAuthenticationMethods().getValue(), StandardCharsets.US_ASCII);
+        String possibleAuthenticationMethods = object.getPossibleAuthenticationMethods().getValue();
+        LOGGER.debug("Possible authentication methods: {}", possibleAuthenticationMethods);
+        output.appendString(possibleAuthenticationMethods, StandardCharsets.US_ASCII);
     }
 
     private static void serializePartialSuccess(

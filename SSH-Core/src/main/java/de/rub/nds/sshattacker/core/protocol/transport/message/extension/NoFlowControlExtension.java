@@ -83,8 +83,7 @@ public class NoFlowControlExtension extends AbstractExtension<NoFlowControlExten
             if (config.getAlwaysPrepareLengthFields()
                     || choiceLength == null
                     || choiceLength.getOriginalValue() == null) {
-                setChoiceLength(
-                        this.choice.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                setChoiceLength(this.choice.getValue().getBytes(StandardCharsets.US_ASCII).length);
             }
         }
     }

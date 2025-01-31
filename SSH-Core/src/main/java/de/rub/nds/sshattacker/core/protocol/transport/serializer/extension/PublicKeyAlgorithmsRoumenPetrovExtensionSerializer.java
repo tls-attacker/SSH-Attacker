@@ -34,7 +34,8 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionSerializer
 
     private static void serializePublicKeyAlgorithms(
             PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
-        LOGGER.debug("Public key algorithms: {}", object.getPublicKeyAlgorithms().getValue());
-        output.appendString(object.getPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+        String publicKeyAlgorithms = object.getPublicKeyAlgorithms().getValue();
+        LOGGER.debug("Public key algorithms: {}", publicKeyAlgorithms);
+        output.appendString(publicKeyAlgorithms, StandardCharsets.US_ASCII);
     }
 }

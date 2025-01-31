@@ -23,8 +23,9 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
         Integer channelTypeLength = object.getChannelTypeLength().getValue();
         LOGGER.debug("Channel type length: {}", channelTypeLength);
         output.appendInt(channelTypeLength);
-        LOGGER.debug("Channel type: {}", object.getChannelType().getValue());
-        output.appendString(object.getChannelType().getValue(), StandardCharsets.US_ASCII);
+        String channelType = object.getChannelType().getValue();
+        LOGGER.debug("Channel type: {}", channelType);
+        output.appendString(channelType, StandardCharsets.US_ASCII);
     }
 
     private void serializeSenderChannel(T object, SerializerStream output) {

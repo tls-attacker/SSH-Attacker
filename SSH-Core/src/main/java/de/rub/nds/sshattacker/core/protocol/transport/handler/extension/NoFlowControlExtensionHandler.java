@@ -15,7 +15,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NoFlowControlExtensionHandler extends AbstractExtensionHandler<NoFlowControlExtension> {
+public class NoFlowControlExtensionHandler
+        extends AbstractExtensionHandler<NoFlowControlExtension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,11 +32,14 @@ public class NoFlowControlExtensionHandler extends AbstractExtensionHandler<NoFl
     }
 
     @Override
-    public NoFlowControlExtensionParser getParser(byte[] array, int startPosition, SshContext context) {
+    public NoFlowControlExtensionParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new NoFlowControlExtensionParser(array, startPosition);
     }
 
-    public static final NoFlowControlExtensionPreparator PREPARATOR = new NoFlowControlExtensionPreparator();
+    public static final NoFlowControlExtensionPreparator PREPARATOR =
+            new NoFlowControlExtensionPreparator();
 
-    public static final NoFlowControlExtensionSerializer SERIALIZER = new NoFlowControlExtensionSerializer();
+    public static final NoFlowControlExtensionSerializer SERIALIZER =
+            new NoFlowControlExtensionSerializer();
 }

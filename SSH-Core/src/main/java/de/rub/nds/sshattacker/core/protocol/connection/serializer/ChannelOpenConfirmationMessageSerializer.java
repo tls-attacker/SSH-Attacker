@@ -33,8 +33,9 @@ public class ChannelOpenConfirmationMessageSerializer
 
     private static void serializePacketSize(
             ChannelOpenConfirmationMessage object, SerializerStream output) {
-        LOGGER.debug("Maximum packet size: {}", object.getWindowSize().getValue());
-        output.appendInt(object.getPacketSize().getValue());
+        Integer packetSize = object.getPacketSize().getValue();
+        LOGGER.debug("Maximum packet size: {}", packetSize);
+        output.appendInt(packetSize);
     }
 
     @Override

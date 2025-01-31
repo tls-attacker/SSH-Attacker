@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,9 +24,9 @@ public class DhKeyExchangeInitMessageSerializer
         Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
         output.appendInt(ephemeralPublicKeyLength);
-        LOGGER.debug(
-                "Ephemeral public key (client): {}", object.getEphemeralPublicKey().getValue());
-        output.appendBytes(object.getEphemeralPublicKey().getValue().toByteArray());
+        BigInteger ephemeralPublicKey = object.getEphemeralPublicKey().getValue();
+        LOGGER.debug("Ephemeral public key (client): {}", ephemeralPublicKey);
+        output.appendBytes(ephemeralPublicKey.toByteArray());
     }
 
     @Override

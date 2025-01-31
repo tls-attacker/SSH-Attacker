@@ -30,8 +30,9 @@ public class UserAuthPasswordMessageSerializer
         Integer passwordLength = object.getPasswordLength().getValue();
         LOGGER.debug("Password length: {}", passwordLength);
         output.appendInt(passwordLength);
-        LOGGER.debug("Password: {}", object.getPassword().getValue());
-        output.appendString(object.getPassword().getValue(), StandardCharsets.UTF_8);
+        String password = object.getPassword().getValue();
+        LOGGER.debug("Password: {}", password);
+        output.appendString(password, StandardCharsets.UTF_8);
     }
 
     private static void serializeNewPassword(
@@ -39,8 +40,9 @@ public class UserAuthPasswordMessageSerializer
         Integer newPasswordLength = object.getNewPasswordLength().getValue();
         LOGGER.debug("New password length: {}", newPasswordLength);
         output.appendInt(newPasswordLength);
-        LOGGER.debug("New password: {}", object.getNewPassword().getValue());
-        output.appendString(object.getNewPassword().getValue(), StandardCharsets.UTF_8);
+        String newPassword = object.getNewPassword().getValue();
+        LOGGER.debug("New password: {}", newPassword);
+        output.appendString(newPassword, StandardCharsets.UTF_8);
     }
 
     @Override

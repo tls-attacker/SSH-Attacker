@@ -29,26 +29,19 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
         return new ServerSigAlgsExtension();
     }
 
-    private void parseAcceptedPublicKeyAlgorithmsLength() {
+    private void parseAcceptedPublicKeyAlgorithms() {
         int acceptedPublicKeyAlgorithmsLength = parseIntField();
         extension.setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength);
         LOGGER.debug(
                 "Accepted public key algorithms length: {}", acceptedPublicKeyAlgorithmsLength);
-    }
-
-    private void parseAcceptedPublicKeyAlgorithms() {
-        extension.setAcceptedPublicKeyAlgorithms(
-                parseByteString(
-                        extension.getAcceptedPublicKeyAlgorithmsLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Accepted public key algorithms: {}",
-                extension.getAcceptedPublicKeyAlgorithms().getValue());
+        String acceptedPublicKeyAlgorithms =
+                parseByteString(acceptedPublicKeyAlgorithmsLength, StandardCharsets.US_ASCII);
+        extension.setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms);
+        LOGGER.debug("Accepted public key algorithms: {}", acceptedPublicKeyAlgorithms);
     }
 
     @Override
     protected void parseExtensionValue() {
-        parseAcceptedPublicKeyAlgorithmsLength();
         parseAcceptedPublicKeyAlgorithms();
     }
 }

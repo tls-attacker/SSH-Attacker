@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,9 +35,9 @@ public class DhKeyExchangeReplyMessageSerializer
         Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
         LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
         output.appendInt(ephemeralPublicKeyLength);
-        output.appendBytes(object.getEphemeralPublicKey().getValue().toByteArray());
-        LOGGER.debug(
-                "Ephemeral public key (server): {}", object.getEphemeralPublicKey().getValue());
+        BigInteger ephemeralPublicKey = object.getEphemeralPublicKey().getValue();
+        LOGGER.debug("Ephemeral public key (server): {}", ephemeralPublicKey);
+        output.appendBytes(ephemeralPublicKey.toByteArray());
     }
 
     private static void serializeSignature(

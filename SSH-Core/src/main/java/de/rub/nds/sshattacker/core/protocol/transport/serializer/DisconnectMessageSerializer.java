@@ -33,8 +33,9 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
         Integer descriptionLength = object.getDescriptionLength().getValue();
         LOGGER.debug("Description length: {}", descriptionLength);
         output.appendInt(descriptionLength);
-        LOGGER.debug("Description: {}", object.getDescription().getValue());
-        output.appendString(object.getDescription().getValue(), StandardCharsets.UTF_8);
+        String description = object.getDescription().getValue();
+        LOGGER.debug("Description: {}", description);
+        output.appendString(description, StandardCharsets.UTF_8);
     }
 
     private static void serializeLanguageTag(DisconnectMessage object, SerializerStream output) {

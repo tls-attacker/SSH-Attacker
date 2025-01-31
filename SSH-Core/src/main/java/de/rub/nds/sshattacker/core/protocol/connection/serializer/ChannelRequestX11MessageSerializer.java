@@ -20,8 +20,9 @@ public class ChannelRequestX11MessageSerializer
 
     private static void serializeSingleConnection(
             ChannelRequestX11Message object, SerializerStream output) {
-        LOGGER.debug("Single connection: {}", object.getSingleConnection().getValue());
-        output.appendByte(object.getSingleConnection().getValue());
+        byte singleConnection = object.getSingleConnection().getValue();
+        LOGGER.debug("Single connection: {}", singleConnection);
+        output.appendByte(singleConnection);
     }
 
     private static void serializeX11AuthenticationProtocol(
@@ -30,11 +31,9 @@ public class ChannelRequestX11MessageSerializer
                 object.getX11AuthenticationProtocolLength().getValue();
         LOGGER.debug("X11 authentication protocol length: {}", x11AuthenticationProtocolLength);
         output.appendInt(x11AuthenticationProtocolLength);
-        LOGGER.debug(
-                "X11 authentication protocol: {}",
-                object.getX11AuthenticationProtocol().getValue());
-        output.appendString(
-                object.getX11AuthenticationProtocol().getValue(), StandardCharsets.UTF_8);
+        String x11AuthenticationProtocol = object.getX11AuthenticationProtocol().getValue();
+        LOGGER.debug("X11 authentication protocol: {}", x11AuthenticationProtocol);
+        output.appendString(x11AuthenticationProtocol, StandardCharsets.UTF_8);
     }
 
     private static void serializeX11AuthenticationCookie(
@@ -43,9 +42,9 @@ public class ChannelRequestX11MessageSerializer
                 object.getX11AuthenticationCookieLength().getValue();
         LOGGER.debug("X11 authenticaton cookie length: {}", x11AuthenticationCookieLength);
         output.appendInt(x11AuthenticationCookieLength);
-        LOGGER.debug(
-                "X11 authentication cookie: {}", object.getX11AuthenticationCookie().getValue());
-        output.appendString(object.getX11AuthenticationCookie().getValue(), StandardCharsets.UTF_8);
+        String x11AuthenticationCookie = object.getX11AuthenticationCookie().getValue();
+        LOGGER.debug("X11 authentication cookie: {}", x11AuthenticationCookie);
+        output.appendString(x11AuthenticationCookie, StandardCharsets.UTF_8);
     }
 
     private static void serializeX11ScreenNumber(

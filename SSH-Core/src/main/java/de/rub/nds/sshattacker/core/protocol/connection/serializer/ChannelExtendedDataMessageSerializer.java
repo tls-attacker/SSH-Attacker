@@ -21,11 +21,10 @@ public class ChannelExtendedDataMessageSerializer
 
     private static void serializeDataTypeCode(
             ChannelExtendedDataMessage object, SerializerStream output) {
-        LOGGER.debug("Data type code: {}", object.getDataTypeCode().getValue());
-        LOGGER.debug(
-                "Data type: {}",
-                ExtendedChannelDataType.fromDataTypeCode(object.getDataTypeCode().getValue()));
-        output.appendInt(object.getDataTypeCode().getValue());
+        int dataTypeCode = object.getDataTypeCode().getValue();
+        LOGGER.debug("Data type code: {}", dataTypeCode);
+        LOGGER.debug("Data type: {}", ExtendedChannelDataType.fromDataTypeCode(dataTypeCode));
+        output.appendInt(dataTypeCode);
     }
 
     private static void serializeData(ChannelExtendedDataMessage object, SerializerStream output) {

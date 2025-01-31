@@ -21,11 +21,12 @@ public class ChannelRequestPtyMessageSerializer
 
     private static void serializeTermEnvVariable(
             ChannelRequestPtyMessage object, SerializerStream output) {
-        LOGGER.debug(
-                "TERM environment variable length: {}", object.getTermEnvVariable().getValue());
-        output.appendInt(object.getTermEnvVariableLength().getValue());
-        LOGGER.debug("TERM environment variable: {}", object.getTermEnvVariable().getValue());
-        output.appendString(object.getTermEnvVariable().getValue(), StandardCharsets.UTF_8);
+        Integer termEnvVariableLength = object.getTermEnvVariableLength().getValue();
+        LOGGER.debug("TERM environment variable length: {}", termEnvVariableLength);
+        output.appendInt(termEnvVariableLength);
+        String termEnvVariable = object.getTermEnvVariable().getValue();
+        LOGGER.debug("TERM environment variable: {}", termEnvVariable);
+        output.appendString(termEnvVariable, StandardCharsets.UTF_8);
     }
 
     private static void serializeWidthCharacters(

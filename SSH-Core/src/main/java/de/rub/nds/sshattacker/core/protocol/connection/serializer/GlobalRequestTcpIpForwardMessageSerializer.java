@@ -23,8 +23,9 @@ public class GlobalRequestTcpIpForwardMessageSerializer
         Integer ipAddressToBindLength = object.getIpAddressToBindLength().getValue();
         LOGGER.debug("IP address to bind length: {}", ipAddressToBindLength);
         output.appendInt(ipAddressToBindLength);
-        LOGGER.debug("IP address to bind: {}", object.getIpAddressToBind().getValue());
-        output.appendString(object.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
+        String ipAddressToBind = object.getIpAddressToBind().getValue();
+        LOGGER.debug("IP address to bind: {}", ipAddressToBind);
+        output.appendString(ipAddressToBind, StandardCharsets.US_ASCII);
     }
 
     private static void serializePortToBind(
