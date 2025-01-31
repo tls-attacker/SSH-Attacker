@@ -302,12 +302,13 @@ public class Config implements Serializable {
     /** List of extensions supported by the client */
     @XmlElementWrapper
     @XmlElements({
-        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = NoFlowControlExtension.class, name = "NoFlowControlExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
         @XmlElement(
                 type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private ArrayList<AbstractExtension<?>> clientSupportedExtensions;
@@ -315,12 +316,13 @@ public class Config implements Serializable {
     /** List of extensions supported by the server */
     @XmlElementWrapper
     @XmlElements({
-        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = NoFlowControlExtension.class, name = "NoFlowControlExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
         @XmlElement(
                 type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private ArrayList<AbstractExtension<?>> serverSupportedExtensions;

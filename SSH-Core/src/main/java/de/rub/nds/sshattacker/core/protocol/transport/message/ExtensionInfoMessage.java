@@ -29,12 +29,13 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements({
-        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = NoFlowControlExtension.class, name = "NoFlowControlExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
         @XmlElement(
                 type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
                 name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private ArrayList<AbstractExtension<?>> extensions = new ArrayList<>();
