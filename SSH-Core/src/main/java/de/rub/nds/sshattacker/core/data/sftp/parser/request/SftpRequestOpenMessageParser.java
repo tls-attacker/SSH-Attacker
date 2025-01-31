@@ -34,10 +34,10 @@ public class SftpRequestOpenMessageParser
         return new SftpRequestOpenMessage();
     }
 
-    private void parsePFlags() {
-        int pFlags = parseIntField();
-        message.setOpenFlags(pFlags);
-        LOGGER.debug("PFlags: {}", pFlags);
+    private void parseOpenFlags() {
+        int openFlags = parseIntField();
+        message.setOpenFlags(openFlags);
+        LOGGER.debug("OpenFlags: {}", openFlags);
     }
 
     private void parseAttributes() {
@@ -49,7 +49,7 @@ public class SftpRequestOpenMessageParser
 
     @Override
     protected void parseRequestWithPathSpecificContents() {
-        parsePFlags();
+        parseOpenFlags();
         parseAttributes();
     }
 }

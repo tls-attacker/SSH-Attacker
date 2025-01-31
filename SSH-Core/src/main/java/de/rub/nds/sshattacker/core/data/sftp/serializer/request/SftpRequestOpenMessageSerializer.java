@@ -17,10 +17,10 @@ public class SftpRequestOpenMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static void serializePFlags(SftpRequestOpenMessage object, SerializerStream output) {
-        Integer pFlags = object.getOpenFlags().getValue();
-        LOGGER.debug("PFlags: {}", pFlags);
-        output.appendInt(pFlags);
+    private static void serializeOpenFlags(SftpRequestOpenMessage object, SerializerStream output) {
+        Integer openFlags = object.getOpenFlags().getValue();
+        LOGGER.debug("OpenFlags: {}", openFlags);
+        output.appendInt(openFlags);
     }
 
     private static void serializeAttributes(
@@ -31,7 +31,7 @@ public class SftpRequestOpenMessageSerializer
     @Override
     protected void serializeRequestWithPathSpecificContents(
             SftpRequestOpenMessage object, SerializerStream output) {
-        serializePFlags(object, output);
+        serializeOpenFlags(object, output);
         serializeAttributes(object, output);
     }
 }
