@@ -36,7 +36,7 @@ public class SftpRequestOpenMessageParser
 
     private void parsePFlags() {
         int pFlags = parseIntField();
-        message.setPFlags(pFlags);
+        message.setOpenFlags(pFlags);
         LOGGER.debug("PFlags: {}", pFlags);
     }
 

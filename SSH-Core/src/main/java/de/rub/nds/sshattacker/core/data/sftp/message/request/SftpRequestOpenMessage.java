@@ -23,7 +23,7 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
     // path is the filename
 
     // TODO: SFTPv5 adds desired-access bitmask and attribute field
-    private ModifiableInteger pFlags;
+    private ModifiableInteger openFlags;
 
     @HoldsModifiableVariable private SftpFileAttributes attributes = new SftpFileAttributes();
 
@@ -33,7 +33,7 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
 
     public SftpRequestOpenMessage(SftpRequestOpenMessage other) {
         super(other);
-        pFlags = other.pFlags != null ? other.pFlags.createCopy() : null;
+        openFlags = other.openFlags != null ? other.openFlags.createCopy() : null;
         attributes = other.attributes != null ? other.attributes.createCopy() : null;
     }
 
@@ -42,30 +42,30 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
         return new SftpRequestOpenMessage(this);
     }
 
-    public ModifiableInteger getPFlags() {
-        return pFlags;
+    public ModifiableInteger getOpenFlags() {
+        return openFlags;
     }
 
-    public void setPFlags(ModifiableInteger pFlags) {
-        this.pFlags = pFlags;
+    public void setOpenFlags(ModifiableInteger openFlags) {
+        this.openFlags = openFlags;
     }
 
-    public void setPFlags(int pFlags) {
-        this.pFlags = ModifiableVariableFactory.safelySetValue(this.pFlags, pFlags);
+    public void setOpenFlags(int openFlags) {
+        this.openFlags = ModifiableVariableFactory.safelySetValue(this.openFlags, openFlags);
     }
 
-    public void setSoftlyPFlags(int pFlags) {
-        if (this.pFlags == null || this.pFlags.getOriginalValue() == null) {
-            this.pFlags = ModifiableVariableFactory.safelySetValue(this.pFlags, pFlags);
+    public void setSoftlyOpenFlags(int openFlags) {
+        if (this.openFlags == null || this.openFlags.getOriginalValue() == null) {
+            this.openFlags = ModifiableVariableFactory.safelySetValue(this.openFlags, openFlags);
         }
     }
 
-    public void setPFlags(SftpFileOpenFlag... fileOpenFlags) {
-        setPFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
+    public void setOpenFlags(SftpFileOpenFlag... fileOpenFlags) {
+        setOpenFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
     }
 
-    public void setSoftlyPFlags(SftpFileOpenFlag... fileOpenFlags) {
-        setSoftlyPFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
+    public void setSoftlyOpenFlags(SftpFileOpenFlag... fileOpenFlags) {
+        setSoftlyOpenFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
     }
 
     public SftpFileAttributes getAttributes() {

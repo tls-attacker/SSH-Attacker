@@ -18,7 +18,7 @@ public class SftpRequestOpenMessageSerializer
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static void serializePFlags(SftpRequestOpenMessage object, SerializerStream output) {
-        Integer pFlags = object.getPFlags().getValue();
+        Integer pFlags = object.getOpenFlags().getValue();
         LOGGER.debug("PFlags: {}", pFlags);
         output.appendInt(pFlags);
     }

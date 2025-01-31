@@ -23,7 +23,7 @@ public class SftpRequestOpenMessagePreparator
     public void prepareRequestSpecificContents(SftpRequestOpenMessage object, Chooser chooser) {
         object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        object.setSoftlyPFlags(SftpFileOpenFlag.SSH_FXF_READ);
+        object.setSoftlyOpenFlags(SftpFileOpenFlag.SSH_FXF_READ, SftpFileOpenFlag.SSH_FXF_CREAT);
 
         object.getAttributes().prepare(chooser);
     }
