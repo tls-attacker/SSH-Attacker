@@ -45,9 +45,7 @@ public class SftpRequestTextSeekMessage
     }
 
     public void setSoftlyLineNumber(long lineNumber) {
-        if (this.lineNumber == null || this.lineNumber.getOriginalValue() == null) {
-            this.lineNumber = ModifiableVariableFactory.safelySetValue(this.lineNumber, lineNumber);
-        }
+        this.lineNumber = ModifiableVariableFactory.softlySetValue(this.lineNumber, lineNumber);
     }
 
     public static final SftpRequestTextSeekMessageHandler HANDLER =

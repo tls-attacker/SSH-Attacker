@@ -72,9 +72,7 @@ public abstract class SftpRequestExtendedWithPathMessage<
     }
 
     public void setSoftlyPath(String path, boolean adjustLengthField, Config config) {
-        if (this.path == null || this.path.getOriginalValue() == null) {
-            this.path = ModifiableVariableFactory.safelySetValue(this.path, path);
-        }
+        this.path = ModifiableVariableFactory.softlySetValue(this.path, path);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || pathLength == null

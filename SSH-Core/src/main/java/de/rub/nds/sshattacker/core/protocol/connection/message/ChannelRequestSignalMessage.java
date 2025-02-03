@@ -84,9 +84,7 @@ public class ChannelRequestSignalMessage extends ChannelRequestMessage<ChannelRe
     }
 
     public void setSoftlySignalName(String signalName, boolean adjustLengthField, Config config) {
-        if (this.signalName == null || this.signalName.getOriginalValue() == null) {
-            this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
-        }
+        this.signalName = ModifiableVariableFactory.softlySetValue(this.signalName, signalName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || signalNameLength == null

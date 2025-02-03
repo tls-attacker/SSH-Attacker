@@ -89,12 +89,9 @@ public abstract class SftpRequestExtendedMessage<T extends SftpRequestExtendedMe
 
     public void setSoftlyExtendedRequestName(
             String extendedRequestName, boolean adjustLengthField, Config config) {
-        if (this.extendedRequestName == null
-                || this.extendedRequestName.getOriginalValue() == null) {
-            this.extendedRequestName =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.extendedRequestName, extendedRequestName);
-        }
+        this.extendedRequestName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.extendedRequestName, extendedRequestName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || extendedRequestNameLength == null

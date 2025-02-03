@@ -52,10 +52,8 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     }
 
     public void setSoftlyDataTypeCode(int dataTypeCode) {
-        if (this.dataTypeCode == null || this.dataTypeCode.getOriginalValue() == null) {
-            this.dataTypeCode =
-                    ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
-        }
+        this.dataTypeCode =
+                ModifiableVariableFactory.softlySetValue(this.dataTypeCode, dataTypeCode);
     }
 
     public void setDataTypeCode(ExtendedChannelDataType dataType) {
@@ -101,9 +99,7 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     }
 
     public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        if (this.data == null || this.data.getOriginalValue() == null) {
-            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
-        }
+        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || dataLength == null

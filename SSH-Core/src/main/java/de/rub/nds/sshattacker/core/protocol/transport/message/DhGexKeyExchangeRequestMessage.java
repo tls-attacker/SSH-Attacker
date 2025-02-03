@@ -54,13 +54,9 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     }
 
     public void setSoftlyMinimalGroupSize(int minimalGroupSize, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.minimalGroupSize == null
-                || this.minimalGroupSize.getOriginalValue() == null) {
-            this.minimalGroupSize =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.minimalGroupSize, minimalGroupSize);
-        }
+        this.minimalGroupSize =
+                ModifiableVariableFactory.softlySetValue(
+                        this.minimalGroupSize, minimalGroupSize, config.getAlwaysPrepareKex());
     }
 
     public ModifiableInteger getPreferredGroupSize() {
@@ -78,13 +74,9 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     }
 
     public void setSoftlyPreferredGroupSize(int preferredGroupSize, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.preferredGroupSize == null
-                || this.preferredGroupSize.getOriginalValue() == null) {
-            this.preferredGroupSize =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.preferredGroupSize, preferredGroupSize);
-        }
+        this.preferredGroupSize =
+                ModifiableVariableFactory.softlySetValue(
+                        this.preferredGroupSize, preferredGroupSize, config.getAlwaysPrepareKex());
     }
 
     public ModifiableInteger getMaximalGroupSize() {
@@ -101,13 +93,9 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     }
 
     public void setSoftlyMaximalGroupSize(int maximalGroupSize, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.maximalGroupSize == null
-                || this.maximalGroupSize.getOriginalValue() == null) {
-            this.maximalGroupSize =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.maximalGroupSize, maximalGroupSize);
-        }
+        this.maximalGroupSize =
+                ModifiableVariableFactory.softlySetValue(
+                        this.maximalGroupSize, maximalGroupSize, config.getAlwaysPrepareKex());
     }
 
     public static final DhGexKeyExchangeRequestMessageHandler HANDLER =

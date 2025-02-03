@@ -52,12 +52,9 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     }
 
     public void setSoftlySenderChannelId(int senderChannelId, Config config) {
-        if (config.getAlwaysPrepareChannelIds()
-                || this.senderChannelId == null
-                || this.senderChannelId.getOriginalValue() == null) {
-            this.senderChannelId =
-                    ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
-        }
+        this.senderChannelId =
+                ModifiableVariableFactory.softlySetValue(
+                        this.senderChannelId, senderChannelId, config.getAlwaysPrepareChannelIds());
     }
 
     public ModifiableInteger getWindowSize() {
@@ -73,9 +70,7 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     }
 
     public void setSoftlyWindowSize(int windowSize) {
-        if (this.windowSize == null || this.windowSize.getOriginalValue() == null) {
-            this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
-        }
+        this.windowSize = ModifiableVariableFactory.softlySetValue(this.windowSize, windowSize);
     }
 
     public ModifiableInteger getPacketSize() {
@@ -91,9 +86,7 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     }
 
     public void setSoftlyPacketSize(int packetSize) {
-        if (this.packetSize == null || this.packetSize.getOriginalValue() == null) {
-            this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-        }
+        this.packetSize = ModifiableVariableFactory.softlySetValue(this.packetSize, packetSize);
     }
 
     public static final ChannelOpenConfirmationMessageHandler HANDLER =

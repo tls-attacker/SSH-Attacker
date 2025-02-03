@@ -121,13 +121,10 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
             boolean adjustLengthField,
             Config config) {
 
-        if (this.acceptedPublicKeyAlgorithms == null
-                || this.acceptedPublicKeyAlgorithms.getOriginalValue() == null) {
-            this.acceptedPublicKeyAlgorithms =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.acceptedPublicKeyAlgorithms,
-                            Converter.listOfNamesToString(acceptedPublicKeyAlgorithms));
-        }
+        this.acceptedPublicKeyAlgorithms =
+                ModifiableVariableFactory.softlySetValue(
+                        this.acceptedPublicKeyAlgorithms,
+                        Converter.listOfNamesToString(acceptedPublicKeyAlgorithms));
 
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()

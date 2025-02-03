@@ -46,10 +46,8 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
     }
 
     public void setSoftlySequenceNumber(int sequenceNumber) {
-        if (this.sequenceNumber == null || this.sequenceNumber.getOriginalValue() == null) {
-            this.sequenceNumber =
-                    ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
-        }
+        this.sequenceNumber =
+                ModifiableVariableFactory.softlySetValue(this.sequenceNumber, sequenceNumber);
     }
 
     public static final UnimplementedMessageHandler HANDLER = new UnimplementedMessageHandler();

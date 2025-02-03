@@ -102,13 +102,11 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     public void setSoftlyConcatenatedHybridKeys(
             byte[] concatenatedHybridKeys, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.concatenatedHybridKeys == null
-                || this.concatenatedHybridKeys.getOriginalValue() == null) {
-            this.concatenatedHybridKeys =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.concatenatedHybridKeys, concatenatedHybridKeys);
-        }
+        this.concatenatedHybridKeys =
+                ModifiableVariableFactory.softlySetValue(
+                        this.concatenatedHybridKeys,
+                        concatenatedHybridKeys,
+                        config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || concatenatedHybridKeysLength == null
@@ -151,12 +149,9 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
 
     public void setSoftlyCertificatePublicKeyData(
             byte[] certificatePublicKeyData, boolean adjustLengthField, Config config) {
-        if (this.certificatePublicKeyData == null
-                || this.certificatePublicKeyData.getOriginalValue() == null) {
-            this.certificatePublicKeyData =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.certificatePublicKeyData, certificatePublicKeyData);
-        }
+        this.certificatePublicKeyData =
+                ModifiableVariableFactory.softlySetValue(
+                        this.certificatePublicKeyData, certificatePublicKeyData);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || certificatePublicKeyDataLength == null

@@ -92,9 +92,7 @@ public class SftpRequestVendorIdMessage
     }
 
     public void setSoftlyVendorName(String vendorName, boolean adjustLengthField, Config config) {
-        if (this.vendorName == null || this.vendorName.getOriginalValue() == null) {
-            this.vendorName = ModifiableVariableFactory.safelySetValue(this.vendorName, vendorName);
-        }
+        this.vendorName = ModifiableVariableFactory.softlySetValue(this.vendorName, vendorName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || vendorNameLength == null
@@ -146,10 +144,7 @@ public class SftpRequestVendorIdMessage
     }
 
     public void setSoftlyProductName(String productName, boolean adjustLengthField, Config config) {
-        if (this.productName == null || this.productName.getOriginalValue() == null) {
-            this.productName =
-                    ModifiableVariableFactory.safelySetValue(this.productName, productName);
-        }
+        this.productName = ModifiableVariableFactory.softlySetValue(this.productName, productName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || productNameLength == null
@@ -205,10 +200,8 @@ public class SftpRequestVendorIdMessage
 
     public void setSoftlyProductVersion(
             String productVersion, boolean adjustLengthField, Config config) {
-        if (this.productVersion == null || this.productVersion.getOriginalValue() == null) {
-            this.productVersion =
-                    ModifiableVariableFactory.safelySetValue(this.productVersion, productVersion);
-        }
+        this.productVersion =
+                ModifiableVariableFactory.softlySetValue(this.productVersion, productVersion);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || productVersionLength == null
@@ -234,11 +227,9 @@ public class SftpRequestVendorIdMessage
     }
 
     public void setSoftlyProductBuildNumber(long productBuildNumber) {
-        if (this.productBuildNumber == null || this.productBuildNumber.getOriginalValue() == null) {
-            this.productBuildNumber =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.productBuildNumber, productBuildNumber);
-        }
+        this.productBuildNumber =
+                ModifiableVariableFactory.softlySetValue(
+                        this.productBuildNumber, productBuildNumber);
     }
 
     public static final SftpRequestVendorIdMessageHandler HANDLER =

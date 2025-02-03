@@ -86,12 +86,9 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
 
     public void setSoftlyGroupModulus(
             BigInteger groupModulus, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.groupModulus == null
-                || this.groupModulus.getOriginalValue() == null) {
-            this.groupModulus =
-                    ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
-        }
+        this.groupModulus =
+                ModifiableVariableFactory.softlySetValue(
+                        this.groupModulus, groupModulus, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || groupModulusLength == null
@@ -144,12 +141,9 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
 
     public void setSoftlyGroupGenerator(
             BigInteger groupGenerator, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.groupGenerator == null
-                || this.groupGenerator.getOriginalValue() == null) {
-            this.groupGenerator =
-                    ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
-        }
+        this.groupGenerator =
+                ModifiableVariableFactory.softlySetValue(
+                        this.groupGenerator, groupGenerator, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || groupGeneratorLength == null

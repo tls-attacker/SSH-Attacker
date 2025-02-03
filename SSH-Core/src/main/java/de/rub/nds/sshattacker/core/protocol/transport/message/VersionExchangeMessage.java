@@ -51,9 +51,7 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     public void setSoftlyVersion(String version) {
-        if (this.version == null || this.version.getOriginalValue() == null) {
-            this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
-        }
+        this.version = ModifiableVariableFactory.softlySetValue(this.version, version);
     }
 
     public ModifiableString getComment() {
@@ -69,9 +67,7 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     public void setSoftlyComment(String comment) {
-        if (this.comment == null || this.comment.getOriginalValue() == null) {
-            this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
-        }
+        this.comment = ModifiableVariableFactory.softlySetValue(this.comment, comment);
     }
 
     public String getIdentification() {
@@ -94,12 +90,9 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     public void setSoftlyEndOfMessageSequence(String endOfMessageSequence) {
-        if (this.endOfMessageSequence == null
-                || this.endOfMessageSequence.getOriginalValue() == null) {
-            this.endOfMessageSequence =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.endOfMessageSequence, endOfMessageSequence);
-        }
+        this.endOfMessageSequence =
+                ModifiableVariableFactory.softlySetValue(
+                        this.endOfMessageSequence, endOfMessageSequence);
     }
 
     public static final VersionExchangeMessageHandler HANDLER = new VersionExchangeMessageHandler();

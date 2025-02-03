@@ -50,9 +50,7 @@ public class SftpIdEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyId(int id) {
-        if (this.id == null || this.id.getOriginalValue() == null) {
-            this.id = ModifiableVariableFactory.safelySetValue(this.id, id);
-        }
+        this.id = ModifiableVariableFactory.softlySetValue(this.id, id);
     }
 
     public static final SftpIdEntryHandler HANDLER = new SftpIdEntryHandler();

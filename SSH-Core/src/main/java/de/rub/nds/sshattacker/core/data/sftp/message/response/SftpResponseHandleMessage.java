@@ -49,12 +49,9 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     }
 
     public void setSoftlyHandleLength(int handleLength, Config config) {
-        if (config.getAlwaysPrepareSftpLengthFields()
-                || this.handleLength == null
-                || this.handleLength.getOriginalValue() == null) {
-            this.handleLength =
-                    ModifiableVariableFactory.safelySetValue(this.handleLength, handleLength);
-        }
+        this.handleLength =
+                ModifiableVariableFactory.softlySetValue(
+                        this.handleLength, handleLength, config.getAlwaysPrepareSftpLengthFields());
     }
 
     public ModifiableByteArray getHandle() {
@@ -84,11 +81,9 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
     }
 
     public void setSoftlyHandle(byte[] handle, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareSftpHandle()
-                || this.handle == null
-                || this.handle.getOriginalValue() == null) {
-            this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
-        }
+        this.handle =
+                ModifiableVariableFactory.softlySetValue(
+                        this.handle, handle, config.getAlwaysPrepareSftpHandle());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || handleLength == null

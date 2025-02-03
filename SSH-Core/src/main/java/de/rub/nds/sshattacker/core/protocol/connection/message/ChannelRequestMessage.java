@@ -84,10 +84,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setSoftlyRequestType(String requestType, boolean adjustLengthField, Config config) {
-        if (this.requestType == null || this.requestType.getOriginalValue() == null) {
-            this.requestType =
-                    ModifiableVariableFactory.safelySetValue(this.requestType, requestType);
-        }
+        this.requestType = ModifiableVariableFactory.softlySetValue(this.requestType, requestType);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || requestTypeLength == null
@@ -115,9 +112,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setSoftlyWantReply(byte wantReply) {
-        if (this.wantReply == null || this.wantReply.getOriginalValue() == null) {
-            this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
-        }
+        this.wantReply = ModifiableVariableFactory.softlySetValue(this.wantReply, wantReply);
     }
 
     public void setWantReply(boolean wantReply) {

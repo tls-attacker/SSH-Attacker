@@ -45,9 +45,7 @@ public class SftpRequestStatMessage extends SftpRequestWithPathMessage<SftpReque
     }
 
     public void setSoftlyFlags(int flags) {
-        if (this.flags == null || this.flags.getOriginalValue() == null) {
-            this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
-        }
+        this.flags = ModifiableVariableFactory.softlySetValue(this.flags, flags);
     }
 
     public void setFlags(SftpFileAttributeFlag... flags) {

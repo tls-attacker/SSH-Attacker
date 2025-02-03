@@ -83,12 +83,11 @@ public class SftpResponseUsersGroupsByIdMessage
     }
 
     public void setSoftlyUserNamesLength(int userNamesLength, Config config) {
-        if (config.getAlwaysPrepareSftpLengthFields()
-                || this.userNamesLength == null
-                || this.userNamesLength.getOriginalValue() == null) {
-            this.userNamesLength =
-                    ModifiableVariableFactory.safelySetValue(this.userNamesLength, userNamesLength);
-        }
+        this.userNamesLength =
+                ModifiableVariableFactory.softlySetValue(
+                        this.userNamesLength,
+                        userNamesLength,
+                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public ArrayList<SftpNameEntry> getUserNames() {
@@ -136,13 +135,11 @@ public class SftpResponseUsersGroupsByIdMessage
     }
 
     public void setSoftlyGroupNamesLength(int groupNamesLength, Config config) {
-        if (config.getAlwaysPrepareSftpLengthFields()
-                || this.groupNamesLength == null
-                || this.groupNamesLength.getOriginalValue() == null) {
-            this.groupNamesLength =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.groupNamesLength, groupNamesLength);
-        }
+        this.groupNamesLength =
+                ModifiableVariableFactory.softlySetValue(
+                        this.groupNamesLength,
+                        groupNamesLength,
+                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public ArrayList<SftpNameEntry> getGroupNames() {

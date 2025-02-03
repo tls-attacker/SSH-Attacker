@@ -112,12 +112,9 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.hostKeyBytes == null
-                || this.hostKeyBytes.getOriginalValue() == null) {
-            this.hostKeyBytes =
-                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
-        }
+        this.hostKeyBytes =
+                ModifiableVariableFactory.softlySetValue(
+                        this.hostKeyBytes, hostKeyBytes, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || hostKeyBytesLength == null
@@ -180,13 +177,11 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     public void setSoftlyTransientPublicKeyBytes(
             byte[] transientPublicKeyBytes, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.transientPublicKeyBytes == null
-                || this.transientPublicKeyBytes.getOriginalValue() == null) {
-            this.transientPublicKeyBytes =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.transientPublicKeyBytes, transientPublicKeyBytes);
-        }
+        this.transientPublicKeyBytes =
+                ModifiableVariableFactory.softlySetValue(
+                        this.transientPublicKeyBytes,
+                        transientPublicKeyBytes,
+                        config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || transientPublicKeyBytesLength == null

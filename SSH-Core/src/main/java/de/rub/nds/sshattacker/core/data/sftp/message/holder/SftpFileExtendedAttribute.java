@@ -81,9 +81,7 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
     }
 
     public void setSoftlyType(String type, boolean adjustLengthField, Config config) {
-        if (this.type == null || this.type.getOriginalValue() == null) {
-            this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
-        }
+        this.type = ModifiableVariableFactory.softlySetValue(this.type, type);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || typeLength == null
@@ -132,9 +130,7 @@ public class SftpFileExtendedAttribute extends ModifiableVariableHolder {
     }
 
     public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        if (this.data == null || this.data.getOriginalValue() == null) {
-            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
-        }
+        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || dataLength == null

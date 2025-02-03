@@ -59,10 +59,8 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setSoftlyChangePassword(byte changePassword) {
-        if (this.changePassword == null || this.changePassword.getOriginalValue() == null) {
-            this.changePassword =
-                    ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
-        }
+        this.changePassword =
+                ModifiableVariableFactory.softlySetValue(this.changePassword, changePassword);
     }
 
     public void setChangePassword(boolean changePassword) {
@@ -113,11 +111,9 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setSoftlyPassword(String password, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.password == null
-                || this.password.getOriginalValue() == null) {
-            this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
-        }
+        this.password =
+                ModifiableVariableFactory.softlySetValue(
+                        this.password, password, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || passwordLength == null
@@ -169,10 +165,7 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setSoftlyNewPassword(String newPassword, boolean adjustLengthField, Config config) {
-        if (this.newPassword == null || this.newPassword.getOriginalValue() == null) {
-            this.newPassword =
-                    ModifiableVariableFactory.safelySetValue(this.newPassword, newPassword);
-        }
+        this.newPassword = ModifiableVariableFactory.softlySetValue(this.newPassword, newPassword);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || newPasswordLength == null

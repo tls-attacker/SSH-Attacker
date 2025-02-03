@@ -47,13 +47,11 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     }
 
     public void setSoftlyRecipientChannelId(int recipientChannelId, Config config) {
-        if (config.getAlwaysPrepareChannelIds()
-                || this.recipientChannelId == null
-                || this.recipientChannelId.getOriginalValue() == null) {
-            this.recipientChannelId =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.recipientChannelId, recipientChannelId);
-        }
+        this.recipientChannelId =
+                ModifiableVariableFactory.softlySetValue(
+                        this.recipientChannelId,
+                        recipientChannelId,
+                        config.getAlwaysPrepareChannelIds());
     }
 
     public void setRecipientChannelId(int recipientChannelId) {

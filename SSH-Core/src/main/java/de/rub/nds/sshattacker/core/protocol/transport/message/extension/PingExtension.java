@@ -76,9 +76,7 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     }
 
     public void setSoftlyVersion(String version, boolean adjustLengthField, Config config) {
-        if (this.version == null || this.version.getOriginalValue() == null) {
-            this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
-        }
+        this.version = ModifiableVariableFactory.softlySetValue(this.version, version);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || versionLength == null

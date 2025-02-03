@@ -44,9 +44,7 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
     }
 
     public void setSoftlyData(String data) {
-        if (this.data == null || this.data.getOriginalValue() == null) {
-            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
-        }
+        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
     }
 
     @Override

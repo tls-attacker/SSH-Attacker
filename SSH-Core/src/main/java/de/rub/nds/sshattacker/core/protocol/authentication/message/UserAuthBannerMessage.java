@@ -82,9 +82,7 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     }
 
     public void setSoftlyMessage(String message, boolean adjustLengthField, Config config) {
-        if (this.message == null || this.message.getOriginalValue() == null) {
-            this.message = ModifiableVariableFactory.safelySetValue(this.message, message);
-        }
+        this.message = ModifiableVariableFactory.softlySetValue(this.message, message);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || messageLength == null
@@ -136,10 +134,7 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || languageTagLength == null

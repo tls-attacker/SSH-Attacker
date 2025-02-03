@@ -47,12 +47,9 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
     }
 
     public void setSoftlyResponseSpecificData(byte[] responseSpecificData) {
-        if (this.responseSpecificData == null
-                || this.responseSpecificData.getOriginalValue() == null) {
-            this.responseSpecificData =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.responseSpecificData, responseSpecificData);
-        }
+        this.responseSpecificData =
+                ModifiableVariableFactory.softlySetValue(
+                        this.responseSpecificData, responseSpecificData);
     }
 
     public static final SftpResponseUnknownMessageHandler HANDLER =

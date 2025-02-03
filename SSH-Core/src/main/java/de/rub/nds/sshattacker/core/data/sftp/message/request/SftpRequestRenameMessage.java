@@ -80,9 +80,7 @@ public class SftpRequestRenameMessage extends SftpRequestWithPathMessage<SftpReq
     }
 
     public void setSoftlyNewPath(String newPath, boolean adjustLengthField, Config config) {
-        if (this.newPath == null || this.newPath.getOriginalValue() == null) {
-            this.newPath = ModifiableVariableFactory.safelySetValue(this.newPath, newPath);
-        }
+        this.newPath = ModifiableVariableFactory.softlySetValue(this.newPath, newPath);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || newPathLength == null

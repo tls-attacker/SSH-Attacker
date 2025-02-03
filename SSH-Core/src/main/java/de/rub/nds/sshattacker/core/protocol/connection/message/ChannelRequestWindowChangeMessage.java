@@ -53,10 +53,8 @@ public class ChannelRequestWindowChangeMessage
     }
 
     public void setSoftlyWidthColumns(int widthColumns) {
-        if (this.widthColumns == null || this.widthColumns.getOriginalValue() == null) {
-            this.widthColumns =
-                    ModifiableVariableFactory.safelySetValue(this.widthColumns, widthColumns);
-        }
+        this.widthColumns =
+                ModifiableVariableFactory.softlySetValue(this.widthColumns, widthColumns);
     }
 
     public ModifiableInteger getHeightRows() {
@@ -72,9 +70,7 @@ public class ChannelRequestWindowChangeMessage
     }
 
     public void setSoftlyHeightRows(int heightRows) {
-        if (this.heightRows == null || this.heightRows.getOriginalValue() == null) {
-            this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
-        }
+        this.heightRows = ModifiableVariableFactory.softlySetValue(this.heightRows, heightRows);
     }
 
     public ModifiableInteger getWidthPixels() {
@@ -90,10 +86,7 @@ public class ChannelRequestWindowChangeMessage
     }
 
     public void setSoftlyWidthPixels(int widthPixels) {
-        if (this.widthPixels == null || this.widthPixels.getOriginalValue() == null) {
-            this.widthPixels =
-                    ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
-        }
+        this.widthPixels = ModifiableVariableFactory.softlySetValue(this.widthPixels, widthPixels);
     }
 
     public ModifiableInteger getHeightPixels() {
@@ -110,10 +103,8 @@ public class ChannelRequestWindowChangeMessage
     }
 
     public void setSoftlyHeightPixels(int heightPixels) {
-        if (this.heightPixels == null || this.heightPixels.getOriginalValue() == null) {
-            this.heightPixels =
-                    ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
-        }
+        this.heightPixels =
+                ModifiableVariableFactory.softlySetValue(this.heightPixels, heightPixels);
     }
 
     public static final ChannelRequestWindowChangeMessageHandler HANDLER =

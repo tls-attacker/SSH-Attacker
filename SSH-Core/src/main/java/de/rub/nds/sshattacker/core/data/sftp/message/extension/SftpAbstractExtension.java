@@ -81,9 +81,7 @@ public abstract class SftpAbstractExtension<T extends SftpAbstractExtension<T>>
     }
 
     public void setSoftlyName(String name, boolean adjustLengthField, Config config) {
-        if (this.name == null || this.name.getOriginalValue() == null) {
-            this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
-        }
+        this.name = ModifiableVariableFactory.softlySetValue(this.name, name);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || nameLength == null

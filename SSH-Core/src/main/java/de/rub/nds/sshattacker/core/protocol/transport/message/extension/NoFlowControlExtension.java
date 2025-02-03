@@ -76,9 +76,7 @@ public class NoFlowControlExtension extends AbstractExtension<NoFlowControlExten
     }
 
     public void setSoftlyChoice(String choice, boolean adjustLengthField, Config config) {
-        if (this.choice == null || this.choice.getOriginalValue() == null) {
-            this.choice = ModifiableVariableFactory.safelySetValue(this.choice, choice);
-        }
+        this.choice = ModifiableVariableFactory.softlySetValue(this.choice, choice);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || choiceLength == null

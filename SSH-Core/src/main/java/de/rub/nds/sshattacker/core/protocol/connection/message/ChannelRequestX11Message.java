@@ -75,11 +75,8 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlySingleConnection(byte singleConnection) {
-        if (this.singleConnection == null || this.singleConnection.getOriginalValue() == null) {
-            this.singleConnection =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.singleConnection, singleConnection);
-        }
+        this.singleConnection =
+                ModifiableVariableFactory.softlySetValue(this.singleConnection, singleConnection);
     }
 
     public void setSingleConnection(boolean singleConnection) {
@@ -147,12 +144,9 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyX11AuthenticationProtocol(
             String x11AuthenticationProtocol, boolean adjustLengthField, Config config) {
-        if (this.x11AuthenticationProtocol == null
-                || this.x11AuthenticationProtocol.getOriginalValue() == null) {
-            this.x11AuthenticationProtocol =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.x11AuthenticationProtocol, x11AuthenticationProtocol);
-        }
+        this.x11AuthenticationProtocol =
+                ModifiableVariableFactory.softlySetValue(
+                        this.x11AuthenticationProtocol, x11AuthenticationProtocol);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || x11AuthenticationProtocolLength == null
@@ -222,12 +216,9 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyX11AuthenticationCookie(
             String x11AuthenticationCookie, boolean adjustLengthField, Config config) {
-        if (this.x11AuthenticationCookie == null
-                || this.x11AuthenticationCookie.getOriginalValue() == null) {
-            this.x11AuthenticationCookie =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.x11AuthenticationCookie, x11AuthenticationCookie);
-        }
+        this.x11AuthenticationCookie =
+                ModifiableVariableFactory.softlySetValue(
+                        this.x11AuthenticationCookie, x11AuthenticationCookie);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || x11AuthenticationCookieLength == null
@@ -255,10 +246,8 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlyX11ScreenNumber(int x11ScreenNumber) {
-        if (this.x11ScreenNumber == null || this.x11ScreenNumber.getOriginalValue() == null) {
-            this.x11ScreenNumber =
-                    ModifiableVariableFactory.safelySetValue(this.x11ScreenNumber, x11ScreenNumber);
-        }
+        this.x11ScreenNumber =
+                ModifiableVariableFactory.softlySetValue(this.x11ScreenNumber, x11ScreenNumber);
     }
 
     public static final ChannelRequestX11MessageHandler HANDLER =

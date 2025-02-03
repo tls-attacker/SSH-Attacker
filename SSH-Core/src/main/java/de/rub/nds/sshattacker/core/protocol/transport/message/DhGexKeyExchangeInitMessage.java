@@ -86,13 +86,9 @@ public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInit
 
     public void setSoftlyEphemeralPublicKey(
             BigInteger ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.ephemeralPublicKey == null
-                || this.ephemeralPublicKey.getOriginalValue() == null) {
-            this.ephemeralPublicKey =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.ephemeralPublicKey, ephemeralPublicKey);
-        }
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.softlySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || ephemeralPublicKeyLength == null

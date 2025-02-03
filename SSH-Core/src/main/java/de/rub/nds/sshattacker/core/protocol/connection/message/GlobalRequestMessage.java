@@ -85,10 +85,7 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     }
 
     public void setSoftlyRequestName(String requestName, boolean adjustLengthField, Config config) {
-        if (this.requestName == null || this.requestName.getOriginalValue() == null) {
-            this.requestName =
-                    ModifiableVariableFactory.safelySetValue(this.requestName, requestName);
-        }
+        this.requestName = ModifiableVariableFactory.softlySetValue(this.requestName, requestName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || requestNameLength == null
@@ -116,9 +113,7 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     }
 
     public void setSoftlyWantReply(byte wantReply) {
-        if (this.wantReply == null || this.wantReply.getOriginalValue() == null) {
-            this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
-        }
+        this.wantReply = ModifiableVariableFactory.softlySetValue(this.wantReply, wantReply);
     }
 
     public void setWantReply(boolean wantReply) {

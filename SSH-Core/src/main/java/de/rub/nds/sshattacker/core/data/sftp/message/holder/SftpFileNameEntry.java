@@ -86,9 +86,7 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyFilename(String filename, boolean adjustLengthField, Config config) {
-        if (this.filename == null || this.filename.getOriginalValue() == null) {
-            this.filename = ModifiableVariableFactory.safelySetValue(this.filename, filename);
-        }
+        this.filename = ModifiableVariableFactory.softlySetValue(this.filename, filename);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || filenameLength == null
@@ -138,9 +136,7 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyLongName(String longName, boolean adjustLengthField, Config config) {
-        if (this.longName == null || this.longName.getOriginalValue() == null) {
-            this.longName = ModifiableVariableFactory.safelySetValue(this.longName, longName);
-        }
+        this.longName = ModifiableVariableFactory.softlySetValue(this.longName, longName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || longNameLength == null

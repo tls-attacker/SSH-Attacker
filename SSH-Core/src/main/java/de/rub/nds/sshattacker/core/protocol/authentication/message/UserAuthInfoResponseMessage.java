@@ -71,13 +71,11 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
     }
 
     public void setSoftlyResponseEntriesCount(int responseEntriesCount, Config config) {
-        if (config.getAlwaysPrepareLengthFields()
-                || this.responseEntriesCount == null
-                || this.responseEntriesCount.getOriginalValue() == null) {
-            this.responseEntriesCount =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.responseEntriesCount, responseEntriesCount);
-        }
+        this.responseEntriesCount =
+                ModifiableVariableFactory.softlySetValue(
+                        this.responseEntriesCount,
+                        responseEntriesCount,
+                        config.getAlwaysPrepareLengthFields());
     }
 
     public ArrayList<AuthenticationResponseEntry> getResponseEntries() {

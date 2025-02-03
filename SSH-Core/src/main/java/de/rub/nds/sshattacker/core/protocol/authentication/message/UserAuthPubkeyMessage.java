@@ -74,11 +74,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setSoftlyPubkey(byte[] pubkey, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.pubkey == null
-                || this.pubkey.getOriginalValue() == null) {
-            this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
-        }
+        this.pubkey =
+                ModifiableVariableFactory.softlySetValue(
+                        this.pubkey, pubkey, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || pubkeyLength == null
@@ -129,12 +127,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     public void setSoftlyPubkeyAlgName(
             String pubkeyAlgName, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.pubkeyAlgName == null
-                || this.pubkeyAlgName.getOriginalValue() == null) {
-            this.pubkeyAlgName =
-                    ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
-        }
+        this.pubkeyAlgName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.pubkeyAlgName, pubkeyAlgName, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || pubkeyAlgNameLength == null
@@ -167,10 +162,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setSoftlyUseSignature(byte useSignature) {
-        if (this.useSignature == null || this.useSignature.getOriginalValue() == null) {
-            this.useSignature =
-                    ModifiableVariableFactory.safelySetValue(this.useSignature, useSignature);
-        }
+        this.useSignature =
+                ModifiableVariableFactory.softlySetValue(this.useSignature, useSignature);
     }
 
     public void setUseSignature(boolean useSignature) {

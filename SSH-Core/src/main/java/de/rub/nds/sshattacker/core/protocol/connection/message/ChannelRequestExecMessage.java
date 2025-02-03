@@ -78,9 +78,7 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     }
 
     public void setSoftlyCommand(String command, boolean adjustLengthField, Config config) {
-        if (this.command == null || this.command.getOriginalValue() == null) {
-            this.command = ModifiableVariableFactory.safelySetValue(this.command, command);
-        }
+        this.command = ModifiableVariableFactory.softlySetValue(this.command, command);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || commandLength == null

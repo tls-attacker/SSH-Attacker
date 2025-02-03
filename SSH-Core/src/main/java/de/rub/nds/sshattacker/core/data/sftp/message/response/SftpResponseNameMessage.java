@@ -66,13 +66,11 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     }
 
     public void setSoftlyNameEntriesCount(int nameEntriesCount, Config config) {
-        if (config.getAlwaysPrepareSftpLengthFields()
-                || this.nameEntriesCount == null
-                || this.nameEntriesCount.getOriginalValue() == null) {
-            this.nameEntriesCount =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.nameEntriesCount, nameEntriesCount);
-        }
+        this.nameEntriesCount =
+                ModifiableVariableFactory.softlySetValue(
+                        this.nameEntriesCount,
+                        nameEntriesCount,
+                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public List<SftpFileNameEntry> getNameEntries() {

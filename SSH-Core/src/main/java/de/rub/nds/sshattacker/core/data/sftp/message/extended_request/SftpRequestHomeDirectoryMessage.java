@@ -77,9 +77,7 @@ public class SftpRequestHomeDirectoryMessage
     }
 
     public void setSoftlyUsername(String username, boolean adjustLengthField, Config config) {
-        if (this.username == null || this.username.getOriginalValue() == null) {
-            this.username = ModifiableVariableFactory.safelySetValue(this.username, username);
-        }
+        this.username = ModifiableVariableFactory.softlySetValue(this.username, username);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || usernameLength == null

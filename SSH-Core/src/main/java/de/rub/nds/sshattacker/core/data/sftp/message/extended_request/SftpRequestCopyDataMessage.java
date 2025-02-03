@@ -60,10 +60,8 @@ public class SftpRequestCopyDataMessage
     }
 
     public void setSoftlyReadFromOffset(long readFromOffset) {
-        if (this.readFromOffset == null || this.readFromOffset.getOriginalValue() == null) {
-            this.readFromOffset =
-                    ModifiableVariableFactory.safelySetValue(this.readFromOffset, readFromOffset);
-        }
+        this.readFromOffset =
+                ModifiableVariableFactory.softlySetValue(this.readFromOffset, readFromOffset);
     }
 
     public ModifiableLong getReadDataLength() {
@@ -80,10 +78,8 @@ public class SftpRequestCopyDataMessage
     }
 
     public void setSoftlyReadDataLength(long readDataLength) {
-        if (this.readDataLength == null || this.readDataLength.getOriginalValue() == null) {
-            this.readDataLength =
-                    ModifiableVariableFactory.safelySetValue(this.readDataLength, readDataLength);
-        }
+        this.readDataLength =
+                ModifiableVariableFactory.softlySetValue(this.readDataLength, readDataLength);
     }
 
     public ModifiableInteger getWriteToHandleLength() {
@@ -129,12 +125,9 @@ public class SftpRequestCopyDataMessage
 
     public void setSoftlyWriteToHandle(
             byte[] writeToHandle, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareSftpHandle()
-                || this.writeToHandle == null
-                || this.writeToHandle.getOriginalValue() == null) {
-            this.writeToHandle =
-                    ModifiableVariableFactory.safelySetValue(this.writeToHandle, writeToHandle);
-        }
+        this.writeToHandle =
+                ModifiableVariableFactory.softlySetValue(
+                        this.writeToHandle, writeToHandle, config.getAlwaysPrepareSftpHandle());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || writeToHandleLength == null
@@ -158,10 +151,8 @@ public class SftpRequestCopyDataMessage
     }
 
     public void setSoftlyWriteToOffset(long writeToOffset) {
-        if (this.writeToOffset == null || this.writeToOffset.getOriginalValue() == null) {
-            this.writeToOffset =
-                    ModifiableVariableFactory.safelySetValue(this.writeToOffset, writeToOffset);
-        }
+        this.writeToOffset =
+                ModifiableVariableFactory.softlySetValue(this.writeToOffset, writeToOffset);
     }
 
     public static final SftpRequestCopyDataMessageHandler HANDLER =

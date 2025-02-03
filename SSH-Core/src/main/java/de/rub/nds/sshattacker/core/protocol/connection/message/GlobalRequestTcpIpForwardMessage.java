@@ -74,10 +74,8 @@ public class GlobalRequestTcpIpForwardMessage
 
     public void setSoftlyIpAddressToBind(
             String ipAddressToBind, boolean adjustLengthField, Config config) {
-        if (this.ipAddressToBind == null || this.ipAddressToBind.getOriginalValue() == null) {
-            this.ipAddressToBind =
-                    ModifiableVariableFactory.safelySetValue(this.ipAddressToBind, ipAddressToBind);
-        }
+        this.ipAddressToBind =
+                ModifiableVariableFactory.softlySetValue(this.ipAddressToBind, ipAddressToBind);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || ipAddressToBindLength == null
@@ -115,9 +113,7 @@ public class GlobalRequestTcpIpForwardMessage
     }
 
     public void setSoftlyPortToBind(int portToBind) {
-        if (this.portToBind == null || this.portToBind.getOriginalValue() == null) {
-            this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
-        }
+        this.portToBind = ModifiableVariableFactory.softlySetValue(this.portToBind, portToBind);
     }
 
     public static final GlobalRequestTcpIpForwardMessageHandler HANDLER =

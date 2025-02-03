@@ -56,9 +56,7 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setSoftlyReasonCode(int reasonCode) {
-        if (this.reasonCode == null || this.reasonCode.getOriginalValue() == null) {
-            this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
-        }
+        this.reasonCode = ModifiableVariableFactory.softlySetValue(this.reasonCode, reasonCode);
     }
 
     public ModifiableInteger getReasonLength() {
@@ -101,9 +99,7 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setSoftlyReason(String reason, boolean adjustLengthField, Config config) {
-        if (this.reason == null || this.reason.getOriginalValue() == null) {
-            this.reason = ModifiableVariableFactory.safelySetValue(this.reason, reason);
-        }
+        this.reason = ModifiableVariableFactory.softlySetValue(this.reason, reason);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || reasonLength == null
@@ -155,10 +151,7 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || languageTagLength == null

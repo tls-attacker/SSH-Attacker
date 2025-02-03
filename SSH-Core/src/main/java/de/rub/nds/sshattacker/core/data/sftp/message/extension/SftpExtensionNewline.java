@@ -85,11 +85,8 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
 
     public void setSoftlyNewlineSeperator(
             String newlineSeperator, boolean adjustLengthField, Config config) {
-        if (this.newlineSeperator == null || this.newlineSeperator.getOriginalValue() == null) {
-            this.newlineSeperator =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.newlineSeperator, newlineSeperator);
-        }
+        this.newlineSeperator =
+                ModifiableVariableFactory.softlySetValue(this.newlineSeperator, newlineSeperator);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || newlineSeperatorLength == null

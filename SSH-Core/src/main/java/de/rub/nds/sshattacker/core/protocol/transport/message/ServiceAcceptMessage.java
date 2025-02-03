@@ -85,10 +85,7 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
     }
 
     public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
-        if (this.serviceName == null || this.serviceName.getOriginalValue() == null) {
-            this.serviceName =
-                    ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
-        }
+        this.serviceName = ModifiableVariableFactory.softlySetValue(this.serviceName, serviceName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || serviceNameLength == null

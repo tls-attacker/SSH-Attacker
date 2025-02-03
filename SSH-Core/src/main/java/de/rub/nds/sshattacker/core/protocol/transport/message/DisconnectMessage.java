@@ -59,9 +59,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setSoftlyReasonCode(int reasonCode) {
-        if (this.reasonCode == null || this.reasonCode.getOriginalValue() == null) {
-            this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
-        }
+        this.reasonCode = ModifiableVariableFactory.softlySetValue(this.reasonCode, reasonCode);
     }
 
     public void setReasonCode(DisconnectReason reason) {
@@ -114,10 +112,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setSoftlyDescription(String description, boolean adjustLengthField, Config config) {
-        if (this.description == null || this.description.getOriginalValue() == null) {
-            this.description =
-                    ModifiableVariableFactory.safelySetValue(this.description, description);
-        }
+        this.description = ModifiableVariableFactory.softlySetValue(this.description, description);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || descriptionLength == null
@@ -170,10 +165,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || languageTagLength == null

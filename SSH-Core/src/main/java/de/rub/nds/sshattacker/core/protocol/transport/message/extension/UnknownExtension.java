@@ -75,9 +75,7 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
     }
 
     public void setSoftlyValue(byte[] value, boolean adjustLengthField, Config config) {
-        if (this.value == null || this.value.getOriginalValue() == null) {
-            this.value = ModifiableVariableFactory.safelySetValue(this.value, value);
-        }
+        this.value = ModifiableVariableFactory.softlySetValue(this.value, value);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || valueLength == null

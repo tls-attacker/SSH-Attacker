@@ -76,10 +76,8 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyVariableName(
             String variableName, boolean adjustLengthField, Config config) {
-        if (this.variableName == null || this.variableName.getOriginalValue() == null) {
-            this.variableName =
-                    ModifiableVariableFactory.safelySetValue(this.variableName, variableName);
-        }
+        this.variableName =
+                ModifiableVariableFactory.softlySetValue(this.variableName, variableName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || variableNameLength == null
@@ -136,10 +134,8 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyVariableValue(
             String variableValue, boolean adjustLengthField, Config config) {
-        if (this.variableValue == null || this.variableValue.getOriginalValue() == null) {
-            this.variableValue =
-                    ModifiableVariableFactory.safelySetValue(this.variableValue, variableValue);
-        }
+        this.variableValue =
+                ModifiableVariableFactory.softlySetValue(this.variableValue, variableValue);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || variableValueLength == null

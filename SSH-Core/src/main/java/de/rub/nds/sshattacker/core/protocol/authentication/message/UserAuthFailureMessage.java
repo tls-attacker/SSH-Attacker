@@ -114,12 +114,9 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     public void setSoftlyPossibleAuthenticationMethods(
             String possibleAuthenticationMethods, boolean adjustLengthField, Config config) {
-        if (this.possibleAuthenticationMethods == null
-                || this.possibleAuthenticationMethods.getOriginalValue() == null) {
-            this.possibleAuthenticationMethods =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.possibleAuthenticationMethods, possibleAuthenticationMethods);
-        }
+        this.possibleAuthenticationMethods =
+                ModifiableVariableFactory.softlySetValue(
+                        this.possibleAuthenticationMethods, possibleAuthenticationMethods);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || possibleAuthenticationMethodsLength == null
@@ -159,10 +156,8 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
     }
 
     public void setSoftlyPartialSuccess(byte partialSuccess) {
-        if (this.partialSuccess == null || this.partialSuccess.getOriginalValue() == null) {
-            this.partialSuccess =
-                    ModifiableVariableFactory.safelySetValue(this.partialSuccess, partialSuccess);
-        }
+        this.partialSuccess =
+                ModifiableVariableFactory.softlySetValue(this.partialSuccess, partialSuccess);
     }
 
     public void setPartialSuccess(boolean partialSuccess) {

@@ -59,9 +59,7 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyType(int type) {
-        if (this.type == null || this.type.getOriginalValue() == null) {
-            this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
-        }
+        this.type = ModifiableVariableFactory.softlySetValue(this.type, type);
     }
 
     public void setType(SftpAceType type) {
@@ -87,9 +85,7 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyFlags(int flags) {
-        if (this.flags == null || this.flags.getOriginalValue() == null) {
-            this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
-        }
+        this.flags = ModifiableVariableFactory.softlySetValue(this.flags, flags);
     }
 
     public void setFlags(SftpAceFlag... flags) {
@@ -115,9 +111,7 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyMask(int mask) {
-        if (this.mask == null || this.mask.getOriginalValue() == null) {
-            this.mask = ModifiableVariableFactory.safelySetValue(this.mask, mask);
-        }
+        this.mask = ModifiableVariableFactory.softlySetValue(this.mask, mask);
     }
 
     public void setMask(SftpAceMask... flags) {
@@ -167,9 +161,7 @@ public class SftpAclEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyWho(String who, boolean adjustLengthField, Config config) {
-        if (this.who == null || this.who.getOriginalValue() == null) {
-            this.who = ModifiableVariableFactory.safelySetValue(this.who, who);
-        }
+        this.who = ModifiableVariableFactory.softlySetValue(this.who, who);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || whoLength == null

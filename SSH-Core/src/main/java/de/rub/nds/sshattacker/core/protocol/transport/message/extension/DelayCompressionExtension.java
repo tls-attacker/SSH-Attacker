@@ -82,13 +82,11 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     }
 
     public void setSoftlyCompressionMethodsLength(int compressionMethodsLength, Config config) {
-        if (config.getAlwaysPrepareLengthFields()
-                || this.compressionMethodsLength == null
-                || this.compressionMethodsLength.getOriginalValue() == null) {
-            this.compressionMethodsLength =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.compressionMethodsLength, compressionMethodsLength);
-        }
+        this.compressionMethodsLength =
+                ModifiableVariableFactory.softlySetValue(
+                        this.compressionMethodsLength,
+                        compressionMethodsLength,
+                        config.getAlwaysPrepareLengthFields());
     }
 
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
@@ -160,13 +158,10 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
             List<CompressionMethod> compressionMethodsClientToServer,
             boolean adjustLengthField,
             Config config) {
-        if (this.compressionMethodsClientToServer == null
-                || this.compressionMethodsClientToServer.getOriginalValue() == null) {
-            this.compressionMethodsClientToServer =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.compressionMethodsClientToServer,
-                            Converter.listOfNamesToString(compressionMethodsClientToServer));
-        }
+        this.compressionMethodsClientToServer =
+                ModifiableVariableFactory.softlySetValue(
+                        this.compressionMethodsClientToServer,
+                        Converter.listOfNamesToString(compressionMethodsClientToServer));
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || compressionMethodsClientToServerLength == null
@@ -261,13 +256,10 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
             List<CompressionMethod> compressionMethodsServerToClient,
             boolean adjustLengthField,
             Config config) {
-        if (this.compressionMethodsServerToClient == null
-                || this.compressionMethodsServerToClient.getOriginalValue() == null) {
-            this.compressionMethodsServerToClient =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.compressionMethodsServerToClient,
-                            Converter.listOfNamesToString(compressionMethodsServerToClient));
-        }
+        this.compressionMethodsServerToClient =
+                ModifiableVariableFactory.softlySetValue(
+                        this.compressionMethodsServerToClient,
+                        Converter.listOfNamesToString(compressionMethodsServerToClient));
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || compressionMethodsServerToClientLength == null

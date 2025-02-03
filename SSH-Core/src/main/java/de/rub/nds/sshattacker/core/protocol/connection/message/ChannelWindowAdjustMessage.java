@@ -46,9 +46,7 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
     }
 
     public void setSoftlyBytesToAdd(int bytesToAdd) {
-        if (this.bytesToAdd == null || this.bytesToAdd.getOriginalValue() == null) {
-            this.bytesToAdd = ModifiableVariableFactory.safelySetValue(this.bytesToAdd, bytesToAdd);
-        }
+        this.bytesToAdd = ModifiableVariableFactory.softlySetValue(this.bytesToAdd, bytesToAdd);
     }
 
     public static final ChannelWindowAdjustMessageHandler HANDLER =

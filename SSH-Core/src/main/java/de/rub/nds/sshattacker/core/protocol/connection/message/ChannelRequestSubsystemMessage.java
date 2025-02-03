@@ -85,10 +85,8 @@ public class ChannelRequestSubsystemMessage
 
     public void setSoftlySubsystemName(
             String subsystemName, boolean adjustLengthField, Config config) {
-        if (this.subsystemName == null || this.subsystemName.getOriginalValue() == null) {
-            this.subsystemName =
-                    ModifiableVariableFactory.safelySetValue(this.subsystemName, subsystemName);
-        }
+        this.subsystemName =
+                ModifiableVariableFactory.softlySetValue(this.subsystemName, subsystemName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || subsystemNameLength == null

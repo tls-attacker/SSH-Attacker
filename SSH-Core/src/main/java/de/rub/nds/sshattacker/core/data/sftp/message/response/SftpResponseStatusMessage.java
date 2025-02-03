@@ -60,9 +60,7 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     }
 
     public void setSoftlyStatusCode(int statusCode) {
-        if (this.statusCode == null || this.statusCode.getOriginalValue() == null) {
-            this.statusCode = ModifiableVariableFactory.safelySetValue(this.statusCode, statusCode);
-        }
+        this.statusCode = ModifiableVariableFactory.softlySetValue(this.statusCode, statusCode);
     }
 
     public void setStatusCode(SftpStatusCode statusCode) {
@@ -117,10 +115,8 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
 
     public void setSoftlyErrorMessage(
             String errorMessage, boolean adjustLengthField, Config config) {
-        if (this.errorMessage == null || this.errorMessage.getOriginalValue() == null) {
-            this.errorMessage =
-                    ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
-        }
+        this.errorMessage =
+                ModifiableVariableFactory.softlySetValue(this.errorMessage, errorMessage);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || errorMessageLength == null
@@ -172,10 +168,7 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || languageTagLength == null

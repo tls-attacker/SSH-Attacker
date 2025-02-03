@@ -110,12 +110,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.hostKeyBytes == null
-                || this.hostKeyBytes.getOriginalValue() == null) {
-            this.hostKeyBytes =
-                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
-        }
+        this.hostKeyBytes =
+                ModifiableVariableFactory.softlySetValue(
+                        this.hostKeyBytes, hostKeyBytes, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || hostKeyBytesLength == null
@@ -170,13 +167,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     public void setSoftlyEphemeralPublicKey(
             byte[] ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.ephemeralPublicKey == null
-                || this.ephemeralPublicKey.getOriginalValue() == null) {
-            this.ephemeralPublicKey =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.ephemeralPublicKey, ephemeralPublicKey);
-        }
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.softlySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || ephemeralPublicKeyLength == null
@@ -234,11 +227,9 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
     }
 
     public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.signature == null
-                || this.signature.getOriginalValue() == null) {
-            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
-        }
+        this.signature =
+                ModifiableVariableFactory.softlySetValue(
+                        this.signature, signature, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || signatureLength == null

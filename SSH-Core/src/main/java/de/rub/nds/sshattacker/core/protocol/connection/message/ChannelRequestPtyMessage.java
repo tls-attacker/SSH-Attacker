@@ -104,10 +104,8 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyTermEnvVariable(
             String termEnvVariable, boolean adjustLengthField, Config config) {
-        if (this.termEnvVariable == null || this.termEnvVariable.getOriginalValue() == null) {
-            this.termEnvVariable =
-                    ModifiableVariableFactory.safelySetValue(this.termEnvVariable, termEnvVariable);
-        }
+        this.termEnvVariable =
+                ModifiableVariableFactory.softlySetValue(this.termEnvVariable, termEnvVariable);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || termEnvVariableLength == null
@@ -132,10 +130,8 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlyWidthCharacters(int widthCharacters) {
-        if (this.widthCharacters == null || this.widthCharacters.getOriginalValue() == null) {
-            this.widthCharacters =
-                    ModifiableVariableFactory.safelySetValue(this.widthCharacters, widthCharacters);
-        }
+        this.widthCharacters =
+                ModifiableVariableFactory.softlySetValue(this.widthCharacters, widthCharacters);
     }
 
     public ModifiableInteger getHeightRows() {
@@ -151,9 +147,7 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlyHeightRows(int heightRows) {
-        if (this.heightRows == null || this.heightRows.getOriginalValue() == null) {
-            this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
-        }
+        this.heightRows = ModifiableVariableFactory.softlySetValue(this.heightRows, heightRows);
     }
 
     public ModifiableInteger getWidthPixels() {
@@ -169,10 +163,7 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlyWidthPixels(int widthPixels) {
-        if (this.widthPixels == null || this.widthPixels.getOriginalValue() == null) {
-            this.widthPixels =
-                    ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
-        }
+        this.widthPixels = ModifiableVariableFactory.softlySetValue(this.widthPixels, widthPixels);
     }
 
     public ModifiableInteger getHeightPixels() {
@@ -189,10 +180,8 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setSoftlyHeightPixels(int heightPixels) {
-        if (this.heightPixels == null || this.heightPixels.getOriginalValue() == null) {
-            this.heightPixels =
-                    ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
-        }
+        this.heightPixels =
+                ModifiableVariableFactory.softlySetValue(this.heightPixels, heightPixels);
     }
 
     public ModifiableInteger getEncodedTerminalModesLength() {
@@ -242,12 +231,9 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
 
     public void setSoftlyEncodedTerminalModes(
             byte[] encodedTerminalModes, boolean adjustLengthField, Config config) {
-        if (this.encodedTerminalModes == null
-                || this.encodedTerminalModes.getOriginalValue() == null) {
-            this.encodedTerminalModes =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.encodedTerminalModes, encodedTerminalModes);
-        }
+        this.encodedTerminalModes =
+                ModifiableVariableFactory.softlySetValue(
+                        this.encodedTerminalModes, encodedTerminalModes);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || encodedTerminalModesLength == null

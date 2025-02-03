@@ -85,13 +85,9 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
 
     public void setSoftlyEphemeralPublicKey(
             byte[] ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.ephemeralPublicKey == null
-                || this.ephemeralPublicKey.getOriginalValue() == null) {
-            this.ephemeralPublicKey =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.ephemeralPublicKey, ephemeralPublicKey);
-        }
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.softlySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey, config.getAlwaysPrepareKex());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || ephemeralPublicKeyLength == null

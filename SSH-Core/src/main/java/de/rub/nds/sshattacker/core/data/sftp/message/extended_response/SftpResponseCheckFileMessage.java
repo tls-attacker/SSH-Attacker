@@ -95,11 +95,8 @@ public class SftpResponseCheckFileMessage
 
     public void setSoftlyUsedHashAlgorithm(
             String usedHashAlgorithm, boolean adjustLengthField, Config config) {
-        if (this.usedHashAlgorithm == null || this.usedHashAlgorithm.getOriginalValue() == null) {
-            this.usedHashAlgorithm =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.usedHashAlgorithm, usedHashAlgorithm);
-        }
+        this.usedHashAlgorithm =
+                ModifiableVariableFactory.softlySetValue(this.usedHashAlgorithm, usedHashAlgorithm);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || usedHashAlgorithmLength == null
@@ -135,9 +132,7 @@ public class SftpResponseCheckFileMessage
     }
 
     public void setSoftlyHash(byte[] hash) {
-        if (this.hash == null || this.hash.getOriginalValue() == null) {
-            this.hash = ModifiableVariableFactory.safelySetValue(this.hash, hash);
-        }
+        this.hash = ModifiableVariableFactory.softlySetValue(this.hash, hash);
     }
 
     public static final SftpResponseCheckFileMessageHandler HANDLER =

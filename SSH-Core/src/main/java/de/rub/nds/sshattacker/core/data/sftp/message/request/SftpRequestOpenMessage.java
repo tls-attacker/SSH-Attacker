@@ -55,9 +55,7 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
     }
 
     public void setSoftlyOpenFlags(int openFlags) {
-        if (this.openFlags == null || this.openFlags.getOriginalValue() == null) {
-            this.openFlags = ModifiableVariableFactory.safelySetValue(this.openFlags, openFlags);
-        }
+        this.openFlags = ModifiableVariableFactory.softlySetValue(this.openFlags, openFlags);
     }
 
     public void setOpenFlags(SftpFileOpenFlag... fileOpenFlags) {

@@ -93,11 +93,9 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setSoftlyUserName(String userName, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.userName == null
-                || this.userName.getOriginalValue() == null) {
-            this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
-        }
+        this.userName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.userName, userName, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || userNameLength == null
@@ -153,12 +151,9 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareServiceNames()
-                || this.serviceName == null
-                || this.serviceName.getOriginalValue() == null) {
-            this.serviceName =
-                    ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
-        }
+        this.serviceName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.serviceName, serviceName, config.getAlwaysPrepareServiceNames());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || serviceNameLength == null
@@ -224,9 +219,7 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setSoftlyMethodName(String methodName, boolean adjustLengthField, Config config) {
-        if (this.methodName == null || this.methodName.getOriginalValue() == null) {
-            this.methodName = ModifiableVariableFactory.safelySetValue(this.methodName, methodName);
-        }
+        this.methodName = ModifiableVariableFactory.softlySetValue(this.methodName, methodName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || methodNameLength == null

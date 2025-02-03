@@ -91,10 +91,7 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     }
 
     public void setSoftlyChannelType(String channelType, boolean adjustLengthField, Config config) {
-        if (this.channelType == null || this.channelType.getOriginalValue() == null) {
-            this.channelType =
-                    ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
-        }
+        this.channelType = ModifiableVariableFactory.softlySetValue(this.channelType, channelType);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || channelTypeLength == null
@@ -128,12 +125,9 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     }
 
     public void setSoftlySenderChannelId(int senderChannelId, Config config) {
-        if (config.getAlwaysPrepareChannelIds()
-                || this.senderChannelId == null
-                || this.senderChannelId.getOriginalValue() == null) {
-            this.senderChannelId =
-                    ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
-        }
+        this.senderChannelId =
+                ModifiableVariableFactory.softlySetValue(
+                        this.senderChannelId, senderChannelId, config.getAlwaysPrepareChannelIds());
     }
 
     public ModifiableInteger getWindowSize() {
@@ -149,9 +143,7 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     }
 
     public void setSoftlyWindowSize(int windowSize) {
-        if (this.windowSize == null || this.windowSize.getOriginalValue() == null) {
-            this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
-        }
+        this.windowSize = ModifiableVariableFactory.softlySetValue(this.windowSize, windowSize);
     }
 
     public ModifiableInteger getPacketSize() {
@@ -167,9 +159,7 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     }
 
     public void setSoftlyPacketSize(int packetSize) {
-        if (this.packetSize == null || this.packetSize.getOriginalValue() == null) {
-            this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-        }
+        this.packetSize = ModifiableVariableFactory.softlySetValue(this.packetSize, packetSize);
     }
 
     public Integer getConfigLocalChannelId() {

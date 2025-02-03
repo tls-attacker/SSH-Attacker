@@ -101,11 +101,9 @@ public class SftpRequestCheckFileHandleMessage
 
     public void setSoftlyHashAlgorithms(
             List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField, Config config) {
-        if (this.hashAlgorithms == null || this.hashAlgorithms.getOriginalValue() == null) {
-            this.hashAlgorithms =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.hashAlgorithms, Converter.listOfNamesToString(hashAlgorithms));
-        }
+        this.hashAlgorithms =
+                ModifiableVariableFactory.softlySetValue(
+                        this.hashAlgorithms, Converter.listOfNamesToString(hashAlgorithms));
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || hashAlgorithmsLength == null
@@ -137,10 +135,7 @@ public class SftpRequestCheckFileHandleMessage
     }
 
     public void setSoftlyStartOffset(long startOffset) {
-        if (this.startOffset == null || this.startOffset.getOriginalValue() == null) {
-            this.startOffset =
-                    ModifiableVariableFactory.safelySetValue(this.startOffset, startOffset);
-        }
+        this.startOffset = ModifiableVariableFactory.softlySetValue(this.startOffset, startOffset);
     }
 
     public ModifiableLong getLength() {
@@ -156,9 +151,7 @@ public class SftpRequestCheckFileHandleMessage
     }
 
     public void setSoftlyLength(long length) {
-        if (this.length == null || this.length.getOriginalValue() == null) {
-            this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
-        }
+        this.length = ModifiableVariableFactory.softlySetValue(this.length, length);
     }
 
     public ModifiableInteger getBlockSize() {
@@ -174,9 +167,7 @@ public class SftpRequestCheckFileHandleMessage
     }
 
     public void setSoftlyBlockSize(int blockSize) {
-        if (this.blockSize == null || this.blockSize.getOriginalValue() == null) {
-            this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
-        }
+        this.blockSize = ModifiableVariableFactory.softlySetValue(this.blockSize, blockSize);
     }
 
     public static final SftpRequestCheckFileHandleMessageHandler HANDLER =

@@ -83,9 +83,7 @@ public class SftpRequestSymbolicLinkMessage
     }
 
     public void setSoftlyTargetPath(String targetPath, boolean adjustLengthField, Config config) {
-        if (this.targetPath == null || this.targetPath.getOriginalValue() == null) {
-            this.targetPath = ModifiableVariableFactory.safelySetValue(this.targetPath, targetPath);
-        }
+        this.targetPath = ModifiableVariableFactory.softlySetValue(this.targetPath, targetPath);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || targetPathLength == null

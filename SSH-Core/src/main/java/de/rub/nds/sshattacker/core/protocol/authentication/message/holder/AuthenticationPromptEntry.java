@@ -87,9 +87,7 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyPrompt(String prompt, boolean adjustLengthField, Config config) {
-        if (this.prompt == null || this.prompt.getOriginalValue() == null) {
-            this.prompt = ModifiableVariableFactory.safelySetValue(this.prompt, prompt);
-        }
+        this.prompt = ModifiableVariableFactory.softlySetValue(this.prompt, prompt);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || promptLength == null
@@ -112,9 +110,7 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
     }
 
     public void setSoftlyEcho(byte echo) {
-        if (this.echo == null || this.echo.getOriginalValue() == null) {
-            this.echo = ModifiableVariableFactory.safelySetValue(this.echo, echo);
-        }
+        this.echo = ModifiableVariableFactory.softlySetValue(this.echo, echo);
     }
 
     public void setEcho(boolean echo) {

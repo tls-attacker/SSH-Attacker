@@ -115,13 +115,10 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
             boolean adjustLengthField,
             Config config) {
 
-        if (this.publicKeyAlgorithms == null
-                || this.publicKeyAlgorithms.getOriginalValue() == null) {
-            this.publicKeyAlgorithms =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.publicKeyAlgorithms,
-                            Converter.listOfNamesToString(publicKeyAlgorithms));
-        }
+        this.publicKeyAlgorithms =
+                ModifiableVariableFactory.softlySetValue(
+                        this.publicKeyAlgorithms,
+                        Converter.listOfNamesToString(publicKeyAlgorithms));
 
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()

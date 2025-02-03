@@ -71,11 +71,9 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
     }
 
     public void setSoftlyHandle(byte[] handle, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareSftpHandle()
-                || this.handle == null
-                || this.handle.getOriginalValue() == null) {
-            this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
-        }
+        this.handle =
+                ModifiableVariableFactory.softlySetValue(
+                        this.handle, handle, config.getAlwaysPrepareSftpHandle());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || handleLength == null

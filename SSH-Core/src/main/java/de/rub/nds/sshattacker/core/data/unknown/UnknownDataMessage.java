@@ -44,9 +44,7 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
     }
 
     public void setSoftlyPayload(byte[] payload) {
-        if (this.payload == null || this.payload.getOriginalValue() == null) {
-            this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
-        }
+        this.payload = ModifiableVariableFactory.softlySetValue(this.payload, payload);
     }
 
     @Override

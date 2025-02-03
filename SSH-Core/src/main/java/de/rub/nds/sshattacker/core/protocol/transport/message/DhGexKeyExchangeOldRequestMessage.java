@@ -50,13 +50,9 @@ public class DhGexKeyExchangeOldRequestMessage
     }
 
     public void setSoftlyPreferredGroupSize(int preferredGroupSize, Config config) {
-        if (config.getAlwaysPrepareKex()
-                || this.preferredGroupSize == null
-                || this.preferredGroupSize.getOriginalValue() == null) {
-            this.preferredGroupSize =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.preferredGroupSize, preferredGroupSize);
-        }
+        this.preferredGroupSize =
+                ModifiableVariableFactory.softlySetValue(
+                        this.preferredGroupSize, preferredGroupSize, config.getAlwaysPrepareKex());
     }
 
     public static final DhGexKeyExchangeOldRequestMessageHandler HANDLER =

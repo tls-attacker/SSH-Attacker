@@ -74,9 +74,7 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
     }
 
     public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        if (this.data == null || this.data.getOriginalValue() == null) {
-            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
-        }
+        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || dataLength == null

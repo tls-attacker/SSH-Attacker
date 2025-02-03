@@ -64,10 +64,8 @@ public class SftpResponseSpaceAvailableMessage
     }
 
     public void setSoftlyBytesOnDevice(long bytesOnDevice) {
-        if (this.bytesOnDevice == null || this.bytesOnDevice.getOriginalValue() == null) {
-            this.bytesOnDevice =
-                    ModifiableVariableFactory.safelySetValue(this.bytesOnDevice, bytesOnDevice);
-        }
+        this.bytesOnDevice =
+                ModifiableVariableFactory.softlySetValue(this.bytesOnDevice, bytesOnDevice);
     }
 
     public ModifiableLong getUnusedBytesOnDevice() {
@@ -85,12 +83,9 @@ public class SftpResponseSpaceAvailableMessage
     }
 
     public void setSoftlyUnusedBytesOnDevice(long unusedBytesOnDevice) {
-        if (this.unusedBytesOnDevice == null
-                || this.unusedBytesOnDevice.getOriginalValue() == null) {
-            this.unusedBytesOnDevice =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.unusedBytesOnDevice, unusedBytesOnDevice);
-        }
+        this.unusedBytesOnDevice =
+                ModifiableVariableFactory.softlySetValue(
+                        this.unusedBytesOnDevice, unusedBytesOnDevice);
     }
 
     public ModifiableLong getBytesAvailableToUser() {
@@ -108,12 +103,9 @@ public class SftpResponseSpaceAvailableMessage
     }
 
     public void setSoftlyBytesAvailableToUser(long bytesAvailableToUser) {
-        if (this.bytesAvailableToUser == null
-                || this.bytesAvailableToUser.getOriginalValue() == null) {
-            this.bytesAvailableToUser =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.bytesAvailableToUser, bytesAvailableToUser);
-        }
+        this.bytesAvailableToUser =
+                ModifiableVariableFactory.softlySetValue(
+                        this.bytesAvailableToUser, bytesAvailableToUser);
     }
 
     public ModifiableLong getUnusedBytesAvailableToUser() {
@@ -131,12 +123,9 @@ public class SftpResponseSpaceAvailableMessage
     }
 
     public void setSoftlyUnusedBytesAvailableToUser(long unusedBytesAvailableToUser) {
-        if (this.unusedBytesAvailableToUser == null
-                || this.unusedBytesAvailableToUser.getOriginalValue() == null) {
-            this.unusedBytesAvailableToUser =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.unusedBytesAvailableToUser, unusedBytesAvailableToUser);
-        }
+        this.unusedBytesAvailableToUser =
+                ModifiableVariableFactory.softlySetValue(
+                        this.unusedBytesAvailableToUser, unusedBytesAvailableToUser);
     }
 
     public ModifiableInteger getBytesPerAllocationUnit() {
@@ -154,12 +143,9 @@ public class SftpResponseSpaceAvailableMessage
     }
 
     public void setSoftlyBytesPerAllocationUnit(int bytesPerAllocationUnit) {
-        if (this.bytesPerAllocationUnit == null
-                || this.bytesPerAllocationUnit.getOriginalValue() == null) {
-            this.bytesPerAllocationUnit =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.bytesPerAllocationUnit, bytesPerAllocationUnit);
-        }
+        this.bytesPerAllocationUnit =
+                ModifiableVariableFactory.softlySetValue(
+                        this.bytesPerAllocationUnit, bytesPerAllocationUnit);
     }
 
     public static final SftpResponseSpaceAvailableMessageHandler HANDLER =

@@ -109,12 +109,11 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyPubKeyAlgorithm(
             String pubKeyAlgorithm, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.pubKeyAlgorithm == null
-                || this.pubKeyAlgorithm.getOriginalValue() == null) {
-            this.pubKeyAlgorithm =
-                    ModifiableVariableFactory.safelySetValue(this.pubKeyAlgorithm, pubKeyAlgorithm);
-        }
+        this.pubKeyAlgorithm =
+                ModifiableVariableFactory.softlySetValue(
+                        this.pubKeyAlgorithm,
+                        pubKeyAlgorithm,
+                        config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || pubKeyAlgorithmLength == null
@@ -181,12 +180,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyHostKeyBytes(
             byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.hostKeyBytes == null
-                || this.hostKeyBytes.getOriginalValue() == null) {
-            this.hostKeyBytes =
-                    ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
-        }
+        this.hostKeyBytes =
+                ModifiableVariableFactory.softlySetValue(
+                        this.hostKeyBytes, hostKeyBytes, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || hostKeyBytesLength == null
@@ -236,11 +232,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setSoftlyHostName(String hostName, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.hostName == null
-                || this.hostName.getOriginalValue() == null) {
-            this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
-        }
+        this.hostName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.hostName, hostName, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || hostNameLength == null
@@ -296,12 +290,11 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     public void setSoftlyClientUserName(
             String clientUserName, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.clientUserName == null
-                || this.clientUserName.getOriginalValue() == null) {
-            this.clientUserName =
-                    ModifiableVariableFactory.safelySetValue(this.clientUserName, clientUserName);
-        }
+        this.clientUserName =
+                ModifiableVariableFactory.softlySetValue(
+                        this.clientUserName,
+                        clientUserName,
+                        config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || clientUserNameLength == null
@@ -360,11 +353,9 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.signature == null
-                || this.signature.getOriginalValue() == null) {
-            this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
-        }
+        this.signature =
+                ModifiableVariableFactory.softlySetValue(
+                        this.signature, signature, config.getAlwaysPrepareAuthentication());
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || signatureLength == null

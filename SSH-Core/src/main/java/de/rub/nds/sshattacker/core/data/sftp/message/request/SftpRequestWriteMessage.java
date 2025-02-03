@@ -51,9 +51,7 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
     }
 
     public void setSoftlyOffset(long offset) {
-        if (this.offset == null || this.offset.getOriginalValue() == null) {
-            this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
-        }
+        this.offset = ModifiableVariableFactory.softlySetValue(this.offset, offset);
     }
 
     public ModifiableInteger getDataLength() {
@@ -95,9 +93,7 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
     }
 
     public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        if (this.data == null || this.data.getOriginalValue() == null) {
-            this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
-        }
+        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || dataLength == null

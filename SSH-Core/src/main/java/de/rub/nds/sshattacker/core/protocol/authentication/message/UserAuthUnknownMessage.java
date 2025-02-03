@@ -46,12 +46,9 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
     }
 
     public void setSoftlyMethodSpecificFields(byte[] methodSpecificFields) {
-        if (this.methodSpecificFields == null
-                || this.methodSpecificFields.getOriginalValue() == null) {
-            this.methodSpecificFields =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.methodSpecificFields, methodSpecificFields);
-        }
+        this.methodSpecificFields =
+                ModifiableVariableFactory.softlySetValue(
+                        this.methodSpecificFields, methodSpecificFields);
     }
 
     public static final UserAuthUnknownMessageHandler HANDLER = new UserAuthUnknownMessageHandler();

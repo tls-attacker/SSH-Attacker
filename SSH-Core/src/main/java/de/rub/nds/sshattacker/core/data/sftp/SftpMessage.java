@@ -41,9 +41,7 @@ public abstract class SftpMessage<T extends SftpMessage<T>> extends DataMessage<
     }
 
     public void setSoftlyPacketType(byte packetType) {
-        if (this.packetType == null || this.packetType.getOriginalValue() == null) {
-            this.packetType = ModifiableVariableFactory.safelySetValue(this.packetType, packetType);
-        }
+        this.packetType = ModifiableVariableFactory.softlySetValue(this.packetType, packetType);
     }
 
     public void setPacketType(SftpPacketTypeConstant packetType) {

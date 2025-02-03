@@ -98,9 +98,7 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setSoftlySignalName(String signalName, boolean adjustLengthField, Config config) {
-        if (this.signalName == null || this.signalName.getOriginalValue() == null) {
-            this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
-        }
+        this.signalName = ModifiableVariableFactory.softlySetValue(this.signalName, signalName);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || signalNameLength == null
@@ -137,9 +135,7 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setSoftlyCoreDump(byte coreDump) {
-        if (this.coreDump == null || this.coreDump.getOriginalValue() == null) {
-            this.coreDump = ModifiableVariableFactory.safelySetValue(this.coreDump, coreDump);
-        }
+        this.coreDump = ModifiableVariableFactory.softlySetValue(this.coreDump, coreDump);
     }
 
     public void setCoreDump(ModifiableByte coreDump) {
@@ -188,10 +184,7 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || languageTagLength == null
@@ -248,10 +241,8 @@ public class ChannelRequestExitSignalMessage
 
     public void setSoftlyErrorMessage(
             String errorMessage, boolean adjustLengthField, Config config) {
-        if (this.errorMessage == null || this.errorMessage.getOriginalValue() == null) {
-            this.errorMessage =
-                    ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
-        }
+        this.errorMessage =
+                ModifiableVariableFactory.softlySetValue(this.errorMessage, errorMessage);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || errorMessageLength == null

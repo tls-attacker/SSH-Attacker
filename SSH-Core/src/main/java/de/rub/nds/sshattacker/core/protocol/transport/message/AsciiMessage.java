@@ -54,9 +54,7 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     public void setSoftlyText(String text) {
-        if (this.text == null || this.text.getOriginalValue() == null) {
-            this.text = ModifiableVariableFactory.safelySetValue(this.text, text);
-        }
+        this.text = ModifiableVariableFactory.softlySetValue(this.text, text);
     }
 
     public ModifiableString getEndOfMessageSequence() {
@@ -74,12 +72,9 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     public void setSoftlyEndOfMessageSequence(String endOfMessageSequence) {
-        if (this.endOfMessageSequence == null
-                || this.endOfMessageSequence.getOriginalValue() == null) {
-            this.endOfMessageSequence =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.endOfMessageSequence, endOfMessageSequence);
-        }
+        this.endOfMessageSequence =
+                ModifiableVariableFactory.softlySetValue(
+                        this.endOfMessageSequence, endOfMessageSequence);
     }
 
     public static final AsciiMessageHandler HANDLER = new AsciiMessageHandler();

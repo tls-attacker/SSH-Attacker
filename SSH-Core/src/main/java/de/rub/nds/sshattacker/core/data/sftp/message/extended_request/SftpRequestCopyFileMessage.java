@@ -62,12 +62,9 @@ public class SftpRequestCopyFileMessage
     }
 
     public void setSoftlyOverwriteDestination(byte overwriteDestination) {
-        if (this.overwriteDestination == null
-                || this.overwriteDestination.getOriginalValue() == null) {
-            this.overwriteDestination =
-                    ModifiableVariableFactory.safelySetValue(
-                            this.overwriteDestination, overwriteDestination);
-        }
+        this.overwriteDestination =
+                ModifiableVariableFactory.softlySetValue(
+                        this.overwriteDestination, overwriteDestination);
     }
 
     public void setOverwriteDestination(boolean overwriteDestination) {
@@ -123,10 +120,8 @@ public class SftpRequestCopyFileMessage
 
     public void setSoftlyDestinationPath(
             String destinationPath, boolean adjustLengthField, Config config) {
-        if (this.destinationPath == null || this.destinationPath.getOriginalValue() == null) {
-            this.destinationPath =
-                    ModifiableVariableFactory.safelySetValue(this.destinationPath, destinationPath);
-        }
+        this.destinationPath =
+                ModifiableVariableFactory.softlySetValue(this.destinationPath, destinationPath);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareSftpLengthFields()
                     || destinationPathLength == null

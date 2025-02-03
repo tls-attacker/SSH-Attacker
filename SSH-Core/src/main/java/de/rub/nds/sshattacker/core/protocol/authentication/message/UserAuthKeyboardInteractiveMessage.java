@@ -85,10 +85,7 @@ public class UserAuthKeyboardInteractiveMessage
     }
 
     public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        if (this.languageTag == null || this.languageTag.getOriginalValue() == null) {
-            this.languageTag =
-                    ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        }
+        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || languageTagLength == null
@@ -139,9 +136,7 @@ public class UserAuthKeyboardInteractiveMessage
     }
 
     public void setSoftlySubMethods(String subMethods, boolean adjustLengthField, Config config) {
-        if (this.subMethods == null || this.subMethods.getOriginalValue() == null) {
-            this.subMethods = ModifiableVariableFactory.safelySetValue(this.subMethods, subMethods);
-        }
+        this.subMethods = ModifiableVariableFactory.softlySetValue(this.subMethods, subMethods);
         if (adjustLengthField) {
             if (config.getAlwaysPrepareLengthFields()
                     || subMethodsLength == null
