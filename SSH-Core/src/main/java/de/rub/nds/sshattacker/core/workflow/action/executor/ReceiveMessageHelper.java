@@ -89,6 +89,14 @@ public final class ReceiveMessageHelper {
             LOGGER.debug(e);
             context.setReceivedTransportHandlerException(true);
         }
+        if (result.countMessages() == 0) {
+            // Timeout exceptions and IO exceptions are caught in the fetchData method of the
+            // transport handler. So we can not be sure what happened.
+            LOGGER.warn("Received no message. Socket timed out or an IOException happened");
+            // TODO: Change TransportHandler so that we can get cachedSocketState or the exception
+            //  that was thrown.
+            context.setReceivedTransportHandlerException(true);
+        }
         return result;
     }
 
