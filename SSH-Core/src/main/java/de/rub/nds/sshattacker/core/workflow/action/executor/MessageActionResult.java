@@ -49,6 +49,10 @@ public class MessageActionResult {
         return messageList;
     }
 
+    public int countMessages() {
+        return messageList.size();
+    }
+
     /**
      * Merge this {@code MessageActionResult} with other results. The resulting MessageActionResult
      * will be a combination of both, message and packet lists.

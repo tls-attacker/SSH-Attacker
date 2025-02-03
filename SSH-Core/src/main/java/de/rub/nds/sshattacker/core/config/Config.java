@@ -680,9 +680,17 @@ public class Config implements Serializable {
     // region ReceiveAction
     /**
      * If set to true, SSH-Attacker will not try to continue receiving when all expected messages
-     * were received
+     * were received. If false and messages are expected, SSH-Attacker will try to continue
+     * receiving as long as the socket does not time out.
      */
     private Boolean quickReceive = true;
+
+    /**
+     * If set to true, SSH-Attacker will not try to continue receiving when at least one message was
+     * received and no messages are expected. If false and no messages are expected, SSH-Attacker
+     * will try to continue receiving as long as the socket does not time out.
+     */
+    private Boolean endReceivingEarly = false;
 
     /**
      * The maximum number of bytes to receive in a single receive action. Defaults to 2^24 bytes,
@@ -1570,6 +1578,7 @@ public class Config implements Serializable {
         retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
         stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
         quickReceive = other.quickReceive;
+        endReceivingEarly = other.endReceivingEarly;
         receiveMaximumBytes = other.receiveMaximumBytes;
         stopReceivingAfterDisconnect = other.stopReceivingAfterDisconnect;
         configOutput = other.configOutput;
@@ -2552,6 +2561,14 @@ public class Config implements Serializable {
 
     public Integer getReceiveMaximumBytes() {
         return receiveMaximumBytes;
+    }
+
+    public Boolean isEndReceivingEarly() {
+        return endReceivingEarly;
+    }
+
+    public void setEndReceivingEarly(Boolean endReceivingEarly) {
+        this.endReceivingEarly = endReceivingEarly;
     }
 
     public Boolean isStopReceivingAfterDisconnect() {

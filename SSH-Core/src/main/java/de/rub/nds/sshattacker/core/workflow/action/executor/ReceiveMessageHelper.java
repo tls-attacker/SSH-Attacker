@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
@@ -56,6 +57,7 @@ public final class ReceiveMessageHelper {
     public static MessageActionResult receiveMessages(
             SshContext context, List<ProtocolMessage<?>> expectedMessages) {
         MessageActionResult result = new MessageActionResult();
+        Config config = context.getConfig();
         try {
             byte[] receivedBytes;
             int receivedBytesLength = 0;
@@ -65,12 +67,18 @@ public final class ReceiveMessageHelper {
                 receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(context, receivedBytes);
                 result = result.merge(tempResult);
-                if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
+                if (config.isQuickReceive() && !expectedMessages.isEmpty()) {
                     shouldContinue =
                             testShouldContinueReceiving(
                                     context, expectedMessages, tempResult.getMessageList());
                 }
-                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
+                if (result.countMessages() > 0
+                        && (config.isEndReceivingEarly() && expectedMessages.isEmpty()
+                                || context.isReceiveAsciiModeEnabled())) {
+                    // In ascii mode if we got one message it makes no sense to continue reading
+                    shouldContinue = false;
+                }
+                if (receivedBytesLength >= config.getReceiveMaximumBytes()) {
                     shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
@@ -124,7 +132,10 @@ public final class ReceiveMessageHelper {
     }
 
     /**
-     * Handles received bytes by parsing them into packets and consecutively messages.
+     * Handles received bytes by parsing them into packets and consecutively messages. If parsing
+     * fails, the method will try to receive additional bytes from the underlying transport handler.
+     * If no additional bytes are available or an IOException occurs, bytes will be parsed softly by
+     * the packet layer.
      *
      * @param context The SSH context
      * @param receivedBytes Received bytes to handle
@@ -140,7 +151,25 @@ public final class ReceiveMessageHelper {
         LinkedList<AbstractPacket> retrievedPackets = new LinkedList<>();
         LinkedList<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
         do {
-            PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
+            PacketLayerParseResult parseResult;
+
+            try {
+                parseResult = context.getPacketLayer().parsePacket(receivedBytes, dataPointer);
+            } catch (ParserException e) {
+                LOGGER.debug(
+                        "Could not parse the provided bytes into packets. Waiting for more data to become available",
+                        e);
+                byte[] extraBytes = receiveAdditionalBytes(context);
+                if (extraBytes != null && extraBytes.length > 0) {
+                    receivedBytes = ArrayConverter.concatenate(receivedBytes, extraBytes);
+                    continue;
+                } else {
+                    LOGGER.debug("Did not receive more bytes. Parsing records softly");
+                    parseResult =
+                            context.getPacketLayer().parsePacketSoftly(receivedBytes, dataPointer);
+                }
+            }
+
             Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
             if (parsedPacket.isPresent()) {
                 ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
@@ -160,40 +189,6 @@ public final class ReceiveMessageHelper {
         } while (dataPointer < receivedBytes.length);
         return new MessageActionResult(
                 new ArrayList<>(retrievedPackets), new ArrayList<>(parsedMessages));
-    }
-
-    /**
-     * Parses the given bytes into AbstractPackets. If parsing fails, the method will try to receive
-     * additional bytes from the underlying transport handler. If no additional bytes are available
-     * or an IOException occurs, bytes will be parsed softly (most likely to BlobPackets) by the
-     * packet layer.
-     *
-     * @param context The SSH context
-     * @param packetBytes Raw packet bytes to parse
-     * @param startPosition Start position for parsing
-     * @return The parse result from the underlying packet layer containing the total number of
-     *     bytes parsed as well as the parsed packet itself
-     */
-    private static PacketLayerParseResult parsePacket(
-            SshContext context, byte[] packetBytes, int startPosition) {
-        try {
-            return context.getPacketLayer().parsePacket(packetBytes, startPosition);
-        } catch (ParserException e) {
-            LOGGER.debug(e);
-            if (context.getTransportHandler() != null) {
-                LOGGER.debug(
-                        "Could not parse the provided bytes into packets. Waiting for more data to become available");
-                byte[] extraBytes = receiveAdditionalBytes(context);
-                if (extraBytes != null && extraBytes.length > 0) {
-                    return parsePacket(
-                            context,
-                            ArrayConverter.concatenate(packetBytes, extraBytes),
-                            startPosition);
-                }
-            }
-            LOGGER.debug("Did not receive more bytes. Parsing records softly");
-            return context.getPacketLayer().parsePacketSoftly(packetBytes, startPosition);
-        }
     }
 
     /**
