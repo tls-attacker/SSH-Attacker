@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
+import de.rub.nds.sshattacker.core.exceptions.OpenQuantumSafeConfigurationException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
@@ -60,7 +61,7 @@ public class HybridKeyExchange extends KeyExchange {
         try {
             if (!algorithm.isImplemented()) {
                 LOGGER.warn(
-                        "Algorithm {}is not yet implemented. Falling back to {}",
+                        "Algorithm {} is not yet implemented. Falling back to {}",
                         algorithm,
                         KeyExchangeAlgorithm.SNTRUP761_X25519);
                 algorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
@@ -69,29 +70,17 @@ public class HybridKeyExchange extends KeyExchange {
             return (HybridKeyExchange) kexImplementation.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-OQS is not available. Make sure to enable OpenQuantumSafe support by enabling the corresponding profile during build!");
-            System.exit(1);
-            return null;
-        } catch (InvocationTargetException e) {
-            LOGGER.fatal("Unable to invoke the default constructor of class {}", algorithm.name());
-            System.exit(1);
-            return null;
-        } catch (InstantiationException e) {
-            LOGGER.fatal(
-                    "Unable to create new object by constructor invocation of class {}",
-                    algorithm.name());
-            System.exit(1);
-            return null;
-        } catch (IllegalAccessException e) {
-            LOGGER.fatal("Unable to access the default constructor of class {}", algorithm.name());
-            System.exit(1);
-            return null;
-        } catch (NoSuchMethodException e) {
-            LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, default constructor of class {} not found. Did the method signature change?",
-                    algorithm.name());
-            System.exit(1);
-            return null;
+                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-OQS is not available."
+                            + " Make sure to enable OpenQuantumSafe support by enabling the corresponding"
+                            + " profile during build and installing liboqs!");
+            throw new OpenQuantumSafeConfigurationException("Module SSH-Core-OQS is not available");
+        } catch (InvocationTargetException
+                | InstantiationException
+                | IllegalAccessException
+                | NoSuchMethodException e) {
+            LOGGER.fatal("Unable to create a new instance of class {}", algorithm.name());
+            throw new OpenQuantumSafeConfigurationException(
+                    "Unable to acces or invoke the SSH-Core-OQS module");
         }
     }
 
