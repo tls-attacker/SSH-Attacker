@@ -144,7 +144,7 @@ public class X509EcdsaPublicKeyParser
                 // Dynamically determine the PublicKeyFormat based on the curve
                 PublicKeyFormat keyFormat;
                 switch (curveName) {
-                        // Required Curves (RFC 5656, Section 10.1)
+                    // Required Curves (RFC 5656, Section 10.1)
                     case "secp256r1":
                         keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256;
                         break;
@@ -155,7 +155,7 @@ public class X509EcdsaPublicKeyParser
                         keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP521;
                         break;
 
-                        // Recommended curves (RFC 5656, Section 10.2)
+                    // Recommended curves (RFC 5656, Section 10.2)
                     case "sect163k1":
                         keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163K1;
                         break;
@@ -184,7 +184,7 @@ public class X509EcdsaPublicKeyParser
                         keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571K1;
                         break;
 
-                        // Unknown or not supported curves
+                    // Unknown or not supported curves
                     default:
                         throw new IllegalArgumentException("Unsupported curve: " + curveName);
                 }
@@ -287,7 +287,7 @@ public class X509EcdsaPublicKeyParser
     // Map curve name to NamedEcGroup locally without modifying NamedEcGroup
     private NamedEcGroup mapCurveNameToNamedEcGroup(String curveName) {
         switch (curveName) {
-                // Required Curves (RFC 5656, Section 10.1)
+            // Required Curves (RFC 5656, Section 10.1)
             case "secp256r1":
                 return NamedEcGroup.SECP256R1;
             case "secp384r1":
@@ -295,7 +295,7 @@ public class X509EcdsaPublicKeyParser
             case "secp521r1":
                 return NamedEcGroup.SECP521R1;
 
-                // Recommended Curves (RFC 5656, Section 10.2)
+            // Recommended Curves (RFC 5656, Section 10.2)
             case "sect163k1":
                 return NamedEcGroup.SECT163K1;
             case "secp192r1":
