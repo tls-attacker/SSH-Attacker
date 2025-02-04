@@ -60,8 +60,9 @@ public enum ChannelType {
     }
 
     public static ChannelType fromName(String name) {
-        if (map.containsKey(name)) {
-            return map.get(name);
+        ChannelType result = map.get(name);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }

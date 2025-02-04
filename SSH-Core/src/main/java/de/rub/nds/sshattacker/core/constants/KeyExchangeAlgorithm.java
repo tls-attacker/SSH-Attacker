@@ -265,8 +265,9 @@ public enum KeyExchangeAlgorithm {
     }
 
     public static KeyExchangeAlgorithm fromName(String name) {
-        if (map.containsKey(name)) {
-            return map.get(name);
+        KeyExchangeAlgorithm result = map.get(name);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }

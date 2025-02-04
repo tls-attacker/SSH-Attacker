@@ -57,8 +57,9 @@ public enum Extension {
     }
 
     public static Extension fromName(String name) {
-        if (map.containsKey(name)) {
-            return map.get(name);
+        Extension result = map.get(name);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }

@@ -90,8 +90,9 @@ public enum SftpExtension {
     }
 
     public static SftpExtension fromName(String name) {
-        if (map.containsKey(name)) {
-            return map.get(name);
+        SftpExtension result = map.get(name);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }

@@ -52,38 +52,42 @@ public enum SftpPacketTypeConstant {
     SSH_FXP_BLOCK((byte) 22),
     SSH_FXP_UNBLOCK((byte) 23),
     // Unknown
-    UNKNOWN((byte) 255);
+    UNKNOWN(null);
 
-    private final byte id;
+    private final Byte id;
     public static final Map<Byte, SftpPacketTypeConstant> map;
 
     static {
         Map<Byte, SftpPacketTypeConstant> mutableMap = new TreeMap<>();
         for (SftpPacketTypeConstant constant : values()) {
-            mutableMap.put(constant.id, constant);
+            if (constant.id != null) {
+                mutableMap.put(constant.id, constant);
+            }
         }
         map = Collections.unmodifiableMap(mutableMap);
     }
 
-    SftpPacketTypeConstant(byte id) {
+    SftpPacketTypeConstant(Byte id) {
         this.id = id;
     }
 
-    public byte getId() {
+    public Byte getId() {
         return id;
     }
 
     public static String getNameById(byte id) {
-        if (map.containsKey(id)) {
-            return map.get(id).toString();
+        SftpPacketTypeConstant constant = map.get(id);
+        if (constant != null) {
+            return constant.toString();
         } else {
             return String.format("0x%02X", id);
         }
     }
 
     public static SftpPacketTypeConstant fromId(byte id) {
-        if (map.containsKey(id)) {
-            return map.get(id);
+        SftpPacketTypeConstant result = map.get(id);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }
