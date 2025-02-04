@@ -195,11 +195,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 "Negotiated Hybrid Key Exchange: {}",
                 context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
-                //noinspection DefaultNotLastCaseInSwitch
+            //noinspection DefaultNotLastCaseInSwitch
             default:
                 LOGGER.warn(
                         "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
-                // Fallthrough to next case statement intended
+            // Fallthrough to next case statement intended
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
@@ -239,11 +239,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 "Negotiated Hybrid Key Exchange: {}",
                 context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
-                //noinspection DefaultNotLastCaseInSwitch
+            //noinspection DefaultNotLastCaseInSwitch
             default:
                 LOGGER.warn(
                         "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");
-                // Fallthrough to next case statement intended
+            // Fallthrough to next case statement intended
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,

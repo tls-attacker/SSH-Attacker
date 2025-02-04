@@ -237,7 +237,7 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
                 return "1.3.132.0.34";
             case SECP521R1:
                 return "1.3.132.0.35";
-                // Additional curves from RFC 5656
+            // Additional curves from RFC 5656
             default:
                 return curve.getIdentifier();
         }
