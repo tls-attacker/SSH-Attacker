@@ -82,6 +82,9 @@ public enum SftpPacketTypeConstant {
     }
 
     public static SftpPacketTypeConstant fromId(byte id) {
-        return map.get(id);
+        if (map.containsKey(id)) {
+            return map.get(id);
+        }
+        return UNKNOWN;
     }
 }
