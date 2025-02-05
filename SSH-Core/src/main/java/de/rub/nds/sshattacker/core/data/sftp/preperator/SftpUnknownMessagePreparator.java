@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.preperator;
 
-import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -15,7 +14,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class SftpUnknownMessagePreparator extends SftpMessagePreparator<SftpUnknownMessage> {
 
     public SftpUnknownMessagePreparator() {
-        super(SftpPacketTypeConstant.UNKNOWN);
+        super((byte) 255);
     }
 
     @Override
