@@ -49,7 +49,6 @@ public final class SshActionFactory {
             ((ReceiveAction) action)
                     .setReceiveOptions(
                             Set.of(
-                                    ReceiveAction.ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER,
                                     ReceiveAction.ReceiveOption
                                             .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS));
         }

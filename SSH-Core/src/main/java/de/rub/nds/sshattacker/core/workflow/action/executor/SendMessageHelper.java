@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -42,16 +43,18 @@ public final class SendMessageHelper {
                 message.prepare(context.getChooser());
             }
 
-            ProtocolMessage<?> innerMessage = null;
             if (message instanceof DataMessage<?>) {
                 // Serialize data message to ChannelDataMessage
-                innerMessage = message;
-                if (innerMessage instanceof HasSentHandler) {
-                    ((HasSentHandler) innerMessage).adjustContextAfterSent(context);
+                if (message instanceof HasSentHandler) {
+                    ((HasSentHandler) message).adjustContextAfterSent(context);
                 }
                 // TODO: decide if we should pass prepareBeforeSending
+
                 // serialize also prepares the ChannelDataMessage
-                message = context.getDataMessageLayer().serialize((DataMessage<?>) message);
+                ChannelDataMessage messageWrapper =
+                        context.getDataMessageLayer().serialize((DataMessage<?>) message);
+                ((DataMessage<?>) message).setChannelDataWrapper(messageWrapper);
+                message = messageWrapper;
             }
 
             AbstractPacket packet = context.getMessageLayer().serialize(message);
@@ -62,12 +65,6 @@ public final class SendMessageHelper {
             ArrayList<AbstractPacket> packetList = new ArrayList<>(1);
             packetList.add(packet);
             ArrayList<ProtocolMessage<?>> messageList;
-            if (innerMessage != null) {
-                messageList = new ArrayList<>(2);
-                messageList.add(message);
-                messageList.add(innerMessage);
-                return new MessageActionResult(packetList, messageList);
-            }
 
             messageList = new ArrayList<>(1);
             messageList.add(message);

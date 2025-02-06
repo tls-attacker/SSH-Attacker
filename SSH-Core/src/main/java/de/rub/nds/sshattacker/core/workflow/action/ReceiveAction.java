@@ -247,12 +247,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean ignoreUnexpectedChannelWindowAdjusts;
 
-    /**
-     * Set to {@code true} if the {@link ReceiveOption#IGNORE_CHANNEL_DATA_WRAPPER} option has been
-     * set.
-     */
-    @XmlElement protected Boolean ignoreChannelDataWrapper;
-
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements({
@@ -325,7 +319,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         failOnUnexpectedIgnoreMessages = other.failOnUnexpectedIgnoreMessages;
         failOnUnexpectedDebugMessages = other.failOnUnexpectedDebugMessages;
         ignoreUnexpectedChannelWindowAdjusts = other.ignoreUnexpectedChannelWindowAdjusts;
-        ignoreChannelDataWrapper = other.ignoreChannelDataWrapper;
         if (other.receivedPackets != null) {
             receivedPackets = new ArrayList<>(other.receivedPackets.size());
             for (AbstractPacket item : other.receivedPackets) {
@@ -491,9 +484,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
                                 && actualMessage instanceof DebugMessage
                         || hasReceiveOption(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)
-                                && actualMessage instanceof ChannelWindowAdjustMessage
-                        || hasReceiveOption(ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER)
-                                && actualMessage instanceof ChannelDataMessage) {
+                                && actualMessage instanceof ChannelWindowAdjustMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }
@@ -584,9 +575,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             case IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS:
                 value = ignoreUnexpectedChannelWindowAdjusts;
                 break;
-            case IGNORE_CHANNEL_DATA_WRAPPER:
-                value = ignoreChannelDataWrapper;
-                break;
         }
 
         return value != null && value;
@@ -620,8 +608,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
         ignoreUnexpectedChannelWindowAdjusts =
                 receiveOptions.contains(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS);
-        ignoreChannelDataWrapper =
-                receiveOptions.contains(ReceiveOption.IGNORE_CHANNEL_DATA_WRAPPER);
 
         if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                 && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
@@ -729,19 +715,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
          *     section 5.2 "Data Transfer"</a>
          */
-        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS,
-        /**
-         * Ignore unexpected {@code SSH_MSG_CHANNEL_DATA} messages when checking if the reception
-         * action was executed as planned.
-         *
-         * <p>The data of the ChannelDataMessages are parsed into a separate message. It is
-         * therefore practical to ignore the {@code SSH_MSG_CHANNEL_DATA} and only expect the
-         * messages that were transmitted via channel data.
-         *
-         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
-         *     section 5.2 "Data Transfer"</a>
-         */
-        IGNORE_CHANNEL_DATA_WRAPPER;
+        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));

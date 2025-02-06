@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageParser;
 import de.rub.nds.sshattacker.core.data.string.StringDataMessage;
 import de.rub.nds.sshattacker.core.data.string.StringDataMessageParser;
+import de.rub.nds.sshattacker.core.data.unknown.UnknownDataMessage;
 import de.rub.nds.sshattacker.core.data.unknown.UnknownDataMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
@@ -106,9 +107,13 @@ public class DataMessageLayer {
                         resultMessage.getCompleteResultingMessage().getValue().length,
                         parsedPacket.get().getPayload().getValue().length);
             }
+            resultMessage.setChannelDataWrapper(message);
             return resultMessage;
         }
-        return new UnknownDataMessageParser(message.getData().getValue()).parse();
+        UnknownDataMessage unknownResult =
+                new UnknownDataMessageParser(message.getData().getValue()).parse();
+        unknownResult.setChannelDataWrapper(message);
+        return unknownResult;
     }
 
     public Stream<DataMessage<?>> parse(

@@ -183,7 +183,6 @@ public final class ReceiveMessageHelper {
                 ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
                 message.adjustContext(context);
                 retrievedPackets.add(parsedPacket.get());
-                parsedMessages.add(message);
 
                 if (message instanceof ChannelDataMessage) {
                     // Parse ChannelDataMessage
@@ -191,6 +190,8 @@ public final class ReceiveMessageHelper {
                             context.getDataMessageLayer().parse((ChannelDataMessage) message);
                     innerMessage.adjustContext(context);
                     parsedMessages.add(innerMessage);
+                } else {
+                    parsedMessages.add(message);
                 }
             }
             dataPointer += parseResult.getParsedByteCount();
