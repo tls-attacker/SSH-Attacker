@@ -237,6 +237,7 @@ public class SftpManager {
             int resultIdx = random.nextInt(openFileHandles.size() + openDirectoryHandles.size());
             if (resultIdx >= openFileHandles.size()) {
                 resultIdx -= openFileHandles.size();
+                return openDirectoryHandles.get(resultIdx);
             }
             return openFileHandles.get(resultIdx);
         }
