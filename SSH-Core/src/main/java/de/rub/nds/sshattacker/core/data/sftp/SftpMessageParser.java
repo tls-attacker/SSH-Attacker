@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.SftpRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.*;
@@ -53,7 +54,9 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
 
     public static SftpMessage<?> delegateParsing(AbstractDataPacket packet, SshContext context) {
         byte[] raw = packet.getPayload().getValue();
-
+        if (raw.length == 0) {
+            return new SftpUnknownMessage();
+        }
         try {
             switch (SftpPacketTypeConstant.fromId(raw[0])) {
                 case SSH_FXP_INIT:

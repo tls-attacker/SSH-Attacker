@@ -44,7 +44,7 @@ public class SftpFileNameEntryParser extends Parser<SftpFileNameEntry> {
     }
 
     private void parseLongName() {
-        if (chooser.getSftpNegotiatedVersion() <= 3) {
+        if (chooser.getSftpNegotiatedVersion(true) <= 3) {
             int longNameLength = parseIntField();
             nameEntry.setLongNameLength(longNameLength);
             LOGGER.debug("LongName length: {}", longNameLength);

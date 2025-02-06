@@ -1085,13 +1085,15 @@ public class DefaultChooser extends Chooser {
 
     /**
      * Retrieves the SFTP negotiated version from context. If no version was received (i.e.
-     * out-of-order workflow), the SFTP negotiated version from config will be returned.
+     * out-of-order workflow), the SFTP negotiated version from config will be returned. If
+     * respectSftpNegotiatedVersion is false the configured sftpNegotiatedVersion is returned. If
+     * forParsing is true, respectSftpNegotiatedVersion is ignored.
      *
      * @return The SFTP negotiated protocol version
      */
     @Override
-    public Integer getSftpNegotiatedVersion() {
-        if (config.getRespectSftpNegotiatedVersion()) {
+    public Integer getSftpNegotiatedVersion(boolean forParsing) {
+        if (forParsing || config.getRespectSftpNegotiatedVersion()) {
             return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
         } else {
             return config.getSftpNegotiatedVersion();

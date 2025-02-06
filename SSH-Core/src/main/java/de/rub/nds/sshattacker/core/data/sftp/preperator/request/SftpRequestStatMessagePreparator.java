@@ -23,7 +23,7 @@ public class SftpRequestStatMessagePreparator
     public void prepareRequestSpecificContents(SftpRequestStatMessage object, Chooser chooser) {
         object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(false) > 3) {
             object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             object.clearFlags();

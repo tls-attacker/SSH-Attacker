@@ -268,7 +268,7 @@ public abstract class Chooser {
 
     public abstract Integer getSftpServerVersion();
 
-    public abstract Integer getSftpNegotiatedVersion();
+    public abstract Integer getSftpNegotiatedVersion(boolean forParsing);
 
     // endregion
 

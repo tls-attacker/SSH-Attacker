@@ -35,7 +35,7 @@ public class SftpRequestFileStatMessageParser
     }
 
     private void parseFlags() {
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(true) > 3) {
             int flags = parseIntField();
             message.setFlags(flags);
             LOGGER.debug("Flags: {}", flags);

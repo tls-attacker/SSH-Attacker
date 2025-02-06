@@ -171,7 +171,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
     public final SftpFileAttributes parse() {
         parseFlags();
 
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(true) > 3) {
             parseType();
         }
 
@@ -179,7 +179,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE)) {
             parseSize();
         }
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(true) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_OWNERGROUP)) {
                 parseOwnerGroup();
             }
@@ -191,7 +191,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS)) {
             parsePermissions();
         }
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(true) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME)) {
                 parseAccessTime();
             }
@@ -216,7 +216,7 @@ public class SftpFileAttributesParser extends Parser<SftpFileAttributes> {
             }
         }
 
-        if (chooser.getSftpNegotiatedVersion() > 3) {
+        if (chooser.getSftpNegotiatedVersion(true) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACL)) {
                 parseAcl();
             }
