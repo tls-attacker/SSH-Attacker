@@ -35,7 +35,7 @@ public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<Channel
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring request to adjust window of the channel.",
-                    getClass().getSimpleName(),
+                    object.getClass().getSimpleName(),
                     recipientChannelId);
         }
     }
@@ -51,7 +51,7 @@ public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<Channel
         } else {
             LOGGER.warn(
                     "{} sent but no channel with remote id {} found, ignoring request to adjust window of the channel.",
-                    getClass().getSimpleName(),
+                    object.getClass().getSimpleName(),
                     recipientChannelId);
         }
     }

@@ -35,7 +35,7 @@ public class ChannelOpenConfirmationMessageHandler
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
-                    getClass().getSimpleName(),
+                    object.getClass().getSimpleName(),
                     recipientChannelId);
             channel =
                     channelManager.createNewChannelFromDefaults(
@@ -61,7 +61,7 @@ public class ChannelOpenConfirmationMessageHandler
         } else {
             LOGGER.warn(
                     "{} sent but no channel with id {} found locally, ignoring request to confirm to open the channel.",
-                    getClass().getSimpleName(),
+                    object.getClass().getSimpleName(),
                     localChannelId);
         }
     }
