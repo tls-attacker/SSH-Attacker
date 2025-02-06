@@ -19,7 +19,7 @@ public class SftpFileNameEntryPreparator extends Preparator<SftpFileNameEntry> {
         Config config = chooser.getConfig();
         object.setSoftlyFilename("/etc/passwd", true, config);
 
-        if (chooser.getSftpNegotiatedVersion() <= 3 || !config.getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() <= 3) {
             object.setSoftlyLongName(
                     "-rwxr-xr-x   1 ssh      attacker   348911 Mar 25 14:29 passwd", true, config);
         } else {

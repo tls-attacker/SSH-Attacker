@@ -513,7 +513,7 @@ public class Config implements Serializable {
 
     /**
      * Whether the protocol messages that are sent should be consistent with the negotiated SFTP
-     * protocol version.
+     * protocol version. If false the configured sftpNegotiatedVersion will be used.
      */
     private Boolean respectSftpNegotiatedVersion;
 
@@ -1302,7 +1302,7 @@ public class Config implements Serializable {
         // region SFTP Version Exchange initialization
         sftpClientVersion = 3;
         sftpServerVersion = 3;
-        sftpNegotiatedVersion = 1;
+        sftpNegotiatedVersion = 4;
         respectSftpNegotiatedVersion = true;
         // endregion
 

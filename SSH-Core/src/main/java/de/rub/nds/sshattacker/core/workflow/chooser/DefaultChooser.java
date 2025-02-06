@@ -1091,7 +1091,11 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public Integer getSftpNegotiatedVersion() {
-        return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
+        if (config.getRespectSftpNegotiatedVersion()) {
+            return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
+        } else {
+            return config.getSftpNegotiatedVersion();
+        }
     }
 
     // endregion

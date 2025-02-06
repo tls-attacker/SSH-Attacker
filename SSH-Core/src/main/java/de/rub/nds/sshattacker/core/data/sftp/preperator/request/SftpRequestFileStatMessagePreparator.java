@@ -26,8 +26,7 @@ public class SftpRequestFileStatMessagePreparator
                 true,
                 chooser.getConfig());
 
-        if (chooser.getSftpNegotiatedVersion() > 3
-                || !chooser.getConfig().getRespectSftpNegotiatedVersion()) {
+        if (chooser.getSftpNegotiatedVersion() > 3) {
             object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             object.clearFlags();
