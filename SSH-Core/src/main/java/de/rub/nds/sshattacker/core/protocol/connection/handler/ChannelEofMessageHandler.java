@@ -8,6 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelEofMessagePreparator;
@@ -18,7 +20,30 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
 
     @Override
     public void adjustContext(SshContext context, ChannelEofMessage object) {
-        // TODO: Handle ChannelEofMessage
+        // The other side will no longer send something in this channel
+        ChannelManager channelManager = context.getChannelManager();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
+        Channel channel = channelManager.getChannelByLocalId(recipientChannelId);
+        if (channel != null) {
+            if (!channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "{} received but channel with id {} is not open.",
+                        object.getClass().getSimpleName(),
+                        recipientChannelId);
+            } else {
+                LOGGER.warn(
+                        "{} received for channel with id {}",
+                        object.getClass().getSimpleName(),
+                        recipientChannelId);
+                // TODO: set eofMessageReceived to true for the channel
+                // TODO: add sent handler and if eof received and sent -> send close channel message
+            }
+        } else {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally.",
+                    object.getClass().getSimpleName(),
+                    recipientChannelId);
+        }
     }
 
     @Override

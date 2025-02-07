@@ -67,6 +67,7 @@ public class WorkflowTrace implements Serializable {
         return copy;
     }
 
+    @XmlElementWrapper
     @XmlElements({
         @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
         @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
@@ -75,6 +76,7 @@ public class WorkflowTrace implements Serializable {
     private ArrayList<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
+    @XmlElementWrapper
     @XmlElements({
         @XmlElement(type = SendAction.class, name = "Send"),
         @XmlElement(type = ReceiveAction.class, name = "Receive"),
