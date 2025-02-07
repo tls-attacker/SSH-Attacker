@@ -281,6 +281,6 @@ public class RsaKeyExchangeTest {
 
         rsaKeyExchange.setHashLength(120);
         rsaKeyExchange.generateSharedSecret();
-        assertThrows(NullPointerException.class, rsaKeyExchange::encryptSharedSecret);
+        assertThrows(ArrayIndexOutOfBoundsException.class, rsaKeyExchange::encryptSharedSecret);
     }
 }
