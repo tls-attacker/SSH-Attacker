@@ -379,9 +379,6 @@ public class SshContext {
     /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived;
 
-    /** If set to true, a version exchange message was sent by each side */
-    private boolean versionExchangeComplete;
-
     // region Constructors and Initialization
     public SshContext() {
         this(Config.createConfig());
@@ -1258,14 +1255,6 @@ public class SshContext {
 
     public void setDisconnectMessageReceived(Boolean disconnectMessageReceived) {
         this.disconnectMessageReceived = disconnectMessageReceived;
-    }
-
-    public boolean isVersionExchangeComplete() {
-        return versionExchangeComplete;
-    }
-
-    public void setVersionExchangeComplete(Boolean complete) {
-        versionExchangeComplete = complete;
     }
 
     public boolean isClient() {
