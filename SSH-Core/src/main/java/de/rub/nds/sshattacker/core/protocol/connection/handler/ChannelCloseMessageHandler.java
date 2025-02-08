@@ -44,16 +44,18 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                         object.getClass().getSimpleName(),
                         recipientChannelId);
             } else {
-                LOGGER.warn(
-                        "{} received for channel with id {}",
-                        object.getClass().getSimpleName(),
-                        recipientChannelId);
                 channel.setCloseMessageReceived(true);
                 if (!channel.isOpen().getValue()) {
                     channelManager.removeChannelByLocalId(recipientChannelId);
                 } else {
                     // The channel is still open, because we have not yet closed it.
-                    generateDynamicActions(context, channel);
+                    if (!generateDynamicActions(context, channel)) {
+                        // In the case that we have not processed the closing msg properly
+                        LOGGER.warn(
+                                "{} received for channel with id {}",
+                                object.getClass().getSimpleName(),
+                                channel.getLocalChannelId());
+                    }
                 }
             }
         } else {
@@ -64,7 +66,8 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         }
     }
 
-    private static void generateDynamicActions(SshContext context, Channel channel) {
+    /** Returns true if dynamic actions were generated */
+    private static boolean generateDynamicActions(SshContext context, Channel channel) {
         Config config = context.getConfig();
         if (config.getAllowDynamicGenerationOfActions()
                 && config.getReopenChannelOnClose()
@@ -93,8 +96,10 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                     context.addDynamicGeneratedAction(
                             new ReceiveAction(connectionAlias, new SftpVersionMessage()));
                 }
+                return true;
             }
         }
+        return false;
     }
 
     @Override
