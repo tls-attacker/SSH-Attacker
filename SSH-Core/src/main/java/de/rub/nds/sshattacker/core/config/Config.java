@@ -391,7 +391,8 @@ public class Config implements Serializable {
 
     /**
      * Whether dynamic actions should be generated to reopen a channel if it was closed.
-     * <p> Is currently only implement for Client mode and SFTP subsystem
+     *
+     * <p>Is currently only implement for Client mode and SFTP subsystem
      */
     private Boolean reopenChannelOnClose = true;
 

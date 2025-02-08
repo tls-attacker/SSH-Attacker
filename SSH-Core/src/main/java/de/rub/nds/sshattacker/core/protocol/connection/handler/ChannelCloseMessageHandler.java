@@ -73,13 +73,16 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
             // Generate actions to close the channel and reopen it.
             String connectionAlias = config.getDefaultClientConnection().getAlias();
             if (channel.getChannelType() == ChannelType.SESSION) {
+
                 context.addDynamicGeneratedAction(
                         new SendAction(
                                 connectionAlias,
-                                new ChannelCloseMessage(),
-                                new ChannelOpenSessionMessage()));
+                                new ChannelCloseMessage(channel.getLocalChannelId().getValue()),
+                                new ChannelOpenSessionMessage(
+                                        channel.getLocalChannelId().getValue())));
                 context.addDynamicGeneratedAction(
                         new ReceiveAction(connectionAlias, new ChannelOpenConfirmationMessage()));
+
                 if (channel.getExpectedDataType() == ChannelDataType.SUBSYSTEM_SFTP) {
                     context.addDynamicGeneratedAction(
                             new SendAction(connectionAlias, new ChannelRequestSubsystemMessage()));
