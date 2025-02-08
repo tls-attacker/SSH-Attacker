@@ -51,16 +51,6 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     protected void runInternal() {
         LOGGER.info("Spawning workflow on socket {}", socket);
-        // Currently, WorkflowTraces cannot be copied with external modules
-        // if they define custom actions. This is because copying relies
-        // on serialization, and actions from other packages are unknown
-        // to the WorkflowTrace/JAXB context (sigh).
-        // General problem: external actions cannot be serialized.
-        // This means that currently there are two possibilities:
-        // Either the workflow trace is generated freshly (i.e. from the
-        // factory), or all actions are known to the serialization context.
-        // Future: a proper copy method would be very useful. The two
-        // cases above are both very expensive tasks that should be avoided.
         WorkflowTrace localTrace = globalState.getWorkflowTraceCopy();
 
         // Note that a Config should never be changed by WorkflowTrace
@@ -68,7 +58,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         State state = new State(globalState.getConfig(), localTrace);
 
         initConnectionForState(state);
-        SshContext context = state.getInboundSshContexts().get(0);
+        SshContext context = state.getInboundSshContexts().getFirst();
 
         LOGGER.info("Exectuting workflow for {} ({})", socket, context);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);

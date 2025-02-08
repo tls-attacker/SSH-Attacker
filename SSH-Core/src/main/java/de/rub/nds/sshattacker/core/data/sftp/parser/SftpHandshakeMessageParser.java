@@ -94,7 +94,7 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
                                     getArray(),
                                     extensionStartPointer);
                     break;
-                    // SFTP v4
+                // SFTP v4
                 case TEXT_SEEK:
                     extensionParser =
                             new SftpExtensionWithVersionParser<>(
@@ -104,7 +104,7 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
                     extensionParser =
                             new SftpExtensionNewlineParser(getArray(), extensionStartPointer);
                     break;
-                    // Vendor extensions
+                // Vendor extensions
                 case POSIX_RENAME_OPENSSH_COM:
                     extensionParser =
                             new SftpExtensionWithVersionParser<>(

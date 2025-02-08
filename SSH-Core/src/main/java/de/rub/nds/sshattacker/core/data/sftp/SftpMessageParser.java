@@ -152,10 +152,10 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 return new SftpRequestGetTempFolderMessageParser(raw).parse();
             case MAKE_TEMP_FOLDER:
                 return new SftpRequestMakeTempFolderMessageParser(raw).parse();
-                // SFTP v4
+            // SFTP v4
             case TEXT_SEEK:
                 return new SftpRequestMakeTempFolderMessageParser(raw).parse();
-                // vendor specific
+            // vendor specific
             case POSIX_RENAME_OPENSSH_COM:
                 return new SftpRequestPosixRenameMessageParser(raw).parse();
             case STAT_VFS_OPENSSH_COM:
@@ -197,14 +197,14 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         SftpExtension extendedResponseType =
                 SftpExtension.fromName(relatedExtendedRequest.getExtendedRequestName().getValue());
         switch (extendedResponseType) {
-                // SFTP
+            // SFTP
             case CHECK_FILE:
             case CHECK_FILE_HANDLE:
             case CHECK_FILE_NAME:
                 return new SftpResponseCheckFileMessageParser(raw).parse();
             case SPACE_AVAILABLE:
                 return new SftpResponseSpaceAvailableMessageParser(raw).parse();
-                // Vendor extensions
+            // Vendor extensions
             case STAT_VFS_OPENSSH_COM:
             case F_STAT_VFS_OPENSSH_COM:
                 return new SftpResponseStatVfsMessageParser(raw).parse();

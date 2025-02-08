@@ -166,7 +166,7 @@ public final class OaepConverter {
         for (int counter = 0; counter < maxIterations; counter++) {
 
             // Step a: Convert counter using I2OSP
-            byte[] counterBytes = ArrayConverter.intToBytes(counter, 4);
+            byte[] counterBytes = ArrayConverter.intToFourBytes(counter);
 
             // Step b: Concatenate hash of seed and counterBytes with intermediate result
             ByteBuffer digestInputBuffer = ByteBuffer.allocate(seed.length + 4);
