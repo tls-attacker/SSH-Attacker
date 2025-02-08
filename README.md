@@ -14,7 +14,7 @@ In order to compile and use SSH-Attacker, you need to have Java and Maven instal
 $ sudo apt-get install maven
 ```
 
-SSH-Attacker currently needs Java JDK 11 to run. If you have the correct Java version, you can run the `mvn` command from the SSH-Attacker directory to build the project:
+SSH-Attacker currently needs Java JDK 21 to run. If you have the correct Java version, you can run the `mvn` command from the SSH-Attacker directory to build the project:
 
 ```bash
 $ git clone git@github.com:tls-attacker/SSH-Attacker.git
@@ -37,7 +37,7 @@ If you want to use this project as a dependency, you do not have to compile it y
 <dependency>
     <groupId>de.rub.nds.ssh.attacker</groupId>
     <artifactId>ssh-attacker</artifactId>
-    <version>0.0.0</version>
+    <version>2.0.0</version>
     <type>pom</type>
 </dependency>
 ```

@@ -15,4 +15,13 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="attacks" options="-proc:full" />
+      <module name="ssh-client" options="-proc:full" />
+      <module name="ssh-core" options="-proc:full" />
+      <module name="ssh-mitm" options="-proc:full" />
+      <module name="ssh-server" options="-proc:full" />
+    </option>
+  </component>
 </project>

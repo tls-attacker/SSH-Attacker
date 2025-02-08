@@ -17,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
 import org.apache.commons.lang3.ArrayUtils;
-import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
  * Utility class for performing raw OAEP encoding/decoding of messages according to PKCS#1 (RFC
@@ -167,8 +166,7 @@ public final class OaepConverter {
         for (int counter = 0; counter < maxIterations; counter++) {
 
             // Step a: Convert counter using I2OSP
-            byte[] counterBytes = new byte[4];
-            BigEndianConversions.I2OSP(counter, counterBytes, 0);
+            byte[] counterBytes = ArrayConverter.intToBytes(counter, 4);
 
             // Step b: Concatenate hash of seed and counterBytes with intermediate result
             ByteBuffer digestInputBuffer = ByteBuffer.allocate(seed.length + 4);
