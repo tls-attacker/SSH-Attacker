@@ -27,6 +27,7 @@ import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -378,6 +379,14 @@ public class SshContext {
 
     /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived;
+
+    /**
+     * Actions that should be executed and injected into the workflow trace of the state that holds
+     * this ssh context. The actions should be executed by the workflow executor before the next
+     * official workflow action is executed and should be inserted into the workflow trace at the
+     * correct position for logging purposes.
+     */
+    private ArrayList<SshAction> dynamicGeneratedActions;
 
     // region Constructors and Initialization
     public SshContext() {
@@ -1255,6 +1264,30 @@ public class SshContext {
 
     public void setDisconnectMessageReceived(Boolean disconnectMessageReceived) {
         this.disconnectMessageReceived = disconnectMessageReceived;
+    }
+
+    public ArrayList<SshAction> getDynamicGeneratedActions() {
+        return dynamicGeneratedActions;
+    }
+
+    public void addDynamicGeneratedActions(ArrayList<SshAction> dynamicGeneratedActions) {
+        if (this.dynamicGeneratedActions == null) {
+            this.dynamicGeneratedActions = new ArrayList<>();
+        }
+        this.dynamicGeneratedActions.addAll(dynamicGeneratedActions);
+    }
+
+    public void addDynamicGeneratedAction(SshAction dynamicGeneratedAction) {
+        if (dynamicGeneratedActions == null) {
+            dynamicGeneratedActions = new ArrayList<>();
+        }
+        dynamicGeneratedActions.add(dynamicGeneratedAction);
+    }
+
+    public void clearDynamicGeneratedActions() {
+        if (dynamicGeneratedActions != null) {
+            dynamicGeneratedActions.clear();
+        }
     }
 
     public boolean isClient() {

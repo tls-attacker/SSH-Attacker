@@ -278,6 +278,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         setReceiveOptions(receiveOptions);
     }
 
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
+        this(receiveOptions, new ArrayList<>(messages));
+    }
+
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage<?>... messages) {
         this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
@@ -285,6 +289,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public ReceiveAction(
             ReceiveOption receiveOption, ArrayList<ProtocolMessage<?>> expectedMessages) {
         this(Set.of(receiveOption), expectedMessages);
+    }
+
+    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
+        this(receiveOption, new ArrayList<>(messages));
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -298,6 +306,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public ReceiveAction(String connectionAlias, ArrayList<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         expectedMessages = messages;
+    }
+
+    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+        this(connectionAlias, new ArrayList<>(messages));
     }
 
     public ReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
@@ -334,13 +346,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        SshContext context = state.getSshContext(getConnectionAlias());
+        SshContext context = state.getSshContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
+        LOGGER.debug("Receiving messages for connection alias '{}'...", connectionAlias);
         MessageActionResult result =
                 ReceiveMessageHelper.receiveMessages(context, expectedMessages);
         messages = result.getMessageList();

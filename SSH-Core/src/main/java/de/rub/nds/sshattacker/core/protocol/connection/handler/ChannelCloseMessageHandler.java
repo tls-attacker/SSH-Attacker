@@ -7,15 +7,23 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.constants.ChannelDataType;
+import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.message.SftpVersionMessage;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +51,9 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                 channel.setCloseMessageReceived(true);
                 if (!channel.isOpen().getValue()) {
                     channelManager.removeChannelByLocalId(recipientChannelId);
+                } else {
+                    // The channel is still open, because we have not yet closed it.
+                    generateDynamicActions(context, channel);
                 }
             }
         } else {
@@ -50,6 +61,36 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                     "{} received but no channel with id {} found locally, ignoring request to close the channel.",
                     object.getClass().getSimpleName(),
                     recipientChannelId);
+        }
+    }
+
+    private static void generateDynamicActions(SshContext context, Channel channel) {
+        Config config = context.getConfig();
+        if (config.getAllowDynamicGenerationOfActions()
+                && config.getReopenChannelOnClose()
+                && config.getDefaultRunningMode() == RunningModeType.CLIENT) {
+
+            // Generate actions to close the channel and reopen it.
+            String connectionAlias = config.getDefaultClientConnection().getAlias();
+            if (channel.getChannelType() == ChannelType.SESSION) {
+                context.addDynamicGeneratedAction(
+                        new SendAction(
+                                connectionAlias,
+                                new ChannelCloseMessage(),
+                                new ChannelOpenSessionMessage()));
+                context.addDynamicGeneratedAction(
+                        new ReceiveAction(connectionAlias, new ChannelOpenConfirmationMessage()));
+                if (channel.getExpectedDataType() == ChannelDataType.SUBSYSTEM_SFTP) {
+                    context.addDynamicGeneratedAction(
+                            new SendAction(connectionAlias, new ChannelRequestSubsystemMessage()));
+                    context.addDynamicGeneratedAction(
+                            new ReceiveAction(connectionAlias, new ChannelSuccessMessage()));
+                    context.addDynamicGeneratedAction(
+                            new SendAction(connectionAlias, new SftpInitMessage()));
+                    context.addDynamicGeneratedAction(
+                            new ReceiveAction(connectionAlias, new SftpVersionMessage()));
+                }
+            }
         }
     }
 

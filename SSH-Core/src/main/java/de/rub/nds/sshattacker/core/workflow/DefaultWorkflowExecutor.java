@@ -14,7 +14,9 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,29 +43,33 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         state.setStartTimestamp(System.currentTimeMillis());
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
-        for (SshAction action : sshActions) {
-            if (config.isStopActionsAfterDisconnect() && hasReceivedDisconnectMessage()) {
-                LOGGER.debug(
-                        "Skipping all Actions, received DisconnectMessage, StopActionsAfterDisconnect active");
+        ListIterator<SshAction> iterator = sshActions.listIterator();
+        while (iterator.hasNext()) {
+            SshAction action = iterator.next();
+            if (checkShouldStop()) {
                 break;
             }
+
             if (config.isStopReceivingAfterDisconnect()
                     && hasReceivedDisconnectMessage()
                     && action instanceof ReceivingAction) {
                 LOGGER.debug(
-                        "Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
-                break;
-            }
-            if (config.getStopActionsAfterIOException() && hasReceivedTransportHandlerException()) {
-                LOGGER.debug(
-                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
-                break;
+                        "Skipping all ReceiveActions, received DisconnectMessage, StopReceivingAfterDisconnect active");
+                // Not sure if it really makes sense to keep sending data
+                continue;
             }
 
             try {
                 executeAction(action, state);
             } catch (SkipActionException ex) {
                 continue;
+            }
+
+            // During the execution of the workflow trace, each executed action can generate new
+            // dynamic actions that should be executed before the next action defined in the
+            // workflow trace.
+            if (config.getAllowDynamicGenerationOfActions()) {
+                executeDynamicGeneratedActions(iterator);
             }
 
             if (config.getStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
@@ -93,5 +99,45 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         } catch (Exception ex) {
             LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
+    }
+
+    /**
+     * All executed dynamically generated actions are added to the workflow trace at the position
+     * before the next regular action.
+     */
+    private void executeDynamicGeneratedActions(ListIterator<SshAction> iterator) {
+        for (SshContext sshContext : state.getAllSshContexts()) {
+            ArrayList<SshAction> dynamicGeneratedActions = sshContext.getDynamicGeneratedActions();
+            if (dynamicGeneratedActions != null) {
+                for (SshAction dynamicAction : dynamicGeneratedActions) {
+                    if (checkShouldStop()) {
+                        break;
+                    }
+
+                    try {
+                        executeAction(dynamicAction, state);
+                        iterator.add(dynamicAction);
+                    } catch (SkipActionException ex) {
+                        LOGGER.debug("Dynamic generated action was not executed.");
+                    }
+                }
+                dynamicGeneratedActions.clear();
+            }
+        }
+    }
+
+    private boolean checkShouldStop() {
+        if (config.isStopActionsAfterDisconnect() && hasReceivedDisconnectMessage()) {
+            LOGGER.debug(
+                    "Skipping all Actions, received DisconnectMessage, StopActionsAfterDisconnect active");
+            return true;
+        }
+
+        if (config.getStopActionsAfterIOException() && hasReceivedTransportHandlerException()) {
+            LOGGER.debug(
+                    "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+            return true;
+        }
+        return false;
     }
 }

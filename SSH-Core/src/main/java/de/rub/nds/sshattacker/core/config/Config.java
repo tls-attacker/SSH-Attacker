@@ -223,6 +223,7 @@ public class Config implements Serializable {
     // region KeyExchange
     // TODO: Would be nice to have an option to reuse ephemeral keys during key exchange.
     // TODO: Would be nice to have an option to disable signature checks
+    // TODO: We could replace Integer and Boolean with primitives
     /**
      * Fallback of minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
      * message
@@ -387,6 +388,12 @@ public class Config implements Serializable {
 
     /** Default channel values including local channel id and window size */
     private ChannelDefaults channelDefaults;
+
+    /**
+     * Whether dynamic actions should be generated to reopen a channel if it was closed.
+     * <p> Is currently only implement for Client mode and SFTP subsystem
+     */
+    private Boolean reopenChannelOnClose = true;
 
     /**
      * Fallback for the wantReply field of messages extending the SSH_MSG_GLOBAL_REQUEST or
@@ -674,6 +681,8 @@ public class Config implements Serializable {
      * was not executed as planned.
      */
     private Boolean stopTraceAfterUnexpected = false;
+
+    private Boolean allowDynamicGenerationOfActions = true;
 
     // endregion
 
@@ -1520,6 +1529,7 @@ public class Config implements Serializable {
         }
         channelCommand = other.channelCommand;
         channelDefaults = other.channelDefaults != null ? other.channelDefaults.createCopy() : null;
+        reopenChannelOnClose = other.reopenChannelOnClose;
         replyWanted = other.replyWanted;
         defaultVariableName = other.defaultVariableName;
         defaultVariableValue = other.defaultVariableValue;
@@ -1577,6 +1587,7 @@ public class Config implements Serializable {
         resetClientSourcePort = other.resetClientSourcePort;
         retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
         stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
+        allowDynamicGenerationOfActions = other.allowDynamicGenerationOfActions;
         quickReceive = other.quickReceive;
         endReceivingEarly = other.endReceivingEarly;
         receiveMaximumBytes = other.receiveMaximumBytes;
@@ -2248,6 +2259,10 @@ public class Config implements Serializable {
         return channelDefaults;
     }
 
+    public Boolean getReopenChannelOnClose() {
+        return reopenChannelOnClose;
+    }
+
     public String getDefaultVariableValue() {
         return defaultVariableValue;
     }
@@ -2300,6 +2315,10 @@ public class Config implements Serializable {
 
     public void setChannelDefaults(ChannelDefaults channelDefaults) {
         this.channelDefaults = channelDefaults;
+    }
+
+    public void setReopenChannelOnClose(Boolean reopenChannelOnClose) {
+        this.reopenChannelOnClose = reopenChannelOnClose;
     }
 
     public void setDefaultVariableValue(String defaultVariableValue) {
@@ -2480,6 +2499,10 @@ public class Config implements Serializable {
         return stopTraceAfterUnexpected;
     }
 
+    public Boolean getAllowDynamicGenerationOfActions() {
+        return allowDynamicGenerationOfActions;
+    }
+
     // endregion
     // region Setters for Workflow settings
 
@@ -2550,6 +2573,10 @@ public class Config implements Serializable {
 
     public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
         this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
+    }
+
+    public void setAllowDynamicGenerationOfActions(Boolean allowDynamicGenerationOfActions) {
+        this.allowDynamicGenerationOfActions = allowDynamicGenerationOfActions;
     }
 
     // endregion
