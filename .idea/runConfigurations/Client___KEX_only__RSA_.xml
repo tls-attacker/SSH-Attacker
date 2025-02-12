@@ -1,7 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Client - KEX only (RSA)" type="Application" factoryName="Application" folderName="Client">
-    <option name="ALTERNATIVE_JRE_PATH" value="11" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.rub.nds.sshattacker.client.main.SshClient" />
     <module name="ssh-client" />
     <option name="PROGRAM_PARAMETERS" value="-connect localhost:22510 -config resources/configs/kex_rsa_config.xml -workflow_trace_type KEX_RSA" />

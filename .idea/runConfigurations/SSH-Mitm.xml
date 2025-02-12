@@ -1,7 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SSH-Mitm" type="Application" factoryName="Application" folderName="Mitm">
-    <option name="ALTERNATIVE_JRE_PATH" value="11" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.rub.nds.sshattacker.mitm.main.Main" />
     <module name="ssh-mitm" />
     <option name="PROGRAM_PARAMETERS" value="-accept 2222 -connect localhost:22510 -workflow_trace_type MITM -workflow_output $PROJECT_DIR$/WorkflowOutput" />
