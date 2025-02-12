@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="OpenSSH 9.5 Server" type="docker-deploy" factoryName="docker-image" activateToolWindowBeforeRun="false" server-name="Docker">
+  <configuration default="false" name="OpenSSH 9.9p1 Server" type="docker-deploy" factoryName="docker-image" activateToolWindowBeforeRun="false" server-name="Docker">
     <deployment type="docker-image">
       <settings>
-        <option name="imageTag" value="rub-nds/openssh-server:9.5p1" />
+        <option name="imageTag" value="rub-nds/openssh-server:9.9p1" />
         <option name="containerName" value="intellij-openssh-server" />
         <option name="portBindings">
           <list>

@@ -6,7 +6,7 @@
     <method v="2">
       <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="spotless:apply" />
       <option name="Make" enabled="true" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="OpenSSH 9.5 Server" run_configuration_type="docker-deploy" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="OpenSSH 9.9p1 Server" run_configuration_type="docker-deploy" />
     </method>
   </configuration>
 </component>
