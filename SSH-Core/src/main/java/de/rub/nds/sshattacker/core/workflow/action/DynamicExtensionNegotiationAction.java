@@ -52,5 +52,6 @@ public class DynamicExtensionNegotiationAction extends SendAction {
                             new ExtensionInfoMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
         }
+        setExecuted(true);
     }
 }
