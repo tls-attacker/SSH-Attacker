@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 public class ConfigOutputDelegate extends Delegate {
 
     @Parameter(
-            names = "-config_output",
+            names = "--config-output",
             description =
                     "Write XML representation "
                             + "of the actual config used during execution to this file")

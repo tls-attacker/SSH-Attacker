@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 public class WorkflowTypeDelegate extends Delegate {
 
     @Parameter(
-            names = "-workflow_trace_type",
+            names = "--workflow-trace-type",
             description = "Type of the workflow trace",
             converter = WorkflowTraceTypeConverter.class)
     private WorkflowTraceType workflowTraceType;

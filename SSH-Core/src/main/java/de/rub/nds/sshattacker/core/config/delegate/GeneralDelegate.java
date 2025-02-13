@@ -23,19 +23,19 @@ public class GeneralDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(
-            names = {"-h", "-help"},
+            names = {"-h", "--help"},
             help = true,
             description = "Prints usage for all the existing commands.")
     private boolean help;
 
-    @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
+    @Parameter(names = "--debug", description = "Show extra debug output (sets logLevel to DEBUG)")
     private boolean debug;
 
     @Parameter(names = "-quiet", description = "No output (sets logLevel to OFF)")
     private boolean quiet;
 
     @Parameter(
-            names = "-log_level",
+            names = {"-ll", "--log-level"},
             description = "Sets explicit log level.",
             converter = LogLevelConverter.class)
     private Level loglevel;
