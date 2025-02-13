@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher.keys;
 
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import de.rub.nds.sshattacker.core.constants.KeyDerivationLabels;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -26,7 +27,7 @@ public final class KeySetGenerator {
     public static KeySet generateKeySet(SshContext context) {
         KeySet keySet = new KeySet();
         Chooser chooser = context.getChooser();
-        String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
+        HashFunction hashFunction = chooser.getKeyExchangeAlgorithm().getHashFunction();
         byte[] sharedSecret =
                 Converter.bytesToLengthPrefixedBinaryString(
                         context.getSharedSecret().orElse(new byte[] {0}));
@@ -40,7 +41,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.INITIAL_IV_CLIENT_TO_SERVER,
                         sessionId,
                         chooser.getEncryptionAlgorithmClientToServer().getIVSize(),
-                        hashAlgorithm));
+                        hashFunction));
         keySet.setServerWriteInitialIv(
                 KeyDerivation.deriveKey(
                         sharedSecret,
@@ -48,7 +49,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.INITIAL_IV_SERVER_TO_CLIENT,
                         sessionId,
                         chooser.getEncryptionAlgorithmServerToClient().getIVSize(),
-                        hashAlgorithm));
+                        hashFunction));
         keySet.setClientWriteEncryptionKey(
                 KeyDerivation.deriveKey(
                         sharedSecret,
@@ -56,7 +57,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.ENCRYPTION_KEY_CLIENT_TO_SERVER,
                         sessionId,
                         chooser.getEncryptionAlgorithmClientToServer().getKeySize(),
-                        hashAlgorithm));
+                        hashFunction));
         keySet.setServerWriteEncryptionKey(
                 KeyDerivation.deriveKey(
                         sharedSecret,
@@ -64,7 +65,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.ENCRYPTION_KEY_SERVER_TO_CLIENT,
                         sessionId,
                         chooser.getEncryptionAlgorithmServerToClient().getKeySize(),
-                        hashAlgorithm));
+                        hashFunction));
         keySet.setClientWriteIntegrityKey(
                 KeyDerivation.deriveKey(
                         sharedSecret,
@@ -72,7 +73,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.INTEGRITY_KEY_CLIENT_TO_SERVER,
                         sessionId,
                         chooser.getMacAlgorithmClientToServer().getKeySize(),
-                        hashAlgorithm));
+                        hashFunction));
         keySet.setServerWriteIntegrityKey(
                 KeyDerivation.deriveKey(
                         sharedSecret,
@@ -80,7 +81,7 @@ public final class KeySetGenerator {
                         KeyDerivationLabels.INTEGRITY_KEY_SERVER_TO_CLIENT,
                         sessionId,
                         chooser.getMacAlgorithmServerToClient().getKeySize(),
-                        hashAlgorithm));
+                        hashFunction));
 
         LOGGER.info(keySet);
         return keySet;

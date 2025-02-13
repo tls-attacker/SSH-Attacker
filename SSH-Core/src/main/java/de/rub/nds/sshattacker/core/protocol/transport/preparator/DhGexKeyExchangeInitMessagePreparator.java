@@ -25,7 +25,7 @@ public class DhGexKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         getObject()
                 .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
         ExchangeHashInputHolder exchangeHash = chooser.getContext().getExchangeHashInputHolder();

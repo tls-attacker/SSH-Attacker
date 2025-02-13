@@ -24,7 +24,7 @@ public class EcdhKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
         chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(encodedPublicKey);
 

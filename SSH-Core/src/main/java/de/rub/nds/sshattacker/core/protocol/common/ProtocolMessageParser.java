@@ -83,197 +83,74 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 }
             }
 
-            switch (MessageIdConstant.fromId(raw[0], context)) {
-                case SSH_MSG_KEXINIT:
-                    return new KeyExchangeInitMessageParser(raw).parse();
-                case SSH_MSG_KEX_ECDH_INIT:
-                    return new EcdhKeyExchangeInitMessageParser(raw).parse();
-                case SSH_MSG_KEX_ECDH_REPLY:
-                    return new EcdhKeyExchangeReplyMessageParser(raw).parse();
-                case SSH_MSG_KEXDH_INIT:
-                    return new DhKeyExchangeInitMessageParser(raw).parse();
-                case SSH_MSG_KEXDH_REPLY:
-                    return new DhKeyExchangeReplyMessageParser(raw).parse();
-                case SSH_MSG_HBR_INIT:
-                    return handleHybridKeyExchangeInitMessageParsing(raw, context).parse();
-                case SSH_MSG_HBR_REPLY:
-                    return handleHybridKeyExchangeReplyMessageParsing(raw, context).parse();
-                case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
-                    return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
-                case SSH_MSG_KEX_DH_GEX_REQUEST:
-                    return new DhGexKeyExchangeRequestMessageParser(raw).parse();
-                case SSH_MSG_KEX_DH_GEX_GROUP:
-                    return new DhGexKeyExchangeGroupMessageParser(raw).parse();
-                case SSH_MSG_KEX_DH_GEX_INIT:
-                    return new DhGexKeyExchangeInitMessageParser(raw).parse();
-                case SSH_MSG_KEX_DH_GEX_REPLY:
-                    return new DhGexKeyExchangeReplyMessageParser(raw).parse();
-                case SSH_MSG_KEXRSA_PUBKEY:
-                    return new RsaKeyExchangePubkeyMessageParser(raw).parse();
-                case SSH_MSG_KEXRSA_SECRET:
-                    return new RsaKeyExchangeSecretMessageParser(raw).parse();
-                case SSH_MSG_KEXRSA_DONE:
-                    return new RsaKeyExchangeDoneMessageParser(raw).parse();
-                case SSH_MSG_NEWKEYS:
-                    return new NewKeysMessageParser(raw).parse();
-                case SSH_MSG_EXT_INFO:
-                    return new ExtensionInfoMessageParser(raw).parse();
-                case SSH_MSG_NEWCOMPRESS:
-                    return new NewCompressMessageParser(raw).parse();
-                case SSH_MSG_PING:
-                    return new PingMessageParser(raw).parse();
-                case SSH_MSG_PONG:
-                    return new PongMessageParser(raw).parse();
-                case SSH_MSG_SERVICE_REQUEST:
-                    return new ServiceRequestMessageParser(raw).parse();
-                case SSH_MSG_SERVICE_ACCEPT:
-                    return new ServiceAcceptMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                    return new ChannelOpenConfirmationMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_DATA:
-                    return new ChannelDataMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_CLOSE:
-                    return new ChannelCloseMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_EOF:
-                    return new ChannelEofMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_EXTENDED_DATA:
-                    return new ChannelExtendedDataMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_FAILURE:
-                    return new ChannelFailureMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_OPEN_FAILURE:
-                    return new ChannelOpenFailureMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_OPEN:
-                    return handleChannelOpenMessageParsing(raw);
-                case SSH_MSG_CHANNEL_SUCCESS:
-                    return new ChannelSuccessMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_WINDOW_ADJUST:
-                    return new ChannelWindowAdjustMessageParser(raw).parse();
-                case SSH_MSG_DEBUG:
-                    return new DebugMessageParser(raw).parse();
-                case SSH_MSG_DISCONNECT:
-                    return new DisconnectMessageParser(raw).parse();
-                case SSH_MSG_IGNORE:
-                    return new IgnoreMessageParser(raw).parse();
-                case SSH_MSG_REQUEST_FAILURE:
-                    return new GlobalRequestFailureMessageParser(raw).parse();
-                case SSH_MSG_REQUEST_SUCCESS:
-                    return new GlobalRequestSuccessMessageParser(raw).parse();
-                case SSH_MSG_UNIMPLEMENTED:
-                    return new UnimplementedMessageParser(raw).parse();
-                case SSH_MSG_USERAUTH_REQUEST:
-                    return handleUserAuthRequestMessageParsing(raw);
-                case SSH_MSG_USERAUTH_BANNER:
-                    return new UserAuthBannerMessageParser(raw).parse();
-                case SSH_MSG_USERAUTH_FAILURE:
-                    return new UserAuthFailureMessageParser(raw).parse();
-                case SSH_MSG_USERAUTH_SUCCESS:
-                    return new UserAuthSuccessMessageParser(raw).parse();
-                case SSH_MSG_CHANNEL_REQUEST:
-                    return handleChannelRequestMessageParsing(raw);
-                case SSH_MSG_GLOBAL_REQUEST:
-                    return handleGlobalRequestMessageParsing(raw);
-                case SSH_MSG_USERAUTH_INFO_REQUEST:
-                    return new UserAuthInfoRequestMessageParser(raw).parse();
-                case SSH_MSG_USERAUTH_INFO_RESPONSE:
-                    return new UserAuthInfoResponseMessageParser(raw).parse();
-                default:
+            return switch (MessageIdConstant.fromId(raw[0], context)) {
+                case SSH_MSG_KEXINIT -> new KeyExchangeInitMessageParser(raw).parse();
+                case SSH_MSG_KEX_ECDH_INIT -> new EcdhKeyExchangeInitMessageParser(raw).parse();
+                case SSH_MSG_KEX_ECDH_REPLY -> new EcdhKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_KEXDH_INIT -> new DhKeyExchangeInitMessageParser(raw).parse();
+                case SSH_MSG_KEXDH_REPLY -> new DhKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_HBR_INIT -> new HybridKeyExchangeInitMessageParser(raw).parse();
+                case SSH_MSG_HBR_REPLY -> new HybridKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST_OLD ->
+                        new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST ->
+                        new DhGexKeyExchangeRequestMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_GROUP ->
+                        new DhGexKeyExchangeGroupMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_INIT -> new DhGexKeyExchangeInitMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REPLY ->
+                        new DhGexKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_KEXRSA_PUBKEY -> new RsaKeyExchangePubkeyMessageParser(raw).parse();
+                case SSH_MSG_KEXRSA_SECRET -> new RsaKeyExchangeSecretMessageParser(raw).parse();
+                case SSH_MSG_KEXRSA_DONE -> new RsaKeyExchangeDoneMessageParser(raw).parse();
+                case SSH_MSG_NEWKEYS -> new NewKeysMessageParser(raw).parse();
+                case SSH_MSG_EXT_INFO -> new ExtensionInfoMessageParser(raw).parse();
+                case SSH_MSG_NEWCOMPRESS -> new NewCompressMessageParser(raw).parse();
+                case SSH_MSG_PING -> new PingMessageParser(raw).parse();
+                case SSH_MSG_PONG -> new PongMessageParser(raw).parse();
+                case SSH_MSG_SERVICE_REQUEST -> new ServiceRequestMessageParser(raw).parse();
+                case SSH_MSG_SERVICE_ACCEPT -> new ServiceAcceptMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_OPEN_CONFIRMATION ->
+                        new ChannelOpenConfirmationMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_DATA -> new ChannelDataMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_CLOSE -> new ChannelCloseMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_EOF -> new ChannelEofMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_EXTENDED_DATA ->
+                        new ChannelExtendedDataMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_FAILURE -> new ChannelFailureMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_OPEN_FAILURE ->
+                        new ChannelOpenFailureMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_OPEN -> handleChannelOpenMessageParsing(raw);
+                case SSH_MSG_CHANNEL_SUCCESS -> new ChannelSuccessMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_WINDOW_ADJUST ->
+                        new ChannelWindowAdjustMessageParser(raw).parse();
+                case SSH_MSG_DEBUG -> new DebugMessageParser(raw).parse();
+                case SSH_MSG_DISCONNECT -> new DisconnectMessageParser(raw).parse();
+                case SSH_MSG_IGNORE -> new IgnoreMessageParser(raw).parse();
+                case SSH_MSG_REQUEST_FAILURE -> new GlobalRequestFailureMessageParser(raw).parse();
+                case SSH_MSG_REQUEST_SUCCESS -> new GlobalRequestSuccessMessageParser(raw).parse();
+                case SSH_MSG_UNIMPLEMENTED -> new UnimplementedMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_REQUEST -> handleUserAuthRequestMessageParsing(raw);
+                case SSH_MSG_USERAUTH_BANNER -> new UserAuthBannerMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_FAILURE -> new UserAuthFailureMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_SUCCESS -> new UserAuthSuccessMessageParser(raw).parse();
+                case SSH_MSG_CHANNEL_REQUEST -> handleChannelRequestMessageParsing(raw);
+                case SSH_MSG_GLOBAL_REQUEST -> handleGlobalRequestMessageParsing(raw);
+                case SSH_MSG_USERAUTH_INFO_REQUEST ->
+                        new UserAuthInfoRequestMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_INFO_RESPONSE ->
+                        new UserAuthInfoResponseMessageParser(raw).parse();
+                default -> {
                     LOGGER.debug(
                             "Received unimplemented Message {} ({})",
                             MessageIdConstant.getNameById(raw[0]),
                             raw[0]);
-                    return new UnknownMessageParser(raw).parse();
-            }
+                    yield new UnknownMessageParser(raw).parse();
+                }
+            };
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
             return new UnknownMessageParser(raw).parse();
-        }
-    }
-
-    public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
-            byte[] raw, SshContext context) {
-        LOGGER.info(
-                "Negotiated Hybrid Key Exchange: {}",
-                context.getChooser().getKeyExchangeAlgorithm());
-        switch (context.getChooser().getKeyExchangeAlgorithm()) {
-            //noinspection DefaultNotLastCaseInSwitch
-            default:
-                LOGGER.warn(
-                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
-            // Fallthrough to next case statement intended
-            case SNTRUP761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
-            case CURVE25519_FRODOKEM1344:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
-            case NISTP521_FIRESABER:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.FIRESABER_CIPHERTEXT_SIZE);
-            case NISTP521_KYBER1024:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
-        }
-    }
-
-    public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
-            byte[] raw, SshContext context) {
-        LOGGER.info(
-                "Negotiated Hybrid Key Exchange: {}",
-                context.getChooser().getKeyExchangeAlgorithm());
-        switch (context.getChooser().getKeyExchangeAlgorithm()) {
-            //noinspection DefaultNotLastCaseInSwitch
-            default:
-                LOGGER.warn(
-                        "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");
-            // Fallthrough to next case statement intended
-            case SNTRUP761_X25519:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
-            case CURVE25519_FRODOKEM1344:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
-            case NISTP521_FIRESABER:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE);
-            case NISTP521_KYBER1024:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.NISTP521_POINT_SIZE,
-                        CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE);
         }
     }
 
@@ -281,81 +158,67 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
         String methodString = message.getMethodName().getValue();
         AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
-        switch (method) {
-            case NONE:
-                return new UserAuthNoneMessageParser(raw).parse();
-            case PASSWORD:
-                return new UserAuthPasswordMessageParser(raw).parse();
-            case PUBLICKEY:
-                return new UserAuthPubkeyMessageParser(raw).parse();
-            case HOST_BASED:
-                return new UserAuthHostbasedMessageParser(raw).parse();
-            case KEYBOARD_INTERACTIVE:
-                return new UserAuthKeyboardInteractiveMessageParser(raw).parse();
-            default:
+        return switch (method) {
+            case NONE -> new UserAuthNoneMessageParser(raw).parse();
+            case PASSWORD -> new UserAuthPasswordMessageParser(raw).parse();
+            case PUBLICKEY -> new UserAuthPubkeyMessageParser(raw).parse();
+            case HOST_BASED -> new UserAuthHostbasedMessageParser(raw).parse();
+            case KEYBOARD_INTERACTIVE -> new UserAuthKeyboardInteractiveMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented user authentication method in user authentication request: {}",
                         methodString);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 
     public static ProtocolMessage<?> handleChannelRequestMessageParsing(byte[] raw) {
         ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestType().getValue();
         ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
-        switch (requestType) {
-            case PTY_REQ:
-                return new ChannelRequestPtyMessageParser(raw).parse();
-            case X11_REQ:
-                return new ChannelRequestX11MessageParser(raw).parse();
-            case ENV:
-                return new ChannelRequestEnvMessageParser(raw).parse();
-            case SHELL:
-                return new ChannelRequestShellMessageParser(raw).parse();
-            case EXEC:
-                return new ChannelRequestExecMessageParser(raw).parse();
-            case SUBSYSTEM:
-                return new ChannelRequestSubsystemMessageParser(raw).parse();
-            case WINDOW_CHANGE:
-                return new ChannelRequestWindowChangeMessageParser(raw).parse();
-            case XON_XOFF:
-                return new ChannelRequestXonXoffMessageParser(raw).parse();
-            case SIGNAL:
-                return new ChannelRequestSignalMessageParser(raw).parse();
-            case EXIT_STATUS:
-                return new ChannelRequestExitStatusMessageParser(raw).parse();
-            case EXIT_SIGNAL:
-                return new ChannelRequestExitSignalMessageParser(raw).parse();
-            case AUTH_AGENT_REQ_OPENSSH_COM:
-                return new ChannelRequestAuthAgentMessageParser(raw).parse();
-            default:
+        return switch (requestType) {
+            case PTY_REQ -> new ChannelRequestPtyMessageParser(raw).parse();
+            case X11_REQ -> new ChannelRequestX11MessageParser(raw).parse();
+            case ENV -> new ChannelRequestEnvMessageParser(raw).parse();
+            case SHELL -> new ChannelRequestShellMessageParser(raw).parse();
+            case EXEC -> new ChannelRequestExecMessageParser(raw).parse();
+            case SUBSYSTEM -> new ChannelRequestSubsystemMessageParser(raw).parse();
+            case WINDOW_CHANGE -> new ChannelRequestWindowChangeMessageParser(raw).parse();
+            case XON_XOFF -> new ChannelRequestXonXoffMessageParser(raw).parse();
+            case SIGNAL -> new ChannelRequestSignalMessageParser(raw).parse();
+            case EXIT_STATUS -> new ChannelRequestExitStatusMessageParser(raw).parse();
+            case EXIT_SIGNAL -> new ChannelRequestExitSignalMessageParser(raw).parse();
+            case AUTH_AGENT_REQ_OPENSSH_COM ->
+                    new ChannelRequestAuthAgentMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented channel request message type: {}",
                         requestTypeString);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 
     public static ProtocolMessage<?> handleGlobalRequestMessageParsing(byte[] raw) {
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestName().getValue();
         GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
-        switch (requestType) {
-            case TCPIP_FORWARD:
-                return new GlobalRequestTcpIpForwardMessageParser(raw).parse();
-            case CANCEL_TCPIP_FORWARD:
-                return new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
-            case NO_MORE_SESSIONS_OPENSSH_COM:
-                return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
-            case HOSTKEYS_00_OPENSSH_COM:
-                return new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
-            default:
+        return switch (requestType) {
+            case TCPIP_FORWARD -> new GlobalRequestTcpIpForwardMessageParser(raw).parse();
+            case CANCEL_TCPIP_FORWARD ->
+                    new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
+            case NO_MORE_SESSIONS_OPENSSH_COM ->
+                    new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
+            case HOSTKEYS_00_OPENSSH_COM ->
+                    new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented global request message type: {}",
                         requestTypeString);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 
     public static ProtocolMessage<?> handleChannelOpenMessageParsing(byte[] raw) {
@@ -363,13 +226,13 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         String channelTypeString = message.getChannelType().getValue();
         ChannelType channelType = ChannelType.fromName(channelTypeString);
         //noinspection SwitchStatementWithTooFewBranches
-        switch (channelType) {
-            case SESSION:
-                return new ChannelOpenSessionMessageParser(raw).parse();
-            default:
+        return switch (channelType) {
+            case SESSION -> new ChannelOpenSessionMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", channelTypeString);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 }

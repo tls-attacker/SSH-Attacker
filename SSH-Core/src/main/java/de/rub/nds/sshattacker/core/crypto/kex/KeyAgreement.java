@@ -8,25 +8,41 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 
-public abstract class KeyAgreement extends KeyExchange {
+public abstract class KeyAgreement<PRIVATE extends CustomPrivateKey, PUBLIC extends CustomPublicKey>
+        extends KeyExchange {
+
+    protected CustomKeyPair<PRIVATE, PUBLIC> localKeyPair;
+    protected PUBLIC remotePublicKey;
 
     protected KeyAgreement() {
         super();
     }
 
-    public abstract void setRemotePublicKey(byte[] publicKeyBytes);
+    public CustomKeyPair<PRIVATE, PUBLIC> getLocalKeyPair() {
+        return localKeyPair;
+    }
+
+    public void setLocalKeyPair(CustomKeyPair<PRIVATE, PUBLIC> localKeyPair) {
+        this.localKeyPair = localKeyPair;
+    }
+
+    public abstract void setLocalKeyPair(byte[] encodedPrivateKey);
+
+    public abstract void setLocalKeyPair(byte[] encodedPrivateKey, byte[] encodedPublicKey);
+
+    public PUBLIC getRemotePublicKey() {
+        return remotePublicKey;
+    }
+
+    public void setRemotePublicKey(PUBLIC remotePublicKey) {
+        this.remotePublicKey = remotePublicKey;
+    }
+
+    public abstract void setRemotePublicKey(byte[] encodedPublicKey);
 
     public abstract void computeSharedSecret() throws CryptoException;
-
-    public abstract void generateLocalKeyPair();
-
-    public abstract void setLocalKeyPair(byte[] privateKeyBytes);
-
-    public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
-
-    public abstract CustomKeyPair<? extends PrivateKey, ? extends PublicKey> getLocalKeyPair();
 }

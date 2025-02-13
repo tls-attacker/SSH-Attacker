@@ -18,12 +18,11 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
 
-public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
+public class XCurveEcdhKeyExchange
+        extends AbstractEcdhKeyExchange<XCurveEcPrivateKey, XCurveEcPublicKey> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> localKeyPair;
-    private XCurveEcPublicKey remotePublicKey;
     private final boolean encodeSharedBytes;
 
     public XCurveEcdhKeyExchange(NamedEcGroup group, boolean encodeSharedBytes) {
@@ -45,7 +44,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void generateLocalKeyPair() {
+    public void generateKeyPair() {
         byte[] privateKeyBytes;
         byte[] publicKeyBytes;
         if (group == NamedEcGroup.CURVE25519) {
@@ -64,31 +63,29 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
-    @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes) {
+    public void setLocalKeyPair(byte[] encodedPrivateKey) {
         byte[] publicKeyBytes;
         if (group == NamedEcGroup.CURVE25519) {
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
-            X25519.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
+            X25519.generatePublicKey(encodedPrivateKey, 0, publicKeyBytes, 0);
         } else {
             publicKeyBytes = new byte[CryptoConstants.X448_POINT_SIZE];
-            X448.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
+            X448.generatePublicKey(encodedPrivateKey, 0, publicKeyBytes, 0);
         }
-        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
+        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(encodedPrivateKey, group);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
         localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
-    @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
-        XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
+    public void setLocalKeyPair(byte[] encodedPrivateKey, byte[] encodedPublicKey) {
+        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(encodedPrivateKey, group);
+        XCurveEcPublicKey publicKey = new XCurveEcPublicKey(encodedPublicKey, group);
         localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
-    public void setRemotePublicKey(byte[] publicKeyBytes) {
-        remotePublicKey = new XCurveEcPublicKey(publicKeyBytes, group);
+    public void setRemotePublicKey(byte[] encodedPublicKey) {
+        remotePublicKey = new XCurveEcPublicKey(encodedPublicKey, group);
     }
 
     @Override
@@ -122,15 +119,5 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
                 ArrayConverter.bytesToRawHexString(sharedSecret));
-    }
-
-    @Override
-    public CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> getLocalKeyPair() {
-        return localKeyPair;
-    }
-
-    @Override
-    public XCurveEcPublicKey getRemotePublicKey() {
-        return remotePublicKey;
     }
 }

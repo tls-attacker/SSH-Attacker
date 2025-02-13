@@ -22,11 +22,11 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
-    private ModifiableInteger publicKeyLength;
-    private ModifiableByteArray publicKey;
+    private ModifiableInteger publicValuesLength;
+    private ModifiableByteArray publicValues;
 
-    private ModifiableInteger combinedKeyShareLength;
-    private ModifiableByteArray combinedKeyShare;
+    private ModifiableByteArray classicalPublicKey;
+    private ModifiableByteArray postQuantumKeyEncapsulation;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -85,74 +85,73 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
+    public ModifiableInteger getPublicValuesLength() {
+        return publicValuesLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
+    public void setPublicValuesLength(ModifiableInteger publicValuesLength) {
+        this.publicValuesLength = publicValuesLength;
     }
 
-    public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+    public void setPublicValuesLength(int publicValuesLength) {
+        this.publicValuesLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.publicValuesLength, publicValuesLength);
     }
 
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
+    public ModifiableByteArray getPublicValues() {
+        return publicValues;
     }
 
-    public void setPublicKey(byte[] publicKey) {
-        setPublicKey(publicKey, false);
+    public void setPublicValues(ModifiableByteArray publicValues) {
+        setPublicValues(publicValues, false);
     }
 
-    public void setPublicKey(ModifiableByteArray publicKey, boolean adjustLengthField) {
-        this.publicKey = publicKey;
+    public void setPublicValues(byte[] publicValues) {
+        setPublicValues(publicValues, false);
+    }
+
+    public void setPublicValues(ModifiableByteArray publicValues, boolean adjustLengthField) {
+        this.publicValues = publicValues;
         if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
+            setPublicValuesLength(this.publicValues.getValue().length);
         }
     }
 
-    public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+    public void setPublicValues(byte[] publicValues, boolean adjustLengthField) {
+        this.publicValues =
+                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
         if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
+            setPublicValuesLength(this.publicValues.getValue().length);
         }
     }
 
-    public ModifiableInteger getCombinedKeyShareLength() {
-        return combinedKeyShareLength;
+    public ModifiableByteArray getClassicalPublicKey() {
+        return classicalPublicKey;
     }
 
-    public void setCombinedKeyShareLength(ModifiableInteger combinedKeyShareLength) {
-        this.combinedKeyShareLength = combinedKeyShareLength;
+    public void setClassicalPublicKey(ModifiableByteArray classicalPublicKey) {
+        this.classicalPublicKey = classicalPublicKey;
     }
 
-    public void setCiphertextLength(int ciphertextLength) {
-        combinedKeyShareLength =
-                ModifiableVariableFactory.safelySetValue(combinedKeyShareLength, ciphertextLength);
+    public void setClassicalPublicKey(byte[] classicalPublicKey) {
+        this.classicalPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.classicalPublicKey, classicalPublicKey);
     }
 
-    public ModifiableByteArray getCombinedKeyShare() {
-        return combinedKeyShare;
+    public ModifiableByteArray getPostQuantumKeyEncapsulation() {
+        return postQuantumKeyEncapsulation;
     }
 
-    public void setCombinedKeyShare(byte[] combinedKeyShare) {
-        setCiphertext(combinedKeyShare, false);
+    public void setPostQuantumKeyEncapsulation(ModifiableByteArray postQuantumKeyEncapsulation) {
+        this.postQuantumKeyEncapsulation = postQuantumKeyEncapsulation;
     }
 
-    public void setCiphertext(ModifiableByteArray ciphertext, boolean adjustLengthField) {
-        combinedKeyShare = ciphertext;
-        if (adjustLengthField) {
-            setCiphertextLength(combinedKeyShare.getValue().length);
-        }
-    }
-
-    public void setCiphertext(byte[] ciphertext, boolean adjustLengthField) {
-        combinedKeyShare = ModifiableVariableFactory.safelySetValue(combinedKeyShare, ciphertext);
-        if (adjustLengthField) {
-            setCiphertextLength(combinedKeyShare.getValue().length);
-        }
+    public void setPostQuantumKeyEncapsulation(byte[] postQuantumKeyEncapsulation) {
+        this.postQuantumKeyEncapsulation =
+                ModifiableVariableFactory.safelySetValue(
+                        this.postQuantumKeyEncapsulation, postQuantumKeyEncapsulation);
     }
 
     @Override

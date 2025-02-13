@@ -17,145 +17,80 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
 
-    private ModifiableInteger agreementPublicKeyLength;
-    private ModifiableByteArray agreementPublicKey;
-    private ModifiableInteger encapsulationPublicKeyLength;
-    private ModifiableByteArray encapsulationPublicKey;
+    private ModifiableInteger publicValuesLength;
+    private ModifiableByteArray publicValues;
 
-    // Neue Variable für die Zertifikatsdaten
-    private ModifiableByteArray certificatePublicKeyData;
-    private ModifiableInteger certificatePublicKeyLength;
+    private ModifiableByteArray classicalPublicKey;
+    private ModifiableByteArray postQuantumPublicKey;
 
-    public ModifiableInteger getAgreementPublicKeyLength() {
-        return agreementPublicKeyLength;
+    public ModifiableInteger getPublicValuesLength() {
+        return publicValuesLength;
     }
 
-    public void setAgreementPublicKeyLength(ModifiableInteger agreementPublicKeyLength) {
-        this.agreementPublicKeyLength = agreementPublicKeyLength;
+    public void setPublicValuesLength(ModifiableInteger publicValuesLength) {
+        this.publicValuesLength = publicValuesLength;
     }
 
-    public void setAgreementPublicKeyLength(int agreementPublicKeyLength) {
-        this.agreementPublicKeyLength =
+    public void setPublicValuesLength(int publicValuesLength) {
+        this.publicValuesLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.agreementPublicKeyLength, agreementPublicKeyLength);
+                        this.publicValuesLength, publicValuesLength);
     }
 
-    public ModifiableByteArray getAgreementPublicKey() {
-        return agreementPublicKey;
+    public ModifiableByteArray getPublicValues() {
+        return publicValues;
     }
 
-    public void setAgreementPublicKey(ModifiableByteArray agreementPublicKey) {
-        setAgreementPublicKey(agreementPublicKey, false);
+    public void setPublicValues(ModifiableByteArray publicValues) {
+        this.publicValues = publicValues;
     }
 
-    public void setAgreementPublicKey(byte[] agreementPublicKey) {
-        setAgreementPublicKey(agreementPublicKey, false);
+    public void setPublicValues(byte[] publicValues) {
+        this.publicValues =
+                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
     }
 
-    public void setAgreementPublicKey(
-            ModifiableByteArray agreementPublicKey, boolean adjustLengthField) {
-        this.agreementPublicKey = agreementPublicKey;
+    public void setPublicValues(ModifiableByteArray publicValues, boolean adjustLengthField) {
+        this.publicValues = publicValues;
         if (adjustLengthField) {
-            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+            setPublicValuesLength(this.publicValues.getValue().length);
         }
     }
 
-    public void setAgreementPublicKey(byte[] agreementPublicKey, boolean adjustLengthField) {
-        this.agreementPublicKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.agreementPublicKey, agreementPublicKey);
+    public void setPublicValues(byte[] publicValues, boolean adjustLengthField) {
+        this.publicValues =
+                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
         if (adjustLengthField) {
-            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+            setPublicValuesLength(this.publicValues.getValue().length);
         }
     }
 
-    public ModifiableInteger getEncapsulationPublicKeyLength() {
-        return encapsulationPublicKeyLength;
+    public ModifiableByteArray getClassicalPublicKey() {
+        return classicalPublicKey;
     }
 
-    public void setEncapsulationPublicKeyLength(ModifiableInteger encapsulationPublicKeyLength) {
-        this.encapsulationPublicKeyLength = encapsulationPublicKeyLength;
+    public void setClassicalPublicKey(ModifiableByteArray classicalPublicKey) {
+        this.classicalPublicKey = classicalPublicKey;
     }
 
-    public void setEncapsulationPublicKeyLength(int encapsulationPublicKeyLength) {
-        this.encapsulationPublicKeyLength =
+    public void setClassicalPublicKey(byte[] classicalPublicKey) {
+        this.classicalPublicKey =
                 ModifiableVariableFactory.safelySetValue(
-                        this.encapsulationPublicKeyLength, encapsulationPublicKeyLength);
+                        this.classicalPublicKey, classicalPublicKey);
     }
 
-    public ModifiableByteArray getEncapsulationPublicKey() {
-        return encapsulationPublicKey;
+    public ModifiableByteArray getPostQuantumPublicKey() {
+        return postQuantumPublicKey;
     }
 
-    public void setEncapsulationPublicKey(ModifiableByteArray encapsulationPublicKey) {
-        setEncapsulationPublicKey(encapsulationPublicKey, false);
+    public void setPostQuantumPublicKey(ModifiableByteArray postQuantumPublicKey) {
+        this.postQuantumPublicKey = postQuantumPublicKey;
     }
 
-    public void setEncapsulationPublicKey(byte[] encapsulationPublicKey) {
-        setEncapsulationPublicKey(encapsulationPublicKey, false);
-    }
-
-    public void setEncapsulationPublicKey(
-            ModifiableByteArray encapsulationPublicKey, boolean adjustLengthField) {
-        this.encapsulationPublicKey = encapsulationPublicKey;
-        if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
-        }
-    }
-
-    public void setEncapsulationPublicKey(
-            byte[] encapsulationPublicKey, boolean adjustLengthField) {
-        this.encapsulationPublicKey =
+    public void setPostQuantumPublicKey(byte[] postQuantumPublicKey) {
+        this.postQuantumPublicKey =
                 ModifiableVariableFactory.safelySetValue(
-                        this.encapsulationPublicKey, encapsulationPublicKey);
-        if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
-        }
-    }
-
-    // Getter und Setter für das Zertifikat
-    public ModifiableByteArray getCertificatePublicKeyData() {
-        return certificatePublicKeyData;
-    }
-
-    public void setCertificatePublicKeyData(ModifiableByteArray certificatePublicKeyData) {
-        setCertificatePublicKeyData(certificatePublicKeyData, false);
-    }
-
-    public void setCertificatePublicKeyData(byte[] certificatePublicKeyData) {
-        setCertificatePublicKeyData(certificatePublicKeyData, false);
-    }
-
-    public void setCertificatePublicKeyData(
-            ModifiableByteArray certificatePublicKeyData, boolean adjustLengthField) {
-        this.certificatePublicKeyData = certificatePublicKeyData;
-        if (adjustLengthField) {
-            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
-        }
-    }
-
-    public void setCertificatePublicKeyData(
-            byte[] certificatePublicKeyData, boolean adjustLengthField) {
-        this.certificatePublicKeyData =
-                ModifiableVariableFactory.safelySetValue(
-                        this.certificatePublicKeyData, certificatePublicKeyData);
-        if (adjustLengthField) {
-            setCertificatePublicKeyLength(this.certificatePublicKeyData.getValue().length);
-        }
-    }
-
-    public ModifiableInteger getCertificatePublicKeyLength() {
-        return certificatePublicKeyLength;
-    }
-
-    public void setCertificatePublicKeyLength(ModifiableInteger certificatePublicKeyLength) {
-        this.certificatePublicKeyLength = certificatePublicKeyLength;
-    }
-
-    public void setCertificatePublicKeyLength(int certificatePublicKeyLength) {
-        this.certificatePublicKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.certificatePublicKeyLength, certificatePublicKeyLength);
+                        this.postQuantumPublicKey, postQuantumPublicKey);
     }
 
     @Override

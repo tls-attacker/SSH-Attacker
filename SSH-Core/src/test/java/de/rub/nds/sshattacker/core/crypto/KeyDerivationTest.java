@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
@@ -25,7 +26,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMess
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.InputStream;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -102,7 +102,7 @@ public class KeyDerivationTest {
                                 keyD,
                                 keyE,
                                 keyF,
-                                currentHashAlgorithm,
+                                HashFunction.valueOf(currentHashAlgorithm),
                                 currentIvLength,
                                 currentEncryptionLength));
             }
@@ -135,13 +135,10 @@ public class KeyDerivationTest {
             byte[] expectedKeyD,
             byte[] expectedKeyE,
             byte[] expectedKeyF,
-            String providedHashAlgorithm,
+            HashFunction providedHashFunction,
             Integer providedIvLength,
             Integer providedEncryptionLength)
             throws NoSuchAlgorithmException {
-        // Use of MessageDigest to get digest length
-        MessageDigest digest = MessageDigest.getInstance(providedHashAlgorithm);
-
         byte[] keyA =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
@@ -149,7 +146,7 @@ public class KeyDerivationTest {
                         'A',
                         providedSessionId,
                         providedIvLength,
-                        providedHashAlgorithm);
+                        providedHashFunction);
         byte[] keyB =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
@@ -157,7 +154,7 @@ public class KeyDerivationTest {
                         'B',
                         providedSessionId,
                         providedIvLength,
-                        providedHashAlgorithm);
+                        providedHashFunction);
         byte[] keyC =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
@@ -165,7 +162,7 @@ public class KeyDerivationTest {
                         'C',
                         providedSessionId,
                         providedEncryptionLength,
-                        providedHashAlgorithm);
+                        providedHashFunction);
         byte[] keyD =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
@@ -173,23 +170,23 @@ public class KeyDerivationTest {
                         'D',
                         providedSessionId,
                         providedEncryptionLength,
-                        providedHashAlgorithm);
+                        providedHashFunction);
         byte[] keyE =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'E',
                         providedSessionId,
-                        digest.getDigestLength(),
-                        providedHashAlgorithm);
+                        providedHashFunction.getOutputSize() / 8,
+                        providedHashFunction);
         byte[] keyF =
                 KeyDerivation.deriveKey(
                         Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'F',
                         providedSessionId,
-                        digest.getDigestLength(),
-                        providedHashAlgorithm);
+                        providedHashFunction.getOutputSize() / 8,
+                        providedHashFunction);
 
         assertArrayEquals(expectedKeyA, keyA);
         assertArrayEquals(expectedKeyB, keyB);

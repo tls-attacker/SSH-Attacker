@@ -7,42 +7,35 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.security.PublicKey;
 
-public abstract class KeyEncapsulation extends KeyExchange {
+public abstract class KeyEncapsulation<PUBLIC extends PublicKey> extends KeyExchange {
+
+    protected PUBLIC publicKey;
+    protected byte[] encapsulation;
 
     protected KeyEncapsulation() {
         super();
     }
 
-    public abstract void setLocalKeyPair(byte[] privateKeyBytes);
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
 
-    public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
+    public void setPublicKey(PUBLIC publicKey) {
+        this.publicKey = publicKey;
+    }
 
-    public abstract void generateLocalKeyPair();
+    public abstract void encapsulate() throws CryptoException;
 
-    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey>
-            getLocalKeyPair();
+    public byte[] getEncapsulation() {
+        return encapsulation;
+    }
 
-    public abstract CustomPublicKey getRemotePublicKey();
+    public void setEncapsulation(byte[] encapsulation) {
+        this.encapsulation = encapsulation;
+    }
 
-    public abstract void setRemotePublicKey(byte[] remotePublicKeyBytes);
-
-    public abstract void setSharedSecret(byte[] sharedSecretBytes);
-
-    public abstract void generateSharedSecret();
-
-    public abstract void setEncryptedSharedSecret(byte[] encryptedSharedSecret);
-
-    public abstract byte[] getEncryptedSharedSecret();
-
-    public abstract byte[] encryptSharedSecret();
-
-    @SuppressWarnings("RedundantThrows")
-    public abstract void decryptSharedSecret() throws CryptoException;
-
-    public abstract void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException;
+    public abstract void decapsulate() throws CryptoException;
 }

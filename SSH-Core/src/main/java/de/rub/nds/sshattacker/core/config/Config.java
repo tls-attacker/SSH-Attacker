@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
 
 @XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -51,6 +52,7 @@ public class Config implements Serializable {
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
         Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new BouncyCastlePQCProvider());
     }
 
     /** Default Connection to use when running as Client */

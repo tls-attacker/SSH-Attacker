@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -23,16 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCurvePublicKey, ?>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    static {
-        // BouncyCastle-Provider added
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public X509XCurvePublicKeyParser(byte[] array, int startPosition) {
         super(array, startPosition);

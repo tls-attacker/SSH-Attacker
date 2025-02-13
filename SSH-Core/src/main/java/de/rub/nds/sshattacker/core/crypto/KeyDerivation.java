@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto;
 
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -29,29 +30,25 @@ public final class KeyDerivation {
             char label,
             byte[] sessionID,
             int outputLen,
-            String hashFunction) {
+            HashFunction hashFunction) {
         try {
-            MessageDigest md = MessageDigest.getInstance(hashFunction);
+            MessageDigest md = MessageDigest.getInstance(hashFunction.getJavaName());
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-            outStream.write(
-                    md.digest(
-                            Arrays.concatenate(
-                                    sharedSecret,
-                                    exchangeHash,
-                                    new byte[] {(byte) label},
-                                    sessionID)));
-
+            md.update(sharedSecret);
+            md.update(exchangeHash);
+            md.update((byte) label);
+            md.update(sessionID);
+            outStream.write(md.digest());
             while (outStream.size() < outputLen) {
-                outStream.write(
-                        md.digest(
-                                Arrays.concatenate(
-                                        sharedSecret, exchangeHash, outStream.toByteArray())));
+                md.update(sharedSecret);
+                md.update(exchangeHash);
+                md.update(outStream.toByteArray());
+                outStream.write(md.digest());
             }
             return Arrays.copyOfRange(outStream.toByteArray(), 0, outputLen);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(
-                    "Provider does not support this hashFunction:" + e.getMessage());
+                    "Provider does not support this hash function:" + e.getMessage());
         } catch (IOException e) {
             LOGGER.error("Error while writing: {}", e.getMessage());
             return new byte[0];

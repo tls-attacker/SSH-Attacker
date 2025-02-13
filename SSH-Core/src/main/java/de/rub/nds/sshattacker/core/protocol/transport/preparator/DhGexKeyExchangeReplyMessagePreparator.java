@@ -35,7 +35,7 @@ public class DhGexKeyExchangeReplyMessagePreparator
 
     private void prepareEphemeralPublicKey() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         getObject()
                 .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
         // Update exchange hash with local public key

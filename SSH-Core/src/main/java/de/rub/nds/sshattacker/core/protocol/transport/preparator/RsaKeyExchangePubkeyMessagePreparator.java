@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -37,10 +38,12 @@ public class RsaKeyExchangePubkeyMessagePreparator
     private void prepareTransientPublicKey() {
         try {
             RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
-            keyExchange.generateTransientKey();
+            keyExchange.generateKeyPair();
             getObject()
                     .setTransientPublicKeyBytes(
-                            PublicKeyHelper.encode(keyExchange.getTransientKey()), true);
+                            PublicKeyHelper.encode(
+                                    PublicKeyFormat.SSH_RSA, keyExchange.getPublicKey()),
+                            true);
             chooser.getContext()
                     .getExchangeHashInputHolder()
                     .setRsaTransientKey(getObject().getTransientPublicKey());

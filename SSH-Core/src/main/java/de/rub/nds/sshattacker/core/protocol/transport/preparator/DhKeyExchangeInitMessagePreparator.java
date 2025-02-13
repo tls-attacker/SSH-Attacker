@@ -23,7 +23,7 @@ public class DhKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         chooser.getContext()
                 .getExchangeHashInputHolder()
                 .setDhClientPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());

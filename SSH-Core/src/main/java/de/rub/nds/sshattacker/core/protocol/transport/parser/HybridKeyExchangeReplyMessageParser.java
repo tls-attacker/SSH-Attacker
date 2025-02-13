@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,31 +17,13 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeReplyMessageParser
         extends SshMessageParser<HybridKeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private final HybridKeyExchangeCombiner combiner;
-    private final int agreementSize;
-    private final int encapsulationSize;
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            int startPosition,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
+    public HybridKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
     }
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
+    public HybridKeyExchangeReplyMessageParser(byte[] array) {
         super(array);
-        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
     }
 
     private void parseHostKeyBytes() {
@@ -54,27 +35,11 @@ public class HybridKeyExchangeReplyMessageParser
                 ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseHybridKey() {
-        int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Total Length: {}", length);
-
-        switch (combiner) {
-            case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
-                message.setCiphertextLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
-                break;
-            case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                message.setCiphertextLength(encapsulationSize);
-                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
-                message.setPublicKeyLength(agreementSize);
-                message.setPublicKey(parseByteArrayField(agreementSize));
-                break;
-            default:
-                LOGGER.warn("combiner not supported. Can not update message");
-                break;
-        }
+    private void parsePublicValues() {
+        message.setPublicValuesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Public values length: {}", message.getPublicValuesLength().getValue());
+        message.setPublicValues(parseByteArrayField(message.getPublicValuesLength().getValue()));
+        LOGGER.debug("Public values: {}", message.getPublicValues());
     }
 
     private void parseSignature() {
@@ -87,7 +52,7 @@ public class HybridKeyExchangeReplyMessageParser
     @Override
     protected void parseMessageSpecificContents() {
         parseHostKeyBytes();
-        parseHybridKey();
+        parsePublicValues();
         parseSignature();
     }
 

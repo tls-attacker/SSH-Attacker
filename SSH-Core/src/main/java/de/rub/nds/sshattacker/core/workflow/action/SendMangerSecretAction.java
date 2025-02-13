@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
@@ -18,6 +17,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -81,7 +81,7 @@ public class SendMangerSecretAction extends SendAction {
         ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
         Chooser chooser = state.getSshContext().getChooser();
         RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
-        CustomRsaPublicKey publicKey = keyExchange.getTransientKey().getPublicKey();
+        PublicKey publicKey = keyExchange.getPublicKey();
 
         try {
             // Encrypt the encoded secret with plain RSA

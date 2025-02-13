@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -63,8 +63,13 @@ public class OaepConverterTest {
         message[0] = (byte) 42;
         try {
             byte[] bytes =
-                    OaepConverter.doOaepEncoding(message, "SHA-256", 256, new Random().nextLong());
-            byte[] result = OaepConverter.doOaepDecoding(bytes, "SHA-256", 256);
+                    OaepConverter.doOaepEncoding(
+                            message,
+                            HashFunction.SHA256.getJavaName(),
+                            256,
+                            new Random().nextLong());
+            byte[] result =
+                    OaepConverter.doOaepDecoding(bytes, HashFunction.SHA256.getJavaName(), 256);
             assertArrayEquals(message, result);
         } catch (NoSuchAlgorithmException e) {
             fail("Test failed because hash alg does not exist.");
@@ -85,15 +90,18 @@ public class OaepConverterTest {
             // Encode and perform raw encryption
             Security.addProvider(new BouncyCastleProvider());
             byte[] encodedMessage =
-                    OaepConverter.doOaepEncoding(message, "SHA-256", 256, new Random().nextLong());
+                    OaepConverter.doOaepEncoding(
+                            message,
+                            HashFunction.SHA256.getJavaName(),
+                            256,
+                            new Random().nextLong());
             Cipher rawCipher = Cipher.getInstance("RSA/NONE/NoPadding");
             rawCipher.init(Cipher.ENCRYPT_MODE, kp.getPublic());
             byte[] encryptedMessage = rawCipher.doFinal(encodedMessage);
 
             // Do decryption using OAEP Cipher
             AbstractCipher oaepCipher =
-                    CipherFactory.getOaepCipher(
-                            KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPrivate());
+                    CipherFactory.getOaepCipher(HashFunction.SHA256, kp.getPrivate());
             byte[] result = oaepCipher.decrypt(encryptedMessage);
 
             assertArrayEquals(message, result);
@@ -120,8 +128,7 @@ public class OaepConverterTest {
 
             // Do encryption using OAEP Cipher
             AbstractCipher oaepCipher =
-                    CipherFactory.getOaepCipher(
-                            KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPublic());
+                    CipherFactory.getOaepCipher(HashFunction.SHA256, kp.getPublic());
             byte[] encryptedMessage = oaepCipher.encrypt(message);
 
             // Do raw decrypt
@@ -138,7 +145,9 @@ public class OaepConverterTest {
             buffer.put(encodedMessage);
 
             // Perform the decoding
-            byte[] result = OaepConverter.doOaepDecoding(buffer.array(), "SHA-256", 256);
+            byte[] result =
+                    OaepConverter.doOaepDecoding(
+                            buffer.array(), HashFunction.SHA256.getJavaName(), 256);
 
             assertArrayEquals(message, result);
         } catch (NoSuchPaddingException

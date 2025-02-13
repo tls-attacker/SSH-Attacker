@@ -10,11 +10,10 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.DatatypeConverter;
@@ -22,15 +21,12 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class RsaKeyExchangeTest {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Provides test vectors for the RsaKeyExchange according to the SSH
@@ -48,11 +44,11 @@ public class RsaKeyExchangeTest {
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
         String line;
 
-        KeyExchangeAlgorithm keyExchangeAlgorithm = null;
+        HashFunction hashFunction = null;
         if (file.equals("rsa1024-sha1-TestVectors-KAS.txt")) {
-            keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
+            hashFunction = HashFunction.SHA1;
         } else if (file.equals("rsa2048-sha256-TestVectors-KAS.txt")) {
-            keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+            hashFunction = HashFunction.SHA256;
         }
         BigInteger publicModulus = null,
                 publicExponent = null,
@@ -93,7 +89,7 @@ public class RsaKeyExchangeTest {
                 ciphertext = DatatypeConverter.parseHexBinary(line);
                 argumentsBuilder.add(
                         Arguments.of(
-                                keyExchangeAlgorithm,
+                                hashFunction,
                                 publicExponent,
                                 publicModulus,
                                 privateExponent,
@@ -132,7 +128,7 @@ public class RsaKeyExchangeTest {
      * ciphertext, according to the mpint computations standardized in SSH. Thus, the method tests
      * the class RsaKeyExchange.java and all underlying classes used for the decryption.
      *
-     * @param keyExchangeAlgorithm used rsa key exchange algorithm
+     * @param hashFunction used hash function
      * @param publicKeyExponent public key exponent
      * @param publicKeyModulus modulus of public key
      * @param privateKeyExponent private key exponent
@@ -140,10 +136,10 @@ public class RsaKeyExchangeTest {
      * @param sharedSecret the expected shared secret
      * @param ciphertext ciphertext
      */
-    @ParameterizedTest(name = "Algorithm: {0}, Private key: {3}")
+    @ParameterizedTest(name = "Hash function: {0}, Private key: {3}")
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaKeyExchangeDecryption(
-            KeyExchangeAlgorithm keyExchangeAlgorithm,
+            HashFunction hashFunction,
             BigInteger publicKeyExponent,
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
@@ -152,30 +148,22 @@ public class RsaKeyExchangeTest {
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
-                RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
+                new RsaKeyExchange(publicKeyModulus.bitLength(), hashFunction);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
-        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        rsaKeyExchange.setTransientKey(keypair);
-        rsaKeyExchange.setTransientKeyLength(keypair.getPublicKey().getModulus().bitLength());
-
-        assertTrue(rsaKeyExchange.areParametersSet());
+        rsaKeyExchange.setPrivateKey(privateKey);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
+        rsaKeyExchange.setPublicKey(publicKey);
 
         assertEquals(publicKeyExponent, rsaKeyExchange.getExponent());
         assertEquals(publicKeyModulus, rsaKeyExchange.getModulus());
-        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
-        assertEquals(keypair, rsaKeyExchange.getTransientKey());
-        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getPublicKeySize());
+        assertEquals(privateKey, rsaKeyExchange.getPrivateKey());
+        assertEquals(publicKey, rsaKeyExchange.getPublicKey());
+        assertEquals(hashFunction, rsaKeyExchange.getHashFunction());
 
-        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
-            assertEquals(160, rsaKeyExchange.getHashLength());
-        }
-        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA2048_SHA256) {
-            assertEquals(256, rsaKeyExchange.getHashLength());
-        }
-        rsaKeyExchange.decryptSharedSecret(ciphertext);
+        rsaKeyExchange.setEncapsulation(ciphertext);
+        rsaKeyExchange.decapsulate();
         assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
@@ -186,7 +174,7 @@ public class RsaKeyExchangeTest {
      * method of RsaKeyExchange. Thus, the method test the class RsaKeyExchange.java and all
      * underlying classes.
      *
-     * @param keyExchangeAlgorithm used rs key exchange algorithm
+     * @param hashFunction used hash function
      * @param publicKeyExponent public key exponent
      * @param publicKeyModulus the modulus of public key
      * @param privateKeyExponent private key exponent
@@ -194,10 +182,10 @@ public class RsaKeyExchangeTest {
      * @param sharedSecret the shared secret to be encrypted
      * @param ciphertext cipher
      */
-    @ParameterizedTest(name = "Algorithm: {0}, Public key: {1}")
+    @ParameterizedTest(name = "Hash function: {0}, Public key: {1}")
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaKeyExchangeEncryption(
-            KeyExchangeAlgorithm keyExchangeAlgorithm,
+            HashFunction hashFunction,
             BigInteger publicKeyExponent,
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
@@ -206,38 +194,28 @@ public class RsaKeyExchangeTest {
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
-                RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
+                new RsaKeyExchange(publicKeyModulus.bitLength(), hashFunction);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
-        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        rsaKeyExchange.setTransientKey(keypair);
-        rsaKeyExchange.setTransientKeyLength(keypair.getPublicKey().getModulus().bitLength());
-
-        assertTrue(rsaKeyExchange.areParametersSet());
+        rsaKeyExchange.setPrivateKey(privateKey);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
+        rsaKeyExchange.setPublicKey(publicKey);
 
         assertEquals(publicKeyExponent, rsaKeyExchange.getExponent());
         assertEquals(publicKeyModulus, rsaKeyExchange.getModulus());
-        assertEquals(keypair, rsaKeyExchange.getTransientKey());
-        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
-
-        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
-            assertEquals(160, rsaKeyExchange.getHashLength());
-        }
-        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA2048_SHA256) {
-            assertEquals(256, rsaKeyExchange.getHashLength());
-        }
+        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getPublicKeySize());
+        assertEquals(privateKey, rsaKeyExchange.getPrivateKey());
+        assertEquals(publicKey, rsaKeyExchange.getPublicKey());
+        assertEquals(hashFunction, rsaKeyExchange.getHashFunction());
 
         rsaKeyExchange.setSharedSecret(sharedSecret);
-        byte[] cipher = rsaKeyExchange.encryptSharedSecret();
-        rsaKeyExchange.decryptSharedSecret(cipher);
+        rsaKeyExchange.encapsulate();
+        rsaKeyExchange.decapsulate();
         assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     @Test
     public void exceptionTesting() {
-        LOGGER.info("Exception testing: ");
         BigInteger modulus =
                 new BigInteger(
                         "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb",
@@ -250,37 +228,13 @@ public class RsaKeyExchangeTest {
         byte[] wrongInput =
                 ArrayConverter.hexStringToByteArray(
                         "0e7f55fe7304df41570926f3311f15c4d65a732c483116ee3d3d2d0af3549ad9bf7cbfb78ad884f84d5beb04724dc7369b31def37d0cf539e9cfcdd3de653729ead5d1");
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new RsaKeyExchange(KeyExchangeAlgorithm.CURVE448_SHA512));
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new RsaKeyExchange(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1));
 
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), KeyExchangeAlgorithm.RSA1024_SHA1);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicExponent, modulus);
         CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey(privateExponent, modulus);
-        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);
-        rsaKeyExchange.setTransientKey(keypair);
-        rsaKeyExchange.setTransientKeyLength(keypair.getPublicKey().getModulus().bitLength());
-
-        assertThrows(CryptoException.class, () -> rsaKeyExchange.decryptSharedSecret(wrongInput));
-        rsaKeyExchange.setTransientKey(
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey));
-
-        assertThrows(CryptoException.class, () -> rsaKeyExchange.decryptSharedSecret(wrongInput));
-        rsaKeyExchange
-                .getTransientKey()
-                .getPublicKey()
-                .setModulus(
-                        new BigInteger(
-                                "0e7f55fe7304df41570926f3311f15c4d65a732c483116ee3d3d2d0af3549ad9bf7cbfb78ad884f84d5beb04724dc7369b31def37d0cf539e9cfcdd3de653729ead5d1",
-                                16));
-
-        rsaKeyExchange.setHashLength(120);
-        rsaKeyExchange.generateSharedSecret();
-        assertThrows(ArrayIndexOutOfBoundsException.class, rsaKeyExchange::encryptSharedSecret);
+        rsaKeyExchange.setPrivateKey(privateKey);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicExponent, modulus);
+        rsaKeyExchange.setPublicKey(publicKey);
+        assertThrows(CryptoException.class, rsaKeyExchange::decapsulate);
     }
 }

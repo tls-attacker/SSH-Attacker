@@ -23,15 +23,12 @@ import java.util.Comparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhKeyExchange extends DhBasedKeyExchange {
+public class DhKeyExchange extends KeyAgreement<CustomDhPrivateKey, CustomDhPublicKey> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private BigInteger modulus;
     private BigInteger generator;
-
-    private CustomKeyPair<CustomDhPrivateKey, CustomDhPublicKey> localKeyPair;
-    private CustomDhPublicKey remotePublicKey;
 
     protected DhKeyExchange() {
         super();
@@ -59,45 +56,36 @@ public class DhKeyExchange extends DhBasedKeyExchange {
          * This can be the case if, for example, SSH-Attacker tries to perform the actual key exchange prior to
          * group negotiation. The default values will be overwritten when negotiating a group.
          */
-        NamedDhGroup group;
-        switch (algorithm) {
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
-            case DIFFIE_HELLMAN_GROUP1_SHA1:
-                group = NamedDhGroup.GROUP1;
-                break;
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP14_SHA1:
-            case DIFFIE_HELLMAN_GROUP14_SHA256:
-            case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM:
-                group = NamedDhGroup.GROUP14;
-                break;
-            case DIFFIE_HELLMAN_GROUP15_SHA512:
-            case DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM:
-                group = NamedDhGroup.GROUP15;
-                break;
-            case DIFFIE_HELLMAN_GROUP16_SHA512:
-            case DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM:
-            case DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM:
-                group = NamedDhGroup.GROUP16;
-                break;
-            case DIFFIE_HELLMAN_GROUP17_SHA512:
-                group = NamedDhGroup.GROUP17;
-                break;
-            case DIFFIE_HELLMAN_GROUP18_SHA512:
-            case DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM:
-                group = NamedDhGroup.GROUP18;
-                break;
-            default:
-                throw new NotImplementedException(
-                        "Unable to create a new DH key exchange instance, key exchange algorithm "
-                                + algorithm
-                                + " is not yet implemented.");
-        }
+        NamedDhGroup group =
+                switch (algorithm) {
+                    case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1, DIFFIE_HELLMAN_GROUP1_SHA1 ->
+                            NamedDhGroup.GROUP1;
+                    case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                            DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP14_SHA1,
+                            DIFFIE_HELLMAN_GROUP14_SHA256,
+                            DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM ->
+                            NamedDhGroup.GROUP14;
+                    case DIFFIE_HELLMAN_GROUP15_SHA512,
+                            DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM ->
+                            NamedDhGroup.GROUP15;
+                    case DIFFIE_HELLMAN_GROUP16_SHA512,
+                            DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM,
+                            DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM ->
+                            NamedDhGroup.GROUP16;
+                    case DIFFIE_HELLMAN_GROUP17_SHA512 -> NamedDhGroup.GROUP17;
+                    case DIFFIE_HELLMAN_GROUP18_SHA512, DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM ->
+                            NamedDhGroup.GROUP18;
+                    default ->
+                            throw new NotImplementedException(
+                                    "Unable to create a new DH key exchange instance, key exchange algorithm "
+                                            + algorithm
+                                            + " is not yet implemented.");
+                };
         return new DhKeyExchange(group);
     }
 
@@ -117,83 +105,8 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         this.generator = generator;
     }
 
-    public CustomKeyPair<CustomDhPrivateKey, CustomDhPublicKey> getLocalKeyPair() {
-        return localKeyPair;
-    }
-
-    public CustomDhPublicKey getRemotePublicKey() {
-        return remotePublicKey;
-    }
-
-    public void setRemotePublicKey(byte[] publicKeyBytes) {
-        setRemotePublicKey(new BigInteger(publicKeyBytes));
-    }
-
-    public void setRemotePublicKey(BigInteger publicKey) {
-        remotePublicKey = new CustomDhPublicKey(modulus, generator, publicKey);
-    }
-
     public boolean areGroupParametersSet() {
         return modulus != null && generator != null;
-    }
-
-    public void generateLocalKeyPair() {
-        if (modulus == null || generator == null) {
-            throw new RuntimeException(
-                    "Unable to generate local key pair without specifying the diffie hellman group first!");
-        }
-        int privateKeyBitLength = modulus.bitLength();
-        BigInteger pMinusOne = modulus.subtract(BigInteger.ONE);
-        CustomDhPrivateKey privateKey;
-        do {
-            privateKey =
-                    new CustomDhPrivateKey(
-                            modulus,
-                            generator,
-                            new BigInteger(privateKeyBitLength, random).mod(modulus));
-        } while (privateKey.getX().equals(BigInteger.ZERO)
-                || privateKey.getX().equals(BigInteger.ONE)
-                || privateKey.getX().equals(pMinusOne));
-        CustomDhPublicKey publicKey =
-                new CustomDhPublicKey(
-                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
-        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
-    }
-
-    @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes) {
-        BigInteger privateKeyExponent = new BigInteger(privateKeyBytes);
-        CustomDhPrivateKey privateKey =
-                new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
-        CustomDhPublicKey publicKey =
-                new CustomDhPublicKey(
-                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
-        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
-    }
-
-    @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        CustomDhPrivateKey privateKey =
-                new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
-        CustomDhPublicKey publicKey =
-                new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
-        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
-    }
-
-    @Override
-    public void computeSharedSecret() throws CryptoException {
-        if (localKeyPair == null || remotePublicKey == null) {
-            throw new CryptoException(
-                    "Unable to compute shared secret - either local key pair or remote public key is null");
-        }
-        sharedSecret =
-                remotePublicKey
-                        .getY()
-                        .modPow(localKeyPair.getPrivateKey().getX(), modulus)
-                        .toByteArray();
-        LOGGER.debug(
-                "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     public void selectGroup(int preferredGroupSize) {
@@ -250,5 +163,75 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 preferredGroupSize);
         modulus = selectedGroup.getModulus();
         generator = selectedGroup.getGenerator();
+    }
+
+    @Override
+    public void generateKeyPair() {
+        if (modulus == null || generator == null) {
+            throw new RuntimeException(
+                    "Unable to generate local key pair without specifying the diffie hellman group first!");
+        }
+        int privateKeyBitLength = modulus.bitLength();
+        BigInteger pMinusOne = modulus.subtract(BigInteger.ONE);
+        CustomDhPrivateKey privateKey;
+        do {
+            privateKey =
+                    new CustomDhPrivateKey(
+                            modulus,
+                            generator,
+                            new BigInteger(privateKeyBitLength, random).mod(modulus));
+        } while (privateKey.getX().equals(BigInteger.ZERO)
+                || privateKey.getX().equals(BigInteger.ONE)
+                || privateKey.getX().equals(pMinusOne));
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(
+                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] encodedPrivateKey) {
+        BigInteger privateKeyExponent = new BigInteger(encodedPrivateKey);
+        CustomDhPrivateKey privateKey =
+                new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(
+                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] encodedPrivateKey, byte[] encodedPublicKey) {
+        CustomDhPrivateKey privateKey =
+                new CustomDhPrivateKey(modulus, generator, new BigInteger(encodedPrivateKey));
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(modulus, generator, new BigInteger(encodedPublicKey));
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setRemotePublicKey(byte[] encodedPublicKey) {
+        remotePublicKey =
+                new CustomDhPublicKey(modulus, generator, new BigInteger(encodedPublicKey));
+    }
+
+    public void setRemotePublicKey(BigInteger remotePublicKey) {
+        this.remotePublicKey = new CustomDhPublicKey(modulus, generator, remotePublicKey);
+    }
+
+    @Override
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
+        sharedSecret =
+                remotePublicKey
+                        .getY()
+                        .modPow(localKeyPair.getPrivateKey().getX(), modulus)
+                        .toByteArray();
+        LOGGER.debug(
+                "Finished computation of shared secret: {}",
+                ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 }

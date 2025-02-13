@@ -41,7 +41,8 @@ public class RsaKeyExchangeSecretMessageHandler
     private void decryptSharedSecret() {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         try {
-            keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
+            keyExchange.setEncapsulation(message.getEncryptedSecret().getValue());
+            keyExchange.decapsulate();
             context.setSharedSecret(keyExchange.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn(

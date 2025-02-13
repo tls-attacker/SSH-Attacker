@@ -37,7 +37,9 @@ public class RsaKeyExchangePubkeyMessageHandler
     }
 
     private void updateContextWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
-        context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
+        context.getChooser()
+                .getRsaKeyExchange()
+                .setPublicKey(message.getTransientPublicKey().getPublicKey());
         context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 

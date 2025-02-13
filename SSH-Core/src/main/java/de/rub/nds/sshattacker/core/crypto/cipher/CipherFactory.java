@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.HashFunction;
 import java.security.Key;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,18 +44,18 @@ public final class CipherFactory {
         }
     }
 
-    public static AbstractCipher getOaepCipher(KeyExchangeAlgorithm keyExchangeAlgorithm, Key key) {
-        switch (keyExchangeAlgorithm) {
-            case RSA1024_SHA1:
-                return new OaepCipher(key, "RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "SHA-1", "MGF1");
-            case RSA2048_SHA256:
-                return new OaepCipher(
-                        key, "RSA/ECB/OAEPWithSHA-256AndMGF1Padding", "SHA-256", "MGF1");
-            default:
-                LOGGER.warn(
-                        "Cannot generate OAEP cipher for key exchange algorithm: '{}' - Using NoneCipher!",
-                        keyExchangeAlgorithm);
-                return new NoneCipher();
+    public static AbstractCipher getOaepCipher(HashFunction hashFunction, Key key) {
+        try {
+            return new OaepCipher(
+                    key,
+                    "RSA/ECB/OAEPWith" + hashFunction.getJavaName() + "AndMGF1Padding",
+                    hashFunction.getJavaName(),
+                    "MGF1");
+        } catch (Exception e) {
+            LOGGER.warn(
+                    "Cannot generate OAEP cipher for digest: '{}' - Using NoneCipher!",
+                    hashFunction);
+            return new NoneCipher();
         }
     }
 
