@@ -41,58 +41,41 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createWorkflowTrace(
             WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
         mode = runningMode;
-        switch (workflowTraceType) {
-            case KEX_INIT_ONLY:
-                return createInitKeyExchangeWorkflowTrace();
-            case KEX_DH:
-                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
-            case KEX_DH_GEX:
-                return createKeyExchangeWorkflowTrace(
-                        KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE);
-            case KEX_ECDH:
-                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.ECDH);
-            case KEX_RSA:
-                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.RSA);
-            case KEX_HYBRID:
-                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.HYBRID);
-            case KEX_DYNAMIC:
-                return createDynamicKeyExchangeWorkflowTrace();
-            case AUTH_NONE:
-                return createAuthenticationWorkflowTrace(AuthenticationMethod.NONE);
-            case AUTH_PASSWORD:
-                return createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
-            case AUTH_PUBLICKEY:
-                return createAuthenticationWorkflowTrace(AuthenticationMethod.PUBLICKEY);
-            case AUTH_KEYBOARD_INTERACTIVE:
-                return createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
-            case AUTH_DYNAMIC:
-                return createDynamicAuthenticationWorkflowTrace();
-            case FULL:
-                return createFullWorkflowTrace();
-            case MITM:
-                return createSimpleMitmProxyWorkflow();
-            default:
-                throw new ConfigurationException(
-                        "Unable to create workflow trace - Unknown WorkflowTraceType: "
-                                + workflowTraceType.name());
-        }
+        return switch (workflowTraceType) {
+            case KEX_INIT_ONLY -> createInitKeyExchangeWorkflowTrace();
+            case KEX_DH -> createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
+            case KEX_DH_GEX -> createKeyExchangeWorkflowTrace(
+                    KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE);
+            case KEX_ECDH -> createKeyExchangeWorkflowTrace(KeyExchangeFlowType.ECDH);
+            case KEX_RSA -> createKeyExchangeWorkflowTrace(KeyExchangeFlowType.RSA);
+            case KEX_HYBRID -> createKeyExchangeWorkflowTrace(KeyExchangeFlowType.HYBRID);
+            case KEX_DYNAMIC -> createDynamicKeyExchangeWorkflowTrace();
+            case AUTH_NONE -> createAuthenticationWorkflowTrace(AuthenticationMethod.NONE);
+            case AUTH_PASSWORD -> createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
+            case AUTH_PUBLICKEY -> createAuthenticationWorkflowTrace(AuthenticationMethod.PUBLICKEY);
+            case AUTH_KEYBOARD_INTERACTIVE ->
+                    createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
+            case AUTH_DYNAMIC -> createDynamicAuthenticationWorkflowTrace();
+            case FULL -> createFullWorkflowTrace();
+            case MITM -> createSimpleMitmProxyWorkflow();
+            default -> throw new ConfigurationException(
+                    "Unable to create workflow trace - Unknown WorkflowTraceType: "
+                            + workflowTraceType.name());
+        };
     }
 
     private AliasedConnection getDefaultConnection() {
         if (mode == null) {
             throw new ConfigurationException("Running mode not set, can't configure workflow");
         } else {
-            switch (mode) {
-                case CLIENT:
-                    return config.getDefaultClientConnection();
-                case SERVER:
-                    return config.getDefaultServerConnection();
-                default:
-                    throw new ConfigurationException(
-                            "This workflow can only be configured for"
-                                    + " modes CLIENT and SERVER, but actual mode was "
-                                    + mode);
-            }
+            return switch (mode) {
+                case CLIENT -> config.getDefaultClientConnection();
+                case SERVER -> config.getDefaultServerConnection();
+                default -> throw new ConfigurationException(
+                        "This workflow can only be configured for"
+                                + " modes CLIENT and SERVER, but actual mode was "
+                                + mode);
+            };
         }
     }
 

@@ -410,24 +410,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      * @return {@code true} if the reception option is set, else {@code false}
      */
     protected boolean hasReceiveOption(ReceiveOption option) {
-        Boolean value = null;
-        switch (option) {
-            case EARLY_CLEAN_SHUTDOWN:
-                value = earlyCleanShutdown;
-                break;
-            case CHECK_ONLY_EXPECTED:
-                value = checkOnlyExpected;
-                break;
-            case IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY:
-                value = ignoreUnexpectedGlobalRequestsWithoutWantReply;
-                break;
-            case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
-                value = failOnUnexpectedIgnoreMessages;
-                break;
-            case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES:
-                value = failOnUnexpectedDebugMessages;
-                break;
-        }
+        Boolean value = switch (option) {
+            case EARLY_CLEAN_SHUTDOWN -> earlyCleanShutdown;
+            case CHECK_ONLY_EXPECTED -> checkOnlyExpected;
+            case IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY -> ignoreUnexpectedGlobalRequestsWithoutWantReply;
+            case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES -> failOnUnexpectedIgnoreMessages;
+            case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES -> failOnUnexpectedDebugMessages;
+        };
 
         return value != null && value;
     }

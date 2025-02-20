@@ -75,8 +75,7 @@ public class X509EcdsaPublicKeyParser
             PublicKey publicKey = cert.getPublicKey();
 
             // If the public key is of type ECPublicKey
-            if (publicKey instanceof ECPublicKey) {
-                ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
+            if (publicKey instanceof ECPublicKey ecPublicKey) {
                 byte[] signature = cert.getSignature();
 
                 // Retrieve the curve OID
@@ -142,52 +141,26 @@ public class X509EcdsaPublicKeyParser
                 LOGGER.debug("Successfully parsed the X.509 ECDSA Certificate Public Key.");
 
                 // Dynamically determine the PublicKeyFormat based on the curve
-                PublicKeyFormat keyFormat;
-                switch (curveName) {
+                PublicKeyFormat keyFormat = switch (curveName) {
                     // Required Curves (RFC 5656, Section 10.1)
-                    case "secp256r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256;
-                        break;
-                    case "secp384r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP384;
-                        break;
-                    case "secp521r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP521;
-                        break;
+                    case "secp256r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP256;
+                    case "secp384r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP384;
+                    case "secp521r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_NISTP521;
 
                     // Recommended curves (RFC 5656, Section 10.2)
-                    case "sect163k1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163K1;
-                        break;
-                    case "secp192r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECP192R1;
-                        break;
-                    case "secp224r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECP224R1;
-                        break;
-                    case "sect233k1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233K1;
-                        break;
-                    case "sect233r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233R1;
-                        break;
-                    case "sect283k1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT283K1;
-                        break;
-                    case "sect409k1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409K1;
-                        break;
-                    case "sect409r1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409R1;
-                        break;
-                    case "sect571k1":
-                        keyFormat = PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571K1;
-                        break;
+                    case "sect163k1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT163K1;
+                    case "secp192r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECP192R1;
+                    case "secp224r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECP224R1;
+                    case "sect233k1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233K1;
+                    case "sect233r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT233R1;
+                    case "sect283k1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT283K1;
+                    case "sect409k1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409K1;
+                    case "sect409r1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT409R1;
+                    case "sect571k1" -> PublicKeyFormat.X509V3_ECDSA_SHA2_SECT571K1;
 
                     // Unknown or not supported curves
-                    default:
-                        throw new IllegalArgumentException("Unsupported curve: " + curveName);
-                }
+                    default -> throw new IllegalArgumentException("Unsupported curve: " + curveName);
+                };
 
                 // Wrap the CustomX509EcdsaPublicKey in an SshPublicKey and return
                 return new SshPublicKey<>(keyFormat, customX509EcdsaPublicKey);
@@ -231,26 +204,17 @@ public class X509EcdsaPublicKeyParser
         int fieldSize = ecParams.getOrder().bitLength();
 
         // OID based on bit length
-        switch (fieldSize) {
-            case 256:
-                return "1.2.840.10045.3.1.7"; // secp256r1 (nistp256)
-            case 384:
-                return "1.3.132.0.34"; // secp384r1 (nistp384)
-            case 521:
-                return "1.3.132.0.35"; // secp521r1 (nistp521)
-            case 163:
-                return "1.3.132.0.1"; // sect163k1 (nistk163)
-            case 192:
-                return "1.2.840.10045.3.1.1"; // secp192r1 (nistp192)
-            case 224:
-                return "1.3.132.0.33"; // secp224r1 (nistp224)
-            case 283:
-                return "1.3.132.0.16"; // sect283k1 (nistk283)
-            case 571:
-                return "1.3.132.0.38"; // sect571k1 (nistt571)
-            default:
-                return "Unknown OID";
-        }
+        return switch (fieldSize) {
+            case 256 -> "1.2.840.10045.3.1.7"; // secp256r1 (nistp256)
+            case 384 -> "1.3.132.0.34"; // secp384r1 (nistp384)
+            case 521 -> "1.3.132.0.35"; // secp521r1 (nistp521)
+            case 163 -> "1.3.132.0.1"; // sect163k1 (nistk163)
+            case 192 -> "1.2.840.10045.3.1.1"; // secp192r1 (nistp192)
+            case 224 -> "1.3.132.0.33"; // secp224r1 (nistp224)
+            case 283 -> "1.3.132.0.16"; // sect283k1 (nistk283)
+            case 571 -> "1.3.132.0.38"; // sect571k1 (nistt571)
+            default -> "Unknown OID";
+        };
     }
 
     private Map<String, String> parseExtensions(X509Certificate cert) {
@@ -286,36 +250,23 @@ public class X509EcdsaPublicKeyParser
 
     // Map curve name to NamedEcGroup locally without modifying NamedEcGroup
     private NamedEcGroup mapCurveNameToNamedEcGroup(String curveName) {
-        switch (curveName) {
+        return switch (curveName) {
             // Required Curves (RFC 5656, Section 10.1)
-            case "secp256r1":
-                return NamedEcGroup.SECP256R1;
-            case "secp384r1":
-                return NamedEcGroup.SECP384R1;
-            case "secp521r1":
-                return NamedEcGroup.SECP521R1;
+            case "secp256r1" -> NamedEcGroup.SECP256R1;
+            case "secp384r1" -> NamedEcGroup.SECP384R1;
+            case "secp521r1" -> NamedEcGroup.SECP521R1;
 
             // Recommended Curves (RFC 5656, Section 10.2)
-            case "sect163k1":
-                return NamedEcGroup.SECT163K1;
-            case "secp192r1":
-                return NamedEcGroup.SECP192R1;
-            case "secp224r1":
-                return NamedEcGroup.SECP224R1;
-            case "sect233k1":
-                return NamedEcGroup.SECT233K1;
-            case "sect233r1":
-                return NamedEcGroup.SECT233R1;
-            case "sect283k1":
-                return NamedEcGroup.SECT283K1;
-            case "sect409k1":
-                return NamedEcGroup.SECT409K1;
-            case "sect409r1":
-                return NamedEcGroup.SECT409R1;
-            case "sect571k1":
-                return NamedEcGroup.SECT571K1;
-            default:
-                throw new IllegalArgumentException("Unknown curve name: " + curveName);
-        }
+            case "sect163k1" -> NamedEcGroup.SECT163K1;
+            case "secp192r1" -> NamedEcGroup.SECP192R1;
+            case "secp224r1" -> NamedEcGroup.SECP224R1;
+            case "sect233k1" -> NamedEcGroup.SECT233K1;
+            case "sect233r1" -> NamedEcGroup.SECT233R1;
+            case "sect283k1" -> NamedEcGroup.SECT283K1;
+            case "sect409k1" -> NamedEcGroup.SECT409K1;
+            case "sect409r1" -> NamedEcGroup.SECT409R1;
+            case "sect571k1" -> NamedEcGroup.SECT571K1;
+            default -> throw new IllegalArgumentException("Unknown curve name: " + curveName);
+        };
     }
 }

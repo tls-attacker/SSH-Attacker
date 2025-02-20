@@ -158,20 +158,17 @@ public class X509DsaPublicKeySerializer extends Serializer<CustomX509DsaPublicKe
                 for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
                     String key = entry.getKey();
                     ASN1ObjectIdentifier oid;
-                    DEROctetString value;
-
-                    switch (key) {
-                        case "SubjectKeyIdentifier":
+                    DEROctetString value = switch (key) {
+                        case "SubjectKeyIdentifier" -> {
                             oid = Extension.subjectKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "AuthorityKeyIdentifier":
+                            yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                        }
+                        case "AuthorityKeyIdentifier" -> {
                             oid = Extension.authorityKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Unsupported extension key: " + key);
-                    }
+                            yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                        }
+                        default -> throw new IllegalArgumentException("Unsupported extension key: " + key);
+                    };
 
                     Extension extension = new Extension(oid, false, value);
                     extensionsVector.add(extension);

@@ -206,6 +206,6 @@ public enum MessageIdConstant {
             throw new ParserException(
                     "Unable to parse user authentication specific message in the current context");
         }
-        return idList.get(0);
+        return idList.getFirst();
     }
 }

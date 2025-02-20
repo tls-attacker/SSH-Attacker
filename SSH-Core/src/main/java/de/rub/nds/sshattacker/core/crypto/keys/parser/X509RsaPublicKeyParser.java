@@ -53,8 +53,7 @@ public class X509RsaPublicKeyParser
             X509Certificate cert = extractCertificate(getArray(), startIndex);
             PublicKey publicKey = cert.getPublicKey();
 
-            if (publicKey instanceof RSAPublicKey) {
-                RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
+            if (publicKey instanceof RSAPublicKey rsaPublicKey) {
                 byte[] signature = cert.getSignature();
                 CustomX509RsaPublicKey customX509RsaPublicKey =
                         new CustomX509RsaPublicKey(rsaPublicKey, signature);

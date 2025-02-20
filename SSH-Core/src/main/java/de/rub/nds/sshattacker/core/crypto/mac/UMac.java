@@ -418,17 +418,13 @@ class UMac extends AbstractMac {
      * @return The largest prime number less than 2^n.
      */
     static BigInteger prime(int n) {
-        switch (n) {
-            case 36:
-                return BigInteger.ONE.shiftLeft(36).subtract(BigInteger.valueOf(5));
-            case 64:
-                return BigInteger.ONE.shiftLeft(64).subtract(BigInteger.valueOf(59));
-            case 128:
-                return BigInteger.ONE.shiftLeft(128).subtract(BigInteger.valueOf(159));
-            default:
-                throw new NotImplementedException(
-                        "prime() for value n = " + n + " is not implemented.");
-        }
+        return switch (n) {
+            case 36 -> BigInteger.ONE.shiftLeft(36).subtract(BigInteger.valueOf(5));
+            case 64 -> BigInteger.ONE.shiftLeft(64).subtract(BigInteger.valueOf(59));
+            case 128 -> BigInteger.ONE.shiftLeft(128).subtract(BigInteger.valueOf(159));
+            default -> throw new NotImplementedException(
+                    "prime() for value n = " + n + " is not implemented.");
+        };
     }
 
     static byte[] add32(byte[] a, byte[] b) {

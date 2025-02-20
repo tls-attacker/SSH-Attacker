@@ -85,7 +85,7 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
 
                 boolean[] keyUsage = cert.getKeyUsage();
                 if (keyUsage != null) {
-                    LOGGER.debug("Parsed Key Usage: {}");
+                    LOGGER.debug("Parsed Key Usage: {}", keyUsage);
                     for (int i = 0; i < keyUsage.length; i++) {
                         LOGGER.debug("  Key Usage {}: {}", i, keyUsage[i]);
                     }

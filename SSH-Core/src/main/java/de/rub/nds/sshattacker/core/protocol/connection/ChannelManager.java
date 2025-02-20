@@ -66,7 +66,7 @@ public class ChannelManager {
 
     public ChannelOpenConfirmationMessage prepareNextOpenConfirm() {
         if (!pendingChannelOpenConfirmations.isEmpty()) {
-            return pendingChannelOpenConfirmations.remove(0);
+            return pendingChannelOpenConfirmations.removeFirst();
         }
         ChannelOpenConfirmationMessage fresh = new ChannelOpenConfirmationMessage();
         guessChannelByReceivedMessages()
@@ -118,7 +118,7 @@ public class ChannelManager {
 
     public Optional<Channel> guessChannelByReceivedMessages() {
         if (!channelRequestResponseQueue.isEmpty()) {
-            ChannelMessage<?> message = channelRequestResponseQueue.remove(0);
+            ChannelMessage<?> message = channelRequestResponseQueue.removeFirst();
             for (Integer object : channels.keySet()) {
                 if (Objects.equals(
                         channels.get(object).getLocalChannelId().getValue(),

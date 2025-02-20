@@ -187,7 +187,7 @@ public final class KeyExchangeUtil {
      * @param context SSH context to update
      * @param keyAgreement Key exchange instance for shared secret computation
      */
-    public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
+    public static void computeSharedSecret(SshContext context, KeyAgreement<?, ?> keyAgreement) {
         try {
             keyAgreement.computeSharedSecret();
             context.setSharedSecret(keyAgreement.getSharedSecret());
@@ -225,7 +225,7 @@ public final class KeyExchangeUtil {
      * @param context SSH context to update
      * @param keyEncapsulation Key exchange instance for shared secret generation
      */
-    public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
+    public static void generateSharedSecret(SshContext context, KeyEncapsulation<?> keyEncapsulation) {
         try {
             keyEncapsulation.encapsulate();
             context.setSharedSecret(keyEncapsulation.getSharedSecret());

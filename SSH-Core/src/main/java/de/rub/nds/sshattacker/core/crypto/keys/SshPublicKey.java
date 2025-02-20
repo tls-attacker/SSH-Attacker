@@ -86,20 +86,16 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
     }
 
     public int getKeyStrength() {
-        if (publicKey instanceof CustomDsaPublicKey) {
-            return ((CustomDsaPublicKey) publicKey).getParams().getP().bitLength();
-        } else if (publicKey instanceof CustomEcPublicKey) {
-            return ((CustomEcPublicKey) publicKey).getGroup().getCoordinateSizeInBit();
-        } else if (publicKey instanceof CustomRsaPublicKey) {
-            return ((CustomRsaPublicKey) publicKey).getModulus().bitLength();
-        } else if (publicKey instanceof CustomDhPublicKey) {
-            return ((CustomDhPublicKey) publicKey).getParams().getP().bitLength();
-        } else if (publicKey instanceof XCurveEcPublicKey) {
-            return ((XCurveEcPublicKey) publicKey).getGroup().getCoordinateSizeInBit();
-        } else {
-            throw new UnsupportedOperationException(
+        return switch (publicKey) {
+            case CustomDsaPublicKey customDsaPublicKey -> customDsaPublicKey.getParams().getP().bitLength();
+            case CustomEcPublicKey customEcPublicKey -> customEcPublicKey.getGroup().getCoordinateSizeInBit();
+            case CustomRsaPublicKey customRsaPublicKey -> customRsaPublicKey.getModulus().bitLength();
+            case CustomDhPublicKey customDhPublicKey -> customDhPublicKey.getParams().getP().bitLength();
+            case XCurveEcPublicKey xCurveEcPublicKey -> xCurveEcPublicKey.getGroup().getCoordinateSizeInBit();
+            case null -> throw new UnsupportedOperationException("Undefined public key type, public key is null");
+            default -> throw new UnsupportedOperationException(
                     "Unsupported public key type: " + publicKey.getClass().getSimpleName());
-        }
+        };
     }
 
     public byte[] getEncoded() {
@@ -112,17 +108,13 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
 
     public String getEncodedFingerprint(FingerprintType type, FingerprintEncoding encoding) {
         byte[] fingerprint = computeFingerprint(type);
-        switch (encoding) {
-            case HEX:
-                return ArrayConverter.bytesToHexString(fingerprint);
-            case BASE64:
-                return Base64.getEncoder().encodeToString(fingerprint);
-            case OPENSSH:
-                return type
-                        + ":"
-                        + Base64.getEncoder().encodeToString(fingerprint).replace("=", "");
-        }
-        return ArrayConverter.bytesToHexString(fingerprint);
+        return switch (encoding) {
+            case HEX -> ArrayConverter.bytesToHexString(fingerprint);
+            case BASE64 -> Base64.getEncoder().encodeToString(fingerprint);
+            case OPENSSH -> type
+                    + ":"
+                    + Base64.getEncoder().encodeToString(fingerprint).replace("=", "");
+        };
     }
 
     private byte[] computeFingerprint(FingerprintType type) {

@@ -54,8 +54,7 @@ public class X509DsaPublicKeyParser
             PublicKey publicKey = cert.getPublicKey();
 
             // Falls der Key des Typs DSA ist, dann verwenden wir den CustomX509DsaPublicKey
-            if (publicKey instanceof DSAPublicKey) {
-                DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
+            if (publicKey instanceof DSAPublicKey dsaPublicKey) {
                 byte[] signature = cert.getSignature();
                 CustomX509DsaPublicKey customX509DsaPublicKey =
                         new CustomX509DsaPublicKey(dsaPublicKey, signature);

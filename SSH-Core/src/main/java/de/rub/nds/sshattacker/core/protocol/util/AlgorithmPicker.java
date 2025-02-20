@@ -42,7 +42,7 @@ public final class AlgorithmPicker {
         List<T> intersection =
                 clientSupported.stream()
                         .filter(serverSupported::contains)
-                        .collect(Collectors.toList());
+                        .toList();
         if (intersection.isEmpty()) {
             LOGGER.warn(
                     "Unable to pick algorithm - no intersection between {} and {}",
@@ -50,6 +50,6 @@ public final class AlgorithmPicker {
                     serverSupported);
             return Optional.empty();
         }
-        return Optional.of(intersection.get(0));
+        return Optional.of(intersection.getFirst());
     }
 }

@@ -98,7 +98,7 @@ public class AlgorithmPickerTest {
                         "diffie-hellman-group14-sha1",
                         "ext-info-c");
         String picked = AlgorithmPicker.pickAlgorithm(client, client).orElse(null);
-        assertEquals(client.get(0), picked);
+        assertEquals(client.getFirst(), picked);
     }
 
     /**
