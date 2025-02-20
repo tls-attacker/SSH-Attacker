@@ -32,63 +32,48 @@ public enum EncryptionAlgorithmFamily {
     }
 
     public static EncryptionAlgorithmFamily getFamilyForAlgorithm(EncryptionAlgorithm algorithm) {
-        switch (algorithm) {
-            case NONE:
-                return NONE;
-            case TRIPLE_DES_CBC:
-            case TRIPLE_DES_CTR:
-                return DES_EDE;
-            case BLOWFISH_CBC:
-            case BLOWFISH_CTR:
-                return BLOWFISH;
-            case TWOFISH_CBC:
-            case TWOFISH128_CBC:
-            case TWOFISH192_CBC:
-            case TWOFISH256_CBC:
-            case TWOFISH128_CTR:
-            case TWOFISH192_CTR:
-            case TWOFISH256_CTR:
-                return TWOFISH;
-            case AES128_CBC:
-            case AES192_CBC:
-            case AES256_CBC:
-            case AES128_CTR:
-            case AES192_CTR:
-            case AES256_CTR:
-            case AEAD_AES_128_GCM:
-            case AEAD_AES_256_GCM:
-            case AES128_GCM_OPENSSH_COM:
-            case AES256_GCM_OPENSSH_COM:
-            case RIJNDAEL_CBC_LYSATOR_LIU_SE:
-                return AES;
-            case SERPENT128_CBC:
-            case SERPENT192_CBC:
-            case SERPENT256_CBC:
-            case SERPENT128_CTR:
-            case SERPENT192_CTR:
-            case SERPENT256_CTR:
-                return SERPENT;
-            case ARCFOUR:
-            case ARCFOUR128:
-            case ARCFOUR256:
-                return ARCFOUR;
-            case IDEA_CBC:
-            case IDEA_CTR:
-                return IDEA;
-            case CAST128_CBC:
-            case CAST128_CTR:
-                return CAST128;
-            case DES_CBC:
-                return DES;
-            case SEED_CBC_SSH_COM:
-                return SEED;
-            case CHACHA20_POLY1305_OPENSSH_COM:
-                return CHACHA20_POLY1305;
-            default:
-                throw new UnsupportedOperationException(
-                        "The encryption algorithm from "
-                                + algorithm.name()
-                                + " is not supported yet.");
-        }
+        return switch (algorithm) {
+            case NONE -> NONE;
+            case TRIPLE_DES_CBC, TRIPLE_DES_CTR -> DES_EDE;
+            case BLOWFISH_CBC, BLOWFISH_CTR -> BLOWFISH;
+            case TWOFISH_CBC,
+                    TWOFISH128_CBC,
+                    TWOFISH192_CBC,
+                    TWOFISH256_CBC,
+                    TWOFISH128_CTR,
+                    TWOFISH192_CTR,
+                    TWOFISH256_CTR ->
+                    TWOFISH;
+            case AES128_CBC,
+                    AES192_CBC,
+                    AES256_CBC,
+                    AES128_CTR,
+                    AES192_CTR,
+                    AES256_CTR,
+                    AEAD_AES_128_GCM,
+                    AEAD_AES_256_GCM,
+                    AES128_GCM_OPENSSH_COM,
+                    AES256_GCM_OPENSSH_COM,
+                    RIJNDAEL_CBC_LYSATOR_LIU_SE ->
+                    AES;
+            case SERPENT128_CBC,
+                    SERPENT192_CBC,
+                    SERPENT256_CBC,
+                    SERPENT128_CTR,
+                    SERPENT192_CTR,
+                    SERPENT256_CTR ->
+                    SERPENT;
+            case ARCFOUR, ARCFOUR128, ARCFOUR256 -> ARCFOUR;
+            case IDEA_CBC, IDEA_CTR -> IDEA;
+            case CAST128_CBC, CAST128_CTR -> CAST128;
+            case DES_CBC -> DES;
+            case SEED_CBC_SSH_COM -> SEED;
+            case CHACHA20_POLY1305, CHACHA20_POLY1305_OPENSSH_COM -> CHACHA20_POLY1305;
+            default ->
+                    throw new UnsupportedOperationException(
+                            "The encryption algorithm from "
+                                    + algorithm.name()
+                                    + " is not supported yet.");
+        };
     }
 }

@@ -7,10 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher;
 
-import de.rub.nds.sshattacker.core.constants.CipherMode;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionMode;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
@@ -31,8 +28,9 @@ public final class PacketCipherFactory {
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
         try {
-            if (encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
-                return new PacketChaCha20Poly1305Cipher(context, keySet, mode);
+            if (EncryptionAlgorithmFamily.getFamilyForAlgorithm(encryptionAlgorithm)
+                    == EncryptionAlgorithmFamily.CHACHA20_POLY1305) {
+                return new PacketChaCha20Poly1305Cipher(context, keySet, encryptionAlgorithm, mode);
             } else if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
                 return new PacketGCMCipher(context, keySet, encryptionAlgorithm, mode);
             } else {

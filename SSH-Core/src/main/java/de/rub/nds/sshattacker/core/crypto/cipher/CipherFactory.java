@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmFamily;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.constants.HashFunction;
 import java.security.Key;
@@ -27,10 +28,10 @@ public final class CipherFactory {
         if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
         } else if (mainCipher
-                && encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+                && encryptionAlgorithm.getFamily() == EncryptionAlgorithmFamily.CHACHA20_POLY1305) {
             // If mainCipher is not set, the factory will return a JavaCipher wrapping a ChaCha20
             // instance used for header encryption / decryption
-            return new ChaCha20Poly1305Cipher(key);
+            return new ChaCha20Poly1305Cipher(encryptionAlgorithm, key);
         } else if (encryptionAlgorithm.getJavaName() != null) {
             return new JavaCipher(
                     encryptionAlgorithm,

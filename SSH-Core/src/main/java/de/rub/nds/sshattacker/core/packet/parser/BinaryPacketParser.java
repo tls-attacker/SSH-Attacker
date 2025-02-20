@@ -43,8 +43,8 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
         try {
             BinaryPacket binaryPacket = new BinaryPacket();
-            if (activeDecryptCipher.getEncryptionAlgorithm()
-                    == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+            if (activeDecryptCipher.getEncryptionAlgorithm().getFamily()
+                    == EncryptionAlgorithmFamily.CHACHA20_POLY1305) {
                 LOGGER.debug("Packet structure: ChaCha20-Poly1305");
                 parseChaCha20Poly1305Packet(binaryPacket);
             } else if (activeDecryptCipher.getEncryptionAlgorithm().getType()
