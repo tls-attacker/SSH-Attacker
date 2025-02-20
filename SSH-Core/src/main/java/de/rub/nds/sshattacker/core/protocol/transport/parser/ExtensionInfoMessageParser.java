@@ -49,33 +49,26 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                     Extension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
 
-            AbstractExtensionParser<?> extensionParser;
-
-            switch (extension) {
-                case SERVER_SIG_ALGS:
-                    extensionParser =
-                            new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
-                    break;
-                case DELAY_COMPRESSION:
-                    extensionParser =
-                            new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
-                    break;
-                case PING_OPENSSH_COM:
-                    extensionParser = new PingExtensionParser(getArray(), extensionStartPointer);
-                    break;
-                case PUBLICKEY_ALGORITHMS_ROUMENPETROV:
-                    extensionParser =
-                            new PublicKeyAlgorithmsRoumenPetrovExtensionParser(
-                                    getArray(), extensionStartPointer);
-                    break;
-                default:
-                    LOGGER.debug(
-                            "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
-                            extension,
-                            extensionIndex);
-                    extensionParser = new UnknownExtensionParser(getArray(), extensionStartPointer);
-                    break;
-            }
+            AbstractExtensionParser<?> extensionParser =
+                    switch (extension) {
+                        case SERVER_SIG_ALGS ->
+                                new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
+                        case DELAY_COMPRESSION ->
+                                new DelayCompressionExtensionParser(
+                                        getArray(), extensionStartPointer);
+                        case PING_OPENSSH_COM ->
+                                new PingExtensionParser(getArray(), extensionStartPointer);
+                        case PUBLICKEY_ALGORITHMS_ROUMENPETROV ->
+                                new PublicKeyAlgorithmsRoumenPetrovExtensionParser(
+                                        getArray(), extensionStartPointer);
+                        default -> {
+                            LOGGER.debug(
+                                    "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
+                                    extension,
+                                    extensionIndex);
+                            yield new UnknownExtensionParser(getArray(), extensionStartPointer);
+                        }
+                    };
 
             // Erweiterung hinzufügen
             message.addExtension(extensionParser.parse());

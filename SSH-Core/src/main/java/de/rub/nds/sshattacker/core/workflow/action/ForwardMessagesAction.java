@@ -138,7 +138,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         try {
             TransportHandler transportHandler = forwardToCtx.getTransportHandler();
             transportHandler.sendData(receivedBytes);
-            if (messages.get(0).getClass() != VersionExchangeMessage.class) {
+            if (messages.getFirst().getClass() != VersionExchangeMessage.class) {
                 forwardToCtx.incrementWriteSequenceNumber();
             }
             setExecuted(true);

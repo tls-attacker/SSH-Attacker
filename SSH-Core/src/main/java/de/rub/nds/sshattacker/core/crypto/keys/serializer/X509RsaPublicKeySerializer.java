@@ -176,33 +176,32 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
                 for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
                     ASN1ObjectIdentifier oid;
-                    DEROctetString value;
-
-                    switch (entry.getKey()) {
-                        case "SubjectKeyIdentifier":
-                            oid = Extension.subjectKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "AuthorityKeyIdentifier":
-                            oid = Extension.authorityKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "KeyUsage":
-                            oid = Extension.keyUsage;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "ExtendedKeyUsage":
-                            oid = Extension.extendedKeyUsage;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "BasicConstraints":
-                            oid = Extension.basicConstraints;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        default:
-                            throw new IllegalArgumentException(
-                                    "Unsupported extension key: " + entry.getKey());
-                    }
+                    DEROctetString value =
+                            switch (entry.getKey()) {
+                                case "SubjectKeyIdentifier" -> {
+                                    oid = Extension.subjectKeyIdentifier;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                case "AuthorityKeyIdentifier" -> {
+                                    oid = Extension.authorityKeyIdentifier;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                case "KeyUsage" -> {
+                                    oid = Extension.keyUsage;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                case "ExtendedKeyUsage" -> {
+                                    oid = Extension.extendedKeyUsage;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                case "BasicConstraints" -> {
+                                    oid = Extension.basicConstraints;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                default ->
+                                        throw new IllegalArgumentException(
+                                                "Unsupported extension key: " + entry.getKey());
+                            };
 
                     Extension extension = new Extension(oid, false, value);
                     extensionsVector.add(extension);

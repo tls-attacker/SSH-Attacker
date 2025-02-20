@@ -88,7 +88,7 @@ public class ConnectivityChecker {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
         if (!receiveAction.getReceivedMessages().isEmpty()) {
-            return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;
+            return receiveAction.getReceivedMessages().getFirst() instanceof VersionExchangeMessage;
         } else {
             return false;
         }

@@ -169,20 +169,20 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
                 for (Map.Entry<String, String> entry : extensionsMap.entrySet()) {
                     String key = entry.getKey();
                     ASN1ObjectIdentifier oid;
-                    DEROctetString value;
-
-                    switch (key) {
-                        case "SubjectKeyIdentifier":
-                            oid = Extension.subjectKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        case "AuthorityKeyIdentifier":
-                            oid = Extension.authorityKeyIdentifier;
-                            value = new DEROctetString(parseExtensionValue(entry.getValue()));
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Unsupported extension key: " + key);
-                    }
+                    DEROctetString value =
+                            switch (key) {
+                                case "SubjectKeyIdentifier" -> {
+                                    oid = Extension.subjectKeyIdentifier;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                case "AuthorityKeyIdentifier" -> {
+                                    oid = Extension.authorityKeyIdentifier;
+                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                }
+                                default ->
+                                        throw new IllegalArgumentException(
+                                                "Unsupported extension key: " + key);
+                            };
 
                     Extension extension = new Extension(oid, false, value);
                     extensionsVector.add(extension);
@@ -230,16 +230,12 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
 
     /** Utility method to map curve names to their corresponding OIDs. */
     private String getCurveOid(NamedEcGroup curve) {
-        switch (curve) {
-            case SECP256R1:
-                return "1.2.840.10045.3.1.7";
-            case SECP384R1:
-                return "1.3.132.0.34";
-            case SECP521R1:
-                return "1.3.132.0.35";
+        return switch (curve) {
+            case SECP256R1 -> "1.2.840.10045.3.1.7";
+            case SECP384R1 -> "1.3.132.0.34";
+            case SECP521R1 -> "1.3.132.0.35";
             // Additional curves from RFC 5656
-            default:
-                return curve.getIdentifier();
-        }
+            default -> curve.getIdentifier();
+        };
     }
 }

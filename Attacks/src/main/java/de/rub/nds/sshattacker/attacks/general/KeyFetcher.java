@@ -81,8 +81,8 @@ public final class KeyFetcher {
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
         if (!receivedMessages.isEmpty()
-                && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
-            return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
+                && receivedMessages.getFirst() instanceof RsaKeyExchangePubkeyMessage) {
+            return ((RsaKeyExchangePubkeyMessage) receivedMessages.getFirst())
                     .getTransientPublicKey()
                     .getPublicKey();
         } else {

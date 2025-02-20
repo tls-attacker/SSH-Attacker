@@ -27,12 +27,12 @@ public class UserAuthInfoResponseMessagePreparator
         for (int i = 0; i < chooser.getConfig().getPreConfiguredAuthResponses().size(); i++) {
             AuthenticationResponse authenticationResponse =
                     chooser.getConfig().getPreConfiguredAuthResponses().get(i);
-            if (authenticationResponse.get(0).isExecuted()) {
+            if (authenticationResponse.getFirst().isExecuted()) {
                 i++;
             } else {
                 getObject().setResponse(authenticationResponse);
                 getObject().setResponseEntryCount(authenticationResponse.size());
-                authenticationResponse.get(0).setExecuted(true);
+                authenticationResponse.getFirst().setExecuted(true);
                 break;
             }
         }

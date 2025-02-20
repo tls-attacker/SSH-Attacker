@@ -13,15 +13,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public final class PacketLayerFactory {
 
     public static AbstractPacketLayer getPacketLayer(PacketLayerType type, SshContext context) {
-        switch (type) {
-            case BINARY_PACKET:
-                return new BinaryPacketLayer(context);
-            case BLOB:
-                return new BlobPacketLayer(context);
-            default:
-                throw new UnsupportedOperationException(
-                        "Packet layer type '" + type + "' not supported!");
-        }
+        return switch (type) {
+            case BINARY_PACKET -> new BinaryPacketLayer(context);
+            case BLOB -> new BlobPacketLayer(context);
+            default ->
+                    throw new UnsupportedOperationException(
+                            "Packet layer type '" + type + "' not supported!");
+        };
     }
 
     private PacketLayerFactory() {
