@@ -89,7 +89,7 @@ public enum KeyExchangeAlgorithm {
             KeyExchangeFlowType.ECDH, "ecdh-sha2-1.3.36.3.3.2.8.1.1.11", HashFunction.SHA384),
     ECDH_SHA2_BRAINPOOLP512R1(
             KeyExchangeFlowType.ECDH, "ecdh-sha2-1.3.36.3.3.2.8.1.1.13", HashFunction.SHA512),
-    ECMQV_SHA2(KeyExchangeFlowType.ECMQV, "ecmqv-sha2", null, null),
+    ECMQV_SHA2(KeyExchangeFlowType.ECMQV, "ecmqv-sha2", null),
     // [ RFC 8732 ]
     // GSS-API key exchange methods would be listed here (gss-*)
     // TODO: Change implementation to support wildcard key exchange method names
@@ -100,53 +100,44 @@ public enum KeyExchangeAlgorithm {
     EXT_INFO_S(null, "ext-info-s", null),
     EXT_INFO_C(null, "ext-info-c", null),
     // [ RFC 8731 ]
-    CURVE25519_SHA256(
-            KeyExchangeFlowType.ECDH,
-            "curve25519-sha256",
-            HashFunction.SHA256,
-            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
-    CURVE448_SHA512(
-            KeyExchangeFlowType.ECDH,
-            "curve448-sha512",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
+    CURVE25519_SHA256(KeyExchangeFlowType.ECDH, "curve25519-sha256", HashFunction.SHA256),
+    CURVE448_SHA512(KeyExchangeFlowType.ECDH, "curve448-sha512", HashFunction.SHA512),
+    // [ draft-josefsson-ntruprime-ssh-02 ]
+    SNTRUP761X25519_SHA512(
+            KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512", HashFunction.SHA512),
+    // [ draft-kampanakis-curdle-ssh-pq-ke-04 ]
+    MLKEM768NISTP256_SHA256(
+            KeyExchangeFlowType.HYBRID, "mlkem768nistp256-sha256", HashFunction.SHA256),
+    MLKEM1024NISTP384_SHA384(
+            KeyExchangeFlowType.HYBRID, "mlkem1024nistp384-sha384", HashFunction.SHA384),
+    MLKEM768X25519_SHA256(KeyExchangeFlowType.HYBRID, "mlkem768x25519-sha256", HashFunction.SHA256),
     // Vendor extensions
     // [ LibSSH ]
     CURVE25519_SHA256_LIBSSH_ORG(
-            KeyExchangeFlowType.ECDH,
-            "curve25519-sha256@libssh.org",
-            HashFunction.SHA256,
-            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
+            KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", HashFunction.SHA256),
     // [ OpenSSH ]
-    SNTRUP4591761_X25519(
-            KeyExchangeFlowType.HYBRID,
-            "sntrup4591761x25519-sha512@tinyssh.org",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.Sntrup4591761x25519KeyExchange"),
-    SNTRUP761_X25519(
-            KeyExchangeFlowType.HYBRID,
-            "sntrup761x25519-sha512@openssh.com",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange"),
+    SNTRUP761X25519_SHA512_OPENSSH_COM(
+            KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", HashFunction.SHA512),
     KEX_STRICT_S_V00_OPENSSH_COM(null, "kex-strict-s-v00@openssh.com", null),
     KEX_STRICT_C_V00_OPENSSH_COM(null, "kex-strict-c-v00@openssh.com", null),
+    // [ TinySSH ]
+    SNTRUP4591761X25519_SHA512_TINYSSH_ORG(
+            KeyExchangeFlowType.HYBRID,
+            "sntrup4591761x25519-sha512@tinyssh.org",
+            HashFunction.SHA512),
     // [ SSH.COM ]
-    CURVE25519_FRODOKEM1344(
+    CURVE25519_FRODOKEM1344_SHA512_SSH_COM(
             KeyExchangeFlowType.HYBRID,
             "curve25519-frodokem1344-sha512@ssh.com",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange"),
-    NISTP521_KYBER1024(
+            HashFunction.SHA512),
+    ECDH_NISTP521_KYBER1024_SHA512_SSH_COM(
             KeyExchangeFlowType.HYBRID,
             "ecdh-nistp521-kyber1024-sha512@ssh.com",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521Kyber1024KeyExchange"),
-    NISTP521_FIRESABER(
+            HashFunction.SHA512),
+    ECDH_NISTP521_FIRESABER_SHA512_SSH_COM(
             KeyExchangeFlowType.HYBRID,
             "ecdh-nistp521-firesaber-sha512@ssh.com",
-            HashFunction.SHA512,
-            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521FiresaberKeyExchange"),
-
+            HashFunction.SHA512),
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
             "diffie-hellman-group-exchange-sha224@ssh.com",
@@ -194,7 +185,6 @@ public enum KeyExchangeAlgorithm {
     private final String name;
     private final HashFunction hashFunction;
     private final KeyExchangeFlowType flowType;
-    private final String className;
 
     private static final Map<String, KeyExchangeAlgorithm> map;
 
@@ -211,35 +201,6 @@ public enum KeyExchangeAlgorithm {
         this.flowType = flowType;
         this.name = name;
         this.hashFunction = hashFunction;
-        if (flowType == null) {
-            className = null;
-        } else
-            switch (flowType) {
-                case DIFFIE_HELLMAN:
-                case DIFFIE_HELLMAN_GROUP_EXCHANGE:
-                    className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
-                    break;
-                case ECDH:
-                    className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
-                    break;
-                case RSA:
-                    className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Implicit className assignment is only available for DH, ECDH and RSA key exchange flows. Make sure to provide the implementing key exchange class explicitly!");
-            }
-    }
-
-    KeyExchangeAlgorithm(
-            KeyExchangeFlowType flowType,
-            String name,
-            HashFunction hashFunction,
-            String className) {
-        this.name = name;
-        this.hashFunction = hashFunction;
-        this.flowType = flowType;
-        this.className = className;
     }
 
     @Override
@@ -253,20 +214,6 @@ public enum KeyExchangeAlgorithm {
 
     public KeyExchangeFlowType getFlowType() {
         return flowType;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    /**
-     * Indicates whether the algorithm has been already been implemented. However, the algorithm
-     * might not be available at runtime.
-     *
-     * @return True if the key exchange algorithm has been implemented.
-     */
-    public boolean isImplemented() {
-        return className != null;
     }
 
     public static KeyExchangeAlgorithm fromName(String name) {

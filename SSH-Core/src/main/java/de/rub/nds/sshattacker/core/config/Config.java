@@ -530,12 +530,13 @@ public class Config implements Serializable {
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
-        // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
+        // Default values for cryptographic parameters are taken from OpenSSH 9.9p1
         clientSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
-                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP761X25519_SHA512,
+                                    KeyExchangeAlgorithm.SNTRUP761X25519_SHA512_OPENSSH_COM,
+                                    KeyExchangeAlgorithm.MLKEM768X25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -552,8 +553,8 @@ public class Config implements Serializable {
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
-                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP761X25519_SHA512_OPENSSH_COM,
+                                    KeyExchangeAlgorithm.SNTRUP4591761X25519_SHA512_TINYSSH_ORG,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -709,7 +710,7 @@ public class Config implements Serializable {
         defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
         defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-        defaultHybridKeyExchangeAlgorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
+        defaultHybridKeyExchangeAlgorithm = KeyExchangeAlgorithm.SNTRUP761X25519_SHA512;
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the
         // default host key

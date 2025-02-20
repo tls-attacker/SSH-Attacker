@@ -46,12 +46,30 @@ public class HybridKeyExchange extends KeyExchange {
             algorithm = context.getConfig().getDefaultHybridKeyExchangeAlgorithm();
         }
         return switch (algorithm) {
-            case SNTRUP761_X25519 ->
+            case SNTRUP761X25519_SHA512, SNTRUP761X25519_SHA512_OPENSSH_COM ->
                     new HybridKeyExchange(
                             HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                             HashFunction.SHA512,
                             new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
                             new KemKeyExchange(KemAlgorithm.SNTRUP761));
+            case MLKEM768NISTP256_SHA256 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA256,
+                            new EcdhKeyExchange(NamedEcGroup.SECP256R1),
+                            new KemKeyExchange(KemAlgorithm.MLKEM768));
+            case MLKEM768X25519_SHA256 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA256,
+                            new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
+                            new KemKeyExchange(KemAlgorithm.MLKEM768));
+            case MLKEM1024NISTP384_SHA384 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA384,
+                            new EcdhKeyExchange(NamedEcGroup.SECP384R1),
+                            new KemKeyExchange(KemAlgorithm.MLKEM1024));
             default -> null;
         };
     }

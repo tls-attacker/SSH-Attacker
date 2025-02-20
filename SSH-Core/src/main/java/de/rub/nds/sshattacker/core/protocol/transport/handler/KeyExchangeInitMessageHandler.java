@@ -18,8 +18,12 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchangeInitMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public KeyExchangeInitMessageHandler(SshContext context) {
         super(context);
@@ -236,6 +240,37 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     context.getChooser()
                                             .getServerSupportedCompressionMethodsServerToClient())
                             .orElse(null));
+            LOGGER.info(
+                    """
+                    Selected algorithms for key exchange and secure channel:
+
+                        Key exchange algorithm: {}
+                        Host key algorithm: {}
+                        Encryption algorithm (client to server): {}
+                        Encryption algorithm (server to client): {}
+                        MAC algorithm (client to server): {}
+                        MAC algorithm (server to client): {}
+                        Compression algorithm (client to server): {}
+                        Compression algorithm (server to client): {}
+                    """,
+                    context.getKeyExchangeAlgorithm().orElse(null),
+                    context.getHostKeyAlgorithm().orElse(null),
+                    context.getEncryptionAlgorithmClientToServer().orElse(null),
+                    context.getEncryptionAlgorithmServerToClient().orElse(null),
+                    context.getEncryptionAlgorithmClientToServer()
+                                            .orElse(EncryptionAlgorithm.NONE)
+                                            .getType()
+                                    != EncryptionAlgorithmType.AEAD
+                            ? context.getMacAlgorithmClientToServer().orElse(null)
+                            : "<implicit>",
+                    context.getEncryptionAlgorithmServerToClient()
+                                            .orElse(EncryptionAlgorithm.NONE)
+                                            .getType()
+                                    != EncryptionAlgorithmType.AEAD
+                            ? context.getEncryptionAlgorithmServerToClient().orElse(null)
+                            : "<implicit>",
+                    context.getCompressionMethodClientToServer().orElse(null),
+                    context.getCompressionMethodServerToClient().orElse(null));
         }
     }
 

@@ -8,10 +8,13 @@
 package de.rub.nds.sshattacker.core.constants;
 
 import java.security.spec.AlgorithmParameterSpec;
+import org.bouncycastle.jcajce.spec.MLKEMParameterSpec;
 import org.bouncycastle.pqc.jcajce.spec.SNTRUPrimeParameterSpec;
 
 public enum KemAlgorithm {
-    SNTRUP761("sntrup761", 1158, 1039, "SNTRUPrime", SNTRUPrimeParameterSpec.sntrup761);
+    SNTRUP761("sntrup761", 1158, 1039, "SNTRUPrime", SNTRUPrimeParameterSpec.sntrup761),
+    MLKEM768("mlkem768", 1184, 1088, "ML-KEM", MLKEMParameterSpec.ml_kem_768),
+    MLKEM1024("mlkem1024", 1568, 1568, "ML-KEM", MLKEMParameterSpec.ml_kem_1024);
 
     private final String name;
     private final int publicKeySize;

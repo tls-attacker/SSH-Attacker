@@ -14,6 +14,9 @@ import java.util.Arrays;
 import javax.crypto.DecapsulateException;
 import javax.crypto.KEM;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.jcajce.provider.asymmetric.mlkem.BCMLKEMPublicKey;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMParameters;
+import org.bouncycastle.pqc.crypto.mlkem.MLKEMPublicKeyParameters;
 import org.bouncycastle.pqc.crypto.ntruprime.SNTRUPrimeParameters;
 import org.bouncycastle.pqc.crypto.ntruprime.SNTRUPrimePublicKeyParameters;
 import org.bouncycastle.pqc.jcajce.provider.ntruprime.BCSNTRUPrimePublicKey;
@@ -54,8 +57,12 @@ public class KemKeyExchange extends KeyEncapsulation<PublicKey> {
 
     public byte[] getPublicKeyBytes() {
         SubjectPublicKeyInfo pki = SubjectPublicKeyInfo.getInstance(getPublicKey().getEncoded());
-        byte[] asn1EncodedPublicKey = pki.getPublicKeyData().getBytes();
-        return Arrays.copyOfRange(asn1EncodedPublicKey, 4, asn1EncodedPublicKey.length);
+        byte[] encodedPublicKey = pki.getPublicKeyData().getBytes();
+        return switch (kemAlgorithm) {
+            // BouncyCastle seems to return the public key as an ASN.1 encoded value for SNTRUP761
+            case SNTRUP761 -> Arrays.copyOfRange(encodedPublicKey, 4, encodedPublicKey.length);
+            case MLKEM768, MLKEM1024 -> encodedPublicKey;
+        };
     }
 
     public void setPublicKey(byte[] encodedPublicKey) {
@@ -65,6 +72,12 @@ public class KemKeyExchange extends KeyEncapsulation<PublicKey> {
                             new BCSNTRUPrimePublicKey(
                                     new SNTRUPrimePublicKeyParameters(
                                             SNTRUPrimeParameters.sntrup761, encodedPublicKey));
+            case MLKEM768, MLKEM1024 ->
+                    publicKey =
+                            new BCMLKEMPublicKey(
+                                    new MLKEMPublicKeyParameters(
+                                            (MLKEMParameters) kemAlgorithm.getParameterSpec(),
+                                            encodedPublicKey));
         }
     }
 
