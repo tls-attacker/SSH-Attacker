@@ -23,10 +23,6 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
     private ModifiableInteger concatenatedHybridKeysLength;
     private ModifiableByteArray concatenatedHybridKeys;
 
-    // Neue Variable für die Zertifikatsdaten
-    private ModifiableByteArray certificatePublicKeyData;
-    private ModifiableInteger certificatePublicKeyDataLength;
-
     public HybridKeyExchangeInitMessage() {
         super();
     }
@@ -40,14 +36,6 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
         concatenatedHybridKeys =
                 other.concatenatedHybridKeys != null
                         ? other.concatenatedHybridKeys.createCopy()
-                        : null;
-        certificatePublicKeyData =
-                other.certificatePublicKeyData != null
-                        ? other.certificatePublicKeyData.createCopy()
-                        : null;
-        certificatePublicKeyDataLength =
-                other.certificatePublicKeyDataLength != null
-                        ? other.certificatePublicKeyDataLength.createCopy()
                         : null;
     }
 
@@ -114,66 +102,6 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
                 setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
             }
         }
-    }
-
-    // Getter und Setter für das Zertifikat
-    public ModifiableByteArray getCertificatePublicKeyData() {
-        return certificatePublicKeyData;
-    }
-
-    public void setCertificatePublicKeyData(ModifiableByteArray certificatePublicKeyData) {
-        setCertificatePublicKeyData(certificatePublicKeyData, false);
-    }
-
-    public void setCertificatePublicKeyData(byte[] certificatePublicKeyData) {
-        setCertificatePublicKeyData(certificatePublicKeyData, false);
-    }
-
-    public void setCertificatePublicKeyData(
-            ModifiableByteArray certificatePublicKeyData, boolean adjustLengthField) {
-        this.certificatePublicKeyData = certificatePublicKeyData;
-        if (adjustLengthField) {
-            setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
-        }
-    }
-
-    public void setCertificatePublicKeyData(
-            byte[] certificatePublicKeyData, boolean adjustLengthField) {
-        this.certificatePublicKeyData =
-                ModifiableVariableFactory.safelySetValue(
-                        this.certificatePublicKeyData, certificatePublicKeyData);
-        if (adjustLengthField) {
-            setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
-        }
-    }
-
-    public void setSoftlyCertificatePublicKeyData(
-            byte[] certificatePublicKeyData, boolean adjustLengthField, Config config) {
-        this.certificatePublicKeyData =
-                ModifiableVariableFactory.softlySetValue(
-                        this.certificatePublicKeyData, certificatePublicKeyData);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || certificatePublicKeyDataLength == null
-                    || certificatePublicKeyDataLength.getOriginalValue() == null) {
-                setCertificatePublicKeyDataLength(this.certificatePublicKeyData.getValue().length);
-            }
-        }
-    }
-
-    public ModifiableInteger getCertificatePublicKeyDataLength() {
-        return certificatePublicKeyDataLength;
-    }
-
-    public void setCertificatePublicKeyDataLength(
-            ModifiableInteger certificatePublicKeyDataLength) {
-        this.certificatePublicKeyDataLength = certificatePublicKeyDataLength;
-    }
-
-    public void setCertificatePublicKeyDataLength(int certificatePublicKeyDataLength) {
-        this.certificatePublicKeyDataLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.certificatePublicKeyDataLength, certificatePublicKeyDataLength);
     }
 
     public static final HybridKeyExchangeInitMessageHandler HANDLER =
