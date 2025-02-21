@@ -37,8 +37,8 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     private static void prepareEphemeralPublicKey(
             EcdhKeyExchangeReplyMessage object, Chooser chooser) {
-        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        AbstractEcdhKeyExchange<?, ?> keyExchange = chooser.getEcdhKeyExchange();
+        keyExchange.generateKeyPair();
         byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
 
         object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());

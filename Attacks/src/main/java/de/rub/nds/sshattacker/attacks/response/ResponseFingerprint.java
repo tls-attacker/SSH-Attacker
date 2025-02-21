@@ -69,12 +69,11 @@ public class ResponseFingerprint {
     public String toHumanReadable() {
         StringBuilder resultString = new StringBuilder();
         for (ProtocolMessage<?> msg : messageList) {
-            if (!(msg instanceof SshMessage)) {
+            if (!(msg instanceof SshMessage<?> message)) {
                 resultString.append("{").append(msg.getClass().getName()).append("} ");
                 continue;
             }
 
-            SshMessage<?> message = (SshMessage<?>) msg;
             resultString.append("{").append(message.getClass().getSimpleName()).append("} ");
         }
         resultString.append(" ");
@@ -161,10 +160,9 @@ public class ResponseFingerprint {
         if (!messageOne.getClass().equals(messageTwo.getClass())) {
             return false;
         }
-        if (messageOne instanceof DisconnectMessage && messageTwo instanceof DisconnectMessage) {
+        if (messageOne instanceof DisconnectMessage disconnectOne
+                && messageTwo instanceof DisconnectMessage disconnectTwo) {
             // Both are disconnects
-            DisconnectMessage disconnectOne = (DisconnectMessage) messageOne;
-            DisconnectMessage disconnectTwo = (DisconnectMessage) messageTwo;
             return Objects.equals(
                     disconnectOne.getDescription().getValue(),
                     disconnectTwo.getDescription().getValue());

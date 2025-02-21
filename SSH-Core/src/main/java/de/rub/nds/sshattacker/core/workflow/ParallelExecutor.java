@@ -96,11 +96,11 @@ public class ParallelExecutor {
     }
 
     public void bulkExecuteStateTasks(Iterable<State> stateList) {
-        List<Future<?>> futureList = new LinkedList<>();
+        List<Future<Task>> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addStateTask(state));
         }
-        for (Future<?> future : futureList) {
+        for (Future<Task> future : futureList) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {

@@ -68,7 +68,7 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     protected void initConnectionForState(State state) {
         // Do this post state init only if you know what you are doing.
-        SshContext context = state.getInboundSshContexts().get(0);
+        SshContext context = state.getInboundSshContexts().getFirst();
         AliasedConnection connection = context.getConnection();
         // getting the hostname is slow, so we just set the ip
         connection.setHostname(socket.getInetAddress().getHostAddress());

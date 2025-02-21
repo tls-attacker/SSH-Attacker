@@ -13,14 +13,12 @@ import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType
 public final class WorkflowExecutorFactory {
 
     public static WorkflowExecutor createWorkflowExecutor(WorkflowExecutorType type, State state) {
-        switch (type) {
-            case DEFAULT:
-                return new DefaultWorkflowExecutor(state);
-            case THREADED_SERVER:
-                return new ThreadedServerWorkflowExecutor(state);
-            default:
-                throw new UnsupportedOperationException(type.name() + " not yet implemented");
-        }
+        return switch (type) {
+            case DEFAULT -> new DefaultWorkflowExecutor(state);
+            case THREADED_SERVER -> new ThreadedServerWorkflowExecutor(state);
+            default ->
+                    throw new UnsupportedOperationException(type.name() + " not yet implemented");
+        };
     }
 
     private WorkflowExecutorFactory() {

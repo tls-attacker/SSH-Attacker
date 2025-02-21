@@ -25,7 +25,7 @@ public class DhGexKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents(
             DhGexKeyExchangeInitMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
         object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());

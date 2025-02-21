@@ -243,6 +243,17 @@ public enum EncryptionAlgorithm {
             12,
             16,
             "AES/GCM/NoPadding"),
+    // [ draft-josefsson-ssh-chacha20-poly1305-openssh-01 ]
+    CHACHA20_POLY1305(
+            "chacha20-poly1305",
+            EncryptionAlgorithmType.AEAD,
+            null,
+            64,
+            1,
+            12,
+            16,
+            // Note: This is the java name for the packet length cipher
+            "ChaCha"),
     // Vendor extensions
     // [ OpenSSH ]
     AES128_GCM_OPENSSH_COM(
@@ -509,6 +520,10 @@ public enum EncryptionAlgorithm {
 
     public EncryptionMode getMode() {
         return mode;
+    }
+
+    public EncryptionAlgorithmFamily getFamily() {
+        return EncryptionAlgorithmFamily.getFamilyForAlgorithm(this);
     }
 
     public String getJavaName() {

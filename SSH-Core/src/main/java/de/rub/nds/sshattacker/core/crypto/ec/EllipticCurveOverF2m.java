@@ -109,14 +109,13 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point inverseAffine(Point p) {
-        if (!(p.getFieldX() instanceof FieldElementF2m
+        if (!(p.getFieldX() instanceof FieldElementF2m x
                 && p.getFieldY() instanceof FieldElementF2m)) {
             LOGGER.warn("Trying to invert non F2m point with F2m curve. Returning point at (0,0)");
             return getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
         // -p == (x, x+y)
 
-        FieldElementF2m x = (FieldElementF2m) p.getFieldX();
         FieldElementF2m invY = (FieldElementF2m) p.getFieldY().add(x);
 
         return new Point(x, invY);

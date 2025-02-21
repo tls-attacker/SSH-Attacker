@@ -56,7 +56,7 @@ public enum NamedEcGroup {
     private final String oid;
     private final String javaName;
 
-    private final Integer coordinateSizeInBit;
+    private final int coordinateSizeInBit;
 
     public static final Map<String, NamedEcGroup> identifierMap;
     public static final Map<String, NamedEcGroup> oidMap;
@@ -78,7 +78,7 @@ public enum NamedEcGroup {
         javaNameMap = Collections.unmodifiableMap(mutableJavaNameMap);
     }
 
-    NamedEcGroup(String identifier, String oid, String javaName, Integer coordinateSizeInBit) {
+    NamedEcGroup(String identifier, String oid, String javaName, int coordinateSizeInBit) {
         this.identifier = identifier;
         this.oid = oid;
         this.javaName = javaName;
@@ -109,8 +109,15 @@ public enum NamedEcGroup {
         return javaName;
     }
 
-    public Integer getCoordinateSizeInBit() {
+    public int getCoordinateSizeInBit() {
         return coordinateSizeInBit;
+    }
+
+    public int getPointSize() {
+        if (isRFC7748Curve()) {
+            return coordinateSizeInBit / 8;
+        }
+        return 1 + 2 * ((coordinateSizeInBit + 7) / 8);
     }
 
     public boolean isRFC7748Curve() {

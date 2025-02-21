@@ -43,11 +43,15 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption / decryption. */
     private final AbstractCipher mainCipher;
 
-    public PacketChaCha20Poly1305Cipher(SshContext context, KeySet keySet, CipherMode mode) {
-        super(context, keySet, EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM, null, mode);
+    public PacketChaCha20Poly1305Cipher(
+            SshContext context,
+            KeySet keySet,
+            EncryptionAlgorithm encryptionAlgorithm,
+            CipherMode mode) {
+        super(context, keySet, encryptionAlgorithm, null, mode);
         headerCipher =
                 CipherFactory.getCipher(
-                        encryptionAlgorithm,
+                        this.encryptionAlgorithm,
                         Arrays.copyOfRange(
                                 mode == CipherMode.ENCRYPT
                                         ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
@@ -57,7 +61,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
                         false);
         mainCipher =
                 CipherFactory.getCipher(
-                        encryptionAlgorithm,
+                        this.encryptionAlgorithm,
                         Arrays.copyOfRange(
                                 mode == CipherMode.ENCRYPT
                                         ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())

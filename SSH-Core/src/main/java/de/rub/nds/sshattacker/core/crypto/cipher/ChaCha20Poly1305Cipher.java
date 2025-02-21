@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmFamily;
 import java.util.Arrays;
 import javax.crypto.AEADBadTagException;
 import org.apache.logging.log4j.LogManager;
@@ -23,13 +24,19 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int TAG_LENGTH = 16;
 
+    private final EncryptionAlgorithm algorithm;
     private final byte[] key;
 
     private final ChaChaEngine cipher;
     private final Poly1305 mac;
 
-    ChaCha20Poly1305Cipher(byte[] key) {
+    ChaCha20Poly1305Cipher(EncryptionAlgorithm algorithm, byte[] key) {
         super();
+        if (algorithm.getFamily() != EncryptionAlgorithmFamily.CHACHA20_POLY1305) {
+            throw new IllegalArgumentException(
+                    "Unsupported encryption algorithm for ChaCha20Poly1305Cipher: " + algorithm);
+        }
+        this.algorithm = algorithm;
         this.key = key;
         cipher = new ChaChaEngine();
         mac = new Poly1305();
@@ -113,6 +120,6 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
 
     @Override
     public EncryptionAlgorithm getAlgorithm() {
-        return EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM;
+        return algorithm;
     }
 }

@@ -38,7 +38,7 @@ public class DhKeyExchangeReplyMessagePreparator
     private static void prepareEphemeralPublicKey(
             DhKeyExchangeReplyMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
-        keyExchange.generateLocalKeyPair();
+        keyExchange.generateKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
         object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());

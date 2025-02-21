@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
+import de.rub.nds.sshattacker.core.crypto.kex.*;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -34,10 +34,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);
         prepareHybridKey(object, chooser);
-        chooser.getHybridKeyExchange().combineSharedSecrets();
-        context.setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-        context.getExchangeHashInputHolder()
-                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
+        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getHybridKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
@@ -46,20 +43,38 @@ public class HybridKeyExchangeReplyMessagePreparator
 
     private static void prepareHybridKey(HybridKeyExchangeReplyMessage object, Chooser chooser) {
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
-        KeyAgreement agreement = keyExchange.getKeyAgreement();
-        KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
-        agreement.generateLocalKeyPair();
-        encapsulation.encryptSharedSecret();
-        byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
-        byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
+        AbstractEcdhKeyExchange<?, ?> classical = keyExchange.getClassical();
+        classical.generateKeyPair();
+        KemKeyExchange postQuantum = keyExchange.getPostQuantum();
+        if (postQuantum.getPublicKey() == null) {
+            LOGGER.warn(
+                    "Post quantum key exchange public key is null, generating new key pair before encapsulation");
+            try {
+                postQuantum.generateKeyPair();
+            } catch (CryptoException e) {
+                LOGGER.error(
+                        "Error while preparing HybridKeyExchangeReplyMessage - key pair generation failed",
+                        e);
+            }
+        }
+        try {
+            postQuantum.encapsulate();
+        } catch (CryptoException e) {
+            LOGGER.warn(
+                    "Error while preparing HybridKeyExchangeReplyMessage - encapsulation failed",
+                    e);
+        }
+
+        byte[] pkClassical = classical.getLocalKeyPair().getPublicKey().getEncoded();
+        byte[] encapsPostQuantum = postQuantum.getEncapsulation();
 
         byte[] keys = null;
         switch (chooser.getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                keys = KeyExchangeUtil.concatenateHybridKeys(agreementBytes, encapsulationBytes);
+                keys = ArrayConverter.concatenate(pkClassical, encapsPostQuantum);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                keys = KeyExchangeUtil.concatenateHybridKeys(encapsulationBytes, agreementBytes);
+                keys = ArrayConverter.concatenate(encapsPostQuantum, pkClassical);
                 break;
             default:
                 LOGGER.warn("Combiner is not supported. Can not set Hybrid Key.");

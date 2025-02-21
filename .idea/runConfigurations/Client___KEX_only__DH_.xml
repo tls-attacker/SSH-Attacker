@@ -1,14 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Client - KEX only (DH)" type="Application" factoryName="Application" folderName="Client">
-    <option name="ALTERNATIVE_JRE_PATH" value="21" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.rub.nds.sshattacker.client.main.SshClient" />
     <module name="ssh-client" />
     <option name="PROGRAM_PARAMETERS" value="-to localhost:22510 -c resources/configs/kex_dh_config.xml --workflow-trace-type KEX_DH" />
     <method v="2">
       <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="spotless:apply" />
       <option name="Make" enabled="true" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="OpenSSH 9.5 Server" run_configuration_type="docker-deploy" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="OpenSSH 9.9p1 Server" run_configuration_type="docker-deploy" />
     </method>
   </configuration>
 </component>

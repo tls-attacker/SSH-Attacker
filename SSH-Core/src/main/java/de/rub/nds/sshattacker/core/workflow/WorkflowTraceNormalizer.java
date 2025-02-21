@@ -78,7 +78,8 @@ public final class WorkflowTraceNormalizer {
         // If a MITM trace only holds one explicit definition of a connection,
         // add the missing connection from config.
         if (traceConnections.size() == 1 && mode == RunningModeType.MITM) {
-            if (traceConnections.get(0).getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (traceConnections.getFirst().getLocalConnectionEndType()
+                    == ConnectionEndType.CLIENT) {
                 traceConnections.add(defaultInCon);
             } else {
                 traceConnections.add(defaultOutCon);
@@ -111,7 +112,7 @@ public final class WorkflowTraceNormalizer {
         }
 
         boolean isSingleConnectionWorkflow = true;
-        SshAction customDefaults = new GeneralAction(trace.getConnections().get(0).getAlias());
+        SshAction customDefaults = new GeneralAction(trace.getConnections().getFirst().getAlias());
         if (trace.getConnections().size() > 1) {
             isSingleConnectionWorkflow = false;
         }

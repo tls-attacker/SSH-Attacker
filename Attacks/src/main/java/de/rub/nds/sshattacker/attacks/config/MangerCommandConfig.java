@@ -81,7 +81,7 @@ public class MangerCommandConfig extends AttackConfig {
     public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
         List<KeyExchangeAlgorithm> list =
                 Converter.nameListToEnumValues(kexAlgorithm, KeyExchangeAlgorithm.class);
-        return list.get(0);
+        return list.getFirst();
     }
 
     public void setKexAlgorithm(String kexAlgorithm) {

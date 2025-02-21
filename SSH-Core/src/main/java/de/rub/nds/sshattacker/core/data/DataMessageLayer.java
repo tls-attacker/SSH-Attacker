@@ -53,21 +53,17 @@ public class DataMessageLayer {
         }
 
         // Create correct data packet layer for expected data type
-        DataPacketLayerType layerType;
-        switch (dataType) {
-            case AUTH_AGENT:
-            case SUBSYSTEM_SFTP:
-                layerType = DataPacketLayerType.DATA;
-                break;
-            case SHELL:
-                layerType = DataPacketLayerType.PASS_THROUGH;
-                break;
-            default:
-                LOGGER.warn(
-                        "Channel expected data type set to {}, but there is no packet layer implemented for it. Fall back to pass-through packet layer.",
-                        dataType);
-                layerType = DataPacketLayerType.PASS_THROUGH;
-        }
+        DataPacketLayerType layerType =
+                switch (dataType) {
+                    case AUTH_AGENT, SUBSYSTEM_SFTP -> DataPacketLayerType.DATA;
+                    case SHELL -> DataPacketLayerType.PASS_THROUGH;
+                    default -> {
+                        LOGGER.warn(
+                                "Channel expected data type set to {}, but there is no packet layer implemented for it. Fall back to pass-through packet layer.",
+                                dataType);
+                        yield DataPacketLayerType.PASS_THROUGH;
+                    }
+                };
         AbstractDataPacketLayer packetLayer =
                 DataPacketLayerFactory.getDataPacketLayer(layerType, context);
 
@@ -82,23 +78,22 @@ public class DataMessageLayer {
         }
         Optional<AbstractDataPacket> parsedPacket = parseResult.getParsedPacket();
         if (parsedPacket.isPresent()) {
-            DataMessage<?> resultMessage;
+            DataMessage<?> resultMessage =
+                    switch (dataType) {
+                        case SUBSYSTEM_SFTP ->
+                                SftpMessageParser.delegateParsing(parsedPacket.get(), context);
+                        case SHELL ->
+                                new StringDataMessageParser(
+                                                parsedPacket.get().getPayload().getValue())
+                                        .parse();
+                        default -> {
+                            LOGGER.debug("No parser implemented for ChannelDataType: {}", dataType);
+                            yield new UnknownDataMessageParser(
+                                            parsedPacket.get().getPayload().getValue())
+                                    .parse();
+                        }
+                    };
             // Parse and return the message according to expected data type
-            switch (dataType) {
-                case SUBSYSTEM_SFTP:
-                    resultMessage = SftpMessageParser.delegateParsing(parsedPacket.get(), context);
-                    break;
-                case SHELL:
-                    resultMessage =
-                            new StringDataMessageParser(parsedPacket.get().getPayload().getValue())
-                                    .parse();
-                    break;
-                default:
-                    LOGGER.debug("No parser implemented for ChannelDataType: {}", dataType);
-                    resultMessage =
-                            new UnknownDataMessageParser(parsedPacket.get().getPayload().getValue())
-                                    .parse();
-            }
 
             if (resultMessage.getCompleteResultingMessage().getValue().length
                     < parsedPacket.get().getPayload().getValue().length) {

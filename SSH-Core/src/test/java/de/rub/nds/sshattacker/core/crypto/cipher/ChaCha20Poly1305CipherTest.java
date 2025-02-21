@@ -86,6 +86,7 @@ public class ChaCha20Poly1305CipherTest {
             throws CryptoException {
         AbstractCipher mainEncryptCipher =
                 new ChaCha20Poly1305Cipher(
+                        EncryptionAlgorithm.CHACHA20_POLY1305,
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
         byte[] fullCiphertext = mainEncryptCipher.encrypt(plaintext, iv, aad);
         byte[] computedCiphertext =
@@ -114,10 +115,9 @@ public class ChaCha20Poly1305CipherTest {
             throws Exception {
         AbstractCipher mainDecryptCipher =
                 new ChaCha20Poly1305Cipher(
+                        EncryptionAlgorithm.CHACHA20_POLY1305,
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
-        assertEquals(
-                EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
-                mainDecryptCipher.getAlgorithm());
+        assertEquals(EncryptionAlgorithm.CHACHA20_POLY1305, mainDecryptCipher.getAlgorithm());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ciphertext);
@@ -135,9 +135,11 @@ public class ChaCha20Poly1305CipherTest {
         LOGGER.info("Exception testing: ");
         AbstractCipher encryptCipher =
                 new ChaCha20Poly1305Cipher(
+                        EncryptionAlgorithm.CHACHA20_POLY1305,
                         ArrayConverter.hexStringToByteArray("0dd74c845517a3012ff8aa678e05159c"));
         AbstractCipher decryptCipher =
                 new ChaCha20Poly1305Cipher(
+                        EncryptionAlgorithm.CHACHA20_POLY1305,
                         ArrayConverter.hexStringToByteArray(
                                 "c6d10362f5cae608df6e33cc124bcae2263884db63f481ab94e48b1e197f81ba"));
         byte[] cipher =

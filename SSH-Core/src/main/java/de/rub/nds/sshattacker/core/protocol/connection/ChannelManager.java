@@ -76,7 +76,7 @@ public class ChannelManager {
 
     public ChannelOpenConfirmationMessage prepareNextOpenConfirm() {
         if (!pendingChannelOpenConfirmations.isEmpty()) {
-            return pendingChannelOpenConfirmations.remove(0);
+            return pendingChannelOpenConfirmations.removeFirst();
         }
         // Create a new ChannelOpenConfirmationMessage, that is not a reply to a ChannelOpenMessage
         ChannelOpenConfirmationMessage fresh = new ChannelOpenConfirmationMessage();

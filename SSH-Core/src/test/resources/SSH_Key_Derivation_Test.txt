@@ -4,7 +4,7 @@
 # SHA sizes tested: SHA-1, SHA-224, SHA-256, SHA-384, SHA-512
 # Generated on Thu Sep 27 09:50:20 2012
 
-[SHA-1]
+[SHA1]
 [shared secret length = 1024]
 [IV length = 64]
 [encryption key length = 192]
@@ -119,7 +119,7 @@ Encryption key (server to client) = d57d2f3c25b536442d8c7f36d62778d06fb6e7d4b5c7
 Integrity key (client to server) = f0b75425b271eb82645b1f1424b2a838dbcf6f98
 Integrity key (server to client) = cdf59b2327588ffd18becfc0e5bb526014101401
 
-[SHA-1]
+[SHA1]
 [shared secret length = 2048]
 [IV length = 128]
 [encryption key length = 128]
@@ -234,7 +234,7 @@ Encryption key (server to client) = 7231ce5fd725391e058cd78815f44625
 Integrity key (client to server) = 937b7e16ed0b2324203cdae904fc55cbe25067a1
 Integrity key (server to client) = d7536b911dc79d5953455ba6e15cb5fec7c14025
 
-[SHA-224]
+[SHA224]
 [shared secret length = 1024]
 [IV length = 64]
 [encryption key length = 192]
@@ -349,7 +349,7 @@ Encryption key (server to client) = 5a5844e6c47eacc172e0012044037668a653758b9631
 Integrity key (client to server) = 4783fb6e98db788f6594c2b82e751528590c41780adce2ffba234290
 Integrity key (server to client) = 7c60752b0b5a0f0027507ecd88e6af2b78e462a98459bf0511152663
 
-[SHA-224]
+[SHA224]
 [shared secret length = 2048]
 [IV length = 128]
 [encryption key length = 128]
@@ -464,7 +464,7 @@ Encryption key (server to client) = f12c0da703e5bedb2921a0e1795eb62f
 Integrity key (client to server) = 1d34b1ae23af48c25db971fe0f95c2fdb4e269ca435b90e0e22ee720
 Integrity key (server to client) = b77dce4e2211c8e2b4fba841ba45d7f136323999ed9a4d306fa411a8
 
-[SHA-256]
+[SHA256]
 [shared secret length = 1024]
 [IV length = 64]
 [encryption key length = 192]
@@ -579,7 +579,7 @@ Encryption key (server to client) = 3f5de8bec6d737836d3a91480ac76c19d0a90bc146f0
 Integrity key (client to server) = ce7be4fffd0ffd09ff45889d10c7be0edf922422d01cb71b737c6149bb1a2d05
 Integrity key (server to client) = 60f413c9bcc42dcf0acc53d513dd8bc703f7e5d668f4e043f13028dcf40880b2
 
-[SHA-256]
+[SHA256]
 [shared secret length = 2048]
 [IV length = 128]
 [encryption key length = 128]
@@ -694,7 +694,7 @@ Encryption key (server to client) = 091f8fa87a01c5768de8d663ba8bf9d7
 Integrity key (client to server) = cc09127a759000f3bd9724fbf5285cd680ee323ffc19cf2f495403f896587317
 Integrity key (server to client) = a3ceddafc49f7c0131ce2965945c3892be6605b465877bc0637685612ede242b
 
-[SHA-384]
+[SHA384]
 [shared secret length = 1024]
 [IV length = 64]
 [encryption key length = 192]
@@ -809,7 +809,7 @@ Encryption key (server to client) = 44e09698e473edc642256e99bfbfbeab1db3e254d64a
 Integrity key (client to server) = 8e35d767e738c4282ec1925ba5d59dad723b7220c10ae8b69c9eb3da124ac1bea8195f5ecc1c3b03953938cd1e0e190b
 Integrity key (server to client) = 63e5c62c4e6f2700bfa5927ca2e730101c12a684808ddd6cf5f9da2bad3b49ba3d05d4f88a3a91f341ad2b63952e7db0
 
-[SHA-384]
+[SHA384]
 [shared secret length = 2048]
 [IV length = 128]
 [encryption key length = 128]
@@ -924,7 +924,7 @@ Encryption key (server to client) = 00a9d893e8c14aa3a316163d50d83378
 Integrity key (client to server) = 46133b1cbab3e04043a1b336db99575183d5be76f9d56556493a8d4a8da37a020ae379ff2d470a99ca7e9d2b1cf85cb4
 Integrity key (server to client) = 9221abcc3db5a557cca60408e65528e937cc3673b548c350924cd9e6387de526f5cb35a0bbe4020c47318b59d1a0527d
 
-[SHA-512]
+[SHA512]
 [shared secret length = 1024]
 [IV length = 64]
 [encryption key length = 192]
@@ -1039,7 +1039,7 @@ Encryption key (server to client) = fead3a851502aa3c58734065eeaf3e63ed4c59c8f450
 Integrity key (client to server) = 55bde99a692820ad809eb0a62311f8f3e9469ba2ee4d782d5432628ca52d829b9c5bffc41b58232363f97c5dab603268b1997fbe9b9b34ab2aca3da27467b0c8
 Integrity key (server to client) = 756f65746c861f0985f3dd7d2f08004897ccb22be2f1d3b4791ca0c51d5ee0da776dd03d7dfb7f4db6c6cd37899871e63d75f7f60dff8348c313e99409ad2db5
 
-[SHA-512]
+[SHA512]
 [shared secret length = 2048]
 [IV length = 128]
 [encryption key length = 128]

@@ -41,133 +41,124 @@ public final class PublicKeyHelper {
      * will be directly extracted from the public key bytes. Note that this behavior may lead to
      * unexpected errors and does not conform with RFC 4253.
      *
-     * @param encodedPublicKeyBytes Encoded public key in some SSH public key format
+     * @param encodedPublicKey Encoded public key in some SSH public key format
      * @return The parsed public key
      * @throws NotImplementedException Thrown whenever support for the extracted key format has not
      *     yet been implemented.
      */
-    public static SshPublicKey<?, ?> parse(byte[] encodedPublicKeyBytes) {
+    public static SshPublicKey<?, ?> parse(byte[] encodedPublicKey) {
         try {
             int keyFormatLength =
                     ArrayConverter.fourBytesToInt(
                             Arrays.copyOfRange(
-                                    encodedPublicKeyBytes,
-                                    0,
-                                    DataFormatConstants.STRING_SIZE_LENGTH));
+                                    encodedPublicKey, 0, DataFormatConstants.STRING_SIZE_LENGTH));
             String keyFormatName =
                     new String(
                             Arrays.copyOfRange(
-                                    encodedPublicKeyBytes,
+                                    encodedPublicKey,
                                     DataFormatConstants.STRING_SIZE_LENGTH,
                                     DataFormatConstants.STRING_SIZE_LENGTH + keyFormatLength),
                             StandardCharsets.US_ASCII);
 
             PublicKeyFormat keyFormat = PublicKeyFormat.fromName(keyFormatName);
-            switch (keyFormat) {
-                case SSH_RSA:
-                    return new RsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case SSH_DSS:
-                    return new DsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case ECDSA_SHA2_SECP160K1:
-                case ECDSA_SHA2_SECP160R1:
-                case ECDSA_SHA2_SECP160R2:
-                case ECDSA_SHA2_SECP192K1:
-                case ECDSA_SHA2_NISTP256:
-                case ECDSA_SHA2_NISTP384:
-                case ECDSA_SHA2_NISTP521:
-                case ECDSA_SHA2_SECT163K1:
-                case ECDSA_SHA2_SECT163R1:
-                case ECDSA_SHA2_SECT163R2:
-                case ECDSA_SHA2_SECT193R1:
-                case ECDSA_SHA2_SECT193R2:
-                case ECDSA_SHA2_SECT233K1:
-                case ECDSA_SHA2_SECT233R1:
-                case ECDSA_SHA2_SECT239K1:
-                case ECDSA_SHA2_SECT283K1:
-                case ECDSA_SHA2_SECT283R1:
-                case ECDSA_SHA2_SECT409K1:
-                case ECDSA_SHA2_SECT409R1:
-                case ECDSA_SHA2_SECT571K1:
-                case ECDSA_SHA2_SECT571R1:
-                case ECDSA_SHA2_BRAINPOOL_P256R1:
-                case ECDSA_SHA2_BRAINPOOL_P384R1:
-                case ECDSA_SHA2_BRAINPOOL_P512R1:
-                    return new EcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case SSH_RSA_CERT_V01_OPENSSH_COM:
-                case RSA_SHA2_512_CERT_V01_OPENSSH_COM:
-                case RSA_SHA2_256_CERT_V01_OPENSSH_COM:
-                    return new CertRsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case SSH_DSS_CERT_V01_OPENSSH_COM:
-                    return new CertDsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM:
-                case ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM:
-                case ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM:
-                    return new CertEcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case SSH_ED25519_CERT_V01_OPENSSH_COM:
-                    return new CertXCurvePublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                case X509V3_SSH_RSA:
-                    return new X509RsaPublicKeyParser(encodedPublicKeyBytes, 12).parse();
-                case SSH_ED25519:
-                case SSH_ED448:
-                    return new XCurvePublicKeyParser(encodedPublicKeyBytes, 0).parse();
-                default:
-                    throw new NotImplementedException(
-                            "Parser for Public Key Format " + keyFormat + " not implemented.");
-            }
-        } catch (Exception e) {
-            if (isX509Format(encodedPublicKeyBytes)) {
-                PublicKeyFormat keyFormat = parseX509(encodedPublicKeyBytes);
-
-                switch (keyFormat) {
-                    case X509V3_SSH_RSA:
-                    case X509V3_RSA2048_SHA256:
-                        return new X509RsaPublicKeyParser(
-                                        encodedPublicKeyBytes,
-                                        findX509StartIndex(encodedPublicKeyBytes))
-                                .parse();
-                    case X509V3_ECDSA_SHA2_SECP160K1:
-                    case X509V3_ECDSA_SHA2_SECP160R1:
-                    case X509V3_ECDSA_SHA2_SECP160R2:
-                    case X509V3_ECDSA_SHA2_SECP192K1:
-                    case X509V3_ECDSA_SHA2_SECP192R1:
-                    case X509V3_ECDSA_SHA2_SECP224K1:
-                    case X509V3_ECDSA_SHA2_SECP224R1:
-                    case X509V3_ECDSA_SHA2_SECP256K1:
-                    case X509V3_ECDSA_SHA2_NISTP256:
-                    case X509V3_ECDSA_SHA2_NISTP384:
-                    case X509V3_ECDSA_SHA2_NISTP521:
-                    case X509V3_ECDSA_SHA2_SECT163K1:
-                    case X509V3_ECDSA_SHA2_SECT163R1:
-                    case X509V3_ECDSA_SHA2_SECT163R2:
-                    case X509V3_ECDSA_SHA2_SECT193R1:
-                    case X509V3_ECDSA_SHA2_SECT193R2:
-                    case X509V3_ECDSA_SHA2_SECT233K1:
-                    case X509V3_ECDSA_SHA2_SECT233R1:
-                    case X509V3_ECDSA_SHA2_SECT239K1:
-                    case X509V3_ECDSA_SHA2_SECT283K1:
-                    case X509V3_ECDSA_SHA2_SECT283R1:
-                    case X509V3_ECDSA_SHA2_SECT409K1:
-                    case X509V3_ECDSA_SHA2_SECT409R1:
-                    case X509V3_ECDSA_SHA2_SECT571K1:
-                    case X509V3_ECDSA_SHA2_SECT571R1:
-                        return new X509EcdsaPublicKeyParser(
-                                        encodedPublicKeyBytes,
-                                        findX509StartIndex(encodedPublicKeyBytes))
-                                .parse();
-                    case X509V3_SSH_DSS:
-                        return new X509DsaPublicKeyParser(
-                                        encodedPublicKeyBytes,
-                                        findX509StartIndex(encodedPublicKeyBytes))
-                                .parse();
-                    case X509V3_SSH_ED25519:
-                        return new X509XCurvePublicKeyParser(
-                                        encodedPublicKeyBytes,
-                                        findX509StartIndex(encodedPublicKeyBytes))
-                                .parse();
-                    default:
+            return switch (keyFormat) {
+                case SSH_RSA -> new RsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case SSH_DSS -> new DsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case ECDSA_SHA2_SECP160K1,
+                        ECDSA_SHA2_SECP160R1,
+                        ECDSA_SHA2_SECP160R2,
+                        ECDSA_SHA2_SECP192K1,
+                        ECDSA_SHA2_NISTP256,
+                        ECDSA_SHA2_NISTP384,
+                        ECDSA_SHA2_NISTP521,
+                        ECDSA_SHA2_SECT163K1,
+                        ECDSA_SHA2_SECT163R1,
+                        ECDSA_SHA2_SECT163R2,
+                        ECDSA_SHA2_SECT193R1,
+                        ECDSA_SHA2_SECT193R2,
+                        ECDSA_SHA2_SECT233K1,
+                        ECDSA_SHA2_SECT233R1,
+                        ECDSA_SHA2_SECT239K1,
+                        ECDSA_SHA2_SECT283K1,
+                        ECDSA_SHA2_SECT283R1,
+                        ECDSA_SHA2_SECT409K1,
+                        ECDSA_SHA2_SECT409R1,
+                        ECDSA_SHA2_SECT571K1,
+                        ECDSA_SHA2_SECT571R1,
+                        ECDSA_SHA2_BRAINPOOL_P256R1,
+                        ECDSA_SHA2_BRAINPOOL_P384R1,
+                        ECDSA_SHA2_BRAINPOOL_P512R1 ->
+                        new EcdsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case SSH_RSA_CERT_V01_OPENSSH_COM,
+                        RSA_SHA2_512_CERT_V01_OPENSSH_COM,
+                        RSA_SHA2_256_CERT_V01_OPENSSH_COM ->
+                        new CertRsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case SSH_DSS_CERT_V01_OPENSSH_COM ->
+                        new CertDsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                        ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+                        ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM ->
+                        new CertEcdsaPublicKeyParser(encodedPublicKey, 0).parse();
+                case SSH_ED25519_CERT_V01_OPENSSH_COM ->
+                        new CertXCurvePublicKeyParser(encodedPublicKey, 0).parse();
+                case X509V3_SSH_RSA -> new X509RsaPublicKeyParser(encodedPublicKey, 12).parse();
+                case SSH_ED25519, SSH_ED448 ->
+                        new XCurvePublicKeyParser(encodedPublicKey, 0).parse();
+                default ->
                         throw new NotImplementedException(
                                 "Parser for Public Key Format " + keyFormat + " not implemented.");
-                }
+            };
+        } catch (Exception e) {
+            if (isX509Format(encodedPublicKey)) {
+                PublicKeyFormat keyFormat = parseX509(encodedPublicKey);
+
+                return switch (keyFormat) {
+                    case X509V3_SSH_RSA, X509V3_RSA2048_SHA256 ->
+                            new X509RsaPublicKeyParser(
+                                            encodedPublicKey, findX509StartIndex(encodedPublicKey))
+                                    .parse();
+                    case X509V3_ECDSA_SHA2_SECP160K1,
+                            X509V3_ECDSA_SHA2_SECP160R1,
+                            X509V3_ECDSA_SHA2_SECP160R2,
+                            X509V3_ECDSA_SHA2_SECP192K1,
+                            X509V3_ECDSA_SHA2_SECP192R1,
+                            X509V3_ECDSA_SHA2_SECP224K1,
+                            X509V3_ECDSA_SHA2_SECP224R1,
+                            X509V3_ECDSA_SHA2_SECP256K1,
+                            X509V3_ECDSA_SHA2_NISTP256,
+                            X509V3_ECDSA_SHA2_NISTP384,
+                            X509V3_ECDSA_SHA2_NISTP521,
+                            X509V3_ECDSA_SHA2_SECT163K1,
+                            X509V3_ECDSA_SHA2_SECT163R1,
+                            X509V3_ECDSA_SHA2_SECT163R2,
+                            X509V3_ECDSA_SHA2_SECT193R1,
+                            X509V3_ECDSA_SHA2_SECT193R2,
+                            X509V3_ECDSA_SHA2_SECT233K1,
+                            X509V3_ECDSA_SHA2_SECT233R1,
+                            X509V3_ECDSA_SHA2_SECT239K1,
+                            X509V3_ECDSA_SHA2_SECT283K1,
+                            X509V3_ECDSA_SHA2_SECT283R1,
+                            X509V3_ECDSA_SHA2_SECT409K1,
+                            X509V3_ECDSA_SHA2_SECT409R1,
+                            X509V3_ECDSA_SHA2_SECT571K1,
+                            X509V3_ECDSA_SHA2_SECT571R1 ->
+                            new X509EcdsaPublicKeyParser(
+                                            encodedPublicKey, findX509StartIndex(encodedPublicKey))
+                                    .parse();
+                    case X509V3_SSH_DSS ->
+                            new X509DsaPublicKeyParser(
+                                            encodedPublicKey, findX509StartIndex(encodedPublicKey))
+                                    .parse();
+                    case X509V3_SSH_ED25519 ->
+                            new X509XCurvePublicKeyParser(
+                                            encodedPublicKey, findX509StartIndex(encodedPublicKey))
+                                    .parse();
+                    default ->
+                            throw new NotImplementedException(
+                                    "Parser for Public Key Format "
+                                            + keyFormat
+                                            + " not implemented.");
+                };
             } else {
                 throw new IllegalArgumentException("Unknown public key format", e);
             }
@@ -177,16 +168,16 @@ public final class PublicKeyHelper {
     /**
      * Parses the given encoded public key bytes if it is in X.509 format.
      *
-     * @param encodedPublicKeyBytes Encoded public key in X.509 format
+     * @param encodedPublicKey Encoded public key in X.509 format
      * @return The parsed public key
      */
-    public static PublicKeyFormat parseX509(byte[] encodedPublicKeyBytes) {
+    public static PublicKeyFormat parseX509(byte[] encodedPublicKey) {
         try {
             // Startpunkt des X.509-Zertifikats finden
-            int startIndex = findX509StartIndex(encodedPublicKeyBytes);
+            int startIndex = findX509StartIndex(encodedPublicKey);
 
             // Format des öffentlichen Schlüssels aus dem X.509-Zertifikat extrahieren
-            return extractKeyFormatFromX509(encodedPublicKeyBytes, startIndex);
+            return extractKeyFormatFromX509(encodedPublicKey, startIndex);
         } catch (Exception e) {
             LOGGER.warn("Failed to parse X.509 certificate");
             throw new IllegalArgumentException("Ungültiges X.509-Zertifikat!", e);
@@ -196,13 +187,13 @@ public final class PublicKeyHelper {
     /**
      * Determines the correct starting index for parsing an X.509 certificate.
      *
-     * @param encodedPublicKeyBytes Encoded public key in X.509 format
+     * @param encodedPublicKey Encoded public key in X.509 format
      * @return The starting index for parsing the X.509 certificate
      */
-    private static int findX509StartIndex(byte[] encodedPublicKeyBytes) {
+    private static int findX509StartIndex(byte[] encodedPublicKey) {
         // Suche nach SEQUENCE (0x30) ohne sich auf spezielle Längenbytes zu verlassen
-        for (int i = 0; i < encodedPublicKeyBytes.length - 1; i++) {
-            if (encodedPublicKeyBytes[i] == 0x30) {
+        for (int i = 0; i < encodedPublicKey.length - 1; i++) {
+            if (encodedPublicKey[i] == 0x30) {
                 return i;
             }
         }
@@ -210,9 +201,9 @@ public final class PublicKeyHelper {
         throw new IllegalArgumentException("Konnte Start des X.509-Zertifikats nicht finden.");
     }
 
-    private static boolean isX509Format(byte[] encodedPublicKeyBytes) {
+    private static boolean isX509Format(byte[] encodedPublicKey) {
         try {
-            int startIndex = findX509StartIndex(encodedPublicKeyBytes);
+            int startIndex = findX509StartIndex(encodedPublicKey);
             return startIndex >= 0;
         } catch (IllegalArgumentException e) {
             return false;
@@ -220,20 +211,17 @@ public final class PublicKeyHelper {
     }
 
     private static PublicKeyFormat extractKeyFormatFromX509(
-            byte[] encodedCertificateBytes, int startIndex) throws Exception {
+            byte[] encodedCertificate, int startIndex) throws Exception {
         // Start parsing the certificate from the specified start index onwards
         ByteArrayInputStream certInputStream =
                 new ByteArrayInputStream(
-                        encodedCertificateBytes,
-                        startIndex,
-                        encodedCertificateBytes.length - startIndex);
+                        encodedCertificate, startIndex, encodedCertificate.length - startIndex);
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
         X509Certificate cert = (X509Certificate) certFactory.generateCertificate(certInputStream);
         PublicKey publicKey = cert.getPublicKey();
 
         // Recognize RSA keys
-        if (publicKey instanceof RSAPublicKey) {
-            RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
+        if (publicKey instanceof RSAPublicKey rsaPublicKey) {
             String signatureAlgorithm = cert.getSigAlgName();
             int keyLength = rsaPublicKey.getModulus().bitLength();
 
@@ -267,14 +255,14 @@ public final class PublicKeyHelper {
      *
      * @param expectedKeyFormat The public key format (must be explicitly known as per RFC 4253 Sec.
      *     6.6)
-     * @param encodedPublicKeyBytes Encoded public key in the specified format
+     * @param encodedPublicKey Encoded public key in the specified format
      * @return The parsed public key
      * @throws NotImplementedException Thrown whenever support for the specified key format has not
      *     yet been implemented.
      */
     public static SshPublicKey<?, ?> parse(
-            PublicKeyFormat expectedKeyFormat, byte[] encodedPublicKeyBytes) {
-        SshPublicKey<?, ?> publicKey = parse(encodedPublicKeyBytes);
+            PublicKeyFormat expectedKeyFormat, byte[] encodedPublicKey) {
+        SshPublicKey<?, ?> publicKey = parse(encodedPublicKey);
         if (publicKey == null) {
             throw new IllegalArgumentException("Parsed key is not of expected type SshPublicKey.");
         }
@@ -290,12 +278,12 @@ public final class PublicKeyHelper {
     /**
      * Serializes the given host key using its primary key format into a byte array.
      *
-     * @param hostKey Host key to serialize
+     * @param publicKey Host key to serialize
      * @return A serialized representation of the host key its primary key format
      * @throws NotImplementedException Thrown whenever support for the key format has not yet been
      *     implemented.
      */
-    public static byte[] encode(SshPublicKey<?, ?> hostKey) {
-        return hostKey.getPublicKey().serialize();
+    public static byte[] encode(SshPublicKey<?, ?> publicKey) {
+        return publicKey.getPublicKey().serialize();
     }
 }

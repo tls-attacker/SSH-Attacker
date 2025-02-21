@@ -76,8 +76,7 @@ public final class PubKeyUtil {
      */
     public static SshPublicKey<?, ?> parsePrivateKey(byte[] blob) throws IOException {
         AsymmetricKeyParameter params = OpenSSHPrivateKeyUtil.parsePrivateKeyBlob(blob);
-        if (params instanceof RSAPrivateCrtKeyParameters) {
-            RSAPrivateCrtKeyParameters rsaParams = (RSAPrivateCrtKeyParameters) params;
+        if (params instanceof RSAPrivateCrtKeyParameters rsaParams) {
             CustomRsaPrivateKey privateKey =
                     new CustomRsaPrivateKey(rsaParams.getExponent(), rsaParams.getModulus());
             CustomRsaPublicKey publicKey =
@@ -87,8 +86,7 @@ public final class PubKeyUtil {
             return new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         }
 
-        if (params instanceof Ed25519PrivateKeyParameters) {
-            Ed25519PrivateKeyParameters ed25519Params = (Ed25519PrivateKeyParameters) params;
+        if (params instanceof Ed25519PrivateKeyParameters ed25519Params) {
             XCurveEcPrivateKey privateKey =
                     new XCurveEcPrivateKey(ed25519Params.getEncoded(), NamedEcGroup.CURVE25519);
             XCurveEcPublicKey publicKey =

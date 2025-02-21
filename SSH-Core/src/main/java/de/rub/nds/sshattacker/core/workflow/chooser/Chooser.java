@@ -237,7 +237,7 @@ public abstract class Chooser {
 
     public abstract DhKeyExchange getDhGexKeyExchange();
 
-    public abstract AbstractEcdhKeyExchange getEcdhKeyExchange();
+    public abstract AbstractEcdhKeyExchange<?, ?> getEcdhKeyExchange();
 
     public abstract RsaKeyExchange getRsaKeyExchange();
 

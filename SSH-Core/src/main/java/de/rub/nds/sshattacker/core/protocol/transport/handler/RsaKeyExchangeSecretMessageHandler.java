@@ -30,7 +30,8 @@ public class RsaKeyExchangeSecretMessageHandler
             SshContext context, RsaKeyExchangeSecretMessage object) {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         try {
-            keyExchange.decryptSharedSecret(object.getEncryptedSecret().getValue());
+            keyExchange.setEncapsulation(object.getEncryptedSecret().getValue());
+            keyExchange.decapsulate();
             context.setSharedSecret(keyExchange.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn(

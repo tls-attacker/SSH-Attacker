@@ -8,14 +8,16 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RsaKeyExchangeSecretMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
+    private static Logger LOGGER = LogManager.getLogger();
 
     public RsaKeyExchangeSecretMessagePreparator() {
         super(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
@@ -24,12 +26,18 @@ public class RsaKeyExchangeSecretMessagePreparator
     @Override
     public void prepareMessageSpecificContents(
             RsaKeyExchangeSecretMessage object, Chooser chooser) {
-        SshContext context = chooser.getContext();
-        KeyExchangeUtil.generateSharedSecret(context, chooser.getRsaKeyExchange());
-        byte[] encryptedSecret = chooser.getRsaKeyExchange().encryptSharedSecret();
+        byte[] encryptedSecret;
+        try {
+            chooser.getRsaKeyExchange().encapsulate();
+            encryptedSecret = chooser.getRsaKeyExchange().getEncapsulation();
+        } catch (CryptoException e) {
+            LOGGER.warn(
+                    "Error while preparing RsaKeyExchangeSecretMessage - encapsulation failed", e);
+            encryptedSecret = new byte[0];
+        }
 
         object.setSoftlyEncryptedSecret(encryptedSecret, true, chooser.getConfig());
 
-        context.getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
+        chooser.getContext().getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }
 }

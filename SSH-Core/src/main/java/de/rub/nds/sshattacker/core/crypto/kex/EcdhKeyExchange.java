@@ -21,14 +21,12 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
+public class EcdhKeyExchange
+        extends AbstractEcdhKeyExchange<CustomEcPrivateKey, CustomEcPublicKey> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final EllipticCurve ellipticCurve;
-
-    private CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> localKeyPair;
-    private CustomEcPublicKey remotePublicKey;
 
     protected EcdhKeyExchange(NamedEcGroup group) {
         super(group);
@@ -40,7 +38,7 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void generateLocalKeyPair() {
+    public void generateKeyPair() {
         int privateKeyBitLength = ellipticCurve.getBasePointOrder().bitLength();
         CustomEcPrivateKey privateKey;
         do {
@@ -56,8 +54,8 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes) {
-        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
+    public void setLocalKeyPair(byte[] encodedPrivateKey) {
+        BigInteger privateKeyScalar = new BigInteger(encodedPrivateKey);
         Point publicKeyPoint = ellipticCurve.mult(privateKeyScalar, ellipticCurve.getBasePoint());
         CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
@@ -65,17 +63,17 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
-        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
+    public void setLocalKeyPair(byte[] encodedPrivateKey, byte[] encodedPublicKey) {
+        BigInteger privateKeyScalar = new BigInteger(encodedPrivateKey);
+        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, encodedPublicKey);
         CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
         localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
-    public void setRemotePublicKey(byte[] publicKeyBytes) {
-        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
+    public void setRemotePublicKey(byte[] encodedPublicKey) {
+        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, encodedPublicKey);
         remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);
     }
 
@@ -87,22 +85,13 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         }
         Point sharedPoint =
                 ellipticCurve.mult(
-                        localKeyPair.getPrivateKey().getS(), remotePublicKey.getWAsPoint());
+                        localKeyPair.getPrivateKey().getS(),
+                        ((CustomEcPublicKey) remotePublicKey).getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
         sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
         sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
                 () -> ArrayConverter.bytesToRawHexString(sharedSecret));
-    }
-
-    @Override
-    public CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> getLocalKeyPair() {
-        return localKeyPair;
-    }
-
-    @Override
-    public CustomEcPublicKey getRemotePublicKey() {
-        return remotePublicKey;
     }
 }

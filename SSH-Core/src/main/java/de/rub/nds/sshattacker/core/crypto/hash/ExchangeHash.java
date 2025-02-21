@@ -151,11 +151,11 @@ public final class ExchangeHash {
         LOGGER.debug("Exchange hash input: {}", () -> ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
-            md = MessageDigest.getInstance(algorithm.getDigest());
+            md = MessageDigest.getInstance(algorithm.getHashFunction().getJavaName());
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error(
                     "There is no security provider supporting this hash function: {}",
-                    algorithm.getDigest());
+                    algorithm.getHashFunction());
             LOGGER.debug(e);
             throw new CryptoException(
                     "Unable to calculate exchange hash because the required hash algorithm is not supported by any security provider.",
@@ -360,18 +360,18 @@ public final class ExchangeHash {
          * string Q_S, server's ephemeral public key octet
          * mpint K, encoded shared secret
          */
-        if (inputHolder.getHybridClientPublicKey().isEmpty()) {
+        if (inputHolder.getHybridClientPublicValues().isEmpty()) {
             throw new MissingExchangeHashInputException("[Hybrid] Client public key missing");
         }
-        if (inputHolder.getHybridServerPublicKey().isEmpty()) {
+        if (inputHolder.getHybridServerPublicValues().isEmpty()) {
             throw new MissingExchangeHashInputException("[Hybrid] Server public key missing");
         }
         return ArrayConverter.concatenate(
                 prepareCommonPrefixHashInput(inputHolder),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        inputHolder.getHybridClientPublicKey().get()),
+                        inputHolder.getHybridClientPublicValues().get()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        inputHolder.getHybridServerPublicKey().get()),
+                        inputHolder.getHybridServerPublicValues().get()),
                 prepareCommonSuffixHashInput(inputHolder));
     }
 

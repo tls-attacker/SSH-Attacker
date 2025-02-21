@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
@@ -187,11 +188,31 @@ public final class KeyExchangeUtil {
      * @param context SSH context to update
      * @param keyAgreement Key exchange instance for shared secret computation
      */
-    public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
+    public static void computeSharedSecret(SshContext context, KeyAgreement<?, ?> keyAgreement) {
         try {
             keyAgreement.computeSharedSecret();
             context.setSharedSecret(keyAgreement.getSharedSecret());
             context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
+        } catch (CryptoException e) {
+            LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
+            LOGGER.debug(e);
+        }
+    }
+
+    /**
+     * Computes the shared secret and updates the context and exchange hash input accordingly. Used
+     * for KeyAgreement Schemes.
+     *
+     * @param context SSH context to update
+     * @param hybridKeyExchange Key exchange instance for shared secret computation
+     */
+    public static void computeSharedSecret(
+            SshContext context, HybridKeyExchange hybridKeyExchange) {
+        try {
+            hybridKeyExchange.computeSharedSecret();
+            context.setSharedSecret(hybridKeyExchange.getSharedSecret());
+            context.getExchangeHashInputHolder()
+                    .setSharedSecret(hybridKeyExchange.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);
@@ -205,10 +226,17 @@ public final class KeyExchangeUtil {
      * @param context SSH context to update
      * @param keyEncapsulation Key exchange instance for shared secret generation
      */
-    public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
-        keyEncapsulation.generateSharedSecret();
-        context.setSharedSecret(keyEncapsulation.getSharedSecret());
-        context.getExchangeHashInputHolder().setSharedSecret(keyEncapsulation.getSharedSecret());
+    public static void generateSharedSecret(
+            SshContext context, KeyEncapsulation<?> keyEncapsulation) {
+        try {
+            keyEncapsulation.encapsulate();
+            context.setSharedSecret(keyEncapsulation.getSharedSecret());
+            context.getExchangeHashInputHolder()
+                    .setSharedSecret(keyEncapsulation.getSharedSecret());
+        } catch (CryptoException e) {
+            LOGGER.warn("Key exchange instance is not ready yet, unable to generate shared secret");
+            LOGGER.debug(e);
+        }
     }
 
     /**
@@ -259,16 +287,5 @@ public final class KeyExchangeUtil {
     public static void generateKeySet(SshContext context) {
         KeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
-    }
-
-    /**
-     * Concatenates two keys.
-     *
-     * @param first first key
-     * @param second second key
-     * @return first || second
-     */
-    public static byte[] concatenateHybridKeys(byte[] first, byte[] second) {
-        return ArrayConverter.concatenate(first, second);
     }
 }

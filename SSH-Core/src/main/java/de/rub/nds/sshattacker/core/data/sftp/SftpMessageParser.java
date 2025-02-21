@@ -58,70 +58,50 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
             return new SftpUnknownMessage();
         }
         try {
-            switch (SftpPacketTypeConstant.fromId(raw[0])) {
-                case SSH_FXP_INIT:
-                    return new SftpInitMessageParser(raw).parse();
-                case SSH_FXP_VERSION:
-                    return new SftpVersionMessageParser(raw).parse();
-                case SSH_FXP_OPEN:
-                    return new SftpRequestOpenMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_CLOSE:
-                    return new SftpRequestCloseMessageParser(raw).parse();
-                case SSH_FXP_READ:
-                    return new SftpRequestReadMessageParser(raw).parse();
-                case SSH_FXP_WRITE:
-                    return new SftpRequestWriteMessageParser(raw).parse();
-                case SSH_FXP_LSTAT:
-                    return new SftpRequestLinkStatMessageParser(raw).parse();
-                case SSH_FXP_FSTAT:
-                    return new SftpRequestFileStatMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_SETSTAT:
-                    return new SftpRequestSetStatMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_FSETSTAT:
-                    return new SftpRequestFileSetStatMessageParser(raw, context.getChooser())
-                            .parse();
-                case SSH_FXP_OPENDIR:
-                    return new SftpRequestOpenDirMessageParser(raw).parse();
-                case SSH_FXP_READDIR:
-                    return new SftpRequestReadDirMessageParser(raw).parse();
-                case SSH_FXP_REMOVE:
-                    return new SftpRequestRemoveMessageParser(raw).parse();
-                case SSH_FXP_MKDIR:
-                    return new SftpRequestMakeDirMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_RMDIR:
-                    return new SftpRequestRemoveDirMessageParser(raw).parse();
-                case SSH_FXP_REALPATH:
-                    return new SftpRequestRealPathMessageParser(raw).parse();
-                case SSH_FXP_STAT:
-                    return new SftpRequestStatMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_RENAME:
-                    return new SftpRequestRenameMessageParser(raw).parse();
-                case SSH_FXP_READLINK:
-                    return new SftpRequestReadLinkMessageParser(raw).parse();
-                case SSH_FXP_SYMLINK:
-                    return new SftpRequestSymbolicLinkMessageParser(raw).parse();
-                case SSH_FXP_STATUS:
-                    return new SftpResponseStatusMessageParser(raw).parse();
-                case SSH_FXP_HANDLE:
-                    return new SftpResponseHandleMessageParser(raw).parse();
-                case SSH_FXP_DATA:
-                    return new SftpResponseDataMessageParser(raw).parse();
-                case SSH_FXP_NAME:
-                    return new SftpResponseNameMessageParser(raw, context.getChooser()).parse();
-                case SSH_FXP_ATTRS:
-                    return new SftpResponseAttributesMessageParser(raw, context.getChooser())
-                            .parse();
-                case SSH_FXP_EXTENDED:
-                    return handleExtendedRequestMessageParsing(raw, context);
-                case SSH_FXP_EXTENDED_REPLY:
-                    return handleExtendedResponseMessageParsing(raw, context);
-                default:
+            return switch (SftpPacketTypeConstant.fromId(raw[0])) {
+                case SSH_FXP_INIT -> new SftpInitMessageParser(raw).parse();
+                case SSH_FXP_VERSION -> new SftpVersionMessageParser(raw).parse();
+                case SSH_FXP_OPEN ->
+                        new SftpRequestOpenMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_CLOSE -> new SftpRequestCloseMessageParser(raw).parse();
+                case SSH_FXP_READ -> new SftpRequestReadMessageParser(raw).parse();
+                case SSH_FXP_WRITE -> new SftpRequestWriteMessageParser(raw).parse();
+                case SSH_FXP_LSTAT -> new SftpRequestLinkStatMessageParser(raw).parse();
+                case SSH_FXP_FSTAT ->
+                        new SftpRequestFileStatMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_SETSTAT ->
+                        new SftpRequestSetStatMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_FSETSTAT ->
+                        new SftpRequestFileSetStatMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_OPENDIR -> new SftpRequestOpenDirMessageParser(raw).parse();
+                case SSH_FXP_READDIR -> new SftpRequestReadDirMessageParser(raw).parse();
+                case SSH_FXP_REMOVE -> new SftpRequestRemoveMessageParser(raw).parse();
+                case SSH_FXP_MKDIR ->
+                        new SftpRequestMakeDirMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_RMDIR -> new SftpRequestRemoveDirMessageParser(raw).parse();
+                case SSH_FXP_REALPATH -> new SftpRequestRealPathMessageParser(raw).parse();
+                case SSH_FXP_STAT ->
+                        new SftpRequestStatMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_RENAME -> new SftpRequestRenameMessageParser(raw).parse();
+                case SSH_FXP_READLINK -> new SftpRequestReadLinkMessageParser(raw).parse();
+                case SSH_FXP_SYMLINK -> new SftpRequestSymbolicLinkMessageParser(raw).parse();
+                case SSH_FXP_STATUS -> new SftpResponseStatusMessageParser(raw).parse();
+                case SSH_FXP_HANDLE -> new SftpResponseHandleMessageParser(raw).parse();
+                case SSH_FXP_DATA -> new SftpResponseDataMessageParser(raw).parse();
+                case SSH_FXP_NAME ->
+                        new SftpResponseNameMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_ATTRS ->
+                        new SftpResponseAttributesMessageParser(raw, context.getChooser()).parse();
+                case SSH_FXP_EXTENDED -> handleExtendedRequestMessageParsing(raw, context);
+                case SSH_FXP_EXTENDED_REPLY -> handleExtendedResponseMessageParsing(raw, context);
+                default -> {
                     LOGGER.debug(
                             "Received unimplemented SFTP Message {} ({})",
                             SftpPacketTypeConstant.getNameById(raw[0]),
                             raw[0]);
-                    return new SftpUnknownMessageParser(raw).parse();
-            }
+                    yield new SftpUnknownMessageParser(raw).parse();
+                }
+            };
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
             return new SftpUnknownMessageParser(raw).parse();
@@ -133,53 +113,36 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         SftpRequestUnknownMessage message = new SftpRequestUnknownMessageParser(raw).parse();
         String extendedRequestTypeString = message.getExtendedRequestName().getValue();
         SftpExtension extendedRequestType = SftpExtension.fromName(extendedRequestTypeString);
-        switch (extendedRequestType) {
-            case VENDOR_ID:
-                return new SftpRequestVendorIdMessageParser(raw).parse();
-            case CHECK_FILE_HANDLE:
-                return new SftpRequestCheckFileHandleMessageParser(raw).parse();
-            case CHECK_FILE_NAME:
-                return new SftpRequestCheckFileNameMessageParser(raw).parse();
-            case SPACE_AVAILABLE:
-                return new SftpRequestSpaceAvailableMessageParser(raw).parse();
-            case HOME_DIRECTORY:
-                return new SftpRequestHomeDirectoryMessageParser(raw).parse();
-            case COPY_FILE:
-                return new SftpRequestCopyFileMessageParser(raw).parse();
-            case COPY_DATA:
-                return new SftpRequestCopyDataMessageParser(raw).parse();
-            case GET_TEMP_FOLDER:
-                return new SftpRequestGetTempFolderMessageParser(raw).parse();
-            case MAKE_TEMP_FOLDER:
-                return new SftpRequestMakeTempFolderMessageParser(raw).parse();
+        return switch (extendedRequestType) {
+            case VENDOR_ID -> new SftpRequestVendorIdMessageParser(raw).parse();
+            case CHECK_FILE_HANDLE -> new SftpRequestCheckFileHandleMessageParser(raw).parse();
+            case CHECK_FILE_NAME -> new SftpRequestCheckFileNameMessageParser(raw).parse();
+            case SPACE_AVAILABLE -> new SftpRequestSpaceAvailableMessageParser(raw).parse();
+            case HOME_DIRECTORY -> new SftpRequestHomeDirectoryMessageParser(raw).parse();
+            case COPY_FILE -> new SftpRequestCopyFileMessageParser(raw).parse();
+            case COPY_DATA -> new SftpRequestCopyDataMessageParser(raw).parse();
+            case GET_TEMP_FOLDER -> new SftpRequestGetTempFolderMessageParser(raw).parse();
+            case MAKE_TEMP_FOLDER -> new SftpRequestMakeTempFolderMessageParser(raw).parse();
             // SFTP v4
-            case TEXT_SEEK:
-                return new SftpRequestMakeTempFolderMessageParser(raw).parse();
+            case TEXT_SEEK -> new SftpRequestMakeTempFolderMessageParser(raw).parse();
             // vendor specific
-            case POSIX_RENAME_OPENSSH_COM:
-                return new SftpRequestPosixRenameMessageParser(raw).parse();
-            case STAT_VFS_OPENSSH_COM:
-                return new SftpRequestStatVfsMessageParser(raw).parse();
-            case F_STAT_VFS_OPENSSH_COM:
-                return new SftpRequestFileStatVfsMessageParser(raw).parse();
-            case HARDLINK_OPENSSH_COM:
-                return new SftpRequestHardlinkMessageParser(raw).parse();
-            case F_SYNC_OPENSSH_COM:
-                return new SftpRequestFileSyncMessageParser(raw).parse();
-            case L_SET_STAT:
-                return new SftpRequestLinkSetStatMessageParser(raw, context.getChooser()).parse();
-            case LIMITS:
-                return new SftpRequestLimitsMessageParser(raw).parse();
-            case EXPAND_PATH:
-                return new SftpRequestExpandPathMessageParser(raw).parse();
-            case USERS_GROUPS_BY_ID:
-                return new SftpRequestUsersGroupsByIdMessageParser(raw).parse();
-            default:
+            case POSIX_RENAME_OPENSSH_COM -> new SftpRequestPosixRenameMessageParser(raw).parse();
+            case STAT_VFS_OPENSSH_COM -> new SftpRequestStatVfsMessageParser(raw).parse();
+            case F_STAT_VFS_OPENSSH_COM -> new SftpRequestFileStatVfsMessageParser(raw).parse();
+            case HARDLINK_OPENSSH_COM -> new SftpRequestHardlinkMessageParser(raw).parse();
+            case F_SYNC_OPENSSH_COM -> new SftpRequestFileSyncMessageParser(raw).parse();
+            case L_SET_STAT ->
+                    new SftpRequestLinkSetStatMessageParser(raw, context.getChooser()).parse();
+            case LIMITS -> new SftpRequestLimitsMessageParser(raw).parse();
+            case EXPAND_PATH -> new SftpRequestExpandPathMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID -> new SftpRequestUsersGroupsByIdMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented extended request message type: {}",
                         extendedRequestTypeString);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 
     public static SftpMessage<?> handleExtendedResponseMessageParsing(
@@ -196,27 +159,22 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
 
         SftpExtension extendedResponseType =
                 SftpExtension.fromName(relatedExtendedRequest.getExtendedRequestName().getValue());
-        switch (extendedResponseType) {
+        return switch (extendedResponseType) {
             // SFTP
-            case CHECK_FILE:
-            case CHECK_FILE_HANDLE:
-            case CHECK_FILE_NAME:
-                return new SftpResponseCheckFileMessageParser(raw).parse();
-            case SPACE_AVAILABLE:
-                return new SftpResponseSpaceAvailableMessageParser(raw).parse();
+            case CHECK_FILE, CHECK_FILE_HANDLE, CHECK_FILE_NAME ->
+                    new SftpResponseCheckFileMessageParser(raw).parse();
+            case SPACE_AVAILABLE -> new SftpResponseSpaceAvailableMessageParser(raw).parse();
             // Vendor extensions
-            case STAT_VFS_OPENSSH_COM:
-            case F_STAT_VFS_OPENSSH_COM:
-                return new SftpResponseStatVfsMessageParser(raw).parse();
-            case LIMITS:
-                return new SftpResponseLimitsMessageParser(raw).parse();
-            case USERS_GROUPS_BY_ID:
-                return new SftpResponseUsersGroupsByIdMessageParser(raw).parse();
-            default:
+            case STAT_VFS_OPENSSH_COM, F_STAT_VFS_OPENSSH_COM ->
+                    new SftpResponseStatVfsMessageParser(raw).parse();
+            case LIMITS -> new SftpResponseLimitsMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID -> new SftpResponseUsersGroupsByIdMessageParser(raw).parse();
+            default -> {
                 LOGGER.debug(
                         "Received unimplemented extended response message type: {}",
                         extendedResponseType);
-                return message;
-        }
+                yield message;
+            }
+        };
     }
 }

@@ -45,131 +45,107 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
             SftpExtension extension =
                     SftpExtension.fromName(
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
-            SftpAbstractExtensionParser<?> extensionParser;
-            switch (extension) {
-                case VENDOR_ID:
-                    extensionParser =
-                            new SftpExtensionVendorIdParser(getArray(), extensionStartPointer);
-                    break;
-                case CHECK_FILE:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionCheckFile::new, getArray(), extensionStartPointer);
-                    break;
-                case SPACE_AVAILABLE:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionSpaceAvailable::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case HOME_DIRECTORY:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionHomeDirectory::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case COPY_FILE:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionCopyFile::new, getArray(), extensionStartPointer);
-                    break;
-                case COPY_DATA:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionCopyData::new, getArray(), extensionStartPointer);
-                    break;
-                case GET_TEMP_FOLDER:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionGetTempFolder::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case MAKE_TEMP_FOLDER:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionMakeTempFolder::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                // SFTP v4
-                case TEXT_SEEK:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionTextSeek::new, getArray(), extensionStartPointer);
-                    break;
-                case NEWLINE:
-                    extensionParser =
-                            new SftpExtensionNewlineParser(getArray(), extensionStartPointer);
-                    break;
-                // Vendor extensions
-                case POSIX_RENAME_OPENSSH_COM:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionPosixRename::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case STAT_VFS_OPENSSH_COM:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionStatVfs::new, getArray(), extensionStartPointer);
-                    break;
-                case F_STAT_VFS_OPENSSH_COM:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionFileStatVfs::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case HARDLINK_OPENSSH_COM:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionHardlink::new, getArray(), extensionStartPointer);
-                    break;
-                case F_SYNC_OPENSSH_COM:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionFileSync::new, getArray(), extensionStartPointer);
-                    break;
-                case L_SET_STAT:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionLinkSetStat::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case LIMITS:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionLimits::new, getArray(), extensionStartPointer);
-                    break;
-                case EXPAND_PATH:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionExpandPath::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-                case USERS_GROUPS_BY_ID:
-                    extensionParser =
-                            new SftpExtensionWithVersionParser<>(
-                                    SftpExtensionUsersGroupsById::new,
-                                    getArray(),
-                                    extensionStartPointer);
-                    break;
-
-                default:
-                    LOGGER.debug(
-                            "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
-                            extension,
-                            extensionIndex);
-                    extensionParser =
-                            new SftpExtensionUnknownParser(getArray(), extensionStartPointer);
-                    break;
-            }
+            SftpAbstractExtensionParser<?> extensionParser =
+                    switch (extension) {
+                        case VENDOR_ID ->
+                                new SftpExtensionVendorIdParser(getArray(), extensionStartPointer);
+                        case CHECK_FILE ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionCheckFile::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case SPACE_AVAILABLE ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionSpaceAvailable::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case HOME_DIRECTORY ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionHomeDirectory::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case COPY_FILE ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionCopyFile::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case COPY_DATA ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionCopyData::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case GET_TEMP_FOLDER ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionGetTempFolder::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case MAKE_TEMP_FOLDER ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionMakeTempFolder::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        // SFTP v4
+                        case TEXT_SEEK ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionTextSeek::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case NEWLINE ->
+                                new SftpExtensionNewlineParser(getArray(), extensionStartPointer);
+                        // Vendor extensions
+                        case POSIX_RENAME_OPENSSH_COM ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionPosixRename::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case STAT_VFS_OPENSSH_COM ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionStatVfs::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case F_STAT_VFS_OPENSSH_COM ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionFileStatVfs::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case HARDLINK_OPENSSH_COM ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionHardlink::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case F_SYNC_OPENSSH_COM ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionFileSync::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case L_SET_STAT ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionLinkSetStat::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case LIMITS ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionLimits::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case EXPAND_PATH ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionExpandPath::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        case USERS_GROUPS_BY_ID ->
+                                new SftpExtensionWithVersionParser<>(
+                                        SftpExtensionUsersGroupsById::new,
+                                        getArray(),
+                                        extensionStartPointer);
+                        default -> {
+                            LOGGER.debug(
+                                    "Extension [{}] (index {}) is unknown or not implemented, parsing as UnknownExtension",
+                                    extension,
+                                    extensionIndex);
+                            yield new SftpExtensionUnknownParser(getArray(), extensionStartPointer);
+                        }
+                    };
             message.addExtension(extensionParser.parse());
             setPointer(extensionParser.getPointer());
             extensionIndex++;

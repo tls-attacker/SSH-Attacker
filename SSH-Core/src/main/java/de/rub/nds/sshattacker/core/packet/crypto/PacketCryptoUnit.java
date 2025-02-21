@@ -22,11 +22,11 @@ public abstract class PacketCryptoUnit {
     PacketCryptoUnit(PacketCipher packetCipher) {
         super();
         packetCipherList = new ArrayList<>();
-        packetCipherList.add(0, packetCipher);
+        packetCipherList.addFirst(packetCipher);
     }
 
     public PacketCipher getPacketMostRecentCipher() {
-        return packetCipherList.get(packetCipherList.size() - 1);
+        return packetCipherList.getLast();
     }
 
     public PacketCipher getPacketCipher(int epoch) {
@@ -34,7 +34,7 @@ public abstract class PacketCryptoUnit {
             return packetCipherList.get(epoch);
         } else {
             LOGGER.warn("Got no PacketCipher for epoch: {} using epoch 0 cipher", epoch);
-            return packetCipherList.get(0);
+            return packetCipherList.getFirst();
         }
     }
 
@@ -48,7 +48,7 @@ public abstract class PacketCryptoUnit {
 
     public void removeCiphers(int toRemove) {
         while (toRemove > 0 && !packetCipherList.isEmpty()) {
-            packetCipherList.remove(packetCipherList.size() - 1);
+            packetCipherList.removeLast();
             toRemove--;
         }
         if (toRemove > 0) {

@@ -51,8 +51,7 @@ public class X509EcdsaPublicKeyParser
             PublicKey publicKey = cert.getPublicKey();
 
             // If the public key is of type ECPublicKey
-            if (publicKey instanceof ECPublicKey) {
-                ECPublicKey ecPublicKey = (ECPublicKey) publicKey;
+            if (publicKey instanceof ECPublicKey ecPublicKey) {
                 byte[] signature = cert.getSignature();
 
                 // Map the curve name to the appropriate NamedEcGroup (locally in the parser)

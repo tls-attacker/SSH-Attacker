@@ -15,25 +15,8 @@ import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
  *
  * @param <T> The type of the attack vector
  */
-public class FingerprintTaskVectorPair<T extends Vector> {
-
-    private final FingerPrintTask fingerPrintTask;
-
-    private final T vector;
-
-    public FingerprintTaskVectorPair(FingerPrintTask fingerPrintTask, T vector) {
-        super();
-        this.fingerPrintTask = fingerPrintTask;
-        this.vector = vector;
-    }
-
-    public FingerPrintTask getFingerPrintTask() {
-        return fingerPrintTask;
-    }
-
-    public T getVector() {
-        return vector;
-    }
+public record FingerprintTaskVectorPair<T extends Vector>(
+        FingerPrintTask fingerPrintTask, T vector) {
 
     @Override
     public String toString() {

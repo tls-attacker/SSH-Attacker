@@ -10,11 +10,15 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
+public abstract class AbstractEcdhKeyExchange<
+                PRIVATE extends CustomPrivateKey, PUBLIC extends CustomPublicKey>
+        extends KeyAgreement<PRIVATE, PUBLIC> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,8 +29,12 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
         this.group = group;
     }
 
-    public static AbstractEcdhKeyExchange newInstance(
-            SshContext context, KeyExchangeAlgorithm algorithm) {
+    public NamedEcGroup getGroup() {
+        return group;
+    }
+
+    public static AbstractEcdhKeyExchange<? extends CustomPrivateKey, ? extends CustomPublicKey>
+            newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.ECDH) {
             algorithm = context.getConfig().getDefaultEcdhKeyExchangeAlgorithm();
             LOGGER.warn(
@@ -65,4 +73,7 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
         }
         return new EcdhKeyExchange(group);
     }
+
+    @Override
+    public abstract void generateKeyPair();
 }

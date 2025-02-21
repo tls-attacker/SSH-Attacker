@@ -7,164 +7,129 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
-import de.rub.nds.sshattacker.core.exceptions.OpenQuantumSafeConfigurationException;
+import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchange extends KeyExchange {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final KeyExchangeAlgorithm algorithm;
-    protected final KeyAgreement keyAgreement;
-    protected final KeyEncapsulation keyEncapsulation;
-    private final int pkAgreementLength;
-    private final int pkEncapsulationLength;
-    private final int ciphertextLength;
     private final HybridKeyExchangeCombiner combiner;
+    private final HashFunction hashFunction;
+    private final AbstractEcdhKeyExchange<?, ?> classical;
+    private final KemKeyExchange postQuantum;
 
-    @SuppressWarnings("SameParameterValue")
     protected HybridKeyExchange(
-            KeyExchangeAlgorithm algorithm,
-            KeyAgreement keyAgreement,
-            KeyEncapsulation keyEncapsulation,
             HybridKeyExchangeCombiner combiner,
-            int pkAgreementLength,
-            int pkEncapsulationLength,
-            int ciphertextLength) {
+            HashFunction hashFunction,
+            AbstractEcdhKeyExchange<?, ?> classical,
+            KemKeyExchange postQuantum) {
         super();
-        this.algorithm = algorithm;
-        this.keyAgreement = keyAgreement;
-        this.keyEncapsulation = keyEncapsulation;
         this.combiner = combiner;
-        this.pkAgreementLength = pkAgreementLength;
-        this.pkEncapsulationLength = pkEncapsulationLength;
-        this.ciphertextLength = ciphertextLength;
+        this.hashFunction = hashFunction;
+        this.classical = classical;
+        this.postQuantum = postQuantum;
     }
 
     public static HybridKeyExchange newInstance(
             SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.HYBRID) {
-            LOGGER.warn("Could not create HybridKeyExchange from {}", algorithm);
-            algorithm = context.getConfig().getDefaultHybridKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate new Hybrid key exchange falling back to {}", algorithm);
+                    "Algorithm {} is no hybrid key exchange algorithm, falling back to {}",
+                    algorithm,
+                    context.getConfig().getDefaultHybridKeyExchangeAlgorithm());
+            algorithm = context.getConfig().getDefaultHybridKeyExchangeAlgorithm();
         }
-
-        try {
-            if (!algorithm.isImplemented()) {
-                LOGGER.warn(
-                        "Algorithm {} is not yet implemented. Falling back to {}",
-                        algorithm,
-                        KeyExchangeAlgorithm.SNTRUP761_X25519);
-                algorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
-            }
-            Class<?> kexImplementation = Class.forName(algorithm.getClassName());
-            return (HybridKeyExchange) kexImplementation.getConstructor().newInstance();
-        } catch (ClassNotFoundException e) {
-            LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-OQS is not available."
-                            + " Make sure to enable OpenQuantumSafe support by enabling the corresponding"
-                            + " profile during build and installing liboqs!");
-            throw new OpenQuantumSafeConfigurationException("Module SSH-Core-OQS is not available");
-        } catch (InvocationTargetException
-                | InstantiationException
-                | IllegalAccessException
-                | NoSuchMethodException e) {
-            LOGGER.fatal("Unable to create a new instance of class {}", algorithm.name());
-            throw new OpenQuantumSafeConfigurationException(
-                    "Unable to acces or invoke the SSH-Core-OQS module");
-        }
+        return switch (algorithm) {
+            case SNTRUP761X25519_SHA512, SNTRUP761X25519_SHA512_OPENSSH_COM ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA512,
+                            new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
+                            new KemKeyExchange(KemAlgorithm.SNTRUP761));
+            case MLKEM768NISTP256_SHA256 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA256,
+                            new EcdhKeyExchange(NamedEcGroup.SECP256R1),
+                            new KemKeyExchange(KemAlgorithm.MLKEM768));
+            case MLKEM768X25519_SHA256 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA256,
+                            new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
+                            new KemKeyExchange(KemAlgorithm.MLKEM768));
+            case MLKEM1024NISTP384_SHA384 ->
+                    new HybridKeyExchange(
+                            HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                            HashFunction.SHA384,
+                            new EcdhKeyExchange(NamedEcGroup.SECP384R1),
+                            new KemKeyExchange(KemAlgorithm.MLKEM1024));
+            default -> null;
+        };
     }
 
-    public KeyExchangeAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public KeyAgreement getKeyAgreement() {
-        return keyAgreement;
-    }
-
-    public KeyEncapsulation getKeyEncapsulation() {
-        return keyEncapsulation;
-    }
-
-    protected static byte[] mergeKeyExchangeShares(
-            byte[] firstKeyExchangeShare, byte[] secondKeyExchangeShare) {
-        return ArrayConverter.concatenate(firstKeyExchangeShare, secondKeyExchangeShare);
-    }
-
-    protected static byte[] encode(byte[] sharedSecret, String hashAlgorithm) {
-        try {
-            MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
-            return md.digest(sharedSecret);
-
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("Could not get MessageDigest", e);
-        }
-        return new byte[0];
-    }
-
-    public void combineSharedSecrets() {
-        try {
-            keyAgreement.computeSharedSecret();
-            if (keyEncapsulation.getSharedSecret() == null) {
-                keyEncapsulation.decryptSharedSecret();
-            }
-
-            byte[] tmpSharedSecret;
-            switch (combiner) {
-                case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                    tmpSharedSecret =
-                            mergeKeyExchangeShares(
-                                    keyAgreement.getSharedSecret(),
-                                    keyEncapsulation.getSharedSecret());
-                    break;
-                case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                    tmpSharedSecret =
-                            mergeKeyExchangeShares(
-                                    keyEncapsulation.getSharedSecret(),
-                                    keyAgreement.getSharedSecret());
-                    break;
-                default:
-                    throw new IllegalArgumentException(combiner.name() + " not supported.");
-            }
-
-            sharedSecret = encode(tmpSharedSecret, algorithm.getDigest());
-            LOGGER.debug(
-                    "Concatenated Shared Secret = {}",
-                    () -> ArrayConverter.bytesToRawHexString(tmpSharedSecret));
-            LOGGER.debug(
-                    "Encoded Shared Secret = {}",
-                    () ->
-                            ArrayConverter.bytesToRawHexString(
-                                    encode(tmpSharedSecret, algorithm.getDigest())));
-        } catch (Exception e) {
-            LOGGER.warn("Could not create the shared secret");
-            LOGGER.debug(e);
-        }
-    }
-
-    public int getPkAgreementLength() {
-        return pkAgreementLength;
-    }
-
-    public int getPkEncapsulationLength() {
-        return pkEncapsulationLength;
-    }
-
-    public int getCiphertextLength() {
-        return ciphertextLength;
+    @Override
+    public void generateKeyPair() throws CryptoException {
+        classical.generateKeyPair();
+        postQuantum.generateKeyPair();
     }
 
     public HybridKeyExchangeCombiner getCombiner() {
         return combiner;
+    }
+
+    public HashFunction getHashFunction() {
+        return hashFunction;
+    }
+
+    public AbstractEcdhKeyExchange<?, ?> getClassical() {
+        return classical;
+    }
+
+    public int getClassicalPublicKeySize() {
+        return classical.getGroup().getPointSize();
+    }
+
+    public KemKeyExchange getPostQuantum() {
+        return postQuantum;
+    }
+
+    public int getPostQuantumPublicKeySize() {
+        return postQuantum.getKemAlgorithm().getPublicKeySize();
+    }
+
+    public int getPostQuantumEncapsulationSize() {
+        return postQuantum.getKemAlgorithm().getEncapsulationSize();
+    }
+
+    public void computeSharedSecret() throws CryptoException {
+        if (!classical.isComplete()) {
+            classical.computeSharedSecret();
+        }
+        if (!postQuantum.isComplete()) {
+            postQuantum.decapsulate();
+        }
+        byte[] sharedSecretClassical = classical.getSharedSecret();
+        byte[] sharedSecretPostQuantum = postQuantum.getSharedSecret();
+        try {
+            MessageDigest digest = MessageDigest.getInstance(hashFunction.getJavaName());
+            if (combiner == HybridKeyExchangeCombiner.CLASSICAL_CONCATENATE_POSTQUANTUM) {
+                digest.update(sharedSecretClassical);
+                digest.update(sharedSecretPostQuantum);
+            } else {
+                digest.update(sharedSecretPostQuantum);
+                digest.update(sharedSecretClassical);
+            }
+            sharedSecret = digest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            throw new CryptoException(
+                    "Unable to compute combined shared secret - hash function not available", e);
+        }
     }
 }

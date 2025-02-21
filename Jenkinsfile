@@ -15,7 +15,7 @@ pipeline {
         stage('Clean') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Pliboqs-support clean'
+                    sh 'mvn clean'
                 }
             }
         }
@@ -25,7 +25,7 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Pliboqs-support spotless:check'
+                    sh 'mvn spotless:check'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Pliboqs-support -DskipTests=true package'
+                    sh 'mvn -DskipTests=true package'
                 }
             }
 
@@ -59,7 +59,7 @@ pipeline {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // `package` goal is required here to load modules in reactor and avoid dependency resolve conflicts
-                    sh 'mvn -Pliboqs-support -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
+                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
                 }
             }
             post {
@@ -81,7 +81,7 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Pliboqs-support -Pcoverage -Dskip.failsafe.tests=true test'
+                    sh 'mvn -Pcoverage -Dskip.failsafe.tests=true test'
                 }
             }
             post {
@@ -103,7 +103,7 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Pliboqs-support -Pcoverage -Dskip.surefire.tests=true verify'
+                    sh 'mvn -Pcoverage -Dskip.surefire.tests=true verify'
                 }
             }
             post {
@@ -128,7 +128,7 @@ pipeline {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // Tests were already executed separately, so disable tests within this step
-                    sh 'mvn -Pliboqs-support -DskipTests=true deploy'
+                    sh 'mvn -DskipTests=true deploy'
                 }
             }
         }

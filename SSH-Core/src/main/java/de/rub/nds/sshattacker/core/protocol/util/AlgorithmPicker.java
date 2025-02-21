@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.util;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,10 +38,7 @@ public final class AlgorithmPicker {
      *     be empty.
      */
     public static <T> Optional<T> pickAlgorithm(List<T> clientSupported, List<T> serverSupported) {
-        List<T> intersection =
-                clientSupported.stream()
-                        .filter(serverSupported::contains)
-                        .collect(Collectors.toList());
+        List<T> intersection = clientSupported.stream().filter(serverSupported::contains).toList();
         if (intersection.isEmpty()) {
             LOGGER.warn(
                     "Unable to pick algorithm - no intersection between {} and {}",
@@ -50,6 +46,6 @@ public final class AlgorithmPicker {
                     serverSupported);
             return Optional.empty();
         }
-        return Optional.of(intersection.get(0));
+        return Optional.of(intersection.getFirst());
     }
 }

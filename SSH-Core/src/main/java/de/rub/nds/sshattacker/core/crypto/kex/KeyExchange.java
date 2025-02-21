@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.security.SecureRandom;
 
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class KeyExchange {
 
     protected final SecureRandom random;
@@ -19,6 +19,8 @@ public abstract class KeyExchange {
         super();
         random = new SecureRandom();
     }
+
+    public abstract void generateKeyPair() throws CryptoException;
 
     public boolean isComplete() {
         return sharedSecret != null;

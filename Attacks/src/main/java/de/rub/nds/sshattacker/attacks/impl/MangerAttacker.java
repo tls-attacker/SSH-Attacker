@@ -215,12 +215,12 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         executor.bulkExecuteTasks(taskList);
         for (FingerprintTaskVectorPair<?> pair : stateVectorPairList) {
             ResponseFingerprint fingerprint;
-            if (pair.getFingerPrintTask().isHasError()) {
+            if (pair.fingerPrintTask().isHasError()) {
                 erroneousScans = true;
                 LOGGER.warn("Could not extract fingerprint for {}", pair);
             } else {
-                fingerprint = pair.getFingerPrintTask().getFingerprint();
-                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
+                fingerprint = pair.fingerPrintTask().getFingerprint();
+                tempResponseVectorList.add(new VectorResponse(pair.vector(), fingerprint));
             }
         }
         return tempResponseVectorList;
@@ -376,7 +376,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
         executor.bulkExecuteTasks(fingerPrintTask);
         ResponseFingerprint fingerprint = null;
-        if (stateVectorPair.getFingerPrintTask().isHasError()) {
+        if (stateVectorPair.fingerPrintTask().isHasError()) {
             LOGGER.warn("Could not extract fingerprint for {}", stateVectorPair);
         } else {
             fingerprint = fingerPrintTask.getFingerprint();
@@ -385,25 +385,19 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     private int getHashLength() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return 256;
-            case RSA1024_SHA1:
-                return 160;
-            default:
-                return 0;
-        }
+        return switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256 -> 256;
+            case RSA1024_SHA1 -> 160;
+            default -> 0;
+        };
     }
 
     private String getHashInstance() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return "SHA-256";
-            case RSA1024_SHA1:
-                return "SHA-1";
-            default:
-                return "";
-        }
+        return switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256 -> "SHA-256";
+            case RSA1024_SHA1 -> "SHA-1";
+            default -> "";
+        };
     }
 
     private void setKeyExchangeAlgorithm() {

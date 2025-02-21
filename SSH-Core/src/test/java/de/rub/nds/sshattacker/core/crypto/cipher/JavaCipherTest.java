@@ -102,17 +102,13 @@ public class JavaCipherTest {
 
                 if (line.startsWith("# Key Length : ")) {
                     String keyLength = line.split(" : ")[1];
-                    switch (keyLength) {
-                        case "128":
-                            encryptionAlgorithm = EncryptionAlgorithm.AES128_CBC;
-                            break;
-                        case "192":
-                            encryptionAlgorithm = EncryptionAlgorithm.AES192_CBC;
-                            break;
-                        case "256":
-                            encryptionAlgorithm = EncryptionAlgorithm.AES256_CBC;
-                            break;
-                    }
+                    encryptionAlgorithm =
+                            switch (keyLength) {
+                                case "128" -> EncryptionAlgorithm.AES128_CBC;
+                                case "192" -> EncryptionAlgorithm.AES192_CBC;
+                                case "256" -> EncryptionAlgorithm.AES256_CBC;
+                                default -> encryptionAlgorithm;
+                            };
                 }
 
                 if (line.startsWith("COUNT")) {
@@ -161,14 +157,12 @@ public class JavaCipherTest {
 
                 if (line.startsWith("[Keylen =")) {
                     String keyLength = line.split(" = ")[1].replace("]", "");
-                    switch (keyLength) {
-                        case "128":
-                            encryptionAlgorithm = EncryptionAlgorithm.AEAD_AES_128_GCM;
-                            break;
-                        case "256":
-                            encryptionAlgorithm = EncryptionAlgorithm.AEAD_AES_256_GCM;
-                            break;
-                    }
+                    encryptionAlgorithm =
+                            switch (keyLength) {
+                                case "128" -> EncryptionAlgorithm.AEAD_AES_128_GCM;
+                                case "256" -> EncryptionAlgorithm.AEAD_AES_256_GCM;
+                                default -> encryptionAlgorithm;
+                            };
                 }
 
                 if (line.startsWith("Count")) {

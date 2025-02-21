@@ -234,7 +234,7 @@ public class SshContext {
     private DhKeyExchange dhGexKeyExchangeInstance;
 
     /** Key exchange instance for ECDH key exchange method(s) (incl. X curve ECDH) */
-    private AbstractEcdhKeyExchange ecdhKeyExchangeInstance;
+    private AbstractEcdhKeyExchange<?, ?> ecdhKeyExchangeInstance;
 
     /** Key exchange instance for RSA key exchange method(s) */
     private RsaKeyExchange rsaKeyExchangeInstance;
@@ -972,7 +972,7 @@ public class SshContext {
         return Optional.ofNullable(dhGexKeyExchangeInstance);
     }
 
-    public Optional<AbstractEcdhKeyExchange> getEcdhKeyExchangeInstance() {
+    public Optional<AbstractEcdhKeyExchange<?, ?>> getEcdhKeyExchangeInstance() {
         return Optional.ofNullable(ecdhKeyExchangeInstance);
     }
 
@@ -1023,7 +1023,7 @@ public class SshContext {
         this.dhGexKeyExchangeInstance = dhGexKeyExchangeInstance;
     }
 
-    public void setEcdhKeyExchangeInstance(AbstractEcdhKeyExchange ecdhKeyExchangeInstance) {
+    public void setEcdhKeyExchangeInstance(AbstractEcdhKeyExchange<?, ?> ecdhKeyExchangeInstance) {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
     }
 

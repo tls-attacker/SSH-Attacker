@@ -26,7 +26,9 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     private static void updateContextWithTransientPublicKey(
             SshContext context, RsaKeyExchangePubkeyMessage message) {
-        context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
+        context.getChooser()
+                .getRsaKeyExchange()
+                .setPublicKey(message.getTransientPublicKey().getPublicKey());
         context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 
