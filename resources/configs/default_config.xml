@@ -176,7 +176,7 @@
     <defaultDhKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</defaultDhKeyExchangeAlgorithm>
     <defaultEcdhKeyExchangeAlgorithm>ECDH_SHA2_NISTP256</defaultEcdhKeyExchangeAlgorithm>
     <defaultRsaKeyExchangeAlgorithm>RSA2048_SHA256</defaultRsaKeyExchangeAlgorithm>
-    <enableEncryptionOnNewKeysMessage>true</enableEncryptionOnNewKeysMessage>
+    <enableEncryptionOnNewKeysMessage>BOTH</enableEncryptionOnNewKeysMessage>
     <enforceSettings>false</enforceSettings>
     <hostKeys>
         <hostKey>

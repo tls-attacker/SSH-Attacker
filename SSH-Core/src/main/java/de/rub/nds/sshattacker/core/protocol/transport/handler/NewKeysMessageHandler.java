@@ -27,7 +27,10 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
 
     @Override
     public void adjustContext(SshContext context, NewKeysMessage object) {
-        if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+        ConnectionDirection enableEncryptionOnNewKeysMessage =
+                context.getConfig().getEnableEncryptionOnNewKeysMessage();
+        if (enableEncryptionOnNewKeysMessage == ConnectionDirection.BOTH
+                || enableEncryptionOnNewKeysMessage == ConnectionDirection.RECEIVE) {
             adjustEncryptionForDirection(true, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting read sequence number to 0 because of strict key exchange");
@@ -39,7 +42,10 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
 
     @Override
     public void adjustContextAfterMessageSent(SshContext context, NewKeysMessage object) {
-        if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+        ConnectionDirection enableEncryptionOnNewKeysMessageType =
+                context.getConfig().getEnableEncryptionOnNewKeysMessage();
+        if (enableEncryptionOnNewKeysMessageType == ConnectionDirection.BOTH
+                || enableEncryptionOnNewKeysMessageType == ConnectionDirection.SEND) {
             adjustEncryptionForDirection(false, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting write sequence number to 0 because of strict key exchange");
