@@ -2162,7 +2162,7 @@ public class Config implements Serializable {
         this.defaultRsaKeyExchangeAlgorithm = defaultRsaKeyExchangeAlgorithm;
     }
 
-    public void setEnableEncryptionOnNewKeysMessageType(
+    public void setEnableEncryptionOnNewKeysMessage(
             ConnectionDirection enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
