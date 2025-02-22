@@ -95,7 +95,9 @@ public final class ReceiveMessageHelper {
             LOGGER.warn("Received no message. Socket timed out or an IOException happened");
             // TODO: Change TransportHandler so that we can get cachedSocketState or the exception
             //  that was thrown.
-            context.setReceivedTransportHandlerException(true);
+            if (config.getHandleTimeoutOnReceiveAsIOException()) {
+                context.setReceivedTransportHandlerException(true);
+            }
         }
         return result;
     }

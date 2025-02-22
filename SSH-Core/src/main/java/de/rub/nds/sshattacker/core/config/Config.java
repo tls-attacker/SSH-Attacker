@@ -644,6 +644,13 @@ public class Config implements Serializable {
     /** Defines, whether the SSH-Attacker should stop after a disconnect or not */
     private Boolean stopActionsAfterDisconnect = true;
 
+    /**
+     * Defines, whether the SSH attacker should treat a timeout when receiving messages like an IO
+     * Exception. or not. TODO: This actually also includes real IO Exceptions. Changes must be done
+     * to the TransportHandler
+     */
+    private Boolean handleTimeoutOnReceiveAsIOException = true;
+
     /** Defines, whether the SSH-Attacker should stop after a IO exception or not */
     private Boolean stopActionsAfterIOException = true;
 
@@ -1584,6 +1591,7 @@ public class Config implements Serializable {
         filtersKeepUserSettings = other.filtersKeepUserSettings;
         workflowExecutorShouldOpen = other.workflowExecutorShouldOpen;
         stopActionsAfterDisconnect = other.stopActionsAfterDisconnect;
+        handleTimeoutOnReceiveAsIOException = other.handleTimeoutOnReceiveAsIOException;
         stopActionsAfterIOException = other.stopActionsAfterIOException;
         workflowExecutorShouldClose = other.workflowExecutorShouldClose;
         resetWorkflowTraceBeforeExecution = other.resetWorkflowTraceBeforeExecution;
@@ -2473,6 +2481,10 @@ public class Config implements Serializable {
         return stopActionsAfterDisconnect;
     }
 
+    public Boolean getHandleTimeoutOnReceiveAsIOException() {
+        return handleTimeoutOnReceiveAsIOException;
+    }
+
     public Boolean getStopActionsAfterIOException() {
         return stopActionsAfterIOException;
     }
@@ -2546,6 +2558,11 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterDisconnect(Boolean stopActionsAfterDisconnect) {
         this.stopActionsAfterDisconnect = stopActionsAfterDisconnect;
+    }
+
+    public void setHandleTimeoutOnReceiveAsIOException(
+            Boolean handleTimeoutOnReceiveAsIOException) {
+        this.handleTimeoutOnReceiveAsIOException = handleTimeoutOnReceiveAsIOException;
     }
 
     public void setStopActionsAfterIOException(Boolean stopActionsAfterIOException) {
