@@ -23,7 +23,6 @@ RUN --mount=type=secret,id=m2settings,dst=/root/.m2/settings.xml \
 COPY Attacks ./Attacks
 COPY SSH-Client ./SSH-Client/
 COPY SSH-Core ./SSH-Core/
-COPY SSH-Core-OQS ./SSH-Core-OQS/
 COPY SSH-Mitm ./SSH-Mitm/
 COPY SSH-Server ./SSH-Server/
 
