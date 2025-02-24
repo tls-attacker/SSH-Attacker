@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -180,7 +181,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
-                ArrayConverter.fourBytesToInt(
+                Converter.fourBytesToInt(
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(

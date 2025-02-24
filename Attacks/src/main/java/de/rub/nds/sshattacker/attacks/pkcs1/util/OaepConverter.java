@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -166,7 +167,7 @@ public final class OaepConverter {
         for (int counter = 0; counter < maxIterations; counter++) {
 
             // Step a: Convert counter using I2OSP
-            byte[] counterBytes = ArrayConverter.intToFourBytes(counter);
+            byte[] counterBytes = Converter.intToFourBytes(counter);
 
             // Step b: Concatenate hash of seed and counterBytes with intermediate result
             ByteBuffer digestInputBuffer = ByteBuffer.allocate(seed.length + 4);

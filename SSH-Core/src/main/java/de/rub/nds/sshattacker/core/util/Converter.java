@@ -228,15 +228,6 @@ public final class Converter {
                 input);
     }
 
-    public static byte[] longToBytes(long value, int size) {
-        byte[] result = new byte[size];
-        for (int i = size - 1; i >= 0; i--) {
-            result[i] = (byte) (value & 0xFF);
-            value >>= 8;
-        }
-        return result;
-    }
-
     public static byte booleanToByte(boolean value) {
         return (byte) (value ? 0x01 : 0x00);
     }
@@ -245,13 +236,55 @@ public final class Converter {
         return value != (byte) 0x00;
     }
 
-    // TODO: Replace by ArrayConverter.bytesToLong() as soon as fixed
-    public static long byteArrayToLong(byte[] value) {
-        long result = 0;
-        for (int i = 0; i < Long.BYTES && i < value.length; i++) {
-            result <<= Byte.SIZE;
-            result |= value[i] & 0xFF;
-        }
+    /**
+     * Takes a long value and converts it to 8 bytes
+     *
+     * @param value long value
+     * @return long represented by 8 bytes
+     */
+    public static byte[] longToEightBytes(long value) {
+        byte[] result = new byte[8];
+        result[0] = (byte) (value >>> 56);
+        result[1] = (byte) (value >>> 48);
+        result[2] = (byte) (value >>> 40);
+        result[3] = (byte) (value >>> 32);
+        result[4] = (byte) (value >>> 24);
+        result[5] = (byte) (value >>> 16);
+        result[6] = (byte) (value >>> 8);
+        result[7] = (byte) value;
         return result;
+    }
+
+    /**
+     * Takes an int value and converts it to 4 bytes
+     *
+     * @param value int value
+     * @return int represented by 4 bytes
+     */
+    public static byte[] intToFourBytes(int value) {
+        byte[] result = new byte[4];
+        result[0] = (byte) (value >>> 24);
+        result[1] = (byte) (value >>> 16);
+        result[2] = (byte) (value >>> 8);
+        result[3] = (byte) value;
+        return result;
+    }
+
+    public static long eigthBytesToLong(byte[] bytes) {
+        return (long) (bytes[0] & 0xFF) << 56
+                | (long) (bytes[1] & 0xFF) << 48
+                | (long) (bytes[2] & 0xFF) << 40
+                | (long) (bytes[3] & 0xFF) << 32
+                | (long) (bytes[4] & 0xFF) << 24
+                | (long) (bytes[5] & 0xFF) << 16
+                | (long) (bytes[6] & 0xFF) << 8
+                | (long) (bytes[7] & 0xFF);
+    }
+
+    public static int fourBytesToInt(byte[] bytes) {
+        return (bytes[0] & 0xFF) << 24
+                | (bytes[1] & 0xFF) << 16
+                | (bytes[2] & 0xFF) << 8
+                | bytes[3] & 0xFF;
     }
 }

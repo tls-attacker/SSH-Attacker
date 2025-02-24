@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -26,7 +27,7 @@ public class SerializerStream extends ByteArrayOutputStream {
      * @param i The Integer that should be appended
      */
     public final void appendInt(int i) {
-        appendBytes(ArrayConverter.intToFourBytes(i));
+        appendBytes(Converter.intToFourBytes(i));
     }
 
     /**
@@ -36,7 +37,7 @@ public class SerializerStream extends ByteArrayOutputStream {
      * @param l The Long that should be appended
      */
     public final void appendLong(long l) {
-        appendBytes(ArrayConverter.longToEightBytes(l));
+        appendBytes(Converter.longToEightBytes(l));
     }
 
     /**

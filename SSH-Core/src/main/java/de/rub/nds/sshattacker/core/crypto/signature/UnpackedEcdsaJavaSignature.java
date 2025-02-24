@@ -62,13 +62,11 @@ public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
     @Override
     protected byte[] packSignature(byte[] unpackedSignature) {
         int rStart = DataFormatConstants.MPINT_SIZE_LENGTH;
-        int rLength =
-                ArrayConverter.fourBytesToInt(Arrays.copyOfRange(unpackedSignature, 0, rStart));
+        int rLength = Converter.fourBytesToInt(Arrays.copyOfRange(unpackedSignature, 0, rStart));
         int rEnd = rStart + rLength;
         BigInteger r = new BigInteger(Arrays.copyOfRange(unpackedSignature, rStart, rEnd));
         int sStart = rEnd + DataFormatConstants.MPINT_SIZE_LENGTH;
-        int sLength =
-                ArrayConverter.fourBytesToInt(Arrays.copyOfRange(unpackedSignature, rEnd, sStart));
+        int sLength = Converter.fourBytesToInt(Arrays.copyOfRange(unpackedSignature, rEnd, sStart));
         int sEnd = sStart + sLength;
         BigInteger s = new BigInteger(Arrays.copyOfRange(unpackedSignature, sStart, sEnd));
         ASN1Integer packedR = new ASN1Integer(r);

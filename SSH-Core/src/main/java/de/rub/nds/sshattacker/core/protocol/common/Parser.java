@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -114,7 +115,7 @@ public abstract class Parser<T> {
      * @return An integer representation of the partial byteArray
      */
     protected int parseIntField() {
-        return ArrayConverter.fourBytesToInt(parseByteArrayField(4));
+        return Converter.fourBytesToInt(parseByteArrayField(4));
     }
 
     /**
@@ -138,7 +139,7 @@ public abstract class Parser<T> {
      * @return A long representation of the partial byteArray
      */
     protected long parseLongField() {
-        return ArrayConverter.eigthBytesToLong(parseByteArrayField(8));
+        return Converter.eigthBytesToLong(parseByteArrayField(8));
     }
 
     /**

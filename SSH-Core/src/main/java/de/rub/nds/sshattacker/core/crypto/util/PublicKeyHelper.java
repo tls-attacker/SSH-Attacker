@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
@@ -15,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
@@ -49,7 +49,7 @@ public final class PublicKeyHelper {
     public static SshPublicKey<?, ?> parse(byte[] encodedPublicKey) {
         try {
             int keyFormatLength =
-                    ArrayConverter.fourBytesToInt(
+                    Converter.fourBytesToInt(
                             Arrays.copyOfRange(
                                     encodedPublicKey, 0, DataFormatConstants.STRING_SIZE_LENGTH));
             String keyFormatName =
