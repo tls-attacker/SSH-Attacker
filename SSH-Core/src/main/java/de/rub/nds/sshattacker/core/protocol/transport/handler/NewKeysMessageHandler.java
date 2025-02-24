@@ -21,9 +21,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         implements MessageSentHandler<NewKeysMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, NewKeysMessage object) {

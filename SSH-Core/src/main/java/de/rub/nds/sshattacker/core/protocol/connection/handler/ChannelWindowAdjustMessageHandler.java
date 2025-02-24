@@ -15,9 +15,13 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjus
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowAdjustMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelWindowAdjustMessageHandler extends SshMessageHandler<ChannelWindowAdjustMessage>
         implements MessageSentHandler<ChannelWindowAdjustMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, ChannelWindowAdjustMessage object) {

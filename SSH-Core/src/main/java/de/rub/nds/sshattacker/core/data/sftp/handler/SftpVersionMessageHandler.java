@@ -13,8 +13,12 @@ import de.rub.nds.sshattacker.core.data.sftp.parser.SftpVersionMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.preperator.SftpVersionMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.serializer.SftpVersionMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, SftpVersionMessage object) {
@@ -24,10 +28,15 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
         object.getExtensions().forEach(extension -> extension.adjustContext(context));
 
         // Set negotiated SFTP version based on own client version and received server version
+        int negotiatedVersion;
         if (receivedServerVersion < context.getConfig().getSftpClientVersion()) {
-            context.setSftpNegotiatedVersion(receivedServerVersion);
+            negotiatedVersion = receivedServerVersion;
         } else {
-            context.setSftpNegotiatedVersion(context.getConfig().getSftpClientVersion());
+            negotiatedVersion = context.getConfig().getSftpClientVersion();
+        }
+        context.setSftpNegotiatedVersion(negotiatedVersion);
+        if (negotiatedVersion < 3 || negotiatedVersion > 4) {
+            LOGGER.warn("Negotiated SFTP version {} is not implemented.", negotiatedVersion);
         }
     }
 

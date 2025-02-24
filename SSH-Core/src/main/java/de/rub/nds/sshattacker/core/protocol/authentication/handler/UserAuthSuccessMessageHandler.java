@@ -16,9 +16,13 @@ import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuccessMessage>
         implements MessageSentHandler<UserAuthSuccessMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, UserAuthSuccessMessage object) {

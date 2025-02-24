@@ -16,9 +16,13 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeSecre
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeSecretMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeSecretMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RsaKeyExchangeSecretMessageHandler
         extends SshMessageHandler<RsaKeyExchangeSecretMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, RsaKeyExchangeSecretMessage object) {

@@ -18,8 +18,12 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelSuccessMess
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelSuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSuccessMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void adjustContext(SshContext context, ChannelSuccessMessage object) {

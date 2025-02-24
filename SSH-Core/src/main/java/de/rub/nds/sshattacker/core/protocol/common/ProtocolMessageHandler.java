@@ -8,12 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> implements Handler<T> {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public abstract ProtocolMessageParser<T> getParser(byte[] array, SshContext context);

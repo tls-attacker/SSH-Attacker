@@ -124,7 +124,7 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
             case GET_TEMP_FOLDER -> new SftpRequestGetTempFolderMessageParser(raw).parse();
             case MAKE_TEMP_FOLDER -> new SftpRequestMakeTempFolderMessageParser(raw).parse();
             // SFTP v4
-            case TEXT_SEEK -> new SftpRequestMakeTempFolderMessageParser(raw).parse();
+            case TEXT_SEEK -> new SftpRequestTextSeekMessageParser(raw).parse();
             // vendor specific
             case POSIX_RENAME_OPENSSH_COM -> new SftpRequestPosixRenameMessageParser(raw).parse();
             case STAT_VFS_OPENSSH_COM -> new SftpRequestStatVfsMessageParser(raw).parse();
@@ -151,11 +151,9 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         SftpRequestMessage<?> relatedRequest =
                 context.getSftpManager().removeRequestById(message.getRequestId().getValue());
 
-        if (!(relatedRequest instanceof SftpRequestExtendedMessage)) {
+        if (!(relatedRequest instanceof SftpRequestExtendedMessage<?> relatedExtendedRequest)) {
             return message;
         }
-        SftpRequestExtendedMessage<?> relatedExtendedRequest =
-                (SftpRequestExtendedMessage<?>) relatedRequest;
 
         SftpExtension extendedResponseType =
                 SftpExtension.fromName(relatedExtendedRequest.getExtendedRequestName().getValue());
