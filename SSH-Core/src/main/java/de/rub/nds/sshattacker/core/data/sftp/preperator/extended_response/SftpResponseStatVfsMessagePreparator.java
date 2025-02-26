@@ -17,16 +17,16 @@ public class SftpResponseStatVfsMessagePreparator
     @Override
     public void prepareResponseSpecificContents(
             SftpResponseStatVfsMessage object, Chooser chooser) {
-        object.setSoftlyBlockSize(32);
-        object.setSoftlyFundamentalBlockSize(32);
-        object.setSoftlyCountBlocks(11608687979080L);
-        object.setSoftlyFreeBlocks(11608687979080L);
-        object.setSoftlyFreeBlocksNonRoot(11608687979080L);
-        object.setSoftlyFileInodes(0);
-        object.setSoftlyFreeInodes(11608687979080L);
-        object.setSoftlyFreeInodesNonRoot(11608687979080L);
-        object.setSoftlySystemId(0);
-        object.setSoftlyFlags(SftpVfsFlag.SSH_FXE_STATVFS_ST_RDONLY);
-        object.setSoftlyMaximumFilenameLength(256);
+        object.setBlockSize(32);
+        object.setFundamentalBlockSize(32);
+        object.setCountBlocks(11608687979080L);
+        object.setFreeBlocks(11608687979080L);
+        object.setFreeBlocksNonRoot(11608687979080L);
+        object.setFileInodes(0);
+        object.setFreeInodes(11608687979080L);
+        object.setFreeInodesNonRoot(11608687979080L);
+        object.setSystemId(0);
+        object.setFlags(SftpVfsFlag.SSH_FXE_STATVFS_ST_RDONLY);
+        object.setMaximumFilenameLength(256);
     }
 }

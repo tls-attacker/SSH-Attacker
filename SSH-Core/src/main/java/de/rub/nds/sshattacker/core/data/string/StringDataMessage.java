@@ -43,10 +43,6 @@ public class StringDataMessage extends DataMessage<StringDataMessage> {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
-    public void setSoftlyData(String data) {
-        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
-    }
-
     @Override
     public String toCompactString() {
         return getClass().getSimpleName();

@@ -21,6 +21,6 @@ public class GlobalRequestOpenSshHostKeysMessagePreparator
     @Override
     public void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestOpenSshHostKeysMessage object, Chooser chooser) {
-        object.setSoftlyHostKeys(chooser.getConfig().getHostKeys());
+        object.setHostKeys(chooser.getConfig().getHostKeys());
     }
 }

@@ -20,11 +20,10 @@ public class SftpRequestReadMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestReadMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        object.setSoftlyOffset(0);
+        object.setOffset(0);
 
-        object.setSoftlyLength(100000000);
+        object.setLength(100000000);
     }
 }

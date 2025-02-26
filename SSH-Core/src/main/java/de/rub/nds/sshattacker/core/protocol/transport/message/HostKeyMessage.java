@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 
 /** A message containing the host key of the server. */
@@ -32,6 +31,4 @@ public interface HostKeyMessage {
     void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField);
 
     void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField);
-
-    void setSoftlyHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField, Config config);
 }

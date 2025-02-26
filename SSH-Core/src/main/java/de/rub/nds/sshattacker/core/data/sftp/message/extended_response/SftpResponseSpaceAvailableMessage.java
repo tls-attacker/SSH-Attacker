@@ -63,11 +63,6 @@ public class SftpResponseSpaceAvailableMessage
                 ModifiableVariableFactory.safelySetValue(this.bytesOnDevice, bytesOnDevice);
     }
 
-    public void setSoftlyBytesOnDevice(long bytesOnDevice) {
-        this.bytesOnDevice =
-                ModifiableVariableFactory.softlySetValue(this.bytesOnDevice, bytesOnDevice);
-    }
-
     public ModifiableLong getUnusedBytesOnDevice() {
         return unusedBytesOnDevice;
     }
@@ -79,12 +74,6 @@ public class SftpResponseSpaceAvailableMessage
     public void setUnusedBytesOnDevice(long unusedBytesOnDevice) {
         this.unusedBytesOnDevice =
                 ModifiableVariableFactory.safelySetValue(
-                        this.unusedBytesOnDevice, unusedBytesOnDevice);
-    }
-
-    public void setSoftlyUnusedBytesOnDevice(long unusedBytesOnDevice) {
-        this.unusedBytesOnDevice =
-                ModifiableVariableFactory.softlySetValue(
                         this.unusedBytesOnDevice, unusedBytesOnDevice);
     }
 
@@ -102,12 +91,6 @@ public class SftpResponseSpaceAvailableMessage
                         this.bytesAvailableToUser, bytesAvailableToUser);
     }
 
-    public void setSoftlyBytesAvailableToUser(long bytesAvailableToUser) {
-        this.bytesAvailableToUser =
-                ModifiableVariableFactory.softlySetValue(
-                        this.bytesAvailableToUser, bytesAvailableToUser);
-    }
-
     public ModifiableLong getUnusedBytesAvailableToUser() {
         return unusedBytesAvailableToUser;
     }
@@ -122,12 +105,6 @@ public class SftpResponseSpaceAvailableMessage
                         this.unusedBytesAvailableToUser, unusedBytesAvailableToUser);
     }
 
-    public void setSoftlyUnusedBytesAvailableToUser(long unusedBytesAvailableToUser) {
-        this.unusedBytesAvailableToUser =
-                ModifiableVariableFactory.softlySetValue(
-                        this.unusedBytesAvailableToUser, unusedBytesAvailableToUser);
-    }
-
     public ModifiableInteger getBytesPerAllocationUnit() {
         return bytesPerAllocationUnit;
     }
@@ -139,12 +116,6 @@ public class SftpResponseSpaceAvailableMessage
     public void setBytesPerAllocationUnit(int bytesPerAllocationUnit) {
         this.bytesPerAllocationUnit =
                 ModifiableVariableFactory.safelySetValue(
-                        this.bytesPerAllocationUnit, bytesPerAllocationUnit);
-    }
-
-    public void setSoftlyBytesPerAllocationUnit(int bytesPerAllocationUnit) {
-        this.bytesPerAllocationUnit =
-                ModifiableVariableFactory.softlySetValue(
                         this.bytesPerAllocationUnit, bytesPerAllocationUnit);
     }
 

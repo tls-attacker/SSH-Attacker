@@ -15,6 +15,6 @@ public class SftpNameEntryPreparator extends Preparator<SftpNameEntry> {
 
     @Override
     public final void prepare(SftpNameEntry object, Chooser chooser) {
-        object.setSoftlyName("ssh-attacker", true, chooser.getConfig());
+        object.setName("ssh-attacker", true);
     }
 }

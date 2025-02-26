@@ -21,7 +21,6 @@ public class SftpRequestFileSyncMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestFileSyncMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
     }
 }

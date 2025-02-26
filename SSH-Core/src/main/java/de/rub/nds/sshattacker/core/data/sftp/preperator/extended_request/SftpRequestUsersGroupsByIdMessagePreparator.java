@@ -34,10 +34,8 @@ public class SftpRequestUsersGroupsByIdMessagePreparator
             object.getGroupIds().forEach(groupId -> groupId.prepare(chooser));
         }
 
-        object.setSoftlyUserIdsLength(
-                object.getUserIds().size() * DataFormatConstants.UINT32_SIZE, chooser.getConfig());
+        object.setUserIdsLength(object.getUserIds().size() * DataFormatConstants.UINT32_SIZE);
 
-        object.setSoftlyGroupIdsLength(
-                object.getGroupIds().size() * DataFormatConstants.UINT32_SIZE, chooser.getConfig());
+        object.setGroupIdsLength(object.getGroupIds().size() * DataFormatConstants.UINT32_SIZE);
     }
 }

@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -72,17 +71,6 @@ public abstract class AbstractExtension<T extends AbstractExtension<T>>
         this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
         if (adjustLengthField) {
             setNameLength(this.name.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyName(String name, boolean adjustLengthField, Config config) {
-        this.name = ModifiableVariableFactory.softlySetValue(this.name, name);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || nameLength == null
-                    || nameLength.getOriginalValue() == null) {
-                setNameLength(this.name.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

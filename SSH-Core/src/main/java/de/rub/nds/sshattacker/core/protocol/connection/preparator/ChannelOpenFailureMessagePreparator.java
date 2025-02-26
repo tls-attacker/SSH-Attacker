@@ -22,9 +22,9 @@ public class ChannelOpenFailureMessagePreparator
     public void prepareChannelMessageSpecificContents(
             ChannelOpenFailureMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        object.setSoftlyReasonCode(Integer.MAX_VALUE);
+        object.setReasonCode(Integer.MAX_VALUE);
 
-        object.setSoftlyReason("", true, chooser.getConfig());
-        object.setSoftlyLanguageTag("", true, chooser.getConfig());
+        object.setReason("", true);
+        object.setLanguageTag("", true);
     }
 }

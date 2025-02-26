@@ -20,6 +20,6 @@ public class PongMessagePreparator extends SshMessagePreparator<PongMessage> {
 
     @Override
     public void prepareMessageSpecificContents(PongMessage object, Chooser chooser) {
-        object.setSoftlyData(new byte[0], true, chooser.getConfig());
+        object.setData(new byte[0], true);
     }
 }

@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -49,11 +48,6 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     public void setDataTypeCode(int dataTypeCode) {
         this.dataTypeCode =
                 ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
-    }
-
-    public void setSoftlyDataTypeCode(int dataTypeCode) {
-        this.dataTypeCode =
-                ModifiableVariableFactory.softlySetValue(this.dataTypeCode, dataTypeCode);
     }
 
     public void setDataTypeCode(ExtendedChannelDataType dataType) {
@@ -95,17 +89,6 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
         if (adjustLengthField) {
             setDataLength(this.data.getValue().length);
-        }
-    }
-
-    public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || dataLength == null
-                    || dataLength.getOriginalValue() == null) {
-                setDataLength(this.data.getValue().length);
-            }
         }
     }
 

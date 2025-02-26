@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -109,17 +108,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
-    public void setSoftlyUserName(String userName, boolean adjustLengthField, Config config) {
-        this.userName = ModifiableVariableFactory.softlySetValue(this.userName, userName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || userNameLength == null
-                    || userNameLength.getOriginalValue() == null) {
-                setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getInstructionLength() {
         return instructionLength;
     }
@@ -158,18 +146,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         if (adjustLengthField) {
             setInstructionLength(
                     this.instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyInstruction(String instruction, boolean adjustLengthField, Config config) {
-        this.instruction = ModifiableVariableFactory.softlySetValue(this.instruction, instruction);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || instructionLength == null
-                    || instructionLength.getOriginalValue() == null) {
-                setInstructionLength(
-                        this.instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 
@@ -214,18 +190,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         }
     }
 
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getPromptEntriesCount() {
         return promptEntriesCount;
     }
@@ -238,14 +202,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         this.promptEntriesCount =
                 ModifiableVariableFactory.safelySetValue(
                         this.promptEntriesCount, promptEntriesCount);
-    }
-
-    public void setSoftlyPromptEntriesCount(int promptEntriesCount, Config config) {
-        this.promptEntriesCount =
-                ModifiableVariableFactory.softlySetValue(
-                        this.promptEntriesCount,
-                        promptEntriesCount,
-                        config.getAlwaysPrepareLengthFields());
     }
 
     public ArrayList<AuthenticationPromptEntry> getPromptEntries() {
@@ -262,24 +218,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
             setPromptEntriesCount(promptEntries.size());
         }
         this.promptEntries = promptEntries;
-    }
-
-    public void setSoftlyPromptEntries(
-            ArrayList<AuthenticationPromptEntry> promptEntries,
-            boolean adjustLengthField,
-            Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.promptEntries == null
-                || this.promptEntries.isEmpty()) {
-            this.promptEntries = promptEntries;
-        }
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || promptEntriesCount == null
-                    || promptEntriesCount.getOriginalValue() == null) {
-                setPromptEntriesCount(this.promptEntries.size());
-            }
-        }
     }
 
     public void addPromptEntry(AuthenticationPromptEntry promptEntry) {

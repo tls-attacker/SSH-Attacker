@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
@@ -111,20 +110,6 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
-    public void setSoftlyHostKeyBytes(
-            byte[] hostKeyBytes, boolean adjustLengthField, Config config) {
-        this.hostKeyBytes =
-                ModifiableVariableFactory.softlySetValue(
-                        this.hostKeyBytes, hostKeyBytes, config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || hostKeyBytesLength == null
-                    || hostKeyBytesLength.getOriginalValue() == null) {
-                setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
-            }
-        }
-    }
-
     public ModifiableInteger getConcatenatedHybridKeysLength() {
         return concatenatedHybridKeysLength;
     }
@@ -162,22 +147,6 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
                         this.concatenatedHybridKeys, concatenatedHybridKeys);
         if (adjustLengthField) {
             setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
-        }
-    }
-
-    public void setSoftlyConcatenatedHybridKeys(
-            byte[] concatenatedHybridKeys, boolean adjustLengthField, Config config) {
-        this.concatenatedHybridKeys =
-                ModifiableVariableFactory.softlySetValue(
-                        this.concatenatedHybridKeys,
-                        concatenatedHybridKeys,
-                        config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || concatenatedHybridKeysLength == null
-                    || concatenatedHybridKeysLength.getOriginalValue() == null) {
-                setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
-            }
         }
     }
 
@@ -225,19 +194,6 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
             setSignatureLength(this.signature.getValue().length);
-        }
-    }
-
-    public void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config) {
-        this.signature =
-                ModifiableVariableFactory.softlySetValue(
-                        this.signature, signature, config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || signatureLength == null
-                    || signatureLength.getOriginalValue() == null) {
-                setSignatureLength(this.signature.getValue().length);
-            }
         }
     }
 

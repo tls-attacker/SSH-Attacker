@@ -29,7 +29,7 @@ public abstract class SftpAbstractExtensionPreparator<T extends SftpAbstractExte
     @Override
     public void prepare(T object, Chooser chooser) {
         if (extensionName != null) {
-            object.setSoftlyName(extensionName, true, chooser.getConfig());
+            object.setName(extensionName, true);
         }
         prepareExtensionSpecificContents(object, chooser);
     }

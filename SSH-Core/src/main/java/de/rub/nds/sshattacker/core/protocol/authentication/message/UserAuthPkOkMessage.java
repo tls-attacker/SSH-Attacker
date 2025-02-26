@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -74,21 +73,6 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         }
     }
 
-    public void setSoftlyPubkeyAlgName(
-            String pubkeyAlgName, boolean adjustLengthField, Config config) {
-        this.pubkeyAlgName =
-                ModifiableVariableFactory.softlySetValue(
-                        this.pubkeyAlgName, pubkeyAlgName, config.getAlwaysPrepareAuthentication());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || pubkeyAlgNameLength == null
-                    || pubkeyAlgNameLength.getOriginalValue() == null) {
-                setPubkeyAlgNameLength(
-                        this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
         setPubkeyAlgName(pubkeyAlgName, false);
     }
@@ -117,25 +101,6 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
         if (adjustLengthField) {
             setPubkeyLength(this.pubkey.getValue().length);
-        }
-    }
-
-    public void setSoftlyPubkey(
-            byte[] pubkey,
-            boolean adjustLengthField,
-            Config config,
-            boolean useAlwaysPrepareOption) {
-        if (useAlwaysPrepareOption && config.getAlwaysPrepareAuthentication()
-                || this.pubkey == null
-                || this.pubkey.getOriginalValue() == null) {
-            this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
-        }
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || pubkeyLength == null
-                    || pubkeyLength.getOriginalValue() == null) {
-                setPubkeyLength(this.pubkey.getValue().length);
-            }
         }
     }
 

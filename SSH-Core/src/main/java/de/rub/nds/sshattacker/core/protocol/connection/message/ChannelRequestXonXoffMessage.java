@@ -48,11 +48,6 @@ public class ChannelRequestXonXoffMessage
                 ModifiableVariableFactory.safelySetValue(this.clientFlowControl, clientFlowControl);
     }
 
-    public void setSoftlyClientFlowControl(byte clientFlowControl) {
-        this.clientFlowControl =
-                ModifiableVariableFactory.softlySetValue(this.clientFlowControl, clientFlowControl);
-    }
-
     public void setClientFlowControl(boolean clientFlowControl) {
         setClientFlowControl(Converter.booleanToByte(clientFlowControl));
     }

@@ -45,10 +45,6 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
         this.breakLength = ModifiableVariableFactory.safelySetValue(this.breakLength, breakLength);
     }
 
-    public void setSoftlyBreakLength(int breakLength) {
-        this.breakLength = ModifiableVariableFactory.softlySetValue(this.breakLength, breakLength);
-    }
-
     public static final ChannelRequestBreakMessageHandler HANDLER =
             new ChannelRequestBreakMessageHandler();
 

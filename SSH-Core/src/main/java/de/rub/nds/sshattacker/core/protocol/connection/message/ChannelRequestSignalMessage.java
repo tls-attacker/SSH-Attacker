@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
@@ -83,25 +82,8 @@ public class ChannelRequestSignalMessage extends ChannelRequestMessage<ChannelRe
         }
     }
 
-    public void setSoftlySignalName(String signalName, boolean adjustLengthField, Config config) {
-        this.signalName = ModifiableVariableFactory.softlySetValue(this.signalName, signalName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || signalNameLength == null
-                    || signalNameLength.getOriginalValue() == null) {
-                setSignalNameLength(
-                        this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
         setSignalName(signalName.toString(), adjustLengthField);
-    }
-
-    public void setSoftlySignalName(
-            SignalType signalName, boolean adjustLengthField, Config config) {
-        setSoftlySignalName(signalName.toString(), adjustLengthField, config);
     }
 
     public static final ChannelRequestSignalMessageHandler HANDLER =

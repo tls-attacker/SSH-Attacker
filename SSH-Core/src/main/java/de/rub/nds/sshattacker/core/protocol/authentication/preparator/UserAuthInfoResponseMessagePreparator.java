@@ -28,10 +28,9 @@ public class UserAuthInfoResponseMessagePreparator
                 chooser.getNextPreConfiguredAuthResponses();
 
         if (nextResponses != null) {
-            object.setSoftlyResponseEntries(nextResponses, true, chooser.getConfig());
+            object.setResponseEntries(nextResponses, true);
         } else {
-            object.setSoftlyResponseEntriesCount(
-                    object.getResponseEntries().size(), chooser.getConfig());
+            object.setResponseEntriesCount(object.getResponseEntries().size());
         }
 
         object.getResponseEntries().forEach(responseEntry -> responseEntry.prepare(chooser));

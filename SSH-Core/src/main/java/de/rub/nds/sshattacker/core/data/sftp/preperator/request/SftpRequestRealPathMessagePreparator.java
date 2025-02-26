@@ -20,6 +20,6 @@ public class SftpRequestRealPathMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestRealPathMessage object, Chooser chooser) {
-        object.setSoftlyPath("/tmp/../etc/./passwd", true, chooser.getConfig());
+        object.setPath("/tmp/../etc/./passwd", true);
     }
 }

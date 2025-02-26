@@ -21,9 +21,7 @@ public class ChannelRequestEnvMessagePreparator
     @Override
     public void prepareChannelRequestMessageSpecificContents(
             ChannelRequestEnvMessage object, Chooser chooser) {
-        object.setSoftlyVariableName(
-                chooser.getConfig().getDefaultVariableName(), true, chooser.getConfig());
-        object.setSoftlyVariableValue(
-                chooser.getConfig().getDefaultVariableValue(), true, chooser.getConfig());
+        object.setVariableName(chooser.getConfig().getDefaultVariableName(), true);
+        object.setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
     }
 }

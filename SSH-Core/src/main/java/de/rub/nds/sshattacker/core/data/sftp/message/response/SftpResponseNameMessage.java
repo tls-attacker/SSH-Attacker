@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseNameMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.message.holder.SftpFileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -63,14 +62,6 @@ public class SftpResponseNameMessage extends SftpResponseMessage<SftpResponseNam
     public void setNameEntriesCount(int nameEntriesCount) {
         this.nameEntriesCount =
                 ModifiableVariableFactory.safelySetValue(this.nameEntriesCount, nameEntriesCount);
-    }
-
-    public void setSoftlyNameEntriesCount(int nameEntriesCount, Config config) {
-        this.nameEntriesCount =
-                ModifiableVariableFactory.softlySetValue(
-                        this.nameEntriesCount,
-                        nameEntriesCount,
-                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public List<SftpFileNameEntry> getNameEntries() {

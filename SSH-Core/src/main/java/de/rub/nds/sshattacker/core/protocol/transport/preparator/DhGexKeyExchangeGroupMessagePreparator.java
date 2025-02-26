@@ -37,8 +37,8 @@ public class DhGexKeyExchangeGroupMessagePreparator
         BigInteger generator = keyExchange.getGenerator();
         BigInteger modulus = keyExchange.getModulus();
 
-        object.setSoftlyGroupGenerator(generator, true, chooser.getConfig());
-        object.setSoftlyGroupModulus(modulus, true, chooser.getConfig());
+        object.setGroupGenerator(generator, true);
+        object.setGroupModulus(modulus, true);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         inputHolder.setDhGexGroupGenerator(generator);

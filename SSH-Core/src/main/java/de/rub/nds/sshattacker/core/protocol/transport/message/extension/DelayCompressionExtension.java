@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
@@ -81,14 +80,6 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                         this.compressionMethodsLength, compressionMethodsLength);
     }
 
-    public void setSoftlyCompressionMethodsLength(int compressionMethodsLength, Config config) {
-        this.compressionMethodsLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.compressionMethodsLength,
-                        compressionMethodsLength,
-                        config.getAlwaysPrepareLengthFields());
-    }
-
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
         return compressionMethodsClientToServerLength;
     }
@@ -151,27 +142,6 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-        }
-    }
-
-    public void setSoftlyCompressionMethodsClientToServer(
-            List<CompressionMethod> compressionMethodsClientToServer,
-            boolean adjustLengthField,
-            Config config) {
-        this.compressionMethodsClientToServer =
-                ModifiableVariableFactory.softlySetValue(
-                        this.compressionMethodsClientToServer,
-                        Converter.listOfNamesToString(compressionMethodsClientToServer));
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || compressionMethodsClientToServerLength == null
-                    || compressionMethodsClientToServerLength.getOriginalValue() == null) {
-                setCompressionMethodsClientToServerLength(
-                        this.compressionMethodsClientToServer
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
         }
     }
 
@@ -249,27 +219,6 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-        }
-    }
-
-    public void setSoftlyCompressionMethodsServerToClient(
-            List<CompressionMethod> compressionMethodsServerToClient,
-            boolean adjustLengthField,
-            Config config) {
-        this.compressionMethodsServerToClient =
-                ModifiableVariableFactory.softlySetValue(
-                        this.compressionMethodsServerToClient,
-                        Converter.listOfNamesToString(compressionMethodsServerToClient));
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || compressionMethodsServerToClientLength == null
-                    || compressionMethodsServerToClientLength.getOriginalValue() == null) {
-                setCompressionMethodsServerToClientLength(
-                        this.compressionMethodsServerToClient
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
         }
     }
 

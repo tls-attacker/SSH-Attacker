@@ -20,7 +20,7 @@ public class SftpRequestSetStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestSetStatMessage object, Chooser chooser) {
-        object.setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
+        object.setPath("/tmp/ssh-attacker", true);
 
         object.getAttributes().prepare(chooser);
     }

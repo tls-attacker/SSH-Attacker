@@ -21,6 +21,6 @@ public class SftpRequestExpandPathMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestExpandPathMessage object, Chooser chooser) {
-        object.setSoftlyPath("~/.chooser.getConfig()/passwd", true, chooser.getConfig());
+        object.setPath("~/.chooser.getConfig()/passwd", true);
     }
 }

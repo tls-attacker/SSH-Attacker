@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
@@ -85,22 +84,6 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
                         this.concatenatedHybridKeys, concatenatedHybridKeys);
         if (adjustLengthField) {
             setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
-        }
-    }
-
-    public void setSoftlyConcatenatedHybridKeys(
-            byte[] concatenatedHybridKeys, boolean adjustLengthField, Config config) {
-        this.concatenatedHybridKeys =
-                ModifiableVariableFactory.softlySetValue(
-                        this.concatenatedHybridKeys,
-                        concatenatedHybridKeys,
-                        config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || concatenatedHybridKeysLength == null
-                    || concatenatedHybridKeysLength.getOriginalValue() == null) {
-                setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
-            }
         }
     }
 

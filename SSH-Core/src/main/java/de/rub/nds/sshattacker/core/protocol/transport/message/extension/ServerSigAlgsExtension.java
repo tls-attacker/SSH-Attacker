@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -113,29 +112,6 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-        }
-    }
-
-    public void setSoftlyAcceptedPublicKeyAlgorithms(
-            List<PublicKeyAlgorithm> acceptedPublicKeyAlgorithms,
-            boolean adjustLengthField,
-            Config config) {
-
-        this.acceptedPublicKeyAlgorithms =
-                ModifiableVariableFactory.softlySetValue(
-                        this.acceptedPublicKeyAlgorithms,
-                        Converter.listOfNamesToString(acceptedPublicKeyAlgorithms));
-
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || acceptedPublicKeyAlgorithmsLength == null
-                    || acceptedPublicKeyAlgorithmsLength.getOriginalValue() == null) {
-                setAcceptedPublicKeyAlgorithmsLength(
-                        this.acceptedPublicKeyAlgorithms
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
         }
     }
 

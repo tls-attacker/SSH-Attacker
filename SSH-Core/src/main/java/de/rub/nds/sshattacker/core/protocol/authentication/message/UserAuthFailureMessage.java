@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -112,24 +111,6 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
         }
     }
 
-    public void setSoftlyPossibleAuthenticationMethods(
-            String possibleAuthenticationMethods, boolean adjustLengthField, Config config) {
-        this.possibleAuthenticationMethods =
-                ModifiableVariableFactory.softlySetValue(
-                        this.possibleAuthenticationMethods, possibleAuthenticationMethods);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || possibleAuthenticationMethodsLength == null
-                    || possibleAuthenticationMethodsLength.getOriginalValue() == null) {
-                setPossibleAuthenticationMethodsLength(
-                        this.possibleAuthenticationMethods
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
-        }
-    }
-
     public void setPossibleAuthenticationMethods(
             String[] possibleAuthenticationMethods, boolean adjustLengthField) {
         setPossibleAuthenticationMethods(
@@ -155,17 +136,8 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
                 ModifiableVariableFactory.safelySetValue(this.partialSuccess, partialSuccess);
     }
 
-    public void setSoftlyPartialSuccess(byte partialSuccess) {
-        this.partialSuccess =
-                ModifiableVariableFactory.softlySetValue(this.partialSuccess, partialSuccess);
-    }
-
     public void setPartialSuccess(boolean partialSuccess) {
         setPartialSuccess(Converter.booleanToByte(partialSuccess));
-    }
-
-    public void setSoftlyPartialSuccess(boolean partialSuccess) {
-        setSoftlyPartialSuccess(Converter.booleanToByte(partialSuccess));
     }
 
     public static final UserAuthFailureMessageHandler HANDLER = new UserAuthFailureMessageHandler();

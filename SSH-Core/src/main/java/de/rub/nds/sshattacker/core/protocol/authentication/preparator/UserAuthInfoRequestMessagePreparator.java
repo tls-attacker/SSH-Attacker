@@ -25,17 +25,17 @@ public class UserAuthInfoRequestMessagePreparator
     @Override
     public void prepareMessageSpecificContents(UserAuthInfoRequestMessage object, Chooser chooser) {
         Config config = chooser.getConfig();
-        object.setSoftlyUserName("", true, config);
-        object.setSoftlyInstruction("", true, config);
-        object.setSoftlyLanguageTag("", true, config);
+        object.setUserName("", true);
+        object.setInstruction("", true);
+        object.setLanguageTag("", true);
 
         ArrayList<AuthenticationPromptEntry> nextPrompts =
                 chooser.getNextPreConfiguredAuthPrompts();
 
         if (nextPrompts != null) {
-            object.setSoftlyPromptEntries(nextPrompts, true, config);
+            object.setPromptEntries(nextPrompts, true);
         } else {
-            object.setSoftlyPromptEntriesCount(object.getPromptEntries().size(), config);
+            object.setPromptEntriesCount(object.getPromptEntries().size());
         }
 
         object.getPromptEntries().forEach(promptEntry -> promptEntry.prepare(chooser));

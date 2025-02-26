@@ -56,12 +56,6 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
                         this.maximumPacketLength, maximumPacketLength);
     }
 
-    public void setSoftlyMaximumPacketLength(long maximumPacketLength) {
-        this.maximumPacketLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.maximumPacketLength, maximumPacketLength);
-    }
-
     public ModifiableLong getMaximumReadLength() {
         return maximumReadLength;
     }
@@ -73,11 +67,6 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     public void setMaximumReadLength(long maximumReadLength) {
         this.maximumReadLength =
                 ModifiableVariableFactory.safelySetValue(this.maximumReadLength, maximumReadLength);
-    }
-
-    public void setSoftlyMaximumReadLength(long maximumReadLength) {
-        this.maximumReadLength =
-                ModifiableVariableFactory.softlySetValue(this.maximumReadLength, maximumReadLength);
     }
 
     public ModifiableLong getMaximumWriteLength() {
@@ -94,12 +83,6 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
                         this.maximumWriteLength, maximumWriteLength);
     }
 
-    public void setSoftlyMaximumWriteLength(long maximumWriteLength) {
-        this.maximumWriteLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.maximumWriteLength, maximumWriteLength);
-    }
-
     public ModifiableLong getMaximumOpenHandles() {
         return maximumOpenHandles;
     }
@@ -111,12 +94,6 @@ public class SftpResponseLimitsMessage extends SftpResponseMessage<SftpResponseL
     public void setMaximumOpenHandles(long maximumOpenHandles) {
         this.maximumOpenHandles =
                 ModifiableVariableFactory.safelySetValue(
-                        this.maximumOpenHandles, maximumOpenHandles);
-    }
-
-    public void setSoftlyMaximumOpenHandles(long maximumOpenHandles) {
-        this.maximumOpenHandles =
-                ModifiableVariableFactory.softlySetValue(
                         this.maximumOpenHandles, maximumOpenHandles);
     }
 

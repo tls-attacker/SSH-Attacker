@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -74,17 +73,8 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
                 ModifiableVariableFactory.safelySetValue(this.singleConnection, singleConnection);
     }
 
-    public void setSoftlySingleConnection(byte singleConnection) {
-        this.singleConnection =
-                ModifiableVariableFactory.softlySetValue(this.singleConnection, singleConnection);
-    }
-
     public void setSingleConnection(boolean singleConnection) {
         setSingleConnection(Converter.booleanToByte(singleConnection));
-    }
-
-    public void setSoftlySingleConnection(boolean singleConnection) {
-        setSoftlySingleConnection(Converter.booleanToByte(singleConnection));
     }
 
     public ModifiableInteger getX11AuthenticationProtocolLength() {
@@ -142,24 +132,6 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
         }
     }
 
-    public void setSoftlyX11AuthenticationProtocol(
-            String x11AuthenticationProtocol, boolean adjustLengthField, Config config) {
-        this.x11AuthenticationProtocol =
-                ModifiableVariableFactory.softlySetValue(
-                        this.x11AuthenticationProtocol, x11AuthenticationProtocol);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || x11AuthenticationProtocolLength == null
-                    || x11AuthenticationProtocolLength.getOriginalValue() == null) {
-                setX11AuthenticationProtocolLength(
-                        this.x11AuthenticationProtocol
-                                .getValue()
-                                .getBytes(StandardCharsets.UTF_8)
-                                .length);
-            }
-        }
-    }
-
     public ModifiableInteger getX11AuthenticationCookieLength() {
         return x11AuthenticationCookieLength;
     }
@@ -214,24 +186,6 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
         }
     }
 
-    public void setSoftlyX11AuthenticationCookie(
-            String x11AuthenticationCookie, boolean adjustLengthField, Config config) {
-        this.x11AuthenticationCookie =
-                ModifiableVariableFactory.softlySetValue(
-                        this.x11AuthenticationCookie, x11AuthenticationCookie);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || x11AuthenticationCookieLength == null
-                    || x11AuthenticationCookieLength.getOriginalValue() == null) {
-                setX11AuthenticationCookieLength(
-                        this.x11AuthenticationCookie
-                                .getValue()
-                                .getBytes(StandardCharsets.UTF_8)
-                                .length);
-            }
-        }
-    }
-
     public ModifiableInteger getX11ScreenNumber() {
         return x11ScreenNumber;
     }
@@ -243,11 +197,6 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     public void setX11ScreenNumber(int x11ScreenNumber) {
         this.x11ScreenNumber =
                 ModifiableVariableFactory.safelySetValue(this.x11ScreenNumber, x11ScreenNumber);
-    }
-
-    public void setSoftlyX11ScreenNumber(int x11ScreenNumber) {
-        this.x11ScreenNumber =
-                ModifiableVariableFactory.softlySetValue(this.x11ScreenNumber, x11ScreenNumber);
     }
 
     public static final ChannelRequestX11MessageHandler HANDLER =

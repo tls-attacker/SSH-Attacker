@@ -20,6 +20,6 @@ public class SftpExtensionWithVersionPreparator<T extends SftpExtensionWithVersi
 
     @Override
     public void prepareExtensionSpecificContents(T object, Chooser chooser) {
-        object.setSoftlyVersion("1", true, chooser.getConfig());
+        object.setVersion("1", true);
     }
 }

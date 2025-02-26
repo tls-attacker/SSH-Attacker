@@ -21,16 +21,14 @@ public class SftpRequestCopyDataMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestCopyDataMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        object.setSoftlyReadFromOffset(0);
+        object.setReadFromOffset(0);
 
-        object.setSoftlyReadDataLength(1000000);
+        object.setReadDataLength(1000000);
 
-        object.setSoftlyWriteToHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
+        object.setWriteToHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        object.setSoftlyWriteToOffset(0);
+        object.setWriteToOffset(0);
     }
 }

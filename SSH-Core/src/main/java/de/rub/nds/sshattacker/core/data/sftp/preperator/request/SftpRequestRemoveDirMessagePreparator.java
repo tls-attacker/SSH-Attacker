@@ -20,6 +20,6 @@ public class SftpRequestRemoveDirMessagePreparator
 
     public void prepareRequestSpecificContents(
             SftpRequestRemoveDirMessage object, Chooser chooser) {
-        object.setSoftlyPath("/tmp/ssh-attacker", true, chooser.getConfig());
+        object.setPath("/tmp/ssh-attacker", true);
     }
 }

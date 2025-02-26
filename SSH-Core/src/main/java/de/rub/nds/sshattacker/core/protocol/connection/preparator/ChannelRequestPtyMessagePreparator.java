@@ -23,11 +23,11 @@ public class ChannelRequestPtyMessagePreparator
     public void prepareChannelRequestMessageSpecificContents(
             ChannelRequestPtyMessage object, Chooser chooser) {
         Config config = chooser.getConfig();
-        object.setSoftlyTermEnvVariable(config.getDefaultTermEnvVariable(), true, config);
-        object.setSoftlyWidthCharacters(config.getDefaultTerminalWidthColumns());
-        object.setSoftlyHeightRows(config.getDefaultTerminalHeightRows());
-        object.setSoftlyWidthPixels(config.getDefaultTerminalWidthPixels());
-        object.setSoftlyHeightPixels(config.getDefaultTerminalHeightPixels());
-        object.setSoftlyEncodedTerminalModes(new byte[0], true, config);
+        object.setTermEnvVariable(config.getDefaultTermEnvVariable(), true);
+        object.setWidthCharacters(config.getDefaultTerminalWidthColumns());
+        object.setHeightRows(config.getDefaultTerminalHeightRows());
+        object.setWidthPixels(config.getDefaultTerminalWidthPixels());
+        object.setHeightPixels(config.getDefaultTerminalHeightPixels());
+        object.setEncodedTerminalModes(new byte[0], true);
     }
 }

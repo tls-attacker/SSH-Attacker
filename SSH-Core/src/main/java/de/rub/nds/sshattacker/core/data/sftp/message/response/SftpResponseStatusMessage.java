@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -59,16 +58,8 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
         this.statusCode = ModifiableVariableFactory.safelySetValue(this.statusCode, statusCode);
     }
 
-    public void setSoftlyStatusCode(int statusCode) {
-        this.statusCode = ModifiableVariableFactory.softlySetValue(this.statusCode, statusCode);
-    }
-
     public void setStatusCode(SftpStatusCode statusCode) {
         setStatusCode(statusCode.getCode());
-    }
-
-    public void setSoftlyStatusCode(SftpStatusCode statusCode) {
-        setSoftlyStatusCode(statusCode.getCode());
     }
 
     public ModifiableInteger getErrorMessageLength() {
@@ -113,20 +104,6 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
         }
     }
 
-    public void setSoftlyErrorMessage(
-            String errorMessage, boolean adjustLengthField, Config config) {
-        this.errorMessage =
-                ModifiableVariableFactory.softlySetValue(this.errorMessage, errorMessage);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || errorMessageLength == null
-                    || errorMessageLength.getOriginalValue() == null) {
-                setErrorMessageLength(
-                        this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }
@@ -164,18 +141,6 @@ public class SftpResponseStatusMessage extends SftpResponseMessage<SftpResponseS
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

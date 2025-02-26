@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.NoFlowControlExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -72,17 +71,6 @@ public class NoFlowControlExtension extends AbstractExtension<NoFlowControlExten
         this.choice = ModifiableVariableFactory.safelySetValue(this.choice, choice);
         if (adjustLengthField) {
             setChoiceLength(this.choice.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyChoice(String choice, boolean adjustLengthField, Config config) {
-        this.choice = ModifiableVariableFactory.softlySetValue(this.choice, choice);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || choiceLength == null
-                    || choiceLength.getOriginalValue() == null) {
-                setChoiceLength(this.choice.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

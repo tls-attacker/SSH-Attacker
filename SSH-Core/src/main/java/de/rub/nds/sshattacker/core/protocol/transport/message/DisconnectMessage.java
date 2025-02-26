@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
@@ -58,16 +57,8 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
     }
 
-    public void setSoftlyReasonCode(int reasonCode) {
-        this.reasonCode = ModifiableVariableFactory.softlySetValue(this.reasonCode, reasonCode);
-    }
-
     public void setReasonCode(DisconnectReason reason) {
         setReasonCode(reason.getId());
-    }
-
-    public void setSoftlyReasonCode(DisconnectReason reason) {
-        setSoftlyReasonCode(reason.getId());
     }
 
     public ModifiableInteger getDescriptionLength() {
@@ -111,18 +102,6 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         }
     }
 
-    public void setSoftlyDescription(String description, boolean adjustLengthField, Config config) {
-        this.description = ModifiableVariableFactory.softlySetValue(this.description, description);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || descriptionLength == null
-                    || descriptionLength.getOriginalValue() == null) {
-                setDescriptionLength(
-                        this.description.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }
@@ -161,18 +140,6 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

@@ -47,11 +47,6 @@ public class ChannelRequestUnknownMessage
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
-    public void setSoftlyTypeSpecificData(byte[] typeSpecificData) {
-        this.typeSpecificData =
-                ModifiableVariableFactory.softlySetValue(this.typeSpecificData, typeSpecificData);
-    }
-
     public static final ChannelRequestUnknownMessageHandler HANDLER =
             new ChannelRequestUnknownMessageHandler();
 

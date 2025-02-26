@@ -142,18 +142,18 @@ public class UserAuthPubkeyMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents(
             UserAuthPubkeyMessage object, Chooser chooser) {
-        object.setSoftlyUseSignature(true);
+        object.setUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
 
         Config config = chooser.getConfig();
         if (pk != null) {
-            object.setSoftlyPubkeyAlgName(pk.getPublicKeyFormat().getName(), true, config);
-            object.setSoftlyPubkey(PublicKeyHelper.encode(pk), true, config);
-            object.setSoftlySignature(getEncodedSignature(object, chooser, pk), true, config, true);
+            object.setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
+            object.setPubkey(PublicKeyHelper.encode(pk), true);
+            object.setSignature(getEncodedSignature(object, chooser, pk), true);
         } else {
-            object.setSoftlyPubkeyAlgName("", true, config);
-            object.setSoftlyPubkey(new byte[0], true, config);
-            object.setSoftlySignature(new byte[0], true, config, false);
+            object.setPubkeyAlgName("", true);
+            object.setPubkey(new byte[0], true);
+            object.setSignature(new byte[0], true);
         }
     }
 }

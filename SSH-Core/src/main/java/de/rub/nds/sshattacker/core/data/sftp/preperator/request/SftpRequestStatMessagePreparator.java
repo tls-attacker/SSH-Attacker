@@ -21,10 +21,10 @@ public class SftpRequestStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestStatMessage object, Chooser chooser) {
-        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setPath("/etc/passwd", true);
 
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
-            object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
+            object.setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             object.clearFlags();
         }

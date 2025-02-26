@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.path.ModifiablePath;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSymbolicLinkMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -79,18 +78,6 @@ public class SftpRequestSymbolicLinkMessage
         this.targetPath = ModifiableVariableFactory.safelySetValue(this.targetPath, targetPath);
         if (adjustLengthField) {
             setTargetPathLength(this.targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyTargetPath(String targetPath, boolean adjustLengthField, Config config) {
-        this.targetPath = ModifiableVariableFactory.softlySetValue(this.targetPath, targetPath);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || targetPathLength == null
-                    || targetPathLength.getOriginalValue() == null) {
-                setTargetPathLength(
-                        this.targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

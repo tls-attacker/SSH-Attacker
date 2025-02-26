@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -80,20 +79,6 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
                         this.ephemeralPublicKey, ephemeralPublicKey);
         if (adjustLengthField) {
             setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
-        }
-    }
-
-    public void setSoftlyEphemeralPublicKey(
-            byte[] ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        this.ephemeralPublicKey =
-                ModifiableVariableFactory.softlySetValue(
-                        this.ephemeralPublicKey, ephemeralPublicKey, config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || ephemeralPublicKeyLength == null
-                    || ephemeralPublicKeyLength.getOriginalValue() == null) {
-                setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
-            }
         }
     }
 

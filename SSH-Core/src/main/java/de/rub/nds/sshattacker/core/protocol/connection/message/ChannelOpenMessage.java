@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -90,25 +89,8 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         }
     }
 
-    public void setSoftlyChannelType(String channelType, boolean adjustLengthField, Config config) {
-        this.channelType = ModifiableVariableFactory.softlySetValue(this.channelType, channelType);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || channelTypeLength == null
-                    || channelTypeLength.getOriginalValue() == null) {
-                setChannelTypeLength(
-                        this.channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public void setChannelType(ChannelType channelType, boolean adjustLengthField) {
         setChannelType(channelType.toString(), adjustLengthField);
-    }
-
-    public void setSoftlyChannelType(
-            ChannelType channelType, boolean adjustLengthField, Config config) {
-        setSoftlyChannelType(channelType.toString(), adjustLengthField, config);
     }
 
     public ModifiableInteger getSenderChannelId() {
@@ -124,12 +106,6 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
                 ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
     }
 
-    public void setSoftlySenderChannelId(int senderChannelId, Config config) {
-        this.senderChannelId =
-                ModifiableVariableFactory.softlySetValue(
-                        this.senderChannelId, senderChannelId, config.getAlwaysPrepareChannelIds());
-    }
-
     public ModifiableInteger getWindowSize() {
         return windowSize;
     }
@@ -142,10 +118,6 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
 
-    public void setSoftlyWindowSize(int windowSize) {
-        this.windowSize = ModifiableVariableFactory.softlySetValue(this.windowSize, windowSize);
-    }
-
     public ModifiableInteger getPacketSize() {
         return packetSize;
     }
@@ -156,10 +128,6 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    public void setSoftlyPacketSize(int packetSize) {
-        this.packetSize = ModifiableVariableFactory.softlySetValue(this.packetSize, packetSize);
     }
 
     public Integer getConfigLocalChannelId() {

@@ -31,20 +31,18 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
             object.getGroupNames().forEach(groupName -> groupName.prepare(chooser));
         }
 
-        object.setSoftlyUserNamesLength(
+        object.setUserNamesLength(
                 object.getUserNames().size() * DataFormatConstants.UINT32_SIZE
                         + object.getUserNames().stream()
                                 .map(SftpNameEntry::getNameLength)
                                 .mapToInt(ModifiableVariable::getValue)
-                                .sum(),
-                chooser.getConfig());
+                                .sum());
 
-        object.setSoftlyGroupNamesLength(
+        object.setGroupNamesLength(
                 object.getGroupNames().size() * DataFormatConstants.UINT32_SIZE
                         + object.getGroupNames().stream()
                                 .map(SftpNameEntry::getNameLength)
                                 .mapToInt(ModifiableVariable::getValue)
-                                .sum(),
-                chooser.getConfig());
+                                .sum());
     }
 }

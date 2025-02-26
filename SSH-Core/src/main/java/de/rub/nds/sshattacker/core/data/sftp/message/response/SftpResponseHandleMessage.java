@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.response;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.response.SftpResponseHandleMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -48,12 +47,6 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
                 ModifiableVariableFactory.safelySetValue(this.handleLength, handleLength);
     }
 
-    public void setSoftlyHandleLength(int handleLength, Config config) {
-        this.handleLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.handleLength, handleLength, config.getAlwaysPrepareSftpLengthFields());
-    }
-
     public ModifiableByteArray getHandle() {
         return handle;
     }
@@ -77,19 +70,6 @@ public class SftpResponseHandleMessage extends SftpResponseMessage<SftpResponseH
         this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
         if (adjustLengthField) {
             setHandleLength(this.handle.getValue().length);
-        }
-    }
-
-    public void setSoftlyHandle(byte[] handle, boolean adjustLengthField, Config config) {
-        this.handle =
-                ModifiableVariableFactory.softlySetValue(
-                        this.handle, handle, config.getAlwaysPrepareSftpHandle());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || handleLength == null
-                    || handleLength.getOriginalValue() == null) {
-                setHandleLength(this.handle.getValue().length);
-            }
         }
     }
 

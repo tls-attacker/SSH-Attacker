@@ -15,6 +15,6 @@ public class AuthenticationResponseEntryPreparator extends Preparator<Authentica
 
     @Override
     public final void prepare(AuthenticationResponseEntry object, Chooser chooser) {
-        object.setSoftlyResponse("6d757575", true, chooser.getConfig());
+        object.setResponse("6d757575", true);
     }
 }

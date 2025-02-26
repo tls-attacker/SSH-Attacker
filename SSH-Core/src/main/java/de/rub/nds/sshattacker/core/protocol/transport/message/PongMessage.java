@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PongMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -71,17 +70,6 @@ public class PongMessage extends SshMessage<PongMessage> {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
         if (adjustLengthField) {
             setDataLength(this.data.getValue().length);
-        }
-    }
-
-    public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || dataLength == null
-                    || dataLength.getOriginalValue() == null) {
-                setDataLength(this.data.getValue().length);
-            }
         }
     }
 

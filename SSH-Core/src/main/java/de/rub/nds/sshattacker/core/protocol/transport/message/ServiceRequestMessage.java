@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceRequestMessageHandler;
@@ -81,20 +80,6 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
         if (adjustLengthField) {
             setServiceNameLength(
                     this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyServiceName(String serviceName, boolean adjustLengthField, Config config) {
-        this.serviceName =
-                ModifiableVariableFactory.softlySetValue(
-                        this.serviceName, serviceName, config.getAlwaysPrepareServiceNames());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || serviceNameLength == null
-                    || serviceNameLength.getOriginalValue() == null) {
-                setServiceNameLength(
-                        this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

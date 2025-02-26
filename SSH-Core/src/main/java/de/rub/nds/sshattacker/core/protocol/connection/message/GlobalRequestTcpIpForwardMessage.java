@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -72,20 +71,6 @@ public class GlobalRequestTcpIpForwardMessage
         }
     }
 
-    public void setSoftlyIpAddressToBind(
-            String ipAddressToBind, boolean adjustLengthField, Config config) {
-        this.ipAddressToBind =
-                ModifiableVariableFactory.softlySetValue(this.ipAddressToBind, ipAddressToBind);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || ipAddressToBindLength == null
-                    || ipAddressToBindLength.getOriginalValue() == null) {
-                setIpAddressToBindLength(
-                        this.ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public ModifiableInteger getIpAddressToBindLength() {
         return ipAddressToBindLength;
     }
@@ -110,10 +95,6 @@ public class GlobalRequestTcpIpForwardMessage
 
     public void setPortToBind(int portToBind) {
         this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
-    }
-
-    public void setSoftlyPortToBind(int portToBind) {
-        this.portToBind = ModifiableVariableFactory.softlySetValue(this.portToBind, portToBind);
     }
 
     public static final GlobalRequestTcpIpForwardMessageHandler HANDLER =

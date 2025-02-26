@@ -44,7 +44,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
                 Optional.ofNullable(object.getConfigLocalChannelId())
                         .orElse(chooser.getConfig().getChannelDefaults().getLocalChannelId());
 
-        object.setSoftlySenderChannelId(localChannelId, chooser.getConfig());
+        object.setSenderChannelId(localChannelId);
         Integer senderChannelId = object.getSenderChannelId().getValue();
 
         channel = channelManager.getChannelByLocalId(senderChannelId);
@@ -63,8 +63,8 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
         channel.setChannelType(ChannelType.fromName(channelType));
         // Always set correct channel type -> Don't use soft set
         object.setChannelType(channelType, true);
-        object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
-        object.setSoftlyPacketSize(32768);
+        object.setWindowSize(channel.getLocalWindowSize().getValue());
+        object.setPacketSize(32768);
         prepareChannelOpenMessageSpecificContents(object, chooser);
     }
 

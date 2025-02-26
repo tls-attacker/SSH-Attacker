@@ -32,10 +32,8 @@ public class ChannelOpenConfirmationMessagePreparator
         ChannelManager channelManager = chooser.getContext().getChannelManager();
         ChannelOpenConfirmationMessage toCopy = channelManager.prepareNextOpenConfirm();
 
-        object.setSoftlyRecipientChannelId(
-                toCopy.getRecipientChannelId().getValue(), chooser.getConfig());
-        object.setSoftlySenderChannelId(
-                toCopy.getSenderChannelId().getValue(), chooser.getConfig());
+        object.setRecipientChannelId(toCopy.getRecipientChannelId().getValue());
+        object.setSenderChannelId(toCopy.getSenderChannelId().getValue());
 
         Channel channel =
                 channelManager.getChannelByLocalId(object.getSenderChannelId().getValue());
@@ -47,12 +45,12 @@ public class ChannelOpenConfirmationMessagePreparator
                         channel.getLocalChannelId().getValue());
             }
 
-            object.setSoftlyWindowSize(channel.getLocalWindowSize().getValue());
-            object.setSoftlyPacketSize(channel.getLocalPacketSize().getValue());
+            object.setWindowSize(channel.getLocalWindowSize().getValue());
+            object.setPacketSize(channel.getLocalPacketSize().getValue());
         } else {
             ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
-            object.setSoftlyWindowSize(channelDefaults.getLocalWindowSize());
-            object.setSoftlyPacketSize(channelDefaults.getLocalPacketSize());
+            object.setWindowSize(channelDefaults.getLocalWindowSize());
+            object.setPacketSize(channelDefaults.getLocalPacketSize());
         }
     }
 }

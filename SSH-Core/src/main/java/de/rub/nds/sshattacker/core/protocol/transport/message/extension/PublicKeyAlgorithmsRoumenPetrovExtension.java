@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PublicKeyAlgorithmsRoumenPetrovExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -108,29 +107,6 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
             List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
         setPublicKeyAlgorithms(
                 Converter.listOfNamesToString(publicKeyAlgorithms), adjustLengthField);
-    }
-
-    public void setSoftlyPublicKeyAlgorithms(
-            List<PublicKeyAlgorithm> publicKeyAlgorithms,
-            boolean adjustLengthField,
-            Config config) {
-
-        this.publicKeyAlgorithms =
-                ModifiableVariableFactory.softlySetValue(
-                        this.publicKeyAlgorithms,
-                        Converter.listOfNamesToString(publicKeyAlgorithms));
-
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || publicKeyAlgorithmsLength == null
-                    || publicKeyAlgorithmsLength.getOriginalValue() == null) {
-                setPublicKeyAlgorithmsLength(
-                        this.publicKeyAlgorithms
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
-        }
     }
 
     public static final PublicKeyAlgorithmsRoumenPetrovExtensionHandler HANDLER =

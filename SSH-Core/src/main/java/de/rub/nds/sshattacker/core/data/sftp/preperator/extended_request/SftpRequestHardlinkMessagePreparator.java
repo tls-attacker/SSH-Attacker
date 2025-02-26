@@ -22,8 +22,8 @@ public class SftpRequestHardlinkMessagePreparator
     public void prepareRequestExtendedSpecificContents(
             SftpRequestHardlinkMessage object, Chooser chooser) {
 
-        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setPath("/etc/passwd", true);
 
-        object.setSoftlyNewPath("/etc/passwd-new", true, chooser.getConfig());
+        object.setNewPath("/etc/passwd-new", true);
     }
 }

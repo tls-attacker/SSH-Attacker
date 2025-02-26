@@ -23,16 +23,14 @@ public class SftpRequestCheckFileHandleMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestCheckFileHandleMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileHandle(), true, chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
 
-        object.setSoftlyHashAlgorithms(
-                List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true, chooser.getConfig());
+        object.setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);
 
-        object.setSoftlyStartOffset(0);
+        object.setStartOffset(0);
 
-        object.setSoftlyLength(100000); // 0 for all data
+        object.setLength(100000); // 0 for all data
 
-        object.setSoftlyBlockSize(512); // Should be >= 256
+        object.setBlockSize(512); // Should be >= 256
     }
 }

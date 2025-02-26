@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpFileAttributeFlag;
 import de.rub.nds.sshattacker.core.constants.SftpFileType;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileAttributesHandler;
@@ -140,18 +139,8 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
     }
 
-    public void setSoftlyFlags(int flags) {
-        this.flags = ModifiableVariableFactory.softlySetValue(this.flags, flags);
-    }
-
     public void setFlags(SftpFileAttributeFlag... attributeFlags) {
         setFlags(SftpFileAttributeFlag.flagsToInt(attributeFlags));
-    }
-
-    public void setSoftlyFlags(SftpFileAttributeFlag... attributeFlags) {
-        if (flags == null || flags.getOriginalValue() == null) {
-            setFlags(SftpFileAttributeFlag.flagsToInt(attributeFlags));
-        }
     }
 
     public ModifiableLong getSize() {
@@ -164,10 +153,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setSize(long size) {
         this.size = ModifiableVariableFactory.safelySetValue(this.size, size);
-    }
-
-    public void setSoftlySize(long size) {
-        this.size = ModifiableVariableFactory.softlySetValue(this.size, size);
     }
 
     public void clearSize() {
@@ -186,10 +171,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.userId = ModifiableVariableFactory.safelySetValue(this.userId, userId);
     }
 
-    public void setSoftlyUserId(int userId) {
-        this.userId = ModifiableVariableFactory.softlySetValue(this.userId, userId);
-    }
-
     public void clearUserId() {
         userId = null;
     }
@@ -204,10 +185,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setGroupId(int groupId) {
         this.groupId = ModifiableVariableFactory.safelySetValue(this.groupId, groupId);
-    }
-
-    public void setSoftlyGroupId(int groupId) {
-        this.groupId = ModifiableVariableFactory.softlySetValue(this.groupId, groupId);
     }
 
     public void clearGroupId() {
@@ -226,10 +203,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.permissions = ModifiableVariableFactory.safelySetValue(this.permissions, permissions);
     }
 
-    public void setSoftlyPermissions(int permissions) {
-        this.permissions = ModifiableVariableFactory.softlySetValue(this.permissions, permissions);
-    }
-
     public void clearPermissions() {
         permissions = null;
     }
@@ -244,10 +217,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
 
     public void setAccessTime(int accessTime) {
         this.accessTime = ModifiableVariableFactory.safelySetValue(this.accessTime, accessTime);
-    }
-
-    public void setSoftlyAccessTime(int accessTime) {
-        this.accessTime = ModifiableVariableFactory.softlySetValue(this.accessTime, accessTime);
     }
 
     public void clearAccessTime() {
@@ -266,10 +235,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.modifyTime = ModifiableVariableFactory.safelySetValue(this.modifyTime, modifyTime);
     }
 
-    public void setSoftlyModifyTime(int modifyTime) {
-        this.modifyTime = ModifiableVariableFactory.softlySetValue(this.modifyTime, modifyTime);
-    }
-
     public void clearModifyTime() {
         modifyTime = null;
     }
@@ -285,14 +250,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setExtendedCount(int extendedCount) {
         this.extendedCount =
                 ModifiableVariableFactory.safelySetValue(this.extendedCount, extendedCount);
-    }
-
-    public void setSoftlyExtendedCount(int extendedCount, Config config) {
-        this.extendedCount =
-                ModifiableVariableFactory.softlySetValue(
-                        this.extendedCount,
-                        extendedCount,
-                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public void clearExtendedAttributes() {
@@ -342,16 +299,8 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
-    public void setSoftlyType(byte type) {
-        this.type = ModifiableVariableFactory.softlySetValue(this.type, type);
-    }
-
     public void setType(SftpFileType type) {
         setType(type.getType());
-    }
-
-    public void setSoftlyType(SftpFileType type) {
-        setSoftlyType(type.getType());
     }
 
     public void clearType() {
@@ -393,17 +342,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.owner = ModifiableVariableFactory.safelySetValue(this.owner, owner);
         if (adjustLengthField) {
             setOwnerLength(this.owner.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyOwner(String owner, boolean adjustLengthField, Config config) {
-        this.owner = ModifiableVariableFactory.softlySetValue(this.owner, owner);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || ownerLength == null
-                    || ownerLength.getOriginalValue() == null) {
-                setOwnerLength(this.owner.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 
@@ -450,17 +388,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         }
     }
 
-    public void setSoftlyGroup(String group, boolean adjustLengthField, Config config) {
-        this.group = ModifiableVariableFactory.softlySetValue(this.group, group);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || groupLength == null
-                    || groupLength.getOriginalValue() == null) {
-                setGroupLength(this.group.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public void clearGroup() {
         groupLength = null;
         group = null;
@@ -477,11 +404,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setAccessTimeLong(long accessTimeLong) {
         this.accessTimeLong =
                 ModifiableVariableFactory.safelySetValue(this.accessTimeLong, accessTimeLong);
-    }
-
-    public void setSoftlyAccessTimeLong(long accessTimeLong) {
-        this.accessTimeLong =
-                ModifiableVariableFactory.softlySetValue(this.accessTimeLong, accessTimeLong);
     }
 
     public void clearAccessTimeLong() {
@@ -502,12 +424,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
                         this.accessTimeNanoseconds, accessTimeNanoseconds);
     }
 
-    public void setSoftlyAccessTimeNanoseconds(int accessTimeNanoseconds) {
-        this.accessTimeNanoseconds =
-                ModifiableVariableFactory.softlySetValue(
-                        this.accessTimeNanoseconds, accessTimeNanoseconds);
-    }
-
     public void clearAccessTimeNanoseconds() {
         accessTimeNanoseconds = null;
     }
@@ -523,11 +439,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setCreateTimeLong(long createTimeLong) {
         this.createTimeLong =
                 ModifiableVariableFactory.safelySetValue(this.createTimeLong, createTimeLong);
-    }
-
-    public void setSoftlyCreateTimeLong(long createTimeLong) {
-        this.createTimeLong =
-                ModifiableVariableFactory.softlySetValue(this.createTimeLong, createTimeLong);
     }
 
     public void clearCreateTimeLong() {
@@ -548,12 +459,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
                         this.createTimeNanoseconds, createTimeNanoseconds);
     }
 
-    public void setSoftlyCreateTimeNanoseconds(int createTimeNanoseconds) {
-        this.createTimeNanoseconds =
-                ModifiableVariableFactory.softlySetValue(
-                        this.createTimeNanoseconds, createTimeNanoseconds);
-    }
-
     public void clearCreateTimeNanoseconds() {
         createTimeNanoseconds = null;
     }
@@ -569,11 +474,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setModifyTimeLong(long modifyTimeLong) {
         this.modifyTimeLong =
                 ModifiableVariableFactory.safelySetValue(this.modifyTimeLong, modifyTimeLong);
-    }
-
-    public void setSoftlyModifyTimeLong(long modifyTimeLong) {
-        this.modifyTimeLong =
-                ModifiableVariableFactory.softlySetValue(this.modifyTimeLong, modifyTimeLong);
     }
 
     public void clearModifyTimeLong() {
@@ -597,12 +497,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setModifyTimeNanoseconds(int modifyTimeNanoseconds) {
         this.modifyTimeNanoseconds =
                 ModifiableVariableFactory.safelySetValue(
-                        this.modifyTimeNanoseconds, modifyTimeNanoseconds);
-    }
-
-    public void setSoftlyModifyTimeNanoseconds(int modifyTimeNanoseconds) {
-        this.modifyTimeNanoseconds =
-                ModifiableVariableFactory.softlySetValue(
                         this.modifyTimeNanoseconds, modifyTimeNanoseconds);
     }
 
@@ -634,12 +528,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
         this.aclLength = ModifiableVariableFactory.safelySetValue(this.aclLength, aclLength);
     }
 
-    public void setSoftlyAclLength(int aclLength, Config config) {
-        this.aclLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.aclLength, aclLength, config.getAlwaysPrepareSftpLengthFields());
-    }
-
     public ModifiableInteger getAclEntriesCount() {
         return aclEntriesCount;
     }
@@ -651,14 +539,6 @@ public class SftpFileAttributes extends ModifiableVariableHolder {
     public void setAclEntriesCount(int aclEntriesCount) {
         this.aclEntriesCount =
                 ModifiableVariableFactory.safelySetValue(this.aclEntriesCount, aclEntriesCount);
-    }
-
-    public void setSoftlyAclEntriesCount(int aclEntriesCount, Config config) {
-        this.aclEntriesCount =
-                ModifiableVariableFactory.softlySetValue(
-                        this.aclEntriesCount,
-                        aclEntriesCount,
-                        config.getAlwaysPrepareSftpLengthFields());
     }
 
     public List<SftpAclEntry> getAclEntries() {

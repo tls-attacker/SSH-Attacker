@@ -42,16 +42,14 @@ public class UserAuthHostbasedMessagePreparator
             UserAuthHostbasedMessage object, Chooser chooser) {
 
         Config config = chooser.getConfig();
-        object.setSoftlyPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true, config);
-        object.setSoftlyHostKeyBytes(
-                PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true, config);
-        object.setSoftlyHostName(
+        object.setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
+        object.setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
+        object.setHostName(
                 Optional.ofNullable(chooser.getContext().getConnection().getIp())
                         .orElse(AliasedConnection.DEFAULT_IP),
-                true,
-                config);
+                true);
         // set the username on client machine to the username on remote, specify if needed
-        object.setSoftlyClientUserName(config.getUsername(), true, config);
+        object.setClientUserName(config.getUsername(), true);
         prepareSignature(object, chooser);
     }
 
@@ -91,17 +89,17 @@ public class UserAuthHostbasedMessagePreparator
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
-            object.setSoftlySignature(signatureOutput.toByteArray(), true, chooser.getConfig());
+            object.setSignature(signatureOutput.toByteArray(), true);
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            object.setSoftlySignature(new byte[0], true, chooser.getConfig());
+            object.setSignature(new byte[0], true);
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            object.setSoftlySignature(new byte[0], true, chooser.getConfig());
+            object.setSignature(new byte[0], true);
         }
     }
 }

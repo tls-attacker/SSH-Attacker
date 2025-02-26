@@ -21,13 +21,10 @@ public class SftpRequestFileStatMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestFileStatMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
-                true,
-                chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
 
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
-            object.setSoftlyFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
+            object.setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
         } else {
             object.clearFlags();
         }

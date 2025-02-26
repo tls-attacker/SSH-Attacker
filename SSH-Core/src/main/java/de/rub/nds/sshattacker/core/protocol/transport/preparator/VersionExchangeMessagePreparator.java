@@ -17,14 +17,14 @@ public class VersionExchangeMessagePreparator
     @Override
     public void prepareProtocolMessageContents(VersionExchangeMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
-            object.setSoftlyVersion(chooser.getClientVersion());
-            object.setSoftlyComment(chooser.getClientComment());
-            object.setSoftlyEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
+            object.setVersion(chooser.getClientVersion());
+            object.setComment(chooser.getClientComment());
+            object.setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
             chooser.getContext().getExchangeHashInputHolder().setClientVersion(object);
         } else {
-            object.setSoftlyVersion(chooser.getServerVersion());
-            object.setSoftlyComment(chooser.getServerComment());
-            object.setSoftlyEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
+            object.setVersion(chooser.getServerVersion());
+            object.setComment(chooser.getServerComment());
+            object.setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
             chooser.getContext().getExchangeHashInputHolder().setServerVersion(object);
         }
     }

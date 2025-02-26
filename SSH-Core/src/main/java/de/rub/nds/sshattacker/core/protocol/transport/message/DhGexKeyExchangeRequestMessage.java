@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -53,12 +52,6 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                 ModifiableVariableFactory.safelySetValue(this.minimalGroupSize, minimalGroupSize);
     }
 
-    public void setSoftlyMinimalGroupSize(int minimalGroupSize, Config config) {
-        this.minimalGroupSize =
-                ModifiableVariableFactory.softlySetValue(
-                        this.minimalGroupSize, minimalGroupSize, config.getAlwaysPrepareKex());
-    }
-
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;
     }
@@ -73,12 +66,6 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                         this.preferredGroupSize, preferredGroupSize);
     }
 
-    public void setSoftlyPreferredGroupSize(int preferredGroupSize, Config config) {
-        this.preferredGroupSize =
-                ModifiableVariableFactory.softlySetValue(
-                        this.preferredGroupSize, preferredGroupSize, config.getAlwaysPrepareKex());
-    }
-
     public ModifiableInteger getMaximalGroupSize() {
         return maximalGroupSize;
     }
@@ -90,12 +77,6 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     public void setMaximalGroupSize(int maximalGroupSize) {
         this.maximalGroupSize =
                 ModifiableVariableFactory.safelySetValue(this.maximalGroupSize, maximalGroupSize);
-    }
-
-    public void setSoftlyMaximalGroupSize(int maximalGroupSize, Config config) {
-        this.maximalGroupSize =
-                ModifiableVariableFactory.softlySetValue(
-                        this.maximalGroupSize, maximalGroupSize, config.getAlwaysPrepareKex());
     }
 
     public static final DhGexKeyExchangeRequestMessageHandler HANDLER =

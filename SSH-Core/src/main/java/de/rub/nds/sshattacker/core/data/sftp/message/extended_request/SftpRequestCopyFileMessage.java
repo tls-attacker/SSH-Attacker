@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyFileMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -61,18 +60,8 @@ public class SftpRequestCopyFileMessage
                         this.overwriteDestination, overwriteDestination);
     }
 
-    public void setSoftlyOverwriteDestination(byte overwriteDestination) {
-        this.overwriteDestination =
-                ModifiableVariableFactory.softlySetValue(
-                        this.overwriteDestination, overwriteDestination);
-    }
-
     public void setOverwriteDestination(boolean overwriteDestination) {
         setOverwriteDestination(Converter.booleanToByte(overwriteDestination));
-    }
-
-    public void setSoftlyOverwriteDestination(boolean overwriteDestination) {
-        setSoftlyOverwriteDestination(Converter.booleanToByte(overwriteDestination));
     }
 
     public ModifiableInteger getDestinationPathLength() {
@@ -115,20 +104,6 @@ public class SftpRequestCopyFileMessage
         if (adjustLengthField) {
             setDestinationPathLength(
                     this.destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyDestinationPath(
-            String destinationPath, boolean adjustLengthField, Config config) {
-        this.destinationPath =
-                ModifiableVariableFactory.softlySetValue(this.destinationPath, destinationPath);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || destinationPathLength == null
-                    || destinationPathLength.getOriginalValue() == null) {
-                setDestinationPathLength(
-                        this.destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PingExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -72,18 +71,6 @@ public class PingExtension extends AbstractExtension<PingExtension> {
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
         if (adjustLengthField) {
             setVersionLength(this.version.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyVersion(String version, boolean adjustLengthField, Config config) {
-        this.version = ModifiableVariableFactory.softlySetValue(this.version, version);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || versionLength == null
-                    || versionLength.getOriginalValue() == null) {
-                setVersionLength(
-                        this.version.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

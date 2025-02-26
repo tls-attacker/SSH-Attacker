@@ -41,11 +41,6 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
-    public void setSoftlyTypeSpecificData(byte[] typeSpecificData) {
-        this.typeSpecificData =
-                ModifiableVariableFactory.softlySetValue(this.typeSpecificData, typeSpecificData);
-    }
-
     public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
         this.typeSpecificData = typeSpecificData;
     }

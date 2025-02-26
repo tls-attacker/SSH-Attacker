@@ -36,7 +36,7 @@ public class RsaKeyExchangeSecretMessagePreparator
             encryptedSecret = new byte[0];
         }
 
-        object.setSoftlyEncryptedSecret(encryptedSecret, true, chooser.getConfig());
+        object.setEncryptedSecret(encryptedSecret, true);
 
         chooser.getContext().getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }

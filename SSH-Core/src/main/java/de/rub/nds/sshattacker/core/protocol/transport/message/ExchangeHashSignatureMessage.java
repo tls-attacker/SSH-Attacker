@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 
 /**
  * A message containing the servers' signature computed over the exchange hash using the host key.
@@ -31,6 +30,4 @@ public interface ExchangeHashSignatureMessage {
     void setSignature(ModifiableByteArray signature, boolean adjustLengthField);
 
     void setSignature(byte[] signature, boolean adjustLengthField);
-
-    void setSoftlySignature(byte[] signature, boolean adjustLengthField, Config config);
 }

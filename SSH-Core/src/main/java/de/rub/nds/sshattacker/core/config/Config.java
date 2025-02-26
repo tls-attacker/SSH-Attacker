@@ -468,34 +468,9 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
-    /** Whether key exchange init messages should always be prepared with configured values */
-    private Boolean alwaysPrepareKexInit;
-
-    /** Whether key exchange messages should always be prepared by computations */
-    private Boolean alwaysPrepareKex;
-
     // TODO: Think about an option that reflects the modifications on the key exchange messages back
     //  to the context (including ExchangeHashInputHolder), so that the actually modified keys are
     //  used in the computations. Would maybe be interesting for fuzzing
-
-    /**
-     * Whether requested service names in kex and authentication messages should always be prepared
-     */
-    private Boolean alwaysPrepareServiceNames;
-
-    /**
-     * Whether authentication related data in the authentication messages should always be prepared
-     */
-    private Boolean alwaysPrepareAuthentication;
-
-    /** Whether the channel ids in the channel messages should always be prepared */
-    private Boolean alwaysPrepareChannelIds;
-
-    /**
-     * Whether the length fields in the messages should be consistent with their corresponding
-     * fields.
-     */
-    private Boolean alwaysPrepareLengthFields;
 
     /**
      * Whether decryption should be omitted if an error occurs during the decryption of a packet.
@@ -591,15 +566,6 @@ public class Config implements Serializable {
     // endregion
 
     // region general SFTP settings
-    /**
-     * Whether the length fields in the messages should be consistent with their corresponding
-     * fields.
-     */
-    private Boolean alwaysPrepareSftpLengthFields;
-
-    /** Whether the handle fields in the messages should always be prepared. */
-    private Boolean alwaysPrepareSftpHandle;
-
     /** Whether the attributes in messages should be consistent with the attributes flags. */
     private Boolean respectSftpAttributesFlags;
 
@@ -1303,12 +1269,6 @@ public class Config implements Serializable {
         // endregion
 
         // region general SSH Settings
-        alwaysPrepareKexInit = true;
-        alwaysPrepareKex = true;
-        alwaysPrepareServiceNames = true;
-        alwaysPrepareAuthentication = true;
-        alwaysPrepareChannelIds = true;
-        alwaysPrepareLengthFields = true;
         fallbackToNoDecryptionOnError = true;
         fallbackToNoDecompressionOnError = true;
         // endregion
@@ -1335,8 +1295,6 @@ public class Config implements Serializable {
         // endregion
 
         // region general SFTP settings
-        alwaysPrepareSftpLengthFields = true;
-        alwaysPrepareSftpHandle = true;
         respectSftpAttributesFlags = true;
         // endregion
 
@@ -1553,12 +1511,6 @@ public class Config implements Serializable {
         defaultTermEnvVariable = other.defaultTermEnvVariable;
         defaultSubsystemName = other.defaultSubsystemName;
         defaultBreakLength = other.defaultBreakLength;
-        alwaysPrepareKexInit = other.alwaysPrepareKexInit;
-        alwaysPrepareKex = other.alwaysPrepareKex;
-        alwaysPrepareServiceNames = other.alwaysPrepareServiceNames;
-        alwaysPrepareAuthentication = other.alwaysPrepareAuthentication;
-        alwaysPrepareChannelIds = other.alwaysPrepareChannelIds;
-        alwaysPrepareLengthFields = other.alwaysPrepareLengthFields;
         fallbackToNoDecryptionOnError = other.fallbackToNoDecryptionOnError;
         fallbackToNoDecompressionOnError = other.fallbackToNoDecompressionOnError;
         sftpClientVersion = other.sftpClientVersion;
@@ -1579,8 +1531,6 @@ public class Config implements Serializable {
                 sftpServerSupportedExtensions.add(item != null ? item.createCopy() : null);
             }
         }
-        alwaysPrepareSftpLengthFields = other.alwaysPrepareSftpLengthFields;
-        alwaysPrepareSftpHandle = other.alwaysPrepareSftpHandle;
         respectSftpAttributesFlags = other.respectSftpAttributesFlags;
         workflowInput = other.workflowInput;
         workflowTraceType = other.workflowTraceType;
@@ -2378,54 +2328,6 @@ public class Config implements Serializable {
     // endregion
 
     // region general SSH settings
-    public Boolean getAlwaysPrepareKexInit() {
-        return alwaysPrepareKexInit;
-    }
-
-    public void setAlwaysPrepareKexInit(Boolean alwaysPrepareKexInit) {
-        this.alwaysPrepareKexInit = alwaysPrepareKexInit;
-    }
-
-    public Boolean getAlwaysPrepareKex() {
-        return alwaysPrepareKex;
-    }
-
-    public void setAlwaysPrepareKex(Boolean alwaysPrepareKex) {
-        this.alwaysPrepareKex = alwaysPrepareKex;
-    }
-
-    public Boolean getAlwaysPrepareServiceNames() {
-        return alwaysPrepareServiceNames;
-    }
-
-    public void setAlwaysPrepareServiceNames(Boolean alwaysPrepareServiceNames) {
-        this.alwaysPrepareServiceNames = alwaysPrepareServiceNames;
-    }
-
-    public Boolean getAlwaysPrepareAuthentication() {
-        return alwaysPrepareAuthentication;
-    }
-
-    public void setAlwaysPrepareAuthentication(Boolean alwaysPrepareAuthentication) {
-        this.alwaysPrepareAuthentication = alwaysPrepareAuthentication;
-    }
-
-    public Boolean getAlwaysPrepareChannelIds() {
-        return alwaysPrepareChannelIds;
-    }
-
-    public void setAlwaysPrepareChannelIds(Boolean alwaysPrepareChannelIds) {
-        this.alwaysPrepareChannelIds = alwaysPrepareChannelIds;
-    }
-
-    public Boolean getAlwaysPrepareLengthFields() {
-        return alwaysPrepareLengthFields;
-    }
-
-    public void setAlwaysPrepareLengthFields(Boolean alwaysPrepareLengthFields) {
-        this.alwaysPrepareLengthFields = alwaysPrepareLengthFields;
-    }
-
     public Boolean getFallbackToNoDecryptionOnError() {
         return fallbackToNoDecryptionOnError;
     }
@@ -2723,24 +2625,8 @@ public class Config implements Serializable {
     // endregion
 
     // region general SFTP settings
-    public void setAlwaysPrepareSftpLengthFields(Boolean alwaysPrepareSftpLengthFields) {
-        this.alwaysPrepareSftpLengthFields = alwaysPrepareSftpLengthFields;
-    }
-
-    public void setAlwaysPrepareSftpHandle(Boolean alwaysPrepareSftpHandle) {
-        this.alwaysPrepareSftpHandle = alwaysPrepareSftpHandle;
-    }
-
     public void setRespectSftpAttributesFlags(Boolean respectSftpAttributesFlags) {
         this.respectSftpAttributesFlags = respectSftpAttributesFlags;
-    }
-
-    public Boolean getAlwaysPrepareSftpLengthFields() {
-        return alwaysPrepareSftpLengthFields;
-    }
-
-    public Boolean getAlwaysPrepareSftpHandle() {
-        return alwaysPrepareSftpHandle;
     }
 
     public Boolean getRespectSftpAttributesFlags() {

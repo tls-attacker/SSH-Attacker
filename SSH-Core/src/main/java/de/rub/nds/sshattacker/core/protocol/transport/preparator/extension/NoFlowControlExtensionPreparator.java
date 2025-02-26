@@ -20,6 +20,6 @@ public class NoFlowControlExtensionPreparator
 
     @Override
     public void prepareExtensionSpecificContents(NoFlowControlExtension object, Chooser chooser) {
-        object.setSoftlyChoice("p", true, chooser.getConfig());
+        object.setChoice("p", true);
     }
 }

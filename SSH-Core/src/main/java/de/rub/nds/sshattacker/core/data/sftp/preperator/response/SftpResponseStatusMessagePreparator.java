@@ -21,10 +21,10 @@ public class SftpResponseStatusMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents(SftpResponseStatusMessage object, Chooser chooser) {
-        object.setSoftlyStatusCode(SftpStatusCode.SSH_FX_OK);
+        object.setStatusCode(SftpStatusCode.SSH_FX_OK);
 
-        object.setSoftlyErrorMessage("SSH-Attacker sagt NEIN!", true, chooser.getConfig());
+        object.setErrorMessage("SSH-Attacker sagt NEIN!", true);
 
-        object.setSoftlyLanguageTag("de", true, chooser.getConfig());
+        object.setLanguageTag("de", true);
     }
 }

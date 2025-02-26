@@ -43,10 +43,6 @@ public class UnknownDataMessage extends DataMessage<UnknownDataMessage> {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public void setSoftlyPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.softlySetValue(this.payload, payload);
-    }
-
     @Override
     public String toCompactString() {
         return getClass().getSimpleName();

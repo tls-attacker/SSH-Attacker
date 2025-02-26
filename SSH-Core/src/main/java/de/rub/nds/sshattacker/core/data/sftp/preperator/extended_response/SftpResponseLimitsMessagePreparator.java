@@ -15,12 +15,12 @@ public class SftpResponseLimitsMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents(SftpResponseLimitsMessage object, Chooser chooser) {
-        object.setSoftlyMaximumPacketLength(100000);
+        object.setMaximumPacketLength(100000);
 
-        object.setSoftlyMaximumReadLength(0);
+        object.setMaximumReadLength(0);
 
-        object.setSoftlyMaximumWriteLength(0);
+        object.setMaximumWriteLength(0);
 
-        object.setSoftlyMaximumOpenHandles(1);
+        object.setMaximumOpenHandles(1);
     }
 }

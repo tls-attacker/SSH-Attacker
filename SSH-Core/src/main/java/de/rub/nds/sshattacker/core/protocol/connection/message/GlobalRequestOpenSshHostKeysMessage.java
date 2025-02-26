@@ -54,11 +54,6 @@ public class GlobalRequestOpenSshHostKeysMessage
                 ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
     }
 
-    public void setSoftlyHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
-        this.hostKeys =
-                ModifiableVariableFactory.softlySetValue(this.hostKeys, encodeKeys(hostKeys));
-    }
-
     public static final GlobalRequestOpenSshHostKeysMessageHandler HANDLER =
             new GlobalRequestOpenSshHostKeysMessageHandler();
 

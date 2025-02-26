@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
@@ -97,25 +96,8 @@ public class ChannelRequestExitSignalMessage
         }
     }
 
-    public void setSoftlySignalName(String signalName, boolean adjustLengthField, Config config) {
-        this.signalName = ModifiableVariableFactory.softlySetValue(this.signalName, signalName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || signalNameLength == null
-                    || signalNameLength.getOriginalValue() == null) {
-                setSignalNameLength(
-                        this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
         setSignalName(signalName.toString(), adjustLengthField);
-    }
-
-    public void setSoftlySignalName(
-            SignalType signalName, boolean adjustLengthField, Config config) {
-        setSoftlySignalName(signalName.toString(), adjustLengthField, config);
     }
 
     public ModifiableByte getCoreDump() {
@@ -128,14 +110,6 @@ public class ChannelRequestExitSignalMessage
 
     public void setCoreDump(boolean coreDump) {
         setCoreDump(Converter.booleanToByte(coreDump));
-    }
-
-    public void setSoftlyCoreDump(boolean coreDump) {
-        setSoftlyCoreDump(Converter.booleanToByte(coreDump));
-    }
-
-    public void setSoftlyCoreDump(byte coreDump) {
-        this.coreDump = ModifiableVariableFactory.softlySetValue(this.coreDump, coreDump);
     }
 
     public void setCoreDump(ModifiableByte coreDump) {
@@ -183,18 +157,6 @@ public class ChannelRequestExitSignalMessage
         }
     }
 
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public ModifiableInteger getErrorMessageLength() {
         return errorMessageLength;
     }
@@ -236,20 +198,6 @@ public class ChannelRequestExitSignalMessage
         if (adjustLengthField) {
             setErrorMessageLength(
                     this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyErrorMessage(
-            String errorMessage, boolean adjustLengthField, Config config) {
-        this.errorMessage =
-                ModifiableVariableFactory.softlySetValue(this.errorMessage, errorMessage);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || errorMessageLength == null
-                    || errorMessageLength.getOriginalValue() == null) {
-                setErrorMessageLength(
-                        this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

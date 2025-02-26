@@ -40,16 +40,8 @@ public abstract class SftpMessage<T extends SftpMessage<T>> extends DataMessage<
         this.packetType = ModifiableVariableFactory.safelySetValue(this.packetType, packetType);
     }
 
-    public void setSoftlyPacketType(byte packetType) {
-        this.packetType = ModifiableVariableFactory.softlySetValue(this.packetType, packetType);
-    }
-
     public void setPacketType(SftpPacketTypeConstant packetType) {
         setPacketType(packetType.getId());
-    }
-
-    public void setSoftlyPacketType(SftpPacketTypeConstant packetType) {
-        setSoftlyPacketType(packetType.getId());
     }
 
     @Override

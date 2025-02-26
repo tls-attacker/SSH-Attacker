@@ -21,10 +21,10 @@ public class SftpRequestCopyFileMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestCopyFileMessage object, Chooser chooser) {
-        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setPath("/etc/passwd", true);
 
-        object.setSoftlyDestinationPath("/tmp/passwd", true, chooser.getConfig());
+        object.setDestinationPath("/tmp/passwd", true);
 
-        object.setSoftlyOverwriteDestination(true);
+        object.setOverwriteDestination(true);
     }
 }

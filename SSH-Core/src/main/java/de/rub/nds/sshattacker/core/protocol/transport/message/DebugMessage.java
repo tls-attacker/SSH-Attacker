@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -59,17 +58,8 @@ public class DebugMessage extends SshMessage<DebugMessage> {
                 ModifiableVariableFactory.safelySetValue(this.alwaysDisplay, alwaysDisplay);
     }
 
-    public void setSoftlyAlwaysDisplay(byte alwaysDisplay) {
-        this.alwaysDisplay =
-                ModifiableVariableFactory.softlySetValue(this.alwaysDisplay, alwaysDisplay);
-    }
-
     public void setAlwaysDisplay(boolean alwaysDisplay) {
         setAlwaysDisplay(Converter.booleanToByte(alwaysDisplay));
-    }
-
-    public void setSoftlyAlwaysDisplay(boolean alwaysDisplay) {
-        setSoftlyAlwaysDisplay(Converter.booleanToByte(alwaysDisplay));
     }
 
     public ModifiableInteger getMessageLength() {
@@ -111,17 +101,6 @@ public class DebugMessage extends SshMessage<DebugMessage> {
         }
     }
 
-    public void setSoftlyMessage(String message, boolean adjustLengthField, Config config) {
-        this.message = ModifiableVariableFactory.softlySetValue(this.message, message);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || messageLength == null
-                    || messageLength.getOriginalValue() == null) {
-                setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
     }
@@ -160,18 +139,6 @@ public class DebugMessage extends SshMessage<DebugMessage> {
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

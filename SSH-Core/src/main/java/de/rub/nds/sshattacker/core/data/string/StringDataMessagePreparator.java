@@ -13,6 +13,6 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class StringDataMessagePreparator extends ProtocolMessagePreparator<StringDataMessage> {
 
     public void prepareProtocolMessageContents(StringDataMessage object, Chooser chooser) {
-        object.setSoftlyData("ls /");
+        object.setData("ls /");
     }
 }

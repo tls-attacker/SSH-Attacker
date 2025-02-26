@@ -45,10 +45,6 @@ public class ChannelRequestExitStatusMessage
         this.exitStatus = ModifiableVariableFactory.safelySetValue(this.exitStatus, exitStatus);
     }
 
-    public void setSoftlyExitStatus(int exitStatus) {
-        this.exitStatus = ModifiableVariableFactory.softlySetValue(this.exitStatus, exitStatus);
-    }
-
     public static final ChannelRequestExitStatusMessageHandler HANDLER =
             new ChannelRequestExitStatusMessageHandler();
 

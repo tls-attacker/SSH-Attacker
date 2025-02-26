@@ -28,7 +28,7 @@ public abstract class AbstractExtensionPreparator<T extends AbstractExtension<T>
 
     @Override
     public void prepare(T object, Chooser chooser) {
-        object.setSoftlyName(extensionName, true, chooser.getConfig());
+        object.setName(extensionName, true);
         prepareExtensionSpecificContents(object, chooser);
     }
 

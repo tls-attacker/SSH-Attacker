@@ -20,6 +20,6 @@ public class SftpRequestOpenDirMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestOpenDirMessage object, Chooser chooser) {
-        object.setSoftlyPath("/tmp/", true, chooser.getConfig());
+        object.setPath("/tmp/", true);
     }
 }

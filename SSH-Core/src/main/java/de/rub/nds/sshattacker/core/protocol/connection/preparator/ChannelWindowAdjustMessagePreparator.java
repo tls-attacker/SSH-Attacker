@@ -21,9 +21,8 @@ public class ChannelWindowAdjustMessagePreparator
     @Override
     public void prepareChannelMessageSpecificContents(
             ChannelWindowAdjustMessage object, Chooser chooser) {
-        object.setSoftlyRecipientChannelId(
-                channel.getRemoteChannelId().getValue(), chooser.getConfig());
-        object.setSoftlyBytesToAdd(
+        object.setRecipientChannelId(channel.getRemoteChannelId().getValue());
+        object.setBytesToAdd(
                 chooser.getConfig().getChannelDefaults().getLocalWindowSize()
                         - channel.getLocalWindowSize().getValue());
     }

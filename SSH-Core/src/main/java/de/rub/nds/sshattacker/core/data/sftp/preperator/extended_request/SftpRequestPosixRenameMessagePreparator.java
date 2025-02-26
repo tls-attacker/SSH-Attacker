@@ -22,8 +22,8 @@ public class SftpRequestPosixRenameMessagePreparator
     public void prepareRequestExtendedSpecificContents(
             SftpRequestPosixRenameMessage object, Chooser chooser) {
 
-        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setPath("/etc/passwd", true);
 
-        object.setSoftlyNewPath("/etc/passwd-new", true, chooser.getConfig());
+        object.setNewPath("/etc/passwd-new", true);
     }
 }

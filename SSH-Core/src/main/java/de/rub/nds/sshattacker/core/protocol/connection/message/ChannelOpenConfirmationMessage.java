@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -51,12 +50,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
                 ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
     }
 
-    public void setSoftlySenderChannelId(int senderChannelId, Config config) {
-        this.senderChannelId =
-                ModifiableVariableFactory.softlySetValue(
-                        this.senderChannelId, senderChannelId, config.getAlwaysPrepareChannelIds());
-    }
-
     public ModifiableInteger getWindowSize() {
         return windowSize;
     }
@@ -69,10 +62,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
 
-    public void setSoftlyWindowSize(int windowSize) {
-        this.windowSize = ModifiableVariableFactory.softlySetValue(this.windowSize, windowSize);
-    }
-
     public ModifiableInteger getPacketSize() {
         return packetSize;
     }
@@ -83,10 +72,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    public void setSoftlyPacketSize(int packetSize) {
-        this.packetSize = ModifiableVariableFactory.softlySetValue(this.packetSize, packetSize);
     }
 
     public static final ChannelOpenConfirmationMessageHandler HANDLER =

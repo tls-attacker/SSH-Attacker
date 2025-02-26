@@ -80,6 +80,6 @@ public class HybridKeyExchangeReplyMessagePreparator
                 LOGGER.warn("Combiner is not supported. Can not set Hybrid Key.");
                 break;
         }
-        object.setSoftlyConcatenatedHybridKeys(keys, true, chooser.getConfig());
+        object.setConcatenatedHybridKeys(keys, true);
     }
 }

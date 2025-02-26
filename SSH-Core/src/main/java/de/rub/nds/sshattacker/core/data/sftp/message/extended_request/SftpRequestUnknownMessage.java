@@ -47,12 +47,6 @@ public class SftpRequestUnknownMessage
                         this.requestSpecificData, requestSpecificData);
     }
 
-    public void setSoftlyRequestSpecificData(byte[] requestSpecificData) {
-        this.requestSpecificData =
-                ModifiableVariableFactory.softlySetValue(
-                        this.requestSpecificData, requestSpecificData);
-    }
-
     public static final SftpRequestUnknownMessageHandler HANDLER =
             new SftpRequestUnknownMessageHandler();
 

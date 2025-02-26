@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message.holder;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.holder.AuthenticationResponseEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -78,17 +77,6 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
         this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
         if (adjustLengthField) {
             setResponseLength(this.response.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyResponse(String response, boolean adjustLengthField, Config config) {
-        this.response = ModifiableVariableFactory.softlySetValue(this.response, response);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || responseLength == null
-                    || responseLength.getOriginalValue() == null) {
-                setResponseLength(this.response.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

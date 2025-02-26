@@ -21,7 +21,7 @@ public class GlobalRequestTcpIpForwardMessagePreparator
     @Override
     public void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestTcpIpForwardMessage object, Chooser chooser) {
-        object.setSoftlyIpAddressToBind("127.0.0.1", true, chooser.getConfig());
-        object.setSoftlyPortToBind(0);
+        object.setIpAddressToBind("127.0.0.1", true);
+        object.setPortToBind(0);
     }
 }

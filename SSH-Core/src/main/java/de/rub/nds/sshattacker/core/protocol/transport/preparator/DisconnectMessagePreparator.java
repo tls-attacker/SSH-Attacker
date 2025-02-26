@@ -25,17 +25,15 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
 
         Config config = chooser.getConfig();
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
-            object.setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
-            object.setSoftlyDescription(
-                    "No common compression algorithm found in delay-compression extension!",
-                    true,
-                    config);
-            object.setSoftlyLanguageTag("", true, config);
+            object.setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
+            object.setDescription(
+                    "No common compression algorithm found in delay-compression extension!", true);
+            object.setLanguageTag("", true);
         } else {
             // TODO save values in chooser.getConfig()
-            object.setSoftlyReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
-            object.setSoftlyDescription("Test", true, config);
-            object.setSoftlyLanguageTag("", true, config);
+            object.setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
+            object.setDescription("Test", true);
+            object.setLanguageTag("", true);
         }
     }
 }

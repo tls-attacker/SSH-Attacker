@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -80,21 +79,6 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
                         this.ephemeralPublicKey, ephemeralPublicKey);
         if (adjustLengthField) {
             setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
-        }
-    }
-
-    public void setSoftlyEphemeralPublicKey(
-            BigInteger ephemeralPublicKey, boolean adjustLengthField, Config config) {
-        this.ephemeralPublicKey =
-                ModifiableVariableFactory.softlySetValue(
-                        this.ephemeralPublicKey, ephemeralPublicKey, config.getAlwaysPrepareKex());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || ephemeralPublicKeyLength == null
-                    || ephemeralPublicKeyLength.getOriginalValue() == null) {
-                setEphemeralPublicKeyLength(
-                        this.ephemeralPublicKey.getValue().toByteArray().length);
-            }
         }
     }
 

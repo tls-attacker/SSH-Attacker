@@ -19,7 +19,7 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
     }
 
     public void prepareMessageSpecificContents(SftpInitMessage object, Chooser chooser) {
-        object.setSoftlyVersion(chooser.getSftpClientVersion());
+        object.setVersion(chooser.getSftpClientVersion());
         if (object.getExtensions().isEmpty()) {
             // Only load default extensions if none are set in the message
             if (chooser.getSftpClientVersion() == 3) {

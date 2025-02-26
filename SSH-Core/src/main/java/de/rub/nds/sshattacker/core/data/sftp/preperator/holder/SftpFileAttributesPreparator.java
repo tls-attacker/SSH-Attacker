@@ -22,7 +22,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
     @Override
     public final void prepare(SftpFileAttributes object, Chooser chooser) {
-        object.setSoftlyFlags(
+        object.setFlags(
                 SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE,
                 SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID,
                 SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS,
@@ -31,23 +31,23 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
         Config config = chooser.getConfig();
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
-            object.setSoftlyType(SftpFileType.SSH_FILEXFER_TYPE_REGULAR);
+            object.setType(SftpFileType.SSH_FILEXFER_TYPE_REGULAR);
         } else {
             object.clearType();
         }
 
         int flags = object.getFlags().getValue();
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE, config)) {
-            object.setSoftlySize(0);
+            object.setSize(0);
         } else {
             object.clearSize();
         }
 
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_OWNERGROUP, config)) {
-                object.setSoftlyOwner("ssh-attacker", true, config);
+                object.setOwner("ssh-attacker", true);
 
-                object.setSoftlyGroup("nds", true, config);
+                object.setGroup("nds", true);
             } else {
                 object.clearOwner();
                 object.clearGroup();
@@ -56,8 +56,8 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             object.clearGroupId();
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_UIDGID, config)) {
-                object.setSoftlyUserId(0);
-                object.setSoftlyGroupId(0);
+                object.setUserId(0);
+                object.setGroupId(0);
             } else {
                 object.clearUserId();
                 object.clearGroupId();
@@ -67,25 +67,25 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
         }
 
         if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_PERMISSIONS, config)) {
-            object.setSoftlyPermissions(0);
+            object.setPermissions(0);
         } else {
             object.clearPermissions();
         }
 
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACCESSTIME, config)) {
-                object.setSoftlyAccessTimeLong(0);
+                object.setAccessTimeLong(0);
             } else {
                 object.clearAccessTimeLong();
             }
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_CREATETIME, config)) {
-                object.setSoftlyCreateTimeLong(0);
+                object.setCreateTimeLong(0);
             } else {
                 object.clearCreateTimeLong();
             }
 
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_MODIFYTIME, config)) {
-                object.setSoftlyModifyTimeLong(0);
+                object.setModifyTimeLong(0);
             } else {
                 object.clearModifyTimeLong();
             }
@@ -93,8 +93,8 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             object.clearModifyTime();
         } else {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_ACMODTIME, config)) {
-                object.setSoftlyAccessTime(0);
-                object.setSoftlyModifyTime(0);
+                object.setAccessTime(0);
+                object.setModifyTime(0);
             } else {
                 object.clearAccessTime();
                 object.clearModifyTime();
@@ -104,9 +104,9 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
 
         if (chooser.getSftpNegotiatedVersion(false) > 3) {
             if (isFlagSet(flags, SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SUBSECOND_TIMES, config)) {
-                object.setSoftlyAccessTimeNanoseconds(0);
-                object.setSoftlyCreateTimeNanoseconds(0);
-                object.setSoftlyModifyTimeNanoseconds(0);
+                object.setAccessTimeNanoseconds(0);
+                object.setCreateTimeNanoseconds(0);
+                object.setModifyTimeNanoseconds(0);
             } else {
                 object.clearAllNanoseconds();
             }
@@ -119,9 +119,9 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
                 if (object.getAclEntries().isEmpty()) {
                     object.addAclEntry(new SftpAclEntry());
                 }
-                object.setSoftlyAclEntriesCount(object.getAclEntries().size(), config);
+                object.setAclEntriesCount(object.getAclEntries().size());
                 object.getAclEntries().forEach(aclEntry -> aclEntry.prepare(chooser));
-                object.setSoftlyAclLength(
+                object.setAclLength(
                         DataFormatConstants.UINT32_SIZE
                                 + object.getAclEntries().size()
                                         * (DataFormatConstants.UINT32_SIZE * 3
@@ -129,8 +129,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
                                 + object.getAclEntries().stream()
                                         .map(SftpAclEntry::getWhoLength)
                                         .mapToInt(ModifiableVariable::getValue)
-                                        .sum(),
-                        config);
+                                        .sum());
 
             } else {
                 object.clearAcl();
@@ -143,7 +142,7 @@ public class SftpFileAttributesPreparator extends Preparator<SftpFileAttributes>
             if (object.getExtendedAttributes().isEmpty()) {
                 object.addExtendedAttribute(new SftpFileExtendedAttribute());
             }
-            object.setSoftlyExtendedCount(object.getExtendedAttributes().size(), config);
+            object.setExtendedCount(object.getExtendedAttributes().size());
 
             object.getExtendedAttributes()
                     .forEach(extendedAttribute -> extendedAttribute.prepare(chooser));

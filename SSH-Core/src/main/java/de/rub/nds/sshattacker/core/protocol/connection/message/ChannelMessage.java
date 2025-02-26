@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import jakarta.xml.bind.annotation.XmlAttribute;
 
@@ -44,14 +43,6 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
 
     public void setRecipientChannelId(ModifiableInteger recipientChannelId) {
         this.recipientChannelId = recipientChannelId;
-    }
-
-    public void setSoftlyRecipientChannelId(int recipientChannelId, Config config) {
-        this.recipientChannelId =
-                ModifiableVariableFactory.softlySetValue(
-                        this.recipientChannelId,
-                        recipientChannelId,
-                        config.getAlwaysPrepareChannelIds());
     }
 
     public void setRecipientChannelId(int recipientChannelId) {

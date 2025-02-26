@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.holder;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpNameEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -77,17 +76,6 @@ public class SftpNameEntry extends ModifiableVariableHolder {
         this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
         if (adjustLengthField) {
             setNameLength(this.name.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyName(String name, boolean adjustLengthField, Config config) {
-        this.name = ModifiableVariableFactory.softlySetValue(this.name, name);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || nameLength == null
-                    || nameLength.getOriginalValue() == null) {
-                setNameLength(this.name.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

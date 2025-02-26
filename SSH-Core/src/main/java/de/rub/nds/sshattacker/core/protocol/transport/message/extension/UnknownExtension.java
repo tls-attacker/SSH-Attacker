@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -71,17 +70,6 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
         this.value = ModifiableVariableFactory.safelySetValue(this.value, value);
         if (adjustLengthField) {
             setValueLength(this.value.getValue().length);
-        }
-    }
-
-    public void setSoftlyValue(byte[] value, boolean adjustLengthField, Config config) {
-        this.value = ModifiableVariableFactory.softlySetValue(this.value, value);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || valueLength == null
-                    || valueLength.getOriginalValue() == null) {
-                setValueLength(this.value.getValue().length);
-            }
         }
     }
 

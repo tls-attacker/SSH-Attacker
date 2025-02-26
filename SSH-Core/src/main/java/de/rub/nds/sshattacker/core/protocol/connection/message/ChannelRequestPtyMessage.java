@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -102,20 +101,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
         }
     }
 
-    public void setSoftlyTermEnvVariable(
-            String termEnvVariable, boolean adjustLengthField, Config config) {
-        this.termEnvVariable =
-                ModifiableVariableFactory.softlySetValue(this.termEnvVariable, termEnvVariable);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || termEnvVariableLength == null
-                    || termEnvVariableLength.getOriginalValue() == null) {
-                setTermEnvVariableLength(
-                        this.termEnvVariable.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public ModifiableInteger getWidthCharacters() {
         return widthCharacters;
     }
@@ -127,11 +112,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     public void setWidthCharacters(int widthCharacters) {
         this.widthCharacters =
                 ModifiableVariableFactory.safelySetValue(this.widthCharacters, widthCharacters);
-    }
-
-    public void setSoftlyWidthCharacters(int widthCharacters) {
-        this.widthCharacters =
-                ModifiableVariableFactory.softlySetValue(this.widthCharacters, widthCharacters);
     }
 
     public ModifiableInteger getHeightRows() {
@@ -146,10 +126,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
         this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
     }
 
-    public void setSoftlyHeightRows(int heightRows) {
-        this.heightRows = ModifiableVariableFactory.softlySetValue(this.heightRows, heightRows);
-    }
-
     public ModifiableInteger getWidthPixels() {
         return widthPixels;
     }
@@ -160,10 +136,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
 
     public void setWidthPixels(int widthPixels) {
         this.widthPixels = ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
-    }
-
-    public void setSoftlyWidthPixels(int widthPixels) {
-        this.widthPixels = ModifiableVariableFactory.softlySetValue(this.widthPixels, widthPixels);
     }
 
     public ModifiableInteger getHeightPixels() {
@@ -177,11 +149,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     public void setHeightPixels(int heightPixels) {
         this.heightPixels =
                 ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
-    }
-
-    public void setSoftlyHeightPixels(int heightPixels) {
-        this.heightPixels =
-                ModifiableVariableFactory.softlySetValue(this.heightPixels, heightPixels);
     }
 
     public ModifiableInteger getEncodedTerminalModesLength() {
@@ -226,20 +193,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
                         this.encodedTerminalModes, encodedTerminalModes);
         if (adjustLengthField) {
             setEncodedTerminalModesLength(this.encodedTerminalModes.getValue().length);
-        }
-    }
-
-    public void setSoftlyEncodedTerminalModes(
-            byte[] encodedTerminalModes, boolean adjustLengthField, Config config) {
-        this.encodedTerminalModes =
-                ModifiableVariableFactory.softlySetValue(
-                        this.encodedTerminalModes, encodedTerminalModes);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || encodedTerminalModesLength == null
-                    || encodedTerminalModesLength.getOriginalValue() == null) {
-                setEncodedTerminalModesLength(this.encodedTerminalModes.getValue().length);
-            }
         }
     }
 

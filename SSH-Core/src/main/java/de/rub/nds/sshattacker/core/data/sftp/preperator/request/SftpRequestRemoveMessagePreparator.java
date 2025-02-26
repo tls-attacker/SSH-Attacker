@@ -20,6 +20,6 @@ public class SftpRequestRemoveMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestRemoveMessage object, Chooser chooser) {
-        object.setSoftlyPath("/etc/passwd", true, chooser.getConfig());
+        object.setPath("/etc/passwd", true);
     }
 }

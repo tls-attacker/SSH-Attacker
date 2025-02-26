@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionVendorIdHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -70,14 +69,6 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
                         this.vendorStructureLength, vendorStructureLength);
     }
 
-    public void setSoftlyVendorStructureLength(int vendorStructureLength, Config config) {
-        this.vendorStructureLength =
-                ModifiableVariableFactory.softlySetValue(
-                        this.vendorStructureLength,
-                        vendorStructureLength,
-                        config.getAlwaysPrepareSftpLengthFields());
-    }
-
     public ModifiableInteger getVendorNameLength() {
         return vendorNameLength;
     }
@@ -114,18 +105,6 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         this.vendorName = ModifiableVariableFactory.safelySetValue(this.vendorName, vendorName);
         if (adjustLengthField) {
             setVendorNameLength(this.vendorName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyVendorName(String vendorName, boolean adjustLengthField, Config config) {
-        this.vendorName = ModifiableVariableFactory.softlySetValue(this.vendorName, vendorName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || vendorNameLength == null
-                    || vendorNameLength.getOriginalValue() == null) {
-                setVendorNameLength(
-                        this.vendorName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 
@@ -166,18 +145,6 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         if (adjustLengthField) {
             setProductNameLength(
                     this.productName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyProductName(String productName, boolean adjustLengthField, Config config) {
-        this.productName = ModifiableVariableFactory.softlySetValue(this.productName, productName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || productNameLength == null
-                    || productNameLength.getOriginalValue() == null) {
-                setProductNameLength(
-                        this.productName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 
@@ -224,20 +191,6 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
         }
     }
 
-    public void setSoftlyProductVersion(
-            String productVersion, boolean adjustLengthField, Config config) {
-        this.productVersion =
-                ModifiableVariableFactory.softlySetValue(this.productVersion, productVersion);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || productVersionLength == null
-                    || productVersionLength.getOriginalValue() == null) {
-                setProductVersionLength(
-                        this.productVersion.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableLong getProductBuildNumber() {
         return productBuildNumber;
     }
@@ -249,12 +202,6 @@ public class SftpExtensionVendorId extends SftpAbstractExtension<SftpExtensionVe
     public void setProductBuildNumber(long productBuildNumber) {
         this.productBuildNumber =
                 ModifiableVariableFactory.safelySetValue(
-                        this.productBuildNumber, productBuildNumber);
-    }
-
-    public void setSoftlyProductBuildNumber(long productBuildNumber) {
-        this.productBuildNumber =
-                ModifiableVariableFactory.softlySetValue(
                         this.productBuildNumber, productBuildNumber);
     }
 

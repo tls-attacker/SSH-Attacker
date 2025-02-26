@@ -41,16 +41,8 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         this.messageId = ModifiableVariableFactory.safelySetValue(this.messageId, messageId);
     }
 
-    public void setSoftlyMessageId(byte messageId) {
-        this.messageId = ModifiableVariableFactory.softlySetValue(this.messageId, messageId);
-    }
-
     public void setMessageId(MessageIdConstant messageId) {
         setMessageId(messageId.getId());
-    }
-
-    public void setSoftlyMessageId(MessageIdConstant messageId) {
-        setSoftlyMessageId(messageId.getId());
     }
 
     @Override

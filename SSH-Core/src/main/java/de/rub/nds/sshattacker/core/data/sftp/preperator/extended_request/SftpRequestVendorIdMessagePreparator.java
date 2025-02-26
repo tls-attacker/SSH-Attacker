@@ -21,12 +21,12 @@ public class SftpRequestVendorIdMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestVendorIdMessage object, Chooser chooser) {
-        object.setSoftlyVendorName("NDS RUB", true, chooser.getConfig());
+        object.setVendorName("NDS RUB", true);
 
-        object.setSoftlyProductName("SSH-Attacker", true, chooser.getConfig());
+        object.setProductName("SSH-Attacker", true);
 
-        object.setSoftlyProductVersion("1.0", true, chooser.getConfig());
+        object.setProductVersion("1.0", true);
 
-        object.setSoftlyProductBuildNumber(2024);
+        object.setProductBuildNumber(2024);
     }
 }

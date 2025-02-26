@@ -20,6 +20,6 @@ public class SftpExtensionStatVfsPreparator
 
     @Override
     public void prepareExtensionSpecificContents(SftpExtensionStatVfs object, Chooser chooser) {
-        object.setSoftlyVersion("2", true, chooser.getConfig());
+        object.setVersion("2", true);
     }
 }

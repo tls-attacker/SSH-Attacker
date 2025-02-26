@@ -45,10 +45,6 @@ public class SftpUnknownMessage extends SftpMessage<SftpUnknownMessage> {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public void setSoftlyPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.softlySetValue(this.payload, payload);
-    }
-
     @Override
     public String toCompactString() {
         if (packetType != null && packetType.getValue() != null) {

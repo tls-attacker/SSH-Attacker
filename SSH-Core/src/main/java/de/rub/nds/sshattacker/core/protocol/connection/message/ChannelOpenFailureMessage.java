@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -55,10 +54,6 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
         this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
     }
 
-    public void setSoftlyReasonCode(int reasonCode) {
-        this.reasonCode = ModifiableVariableFactory.softlySetValue(this.reasonCode, reasonCode);
-    }
-
     public ModifiableInteger getReasonLength() {
         return reasonLength;
     }
@@ -95,17 +90,6 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
         this.reason = ModifiableVariableFactory.safelySetValue(this.reason, reason);
         if (adjustLengthField) {
             setReasonLength(this.reason.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyReason(String reason, boolean adjustLengthField, Config config) {
-        this.reason = ModifiableVariableFactory.softlySetValue(this.reason, reason);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || reasonLength == null
-                    || reasonLength.getOriginalValue() == null) {
-                setReasonLength(this.reason.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 
@@ -147,18 +131,6 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
         if (adjustLengthField) {
             setLanguageTagLength(
                     this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyLanguageTag(String languageTag, boolean adjustLengthField, Config config) {
-        this.languageTag = ModifiableVariableFactory.softlySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || languageTagLength == null
-                    || languageTagLength.getOriginalValue() == null) {
-                setLanguageTagLength(
-                        this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 

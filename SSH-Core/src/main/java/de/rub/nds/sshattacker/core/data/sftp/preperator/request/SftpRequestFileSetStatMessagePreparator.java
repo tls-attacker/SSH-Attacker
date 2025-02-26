@@ -21,10 +21,7 @@ public class SftpRequestFileSetStatMessagePreparator
     @Override
     public void prepareRequestSpecificContents(
             SftpRequestFileSetStatMessage object, Chooser chooser) {
-        object.setSoftlyHandle(
-                chooser.getContext().getSftpManager().getFileOrDirectoryHandle(),
-                true,
-                chooser.getConfig());
+        object.setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
 
         object.getAttributes().prepare(chooser);
     }

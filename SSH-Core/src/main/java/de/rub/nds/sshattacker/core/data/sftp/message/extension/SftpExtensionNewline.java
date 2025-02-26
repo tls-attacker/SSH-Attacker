@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extension.SftpExtensionNewlineHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -80,20 +79,6 @@ public class SftpExtensionNewline extends SftpAbstractExtension<SftpExtensionNew
         if (adjustLengthField) {
             setNewlineSeperatorLength(
                     this.newlineSeperator.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyNewlineSeperator(
-            String newlineSeperator, boolean adjustLengthField, Config config) {
-        this.newlineSeperator =
-                ModifiableVariableFactory.softlySetValue(this.newlineSeperator, newlineSeperator);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || newlineSeperatorLength == null
-                    || newlineSeperatorLength.getOriginalValue() == null) {
-                setNewlineSeperatorLength(
-                        this.newlineSeperator.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

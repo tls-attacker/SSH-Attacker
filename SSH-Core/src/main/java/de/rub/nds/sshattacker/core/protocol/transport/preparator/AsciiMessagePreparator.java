@@ -15,11 +15,11 @@ public class AsciiMessagePreparator extends ProtocolMessagePreparator<AsciiMessa
 
     @Override
     public void prepareProtocolMessageContents(AsciiMessage object, Chooser chooser) {
-        object.setSoftlyText(""); // TODO: Add a way to set this via configuration.
+        object.setText(""); // TODO: Add a way to set this via configuration.
         if (chooser.getContext().isClient()) {
-            object.setSoftlyEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
+            object.setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
         } else {
-            object.setSoftlyEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
+            object.setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
         }
     }
 }

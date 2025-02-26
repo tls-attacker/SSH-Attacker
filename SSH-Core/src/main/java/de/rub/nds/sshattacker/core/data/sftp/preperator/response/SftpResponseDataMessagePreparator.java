@@ -20,6 +20,6 @@ public class SftpResponseDataMessagePreparator
 
     @Override
     public void prepareResponseSpecificContents(SftpResponseDataMessage object, Chooser chooser) {
-        object.setSoftlyData(new byte[100], true, chooser.getConfig());
+        object.setData(new byte[100], true);
     }
 }

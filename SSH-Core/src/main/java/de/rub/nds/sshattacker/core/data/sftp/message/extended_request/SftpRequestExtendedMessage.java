@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.message.request.SftpRequestMessage;
 import java.nio.charset.StandardCharsets;
@@ -84,24 +83,6 @@ public abstract class SftpRequestExtendedMessage<T extends SftpRequestExtendedMe
         if (adjustLengthField) {
             setExtendedRequestNameLength(
                     this.extendedRequestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyExtendedRequestName(
-            String extendedRequestName, boolean adjustLengthField, Config config) {
-        this.extendedRequestName =
-                ModifiableVariableFactory.softlySetValue(
-                        this.extendedRequestName, extendedRequestName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || extendedRequestNameLength == null
-                    || extendedRequestNameLength.getOriginalValue() == null) {
-                setExtendedRequestNameLength(
-                        this.extendedRequestName
-                                .getValue()
-                                .getBytes(StandardCharsets.US_ASCII)
-                                .length);
-            }
         }
     }
 

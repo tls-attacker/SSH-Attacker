@@ -40,8 +40,4 @@ public abstract class SftpRequestMessage<T extends SftpRequestMessage<T>> extend
     public void setRequestId(int requestId) {
         this.requestId = ModifiableVariableFactory.safelySetValue(this.requestId, requestId);
     }
-
-    public void setSoftlyRequestId(int requestId) {
-        this.requestId = ModifiableVariableFactory.softlySetValue(this.requestId, requestId);
-    }
 }

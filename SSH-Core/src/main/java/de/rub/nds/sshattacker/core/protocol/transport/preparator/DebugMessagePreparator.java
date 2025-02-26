@@ -21,9 +21,9 @@ public class DebugMessagePreparator extends SshMessagePreparator<DebugMessage> {
     @Override
     public void prepareMessageSpecificContents(DebugMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        object.setSoftlyAlwaysDisplay(true);
+        object.setAlwaysDisplay(true);
 
-        object.setSoftlyMessage("", true, chooser.getConfig());
-        object.setSoftlyLanguageTag("", true, chooser.getConfig());
+        object.setMessage("", true);
+        object.setLanguageTag("", true);
     }
 }

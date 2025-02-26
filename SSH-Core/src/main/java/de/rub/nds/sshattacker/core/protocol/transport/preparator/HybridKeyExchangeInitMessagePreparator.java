@@ -56,6 +56,6 @@ public class HybridKeyExchangeInitMessagePreparator
                 LOGGER.warn(
                         "Combiner is not supported, continue without updating ExchangeHashInputHolder");
         }
-        object.setSoftlyConcatenatedHybridKeys(keys, true, chooser.getConfig());
+        object.setConcatenatedHybridKeys(keys, true);
     }
 }

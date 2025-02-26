@@ -29,9 +29,7 @@ public class ServerSigAlgsExtensionPreparator
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         }
-        object.setSoftlyAcceptedPublicKeyAlgorithms(
-                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
-                true,
-                chooser.getConfig());
+        object.setAcceptedPublicKeyAlgorithms(
+                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
     }
 }

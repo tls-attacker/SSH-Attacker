@@ -18,6 +18,6 @@ public class UnknownExtensionPreparator extends AbstractExtensionPreparator<Unkn
 
     @Override
     public void prepareExtensionSpecificContents(UnknownExtension object, Chooser chooser) {
-        object.setSoftlyValue(new byte[100], true, chooser.getConfig());
+        object.setValue(new byte[100], true);
     }
 }

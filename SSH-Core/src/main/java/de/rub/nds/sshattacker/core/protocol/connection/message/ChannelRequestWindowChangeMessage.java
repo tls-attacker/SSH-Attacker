@@ -52,11 +52,6 @@ public class ChannelRequestWindowChangeMessage
                 ModifiableVariableFactory.safelySetValue(this.widthColumns, widthColumns);
     }
 
-    public void setSoftlyWidthColumns(int widthColumns) {
-        this.widthColumns =
-                ModifiableVariableFactory.softlySetValue(this.widthColumns, widthColumns);
-    }
-
     public ModifiableInteger getHeightRows() {
         return heightRows;
     }
@@ -67,10 +62,6 @@ public class ChannelRequestWindowChangeMessage
 
     public void setHeightRows(int heightRows) {
         this.heightRows = ModifiableVariableFactory.safelySetValue(this.heightRows, heightRows);
-    }
-
-    public void setSoftlyHeightRows(int heightRows) {
-        this.heightRows = ModifiableVariableFactory.softlySetValue(this.heightRows, heightRows);
     }
 
     public ModifiableInteger getWidthPixels() {
@@ -85,10 +76,6 @@ public class ChannelRequestWindowChangeMessage
         this.widthPixels = ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
     }
 
-    public void setSoftlyWidthPixels(int widthPixels) {
-        this.widthPixels = ModifiableVariableFactory.softlySetValue(this.widthPixels, widthPixels);
-    }
-
     public ModifiableInteger getHeightPixels() {
         return heightPixels;
     }
@@ -100,11 +87,6 @@ public class ChannelRequestWindowChangeMessage
     public void setHeightPixels(int heightPixels) {
         this.heightPixels =
                 ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
-    }
-
-    public void setSoftlyHeightPixels(int heightPixels) {
-        this.heightPixels =
-                ModifiableVariableFactory.softlySetValue(this.heightPixels, heightPixels);
     }
 
     public static final ChannelRequestWindowChangeMessageHandler HANDLER =

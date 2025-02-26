@@ -58,8 +58,7 @@ public final class KeyExchangeUtil {
         SshPublicKey<?, ?> serverHostKey = context.getChooser().getNegotiatedHostKey();
         context.setHostKey(serverHostKey);
         context.getExchangeHashInputHolder().setServerHostKey(serverHostKey);
-        message.setSoftlyHostKeyBytes(
-                PublicKeyHelper.encode(serverHostKey), true, context.getConfig());
+        message.setHostKeyBytes(PublicKeyHelper.encode(serverHostKey), true);
     }
 
     /**
@@ -110,21 +109,21 @@ public final class KeyExchangeUtil {
             // Adjust context with computed exchange hash signature
             context.setServerExchangeHashSignature(signatureOutput.toByteArray());
             context.setServerExchangeHashSignatureValid(true);
-            message.setSoftlySignature(signatureOutput.toByteArray(), true, context.getConfig());
+            message.setSignature(signatureOutput.toByteArray(), true);
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
             context.setServerExchangeHashSignature(null);
             context.setServerExchangeHashSignatureValid(null);
-            message.setSoftlySignature(new byte[0], true, context.getConfig());
+            message.setSignature(new byte[0], true);
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
             context.setServerExchangeHashSignature(null);
             context.setServerExchangeHashSignatureValid(null);
-            message.setSoftlySignature(new byte[0], true, context.getConfig());
+            message.setSignature(new byte[0], true);
         }
     }
 

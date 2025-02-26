@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestWriteMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -50,10 +49,6 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
         this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
     }
 
-    public void setSoftlyOffset(long offset) {
-        this.offset = ModifiableVariableFactory.softlySetValue(this.offset, offset);
-    }
-
     public ModifiableInteger getDataLength() {
         return dataLength;
     }
@@ -89,17 +84,6 @@ public class SftpRequestWriteMessage extends SftpRequestWithHandleMessage<SftpRe
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
         if (adjustLengthField) {
             setDataLength(this.data.getValue().length);
-        }
-    }
-
-    public void setSoftlyData(byte[] data, boolean adjustLengthField, Config config) {
-        this.data = ModifiableVariableFactory.softlySetValue(this.data, data);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || dataLength == null
-                    || dataLength.getOriginalValue() == null) {
-                setDataLength(this.data.getValue().length);
-            }
         }
     }
 

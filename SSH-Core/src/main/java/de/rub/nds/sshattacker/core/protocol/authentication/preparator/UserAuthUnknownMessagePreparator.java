@@ -21,6 +21,6 @@ public class UserAuthUnknownMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents(
             UserAuthUnknownMessage object, Chooser chooser) {
-        object.setSoftlyMethodSpecificFields(new byte[10]);
+        object.setMethodSpecificFields(new byte[10]);
     }
 }

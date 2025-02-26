@@ -27,7 +27,7 @@ public class DhKeyExchangeInitMessagePreparator
         keyExchange.generateKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
 
-        object.setSoftlyEphemeralPublicKey(pubKey, true, chooser.getConfig());
+        object.setEphemeralPublicKey(pubKey, true);
 
         chooser.getContext().getExchangeHashInputHolder().setDhClientPublicKey(pubKey);
     }

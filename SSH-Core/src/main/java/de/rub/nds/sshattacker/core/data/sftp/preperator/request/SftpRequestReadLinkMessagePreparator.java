@@ -20,6 +20,6 @@ public class SftpRequestReadLinkMessagePreparator
 
     @Override
     public void prepareRequestSpecificContents(SftpRequestReadLinkMessage object, Chooser chooser) {
-        object.setSoftlyPath("/bin/python3", true, chooser.getConfig());
+        object.setPath("/bin/python3", true);
     }
 }

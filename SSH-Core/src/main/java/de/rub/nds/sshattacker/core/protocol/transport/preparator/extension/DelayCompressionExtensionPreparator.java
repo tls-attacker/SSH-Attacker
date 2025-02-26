@@ -24,17 +24,17 @@ public class DelayCompressionExtensionPreparator
             DelayCompressionExtension object, Chooser chooser) {
         Config config = chooser.getConfig();
         if (chooser.getContext().isClient()) {
-            object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getClientSupportedDelayCompressionMethods(), true, config);
-            object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getClientSupportedDelayCompressionMethods(), true, config);
+            object.setCompressionMethodsClientToServer(
+                    chooser.getClientSupportedDelayCompressionMethods(), true);
+            object.setCompressionMethodsServerToClient(
+                    chooser.getClientSupportedDelayCompressionMethods(), true);
 
         } else {
-            object.setSoftlyCompressionMethodsClientToServer(
-                    chooser.getServerSupportedDelayCompressionMethods(), true, config);
-            object.setSoftlyCompressionMethodsServerToClient(
-                    chooser.getServerSupportedDelayCompressionMethods(), true, config);
+            object.setCompressionMethodsClientToServer(
+                    chooser.getServerSupportedDelayCompressionMethods(), true);
+            object.setCompressionMethodsServerToClient(
+                    chooser.getServerSupportedDelayCompressionMethods(), true);
         }
-        object.setSoftlyCompressionMethodsLength(object.computeCompressionMethodsLength(), config);
+        object.setCompressionMethodsLength(object.computeCompressionMethodsLength());
     }
 }

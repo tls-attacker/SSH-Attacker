@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.HashAlgorithm;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCheckFileNameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -99,21 +98,6 @@ public class SftpRequestCheckFileNameMessage
         }
     }
 
-    public void setSoftlyHashAlgorithms(
-            List<HashAlgorithm> hashAlgorithms, boolean adjustLengthField, Config config) {
-        this.hashAlgorithms =
-                ModifiableVariableFactory.softlySetValue(
-                        this.hashAlgorithms, Converter.listOfNamesToString(hashAlgorithms));
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || hashAlgorithmsLength == null
-                    || hashAlgorithmsLength.getOriginalValue() == null) {
-                setHashAlgorithmsLength(
-                        this.hashAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public void setHashAlgorithms(String[] hashAlgorithms, boolean adjustLengthField) {
         setHashAlgorithms(Converter.listOfNamesToString(hashAlgorithms), adjustLengthField);
     }
@@ -134,10 +118,6 @@ public class SftpRequestCheckFileNameMessage
         this.startOffset = ModifiableVariableFactory.safelySetValue(this.startOffset, startOffset);
     }
 
-    public void setSoftlyStartOffset(long startOffset) {
-        this.startOffset = ModifiableVariableFactory.softlySetValue(this.startOffset, startOffset);
-    }
-
     public ModifiableLong getLength() {
         return length;
     }
@@ -150,10 +130,6 @@ public class SftpRequestCheckFileNameMessage
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
-    public void setSoftlyLength(long length) {
-        this.length = ModifiableVariableFactory.softlySetValue(this.length, length);
-    }
-
     public ModifiableInteger getBlockSize() {
         return blockSize;
     }
@@ -164,10 +140,6 @@ public class SftpRequestCheckFileNameMessage
 
     public void setBlockSize(int blockSize) {
         this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
-    }
-
-    public void setSoftlyBlockSize(int blockSize) {
-        this.blockSize = ModifiableVariableFactory.softlySetValue(this.blockSize, blockSize);
     }
 
     public static final SftpRequestCheckFileNameMessageHandler HANDLER =

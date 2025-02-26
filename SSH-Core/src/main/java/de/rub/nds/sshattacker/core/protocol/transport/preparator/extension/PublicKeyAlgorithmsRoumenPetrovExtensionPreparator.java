@@ -21,9 +21,7 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionPreparator
     @Override
     protected void prepareExtensionSpecificContents(
             PublicKeyAlgorithmsRoumenPetrovExtension object, Chooser chooser) {
-        object.setSoftlyPublicKeyAlgorithms(
-                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(),
-                true,
-                chooser.getConfig());
+        object.setPublicKeyAlgorithms(
+                chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);
     }
 }

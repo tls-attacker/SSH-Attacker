@@ -42,8 +42,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
             keyExchange.generateKeyPair();
             CustomRsaPublicKey transientKey = (CustomRsaPublicKey) keyExchange.getPublicKey();
 
-            object.setSoftlyTransientPublicKeyBytes(
-                    transientKey.serialize(), true, chooser.getConfig());
+            object.setTransientPublicKeyBytes(transientKey.serialize(), true);
 
             chooser.getContext()
                     .getExchangeHashInputHolder()
@@ -54,7 +53,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
             LOGGER.warn(
                     "Transient public key preparation failed - workflow will continue but transient public key will be left empty");
             LOGGER.debug(e);
-            object.setSoftlyTransientPublicKeyBytes(new byte[0], true, chooser.getConfig());
+            object.setTransientPublicKeyBytes(new byte[0], true);
             // Using fallback transient key for ExchangeHashInputHolder
             chooser.getContext()
                     .getExchangeHashInputHolder()

@@ -26,6 +26,6 @@ public class SftpResponseHandleMessagePreparator
             object.setHandle(new byte[100], true);
         }
         // This should not be necessary:
-        object.setSoftlyHandleLength(object.getHandle().getValue().length, chooser.getConfig());
+        object.setHandleLength(object.getHandle().getValue().length);
     }
 }

@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.holder.SftpFileNameEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -85,17 +84,6 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
         }
     }
 
-    public void setSoftlyFilename(String filename, boolean adjustLengthField, Config config) {
-        this.filename = ModifiableVariableFactory.softlySetValue(this.filename, filename);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || filenameLength == null
-                    || filenameLength.getOriginalValue() == null) {
-                setFilenameLength(this.filename.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableInteger getLongNameLength() {
         return longNameLength;
     }
@@ -132,17 +120,6 @@ public class SftpFileNameEntry extends ModifiableVariableHolder {
         this.longName = ModifiableVariableFactory.safelySetValue(this.longName, longName);
         if (adjustLengthField) {
             setLongNameLength(this.longName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyLongName(String longName, boolean adjustLengthField, Config config) {
-        this.longName = ModifiableVariableFactory.softlySetValue(this.longName, longName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || longNameLength == null
-                    || longNameLength.getOriginalValue() == null) {
-                setLongNameLength(this.longName.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

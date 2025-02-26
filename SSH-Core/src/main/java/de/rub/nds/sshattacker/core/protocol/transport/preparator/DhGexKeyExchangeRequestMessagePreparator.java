@@ -27,9 +27,9 @@ public class DhGexKeyExchangeRequestMessagePreparator
         Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
         Integer maximalDhGroupSize = chooser.getMaximalDhGroupSize();
 
-        object.setSoftlyMinimalGroupSize(minimalDhGroupSize, chooser.getConfig());
-        object.setSoftlyPreferredGroupSize(preferredDhGroupSize, chooser.getConfig());
-        object.setSoftlyMaximalGroupSize(maximalDhGroupSize, chooser.getConfig());
+        object.setMinimalGroupSize(minimalDhGroupSize);
+        object.setPreferredGroupSize(preferredDhGroupSize);
+        object.setMaximalGroupSize(maximalDhGroupSize);
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         inputHolder.setDhGexMinimalGroupSize(minimalDhGroupSize);

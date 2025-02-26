@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.path.ModifiablePath;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestPosixRenameMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -75,17 +74,6 @@ public class SftpRequestPosixRenameMessage
         this.newPath = ModifiableVariableFactory.safelySetValue(this.newPath, newPath);
         if (adjustLengthField) {
             setNewPathLength(this.newPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyNewPath(String newPath, boolean adjustLengthField, Config config) {
-        this.newPath = ModifiableVariableFactory.softlySetValue(this.newPath, newPath);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || newPathLength == null
-                    || newPathLength.getOriginalValue() == null) {
-                setNewPathLength(this.newPath.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

@@ -46,12 +46,6 @@ public class SftpResponseUnknownMessage extends SftpResponseMessage<SftpResponse
                         this.responseSpecificData, responseSpecificData);
     }
 
-    public void setSoftlyResponseSpecificData(byte[] responseSpecificData) {
-        this.responseSpecificData =
-                ModifiableVariableFactory.softlySetValue(
-                        this.responseSpecificData, responseSpecificData);
-    }
-
     public static final SftpResponseUnknownMessageHandler HANDLER =
             new SftpResponseUnknownMessageHandler();
 

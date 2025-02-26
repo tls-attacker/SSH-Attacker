@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 
 public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHandleMessage<T>>
         extends SftpRequestMessage<T> {
@@ -67,19 +66,6 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
         this.handle = ModifiableVariableFactory.safelySetValue(this.handle, handle);
         if (adjustLengthField) {
             setHandleLength(this.handle.getValue().length);
-        }
-    }
-
-    public void setSoftlyHandle(byte[] handle, boolean adjustLengthField, Config config) {
-        this.handle =
-                ModifiableVariableFactory.softlySetValue(
-                        this.handle, handle, config.getAlwaysPrepareSftpHandle());
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || handleLength == null
-                    || handleLength.getOriginalValue() == null) {
-                setHandleLength(this.handle.getValue().length);
-            }
         }
     }
 }

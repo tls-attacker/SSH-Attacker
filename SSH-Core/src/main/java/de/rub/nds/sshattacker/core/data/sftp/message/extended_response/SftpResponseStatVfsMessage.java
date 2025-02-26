@@ -71,10 +71,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.blockSize = ModifiableVariableFactory.safelySetValue(this.blockSize, blockSize);
     }
 
-    public void setSoftlyBlockSize(long blockSize) {
-        this.blockSize = ModifiableVariableFactory.softlySetValue(this.blockSize, blockSize);
-    }
-
     public ModifiableLong getFundamentalBlockSize() {
         return fundamentalBlockSize;
     }
@@ -86,12 +82,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
     public void setFundamentalBlockSize(long fundamentalBlockSize) {
         this.fundamentalBlockSize =
                 ModifiableVariableFactory.safelySetValue(
-                        this.fundamentalBlockSize, fundamentalBlockSize);
-    }
-
-    public void setSoftlyFundamentalBlockSize(long fundamentalBlockSize) {
-        this.fundamentalBlockSize =
-                ModifiableVariableFactory.softlySetValue(
                         this.fundamentalBlockSize, fundamentalBlockSize);
     }
 
@@ -107,10 +97,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.countBlocks = ModifiableVariableFactory.safelySetValue(this.countBlocks, countBlocks);
     }
 
-    public void setSoftlyCountBlocks(long countBlocks) {
-        this.countBlocks = ModifiableVariableFactory.softlySetValue(this.countBlocks, countBlocks);
-    }
-
     public ModifiableLong getFreeBlocks() {
         return freeBlocks;
     }
@@ -121,10 +107,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setFreeBlocks(long freeBlocks) {
         this.freeBlocks = ModifiableVariableFactory.safelySetValue(this.freeBlocks, freeBlocks);
-    }
-
-    public void setSoftlyFreeBlocks(long freeBlocks) {
-        this.freeBlocks = ModifiableVariableFactory.softlySetValue(this.freeBlocks, freeBlocks);
     }
 
     public ModifiableLong getFreeBlocksNonRoot() {
@@ -140,11 +122,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
                 ModifiableVariableFactory.safelySetValue(this.freeBlocksNonRoot, freeBlocksNonRoot);
     }
 
-    public void setSoftlyFreeBlocksNonRoot(long freeBlocksNonRoot) {
-        this.freeBlocksNonRoot =
-                ModifiableVariableFactory.softlySetValue(this.freeBlocksNonRoot, freeBlocksNonRoot);
-    }
-
     public ModifiableLong getFileInodes() {
         return fileInodes;
     }
@@ -157,10 +134,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.fileInodes = ModifiableVariableFactory.safelySetValue(this.fileInodes, fileInodes);
     }
 
-    public void setSoftlyFileInodes(long fileInodes) {
-        this.fileInodes = ModifiableVariableFactory.softlySetValue(this.fileInodes, fileInodes);
-    }
-
     public ModifiableLong getFreeInodes() {
         return freeInodes;
     }
@@ -171,10 +144,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setFreeInodes(long freeInodes) {
         this.freeInodes = ModifiableVariableFactory.safelySetValue(this.freeInodes, freeInodes);
-    }
-
-    public void setSoftlyFreeInodes(long freeInodes) {
-        this.freeInodes = ModifiableVariableFactory.softlySetValue(this.freeInodes, freeInodes);
     }
 
     public ModifiableLong getFreeInodesNonRoot() {
@@ -190,11 +159,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
                 ModifiableVariableFactory.safelySetValue(this.freeInodesNonRoot, freeInodesNonRoot);
     }
 
-    public void setSoftlyFreeInodesNonRoot(long freeInodesNonRoot) {
-        this.freeInodesNonRoot =
-                ModifiableVariableFactory.softlySetValue(this.freeInodesNonRoot, freeInodesNonRoot);
-    }
-
     public ModifiableLong getSystemId() {
         return systemId;
     }
@@ -205,10 +169,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
 
     public void setSystemId(long systemId) {
         this.systemId = ModifiableVariableFactory.safelySetValue(this.systemId, systemId);
-    }
-
-    public void setSoftlySystemId(long systemId) {
-        this.systemId = ModifiableVariableFactory.softlySetValue(this.systemId, systemId);
     }
 
     public ModifiableLong getFlags() {
@@ -223,16 +183,8 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
         this.flags = ModifiableVariableFactory.safelySetValue(this.flags, flags);
     }
 
-    public void setSoftlyFlags(long flags) {
-        this.flags = ModifiableVariableFactory.softlySetValue(this.flags, flags);
-    }
-
     public void setFlags(SftpVfsFlag... vfsFlags) {
         setFlags(SftpVfsFlag.flagsToLong(vfsFlags));
-    }
-
-    public void setSoftlyFlags(SftpVfsFlag... vfsFlags) {
-        setSoftlyFlags(SftpVfsFlag.flagsToLong(vfsFlags));
     }
 
     public ModifiableLong getMaximumFilenameLength() {
@@ -246,12 +198,6 @@ public class SftpResponseStatVfsMessage extends SftpResponseMessage<SftpResponse
     public void setMaximumFilenameLength(long maximumFilenameLength) {
         this.maximumFilenameLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.maximumFilenameLength, maximumFilenameLength);
-    }
-
-    public void setSoftlyMaximumFilenameLength(long maximumFilenameLength) {
-        this.maximumFilenameLength =
-                ModifiableVariableFactory.softlySetValue(
                         this.maximumFilenameLength, maximumFilenameLength);
     }
 

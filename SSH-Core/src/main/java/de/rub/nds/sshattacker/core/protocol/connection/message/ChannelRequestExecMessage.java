@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -74,17 +73,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
         this.command = ModifiableVariableFactory.safelySetValue(this.command, command);
         if (adjustLengthField) {
             setCommandLength(this.command.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setSoftlyCommand(String command, boolean adjustLengthField, Config config) {
-        this.command = ModifiableVariableFactory.softlySetValue(this.command, command);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || commandLength == null
-                    || commandLength.getOriginalValue() == null) {
-                setCommandLength(this.command.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
         }
     }
 

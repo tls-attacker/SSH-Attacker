@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -83,18 +82,6 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         }
     }
 
-    public void setSoftlyRequestType(String requestType, boolean adjustLengthField, Config config) {
-        this.requestType = ModifiableVariableFactory.softlySetValue(this.requestType, requestType);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || requestTypeLength == null
-                    || requestTypeLength.getOriginalValue() == null) {
-                setRequestTypeLength(
-                        this.requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public void setRequestType(ChannelRequestType requestType, boolean adjustLengthField) {
         setRequestType(requestType.toString(), adjustLengthField);
     }
@@ -111,15 +98,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
     }
 
-    public void setSoftlyWantReply(byte wantReply) {
-        this.wantReply = ModifiableVariableFactory.softlySetValue(this.wantReply, wantReply);
-    }
-
     public void setWantReply(boolean wantReply) {
         setWantReply(Converter.booleanToByte(wantReply));
-    }
-
-    public void setSoftlyWantReply(boolean wantReply) {
-        setSoftlyWantReply(Converter.booleanToByte(wantReply));
     }
 }

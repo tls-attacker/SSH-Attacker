@@ -15,6 +15,6 @@ public class SftpIdEntryPreparator extends Preparator<SftpIdEntry> {
 
     @Override
     public final void prepare(SftpIdEntry object, Chooser chooser) {
-        object.setSoftlyId(1000);
+        object.setId(1000);
     }
 }

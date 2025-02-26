@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import java.nio.charset.StandardCharsets;
 
 public abstract class SftpExtensionWithVersion<T extends SftpExtensionWithVersion<T>>
@@ -67,18 +66,6 @@ public abstract class SftpExtensionWithVersion<T extends SftpExtensionWithVersio
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
         if (adjustLengthField) {
             setVersionLength(this.version.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setSoftlyVersion(String version, boolean adjustLengthField, Config config) {
-        this.version = ModifiableVariableFactory.softlySetValue(this.version, version);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareSftpLengthFields()
-                    || versionLength == null
-                    || versionLength.getOriginalValue() == null) {
-                setVersionLength(
-                        this.version.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
         }
     }
 }

@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.holder.AuthenticationPromptEntryHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -86,17 +85,6 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
         }
     }
 
-    public void setSoftlyPrompt(String prompt, boolean adjustLengthField, Config config) {
-        this.prompt = ModifiableVariableFactory.softlySetValue(this.prompt, prompt);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || promptLength == null
-                    || promptLength.getOriginalValue() == null) {
-                setPromptLength(this.prompt.getValue().getBytes(StandardCharsets.UTF_8).length);
-            }
-        }
-    }
-
     public ModifiableByte getEcho() {
         return echo;
     }
@@ -109,16 +97,8 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
         this.echo = ModifiableVariableFactory.safelySetValue(this.echo, echo);
     }
 
-    public void setSoftlyEcho(byte echo) {
-        this.echo = ModifiableVariableFactory.softlySetValue(this.echo, echo);
-    }
-
     public void setEcho(boolean echo) {
         setEcho(Converter.booleanToByte(echo));
-    }
-
-    public void setSoftlyEcho(boolean echo) {
-        setSoftlyEcho(Converter.booleanToByte(echo));
     }
 
     public static final AuthenticationPromptEntryHandler HANDLER =

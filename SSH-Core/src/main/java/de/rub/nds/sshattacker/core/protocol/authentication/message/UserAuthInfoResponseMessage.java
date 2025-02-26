@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoResponseMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -70,14 +69,6 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
                         this.responseEntriesCount, responseEntriesCount);
     }
 
-    public void setSoftlyResponseEntriesCount(int responseEntriesCount, Config config) {
-        this.responseEntriesCount =
-                ModifiableVariableFactory.softlySetValue(
-                        this.responseEntriesCount,
-                        responseEntriesCount,
-                        config.getAlwaysPrepareLengthFields());
-    }
-
     public ArrayList<AuthenticationResponseEntry> getResponseEntries() {
         return responseEntries;
     }
@@ -92,24 +83,6 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
             setResponseEntriesCount(responseEntries.size());
         }
         this.responseEntries = responseEntries;
-    }
-
-    public void setSoftlyResponseEntries(
-            ArrayList<AuthenticationResponseEntry> responseEntries,
-            boolean adjustLengthField,
-            Config config) {
-        if (config.getAlwaysPrepareAuthentication()
-                || this.responseEntries == null
-                || this.responseEntries.isEmpty()) {
-            this.responseEntries = responseEntries;
-        }
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || responseEntriesCount == null
-                    || responseEntriesCount.getOriginalValue() == null) {
-                setResponseEntriesCount(this.responseEntries.size());
-            }
-        }
     }
 
     public void addResponseEntry(AuthenticationResponseEntry responseEntry) {

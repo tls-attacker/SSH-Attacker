@@ -54,16 +54,8 @@ public class SftpRequestOpenMessage extends SftpRequestWithPathMessage<SftpReque
         this.openFlags = ModifiableVariableFactory.safelySetValue(this.openFlags, openFlags);
     }
 
-    public void setSoftlyOpenFlags(int openFlags) {
-        this.openFlags = ModifiableVariableFactory.softlySetValue(this.openFlags, openFlags);
-    }
-
     public void setOpenFlags(SftpFileOpenFlag... fileOpenFlags) {
         setOpenFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
-    }
-
-    public void setSoftlyOpenFlags(SftpFileOpenFlag... fileOpenFlags) {
-        setSoftlyOpenFlags(SftpFileOpenFlag.flagsToInt(fileOpenFlags));
     }
 
     public SftpFileAttributes getAttributes() {

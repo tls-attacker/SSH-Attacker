@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -84,18 +83,6 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
         }
     }
 
-    public void setSoftlyRequestName(String requestName, boolean adjustLengthField, Config config) {
-        this.requestName = ModifiableVariableFactory.softlySetValue(this.requestName, requestName);
-        if (adjustLengthField) {
-            if (config.getAlwaysPrepareLengthFields()
-                    || requestNameLength == null
-                    || requestNameLength.getOriginalValue() == null) {
-                setRequestNameLength(
-                        this.requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            }
-        }
-    }
-
     public void setRequestName(GlobalRequestType requestType, boolean adjustLengthField) {
         setRequestName(requestType.toString(), adjustLengthField);
     }
@@ -112,15 +99,7 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
     }
 
-    public void setSoftlyWantReply(byte wantReply) {
-        this.wantReply = ModifiableVariableFactory.softlySetValue(this.wantReply, wantReply);
-    }
-
     public void setWantReply(boolean wantReply) {
         setWantReply(Converter.booleanToByte(wantReply));
-    }
-
-    public void setSoftlyWantReply(boolean wantReply) {
-        setSoftlyWantReply(Converter.booleanToByte(wantReply));
     }
 }
