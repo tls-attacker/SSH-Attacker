@@ -1106,7 +1106,7 @@ public class Config implements Serializable {
         preConfiguredAuthResponses = new ArrayList<>();
 
         ArrayList<AuthenticationResponseEntry> preConfiguredAuthResponse1 = new ArrayList<>();
-        preConfiguredAuthResponse1.add(new AuthenticationResponseEntry(password));
+        preConfiguredAuthResponse1.add(new AuthenticationResponseEntry());
         preConfiguredAuthResponses.add(
                 new AuthenticationResponseEntries(preConfiguredAuthResponse1));
         ArrayList<AuthenticationResponseEntry> preConfiguredAuthResponse2 = new ArrayList<>();
@@ -1116,7 +1116,7 @@ public class Config implements Serializable {
 
         preConfiguredAuthPrompts = new ArrayList<>();
         ArrayList<AuthenticationPromptEntry> preConfiguredAuthPrompt1 = new ArrayList<>();
-        preConfiguredAuthPrompt1.add(new AuthenticationPromptEntry("Response: ", true));
+        preConfiguredAuthPrompt1.add(new AuthenticationPromptEntry());
         preConfiguredAuthPrompts.add(new AuthenticationPromptEntries(preConfiguredAuthPrompt1));
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"

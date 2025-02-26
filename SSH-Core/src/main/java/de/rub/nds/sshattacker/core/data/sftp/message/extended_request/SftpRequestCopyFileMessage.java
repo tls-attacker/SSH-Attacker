@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.data.sftp.handler.extended_request.SftpRequestCopyFileMessageHandler;
+import de.rub.nds.sshattacker.core.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -99,8 +99,7 @@ public class SftpRequestCopyFileMessage
     }
 
     public void setDestinationPath(String destinationPath, boolean adjustLengthField) {
-        this.destinationPath =
-                ModifiableVariableFactory.safelySetValue(this.destinationPath, destinationPath);
+        this.destinationPath = ModifiablePath.safelySetValue(this.destinationPath, destinationPath);
         if (adjustLengthField) {
             setDestinationPathLength(
                     this.destinationPath.getValue().getBytes(StandardCharsets.UTF_8).length);

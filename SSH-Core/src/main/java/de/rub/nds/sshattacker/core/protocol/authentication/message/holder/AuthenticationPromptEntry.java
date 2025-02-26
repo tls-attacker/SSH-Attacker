@@ -28,12 +28,6 @@ public class AuthenticationPromptEntry extends ModifiableVariableHolder {
         super();
     }
 
-    public AuthenticationPromptEntry(String prompt, boolean echo) {
-        super();
-        setPrompt(prompt, true);
-        setEcho(echo);
-    }
-
     public AuthenticationPromptEntry(AuthenticationPromptEntry other) {
         super(other);
         promptLength = other.promptLength != null ? other.promptLength.createCopy() : null;

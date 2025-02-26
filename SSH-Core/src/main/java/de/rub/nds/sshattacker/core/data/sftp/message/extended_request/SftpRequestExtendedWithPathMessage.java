@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.message.extended_request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.path.ModifiablePath;
+import de.rub.nds.sshattacker.core.modifiablevariable.path.ModifiablePath;
 import java.nio.charset.StandardCharsets;
 
 public abstract class SftpRequestExtendedWithPathMessage<
@@ -64,7 +64,7 @@ public abstract class SftpRequestExtendedWithPathMessage<
     }
 
     public void setPath(String path, boolean adjustLengthField) {
-        this.path = ModifiableVariableFactory.safelySetValue(this.path, path);
+        this.path = ModifiablePath.safelySetValue(this.path, path);
         if (adjustLengthField) {
             setPathLength(this.path.getValue().getBytes(StandardCharsets.UTF_8).length);
         }

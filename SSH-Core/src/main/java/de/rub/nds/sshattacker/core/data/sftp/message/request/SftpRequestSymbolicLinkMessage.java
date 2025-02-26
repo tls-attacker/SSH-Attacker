@@ -9,8 +9,8 @@ package de.rub.nds.sshattacker.core.data.sftp.message.request;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.data.sftp.handler.request.SftpRequestSymbolicLinkMessageHandler;
+import de.rub.nds.sshattacker.core.modifiablevariable.path.ModifiablePath;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
@@ -75,7 +75,7 @@ public class SftpRequestSymbolicLinkMessage
     }
 
     public void setTargetPath(String targetPath, boolean adjustLengthField) {
-        this.targetPath = ModifiableVariableFactory.safelySetValue(this.targetPath, targetPath);
+        this.targetPath = ModifiablePath.safelySetValue(this.targetPath, targetPath);
         if (adjustLengthField) {
             setTargetPathLength(this.targetPath.getValue().getBytes(StandardCharsets.UTF_8).length);
         }

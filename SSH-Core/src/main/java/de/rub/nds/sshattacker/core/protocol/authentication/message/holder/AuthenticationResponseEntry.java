@@ -25,11 +25,6 @@ public class AuthenticationResponseEntry extends ModifiableVariableHolder {
         super();
     }
 
-    public AuthenticationResponseEntry(String response) {
-        super();
-        setResponse(response, true);
-    }
-
     public AuthenticationResponseEntry(AuthenticationResponseEntry other) {
         super(other);
         responseLength = other.responseLength != null ? other.responseLength.createCopy() : null;
