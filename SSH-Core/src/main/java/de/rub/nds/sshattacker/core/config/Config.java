@@ -187,22 +187,22 @@ public class Config implements Serializable {
     /** List of languages (client to server) supported by the client */
     @XmlElement(name = "clientSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private ArrayList<String> clientSupportedLanguagesClientToServer;
+    private ArrayList<LanguageTag> clientSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the client */
     @XmlElement(name = "clientSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private ArrayList<String> clientSupportedLanguagesServerToClient;
+    private ArrayList<LanguageTag> clientSupportedLanguagesServerToClient;
 
     /** List of languages (client to server) supported by the server */
     @XmlElement(name = "serverSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private ArrayList<String> serverSupportedLanguagesServerToClient;
+    private ArrayList<LanguageTag> serverSupportedLanguagesServerToClient;
 
     /** List of languages (server to client) supported by the server */
     @XmlElement(name = "serverSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private ArrayList<String> serverSupportedLanguagesClientToServer;
+    private ArrayList<LanguageTag> serverSupportedLanguagesClientToServer;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
@@ -1790,19 +1790,19 @@ public class Config implements Serializable {
         return serverSupportedCompressionMethodsClientToServer;
     }
 
-    public List<String> getClientSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getClientSupportedLanguagesClientToServer() {
         return clientSupportedLanguagesClientToServer;
     }
 
-    public List<String> getClientSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getClientSupportedLanguagesServerToClient() {
         return clientSupportedLanguagesServerToClient;
     }
 
-    public List<String> getServerSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getServerSupportedLanguagesServerToClient() {
         return serverSupportedLanguagesServerToClient;
     }
 
-    public List<String> getServerSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getServerSupportedLanguagesClientToServer() {
         return serverSupportedLanguagesClientToServer;
     }
 
@@ -1921,22 +1921,22 @@ public class Config implements Serializable {
     }
 
     public void setClientSupportedLanguagesClientToServer(
-            ArrayList<String> clientSupportedLanguagesClientToServer) {
+            ArrayList<LanguageTag> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
     public void setClientSupportedLanguagesServerToClient(
-            ArrayList<String> clientSupportedLanguagesServerToClient) {
+            ArrayList<LanguageTag> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesServerToClient(
-            ArrayList<String> serverSupportedLanguagesServerToClient) {
+            ArrayList<LanguageTag> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesClientToServer(
-            ArrayList<String> serverSupportedLanguagesClientToServer) {
+            ArrayList<LanguageTag> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 

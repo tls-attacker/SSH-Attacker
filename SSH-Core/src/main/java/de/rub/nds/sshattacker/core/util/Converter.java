@@ -138,6 +138,7 @@ public final class Converter {
      */
     public static <T extends Enum<T>> List<T> nameListToEnumValues(
             String nameListString, Class<T> enumClass) {
+        // Could be simplified if we add a common interface to each enum to get an enum by name
         return nameStreamToEnumValues(nameListStringToStringStream(nameListString), enumClass);
     }
 

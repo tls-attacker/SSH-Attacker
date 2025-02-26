@@ -167,16 +167,16 @@ public class SshContext {
     private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
     /** List of languages (client to server) supported by the client */
-    private List<String> clientSupportedLanguagesClientToServer;
+    private List<LanguageTag> clientSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the client */
-    private List<String> clientSupportedLanguagesServerToClient;
+    private List<LanguageTag> clientSupportedLanguagesServerToClient;
 
     /** List of languages (client to server) supported by the server */
-    private List<String> serverSupportedLanguagesClientToServer;
+    private List<LanguageTag> serverSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the server */
-    private List<String> serverSupportedLanguagesServerToClient;
+    private List<LanguageTag> serverSupportedLanguagesServerToClient;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
@@ -708,19 +708,19 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedCompressionMethodsClientToServer);
     }
 
-    public Optional<List<String>> getClientSupportedLanguagesClientToServer() {
+    public Optional<List<LanguageTag>> getClientSupportedLanguagesClientToServer() {
         return Optional.ofNullable(clientSupportedLanguagesClientToServer);
     }
 
-    public Optional<List<String>> getClientSupportedLanguagesServerToClient() {
+    public Optional<List<LanguageTag>> getClientSupportedLanguagesServerToClient() {
         return Optional.ofNullable(clientSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<String>> getServerSupportedLanguagesServerToClient() {
+    public Optional<List<LanguageTag>> getServerSupportedLanguagesServerToClient() {
         return Optional.ofNullable(serverSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<String>> getServerSupportedLanguagesClientToServer() {
+    public Optional<List<LanguageTag>> getServerSupportedLanguagesClientToServer() {
         return Optional.ofNullable(serverSupportedLanguagesClientToServer);
     }
 
@@ -843,22 +843,22 @@ public class SshContext {
     }
 
     public void setClientSupportedLanguagesClientToServer(
-            List<String> clientSupportedLanguagesClientToServer) {
+            List<LanguageTag> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
     public void setClientSupportedLanguagesServerToClient(
-            List<String> clientSupportedLanguagesServerToClient) {
+            List<LanguageTag> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesServerToClient(
-            List<String> serverSupportedLanguagesServerToClient) {
+            List<LanguageTag> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesClientToServer(
-            List<String> serverSupportedLanguagesClientToServer) {
+            List<LanguageTag> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 

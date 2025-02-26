@@ -61,11 +61,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             object.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setServerSupportedLanguagesClientToServer(
-                    Converter.nameListStringToStringList(
-                            object.getLanguagesClientToServer().getValue()));
+                    Converter.nameListToEnumValues(
+                            object.getLanguagesClientToServer().getValue(), LanguageTag.class));
             context.setServerSupportedLanguagesServerToClient(
-                    Converter.nameListStringToStringList(
-                            object.getLanguagesServerToClient().getValue()));
+                    Converter.nameListToEnumValues(
+                            object.getLanguagesServerToClient().getValue(), LanguageTag.class));
             context.setServerReserved(object.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setServerKeyExchangeInit(object);
@@ -115,11 +115,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             object.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setClientSupportedLanguagesClientToServer(
-                    Converter.nameListStringToStringList(
-                            object.getLanguagesClientToServer().getValue()));
+                    Converter.nameListToEnumValues(
+                            object.getLanguagesClientToServer().getValue(), LanguageTag.class));
             context.setClientSupportedLanguagesServerToClient(
-                    Converter.nameListStringToStringList(
-                            object.getLanguagesServerToClient().getValue()));
+                    Converter.nameListToEnumValues(
+                            object.getLanguagesServerToClient().getValue(), LanguageTag.class));
             context.setClientReserved(object.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setClientKeyExchangeInit(object);

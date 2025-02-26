@@ -793,7 +793,7 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setLanguagesClientToServer(languagesClientToServer, false);
     }
 
-    public void setLanguagesClientToServer(List<String> languagesClientToServer) {
+    public void setLanguagesClientToServer(List<LanguageTag> languagesClientToServer) {
         setLanguagesClientToServer(languagesClientToServer, false);
     }
 
@@ -830,9 +830,9 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     public void setLanguagesClientToServer(
-            List<String> languagesClientToServer, boolean adjustLengthField) {
+            List<LanguageTag> languagesClientToServer, boolean adjustLengthField) {
         setLanguagesClientToServer(
-                Converter.listOfNameStringsToString(languagesClientToServer), adjustLengthField);
+                Converter.listOfNamesToString(languagesClientToServer), adjustLengthField);
     }
 
     public ModifiableInteger getLanguagesServerToClientLength() {
@@ -865,7 +865,7 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setLanguagesServerToClient(languagesServerToClient, false);
     }
 
-    public void setLanguagesServerToClient(List<String> languagesServerToClient) {
+    public void setLanguagesServerToClient(List<LanguageTag> languagesServerToClient) {
         setLanguagesServerToClient(languagesServerToClient, false);
     }
 
@@ -902,9 +902,9 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     public void setLanguagesServerToClient(
-            List<String> languagesServerToClient, boolean adjustLengthField) {
+            List<LanguageTag> languagesServerToClient, boolean adjustLengthField) {
         setLanguagesServerToClient(
-                Converter.listOfNameStringsToString(languagesServerToClient), adjustLengthField);
+                Converter.listOfNamesToString(languagesServerToClient), adjustLengthField);
     }
 
     public ModifiableByte getFirstKeyExchangePacketFollows() {

@@ -385,7 +385,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for client to server communication supported by the client
      */
     @Override
-    public List<String> getClientSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getClientSupportedLanguagesClientToServer() {
         return context.getClientSupportedLanguagesClientToServer()
                 .orElse(config.getClientSupportedLanguagesClientToServer());
     }
@@ -399,7 +399,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for server to client communication supported by the client
      */
     @Override
-    public List<String> getClientSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getClientSupportedLanguagesServerToClient() {
         return context.getClientSupportedLanguagesServerToClient()
                 .orElse(config.getClientSupportedLanguagesServerToClient());
     }
@@ -413,7 +413,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for server to client communication supported by the server
      */
     @Override
-    public List<String> getServerSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getServerSupportedLanguagesServerToClient() {
         return context.getServerSupportedLanguagesServerToClient()
                 .orElse(config.getServerSupportedLanguagesServerToClient());
     }
@@ -427,7 +427,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for client to server communication supported by the server
      */
     @Override
-    public List<String> getServerSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getServerSupportedLanguagesClientToServer() {
         return context.getServerSupportedLanguagesClientToServer()
                 .orElse(config.getServerSupportedLanguagesClientToServer());
     }
