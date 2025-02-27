@@ -16,6 +16,10 @@ import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.*;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.*;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.request.*;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.response.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.SftpV4InitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseNameMessage;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -211,7 +215,20 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
         @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
         // SFTP V4
-        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek")
+        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek"),
+        @XmlElement(type = SftpV4InitMessage.class, name = "SftpV4Init"),
+        @XmlElement(type = SftpV4ResponseNameMessage.class, name = "SftpV4ResponseName"),
+        @XmlElement(
+                type = SftpV4ResponseAttributesMessage.class,
+                name = "SftpV4ResponseAttributes"),
+        @XmlElement(type = SftpV4RequestOpenMessage.class, name = "SftpV4RequestOpen"),
+        @XmlElement(type = SftpV4RequestFileStatMessage.class, name = "SftpV4RequestFileStat"),
+        @XmlElement(
+                type = SftpV4RequestFileSetStatMessage.class,
+                name = "SftpV4RequestFileSetStat"),
+        @XmlElement(type = SftpV4RequestSetStatMessage.class, name = "SftpV4RequestSetStat"),
+        @XmlElement(type = SftpV4RequestMakeDirMessage.class, name = "SftpV4RequestMakeDir"),
+        @XmlElement(type = SftpV4RequestStatMessage.class, name = "SftpV4RequestStat")
     })
     protected ArrayList<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
