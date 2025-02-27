@@ -7,15 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.VariableModification;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.util.JAXBSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -26,6 +25,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.reflections.Reflections;
 
 public final class WorkflowTraceSerializer {
 
@@ -36,7 +36,13 @@ public final class WorkflowTraceSerializer {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
-            context = JAXBContext.newInstance(WorkflowTrace.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(WorkflowTrace.class);
+            // We need to add all VariableModification classes because modifications are not
+            // strongly typed
+            Reflections reflections = new Reflections("de.rub.nds");
+            classes.addAll(reflections.getSubTypesOf(VariableModification.class));
+            context = JAXBContext.newInstance(classes.toArray(new Class<?>[0]));
         }
         return context;
     }

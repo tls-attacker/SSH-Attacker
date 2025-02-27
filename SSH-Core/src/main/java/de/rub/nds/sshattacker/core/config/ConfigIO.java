@@ -7,12 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.config;
 
+import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.util.JAXBSource;
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -21,6 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+import org.reflections.Reflections;
 
 public final class ConfigIO {
 
@@ -29,7 +33,13 @@ public final class ConfigIO {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
-            context = JAXBContext.newInstance(Config.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(Config.class);
+            // We need to add all VariableModification classes because modifications are not
+            // strongly typed
+            Reflections reflections = new Reflections("de.rub.nds");
+            classes.addAll(reflections.getSubTypesOf(VariableModification.class));
+            context = JAXBContext.newInstance(classes.toArray(new Class<?>[0]));
         }
         return context;
     }
