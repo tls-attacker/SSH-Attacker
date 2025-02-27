@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPromptEntries;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponseEntries;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
@@ -495,12 +495,6 @@ public class Config implements Serializable {
 
     /** SFTP negotiated protocol version */
     private Integer sftpNegotiatedVersion;
-
-    /**
-     * Whether the protocol messages that are sent should be consistent with the negotiated SFTP
-     * protocol version. If false the configured sftpNegotiatedVersion will be used.
-     */
-    private Boolean respectSftpNegotiatedVersion;
 
     // endregion
 
@@ -1284,7 +1278,6 @@ public class Config implements Serializable {
         sftpClientVersion = 3;
         sftpServerVersion = 3;
         sftpNegotiatedVersion = 4;
-        respectSftpNegotiatedVersion = true;
         // endregion
 
         // region SFTP Extension
@@ -1516,7 +1509,6 @@ public class Config implements Serializable {
         sftpClientVersion = other.sftpClientVersion;
         sftpServerVersion = other.sftpServerVersion;
         sftpNegotiatedVersion = other.sftpNegotiatedVersion;
-        respectSftpNegotiatedVersion = other.respectSftpNegotiatedVersion;
         if (other.sftpClientSupportedExtensions != null) {
             sftpClientSupportedExtensions =
                     new ArrayList<>(other.sftpClientSupportedExtensions.size());
@@ -2572,10 +2564,6 @@ public class Config implements Serializable {
         return sftpNegotiatedVersion;
     }
 
-    public Boolean getRespectSftpNegotiatedVersion() {
-        return respectSftpNegotiatedVersion;
-    }
-
     // endregion
     // region Setters for SFTP Version Exchange
     public void setSftpClientVersion(Integer sftpClientVersion) {
@@ -2588,10 +2576,6 @@ public class Config implements Serializable {
 
     public void setSftpNegotiatedVersion(Integer sftpNegotiatedVersion) {
         this.sftpNegotiatedVersion = sftpNegotiatedVersion;
-    }
-
-    public void setRespectSftpNegotiatedVersion(Boolean respectSftpNegotiatedVersion) {
-        this.respectSftpNegotiatedVersion = respectSftpNegotiatedVersion;
     }
 
     // endregion

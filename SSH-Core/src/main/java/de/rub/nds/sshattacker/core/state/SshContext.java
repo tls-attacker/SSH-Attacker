@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.data.DataMessageLayer;
 import de.rub.nds.sshattacker.core.data.sftp.SftpManager;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;

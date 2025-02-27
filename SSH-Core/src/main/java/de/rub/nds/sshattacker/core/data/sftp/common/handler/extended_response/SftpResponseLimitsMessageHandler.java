@@ -1,0 +1,36 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.data.sftp.common.handler.extended_response;
+
+import de.rub.nds.sshattacker.core.data.sftp.common.handler.response.SftpResponseMessageHandler;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.SftpResponseLimitsMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.parser.extended_response.SftpResponseLimitsMessageParser;
+import de.rub.nds.sshattacker.core.data.sftp.common.preperator.extended_response.SftpResponseLimitsMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.serializer.extended_response.SftpResponseLimitsMessageSerializer;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class SftpResponseLimitsMessageHandler
+        extends SftpResponseMessageHandler<SftpResponseLimitsMessage> {
+
+    @Override
+    public SftpResponseLimitsMessageParser getParser(byte[] array, SshContext context) {
+        return new SftpResponseLimitsMessageParser(array);
+    }
+
+    @Override
+    public SftpResponseLimitsMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
+        return new SftpResponseLimitsMessageParser(array, startPosition);
+    }
+
+    public static final SftpResponseLimitsMessagePreparator PREPARATOR =
+            new SftpResponseLimitsMessagePreparator();
+
+    public static final SftpResponseLimitsMessageSerializer SERIALIZER =
+            new SftpResponseLimitsMessageSerializer();
+}

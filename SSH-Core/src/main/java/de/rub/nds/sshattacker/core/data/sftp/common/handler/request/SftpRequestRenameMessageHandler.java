@@ -1,0 +1,35 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.data.sftp.common.handler.request;
+
+import de.rub.nds.sshattacker.core.data.sftp.common.message.request.SftpRequestRenameMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.parser.request.SftpRequestRenameMessageParser;
+import de.rub.nds.sshattacker.core.data.sftp.common.preperator.request.SftpRequestRenameMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.serializer.request.SftpRequestRenameMessageSerializer;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class SftpRequestRenameMessageHandler
+        extends SftpRequestMessageHandler<SftpRequestRenameMessage> {
+
+    @Override
+    public SftpRequestRenameMessageParser getParser(byte[] array, SshContext context) {
+        return new SftpRequestRenameMessageParser(array);
+    }
+
+    @Override
+    public SftpRequestRenameMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
+        return new SftpRequestRenameMessageParser(array, startPosition);
+    }
+
+    public static final SftpRequestRenameMessagePreparator PREPARATOR =
+            new SftpRequestRenameMessagePreparator();
+
+    public static final SftpRequestRenameMessageSerializer SERIALIZER =
+            new SftpRequestRenameMessageSerializer();
+}

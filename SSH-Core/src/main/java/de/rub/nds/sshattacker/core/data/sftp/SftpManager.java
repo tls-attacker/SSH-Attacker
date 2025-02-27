@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.data.sftp;
 
 import de.rub.nds.sshattacker.core.constants.SftpStatusCode;
-import de.rub.nds.sshattacker.core.data.sftp.message.extended_request.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.extended_response.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.request.*;
-import de.rub.nds.sshattacker.core.data.sftp.message.response.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.*;
 import de.rub.nds.sshattacker.core.exceptions.DataManagerException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.ArrayList;

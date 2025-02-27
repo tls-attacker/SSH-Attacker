@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.data.sftp.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
@@ -1085,19 +1085,13 @@ public class DefaultChooser extends Chooser {
 
     /**
      * Retrieves the SFTP negotiated version from context. If no version was received (i.e.
-     * out-of-order workflow), the SFTP negotiated version from config will be returned. If
-     * respectSftpNegotiatedVersion is false the configured sftpNegotiatedVersion is returned. If
-     * forParsing is true, respectSftpNegotiatedVersion is ignored.
+     * out-of-order workflow), the SFTP negotiated version from config will be returned.
      *
      * @return The SFTP negotiated protocol version
      */
     @Override
     public Integer getSftpNegotiatedVersion(boolean forParsing) {
-        if (forParsing || config.getRespectSftpNegotiatedVersion()) {
-            return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
-        } else {
-            return config.getSftpNegotiatedVersion();
-        }
+        return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
     }
 
     // endregion
