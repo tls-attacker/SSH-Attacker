@@ -22,7 +22,6 @@ public class SftpExtensionVendorIdPreparator
 
     @Override
     public void prepareExtensionSpecificContents(SftpExtensionVendorId object, Chooser chooser) {
-        Config config = chooser.getConfig();
         object.setVendorName("NDS RUB", true);
 
         object.setProductName("SSH-Attacker", true);

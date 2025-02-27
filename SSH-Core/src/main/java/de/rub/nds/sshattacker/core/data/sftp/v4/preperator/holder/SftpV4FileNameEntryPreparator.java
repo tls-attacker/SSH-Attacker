@@ -16,7 +16,6 @@ public class SftpV4FileNameEntryPreparator extends Preparator<SftpV4FileNameEntr
 
     @Override
     public final void prepare(SftpV4FileNameEntry object, Chooser chooser) {
-        Config config = chooser.getConfig();
         object.setFilename("/etc/passwd", true);
         object.getAttributes().prepare(chooser);
     }

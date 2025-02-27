@@ -22,7 +22,6 @@ public class DelayCompressionExtensionPreparator
     @Override
     public void prepareExtensionSpecificContents(
             DelayCompressionExtension object, Chooser chooser) {
-        Config config = chooser.getConfig();
         if (chooser.getContext().isClient()) {
             object.setCompressionMethodsClientToServer(
                     chooser.getClientSupportedDelayCompressionMethods(), true);

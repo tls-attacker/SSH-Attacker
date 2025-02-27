@@ -24,7 +24,6 @@ public class UserAuthInfoRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents(UserAuthInfoRequestMessage object, Chooser chooser) {
-        Config config = chooser.getConfig();
         object.setUserName("", true);
         object.setInstruction("", true);
         object.setLanguageTag("", true);

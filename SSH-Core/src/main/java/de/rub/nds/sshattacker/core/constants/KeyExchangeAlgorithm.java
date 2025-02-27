@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.constants;
 
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public enum KeyExchangeAlgorithm {
     /*
@@ -179,8 +177,6 @@ public enum KeyExchangeAlgorithm {
             "diffie-hellman-group18-sha512@ssh.com",
             HashFunction.SHA512),
     UNKNOWN(null, null, null);
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final String name;
     private final HashFunction hashFunction;

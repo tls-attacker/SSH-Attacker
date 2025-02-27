@@ -23,7 +23,6 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
     @Override
     public void prepareMessageSpecificContents(DisconnectMessage object, Chooser chooser) {
 
-        Config config = chooser.getConfig();
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
             object.setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
             object.setDescription(
