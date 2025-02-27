@@ -78,8 +78,6 @@ public class SerializationTest {
     public void testSerializeDeserializeWorkflowTrace() throws Exception {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
-        ArrayList<AuthenticationResponseEntries> preConfiguredAuthResponses = new ArrayList<>();
-
         // Send Action
         UserAuthInfoRequestMessage request = new UserAuthInfoRequestMessage();
         AuthenticationPromptEntry firstPrompt = new AuthenticationPromptEntry();
