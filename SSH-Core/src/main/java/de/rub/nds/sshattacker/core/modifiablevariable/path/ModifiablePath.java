@@ -51,6 +51,15 @@ public class ModifiablePath extends ModifiableString {
         return modifiablePath;
     }
 
+    public static ModifiablePath explicitPath(String explicitValue) {
+        return getModifiablePathWithModification(
+                PathModificationFactory.explicitValue(explicitValue));
+    }
+
+    public static ModifiablePath deletePath(int position, int count) {
+        return getModifiablePathWithModification(PathModificationFactory.delete(position, count));
+    }
+
     public static ModifiablePath prependPath(String perpendValue) {
         return getModifiablePathWithModification(
                 PathModificationFactory.prependValue(perpendValue));

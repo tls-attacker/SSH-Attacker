@@ -38,8 +38,7 @@ public final class WorkflowTraceSerializer {
         if (context == null) {
             Set<Class<?>> classes = new HashSet<>();
             classes.add(WorkflowTrace.class);
-            // We need to add all VariableModification classes because modifications are not
-            // strongly typed
+            // Add all VariableModification classes because they aren't strongly typed
             Reflections reflections = new Reflections("de.rub.nds");
             classes.addAll(reflections.getSubTypesOf(VariableModification.class));
             context = JAXBContext.newInstance(classes.toArray(new Class<?>[0]));
