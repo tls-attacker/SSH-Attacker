@@ -204,7 +204,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
         @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
         // SFTP V4
-        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTWextSeek"),
+        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek"),
         @XmlElement(type = SftpV4InitMessage.class, name = "SftpV4Init"),
         @XmlElement(type = SftpV4ResponseNameMessage.class, name = "SftpV4ResponseName"),
         @XmlElement(
