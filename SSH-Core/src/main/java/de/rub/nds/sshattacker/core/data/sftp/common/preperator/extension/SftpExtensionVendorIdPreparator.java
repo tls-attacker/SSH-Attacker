@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.common.preperator.extension;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpExtensionVendorId;

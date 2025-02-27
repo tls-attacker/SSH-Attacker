@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data.sftp.v4.preperator.holder;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.data.sftp.v4.message.holder.SftpV4FileNameEntry;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
