@@ -116,7 +116,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
                     try {
                         executeAction(dynamicAction, state);
-                        iterator.add(dynamicAction);
+                        if (config.getAddDynamicallyGeneratedActionsToWorkflowTrace()) {
+                            iterator.add(dynamicAction);
+                        }
                     } catch (SkipActionException ex) {
                         LOGGER.debug("Dynamic generated action was not executed.");
                     }

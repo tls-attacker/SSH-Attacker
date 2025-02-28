@@ -654,6 +654,12 @@ public class Config implements Serializable {
 
     private Boolean allowDynamicGenerationOfActions = true;
 
+    /**
+     * Setting this to true will add dynamically generated Actions to the workflow trace. Warning:
+     * This can prevent successful re-execution of a workflow trace
+     */
+    private Boolean addDynamicallyGeneratedActionsToWorkflowTrace = false;
+
     // endregion
 
     // region ReceiveAction
@@ -1543,6 +1549,8 @@ public class Config implements Serializable {
         retryFailedClientTcpSocketInitialization = other.retryFailedClientTcpSocketInitialization;
         stopTraceAfterUnexpected = other.stopTraceAfterUnexpected;
         allowDynamicGenerationOfActions = other.allowDynamicGenerationOfActions;
+        addDynamicallyGeneratedActionsToWorkflowTrace =
+                other.addDynamicallyGeneratedActionsToWorkflowTrace;
         quickReceive = other.quickReceive;
         endReceivingEarly = other.endReceivingEarly;
         receiveMaximumBytes = other.receiveMaximumBytes;
@@ -2415,6 +2423,10 @@ public class Config implements Serializable {
         return allowDynamicGenerationOfActions;
     }
 
+    public Boolean getAddDynamicallyGeneratedActionsToWorkflowTrace() {
+        return addDynamicallyGeneratedActionsToWorkflowTrace;
+    }
+
     // endregion
     // region Setters for Workflow settings
 
@@ -2494,6 +2506,12 @@ public class Config implements Serializable {
 
     public void setAllowDynamicGenerationOfActions(Boolean allowDynamicGenerationOfActions) {
         this.allowDynamicGenerationOfActions = allowDynamicGenerationOfActions;
+    }
+
+    public void setAddDynamicallyGeneratedActionsToWorkflowTrace(
+            Boolean addDynamicallyGeneratedActionsToWorkflowTrace) {
+        this.addDynamicallyGeneratedActionsToWorkflowTrace =
+                addDynamicallyGeneratedActionsToWorkflowTrace;
     }
 
     // endregion

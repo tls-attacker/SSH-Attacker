@@ -70,8 +70,10 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                 return new PacketLayerParseResult(
                         packet, parser.getPointer() - startPosition, true);
             } catch (ParserException | DecryptionException | DecompressionException ex) {
-                LOGGER.warn("Could not parse data as blob packet, dropping remaining bytes");
-                LOGGER.trace(ex);
+                LOGGER.warn(
+                        "Could not parse data as blob packet, dropping remaining {} bytes",
+                        rawBytes.length - startPosition);
+                LOGGER.trace("ParserException", ex);
                 return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
             }
         }

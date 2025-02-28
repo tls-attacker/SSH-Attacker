@@ -46,8 +46,11 @@ public class BlobPacketLayer extends AbstractPacketLayer {
             decryptPacket(packet);
             decompressPacket(packet);
             return new PacketLayerParseResult(packet, parser.getPointer() - startPosition, true);
-        } catch (ParserException | DecryptionException | DecompressionException e) {
-            LOGGER.warn("Could not parse provided data as blob packet, dropping remaining bytes");
+        } catch (ParserException | DecryptionException | DecompressionException ex) {
+            LOGGER.warn(
+                    "Could not parse provided data as blob packet, dropping remaining {} bytes",
+                    rawBytes.length - startPosition);
+            LOGGER.debug("ParserException", ex);
             return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
         }
     }

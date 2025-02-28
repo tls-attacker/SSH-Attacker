@@ -38,9 +38,11 @@ public class PassThroughPacketLayer extends AbstractDataPacketLayer {
     public DataPacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition) {
         try {
             return parsePacket(rawBytes, startPosition);
-        } catch (ParserException e) {
+        } catch (ParserException ex) {
             LOGGER.warn(
-                    "Could not parse provided data as pass-through packet, dropping remaining bytes");
+                    "Could not parse provided data as pass-through packet, dropping remaining {} bytes",
+                    rawBytes.length - startPosition);
+            LOGGER.debug("ParserException", ex);
             return new DataPacketLayerParseResult(null, rawBytes.length - startPosition, true);
         }
     }

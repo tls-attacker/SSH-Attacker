@@ -118,6 +118,7 @@ public class DataMessageLayer {
             resultMessage.setChannelDataWrapper(message);
             return resultMessage;
         }
+        LOGGER.warn("Parsing as UnknownDataMessage");
         UnknownDataMessage unknownResult =
                 new UnknownDataMessageParser(message.getData().getValue()).parse();
         unknownResult.setChannelDataWrapper(message);
