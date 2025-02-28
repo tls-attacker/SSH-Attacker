@@ -24,6 +24,8 @@ public class DataPacketParser extends AbstractDataPacketParser<DataPacket> {
         LOGGER.debug("Parsing DataPacket from serialized bytes:");
         DataPacket packet = new DataPacket();
         packet.setLength(parseIntField());
+        // Some SFTP servers actually calculate the length sometimes wrong, we could handle this by
+        // not relaying on the length field but parse the packet to the end instead
         packet.setPayload(parseByteArrayField(packet.getLength().getValue()));
         return packet;
     }
