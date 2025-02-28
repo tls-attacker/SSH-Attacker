@@ -24,8 +24,11 @@ public class DataPacketParser extends AbstractDataPacketParser<DataPacket> {
         LOGGER.debug("Parsing DataPacket from serialized bytes:");
         DataPacket packet = new DataPacket();
         packet.setLength(parseIntField());
-        // Some SFTP servers actually calculate the length sometimes wrong, we could handle this by
-        // not relaying on the length field but parse the packet to the end instead
+        // TODO: Some SFTP servers split SFTP messages across multiple ChannelDataMessages.
+        //  To handle such SFTP messages we would need a redesign or handle them in a hacky way.
+        //  Maybe it would work to handle channel data as an own data stram and create a channel
+        //  receive action for it. But hopefully the layer implementations from PR 316 solves the
+        //  problem.
         packet.setPayload(parseByteArrayField(packet.getLength().getValue()));
         return packet;
     }
