@@ -55,7 +55,7 @@ public class PathSerializationTest {
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-        start.setModification(null);
+        start.clearModifications();
         start.setAssertEquals("Hello from Test 2 \\ \u0000 \u0001 \u0006");
         m.marshal(start, writer);
 
@@ -73,7 +73,7 @@ public class PathSerializationTest {
     @Test
     public void testSerializeDeserializeWithModification() throws Exception {
         VariableModification<String> modifier = PathModificationFactory.insertValue("Uff! ", 0);
-        start.setModification(modifier);
+        start.setModifications(modifier);
         m.marshal(start, writer);
 
         String xmlString = writer.toString();

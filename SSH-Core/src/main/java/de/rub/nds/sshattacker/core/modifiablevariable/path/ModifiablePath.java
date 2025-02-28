@@ -47,7 +47,7 @@ public class ModifiablePath extends ModifiableString {
     private static ModifiablePath getModifiablePathWithModification(
             VariableModification<String> modification) {
         ModifiablePath modifiablePath = new ModifiablePath();
-        modifiablePath.setModification(modification);
+        modifiablePath.addModification(modification);
         return modifiablePath;
     }
 
