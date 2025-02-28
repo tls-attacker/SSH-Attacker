@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.ChannelDataType;
 import de.rub.nds.sshattacker.core.constants.DataPacketLayerType;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
@@ -20,6 +19,7 @@ import de.rub.nds.sshattacker.core.data.string.StringDataMessage;
 import de.rub.nds.sshattacker.core.data.string.StringDataMessageParser;
 import de.rub.nds.sshattacker.core.data.unknown.UnknownDataMessage;
 import de.rub.nds.sshattacker.core.data.unknown.UnknownDataMessageParser;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -80,30 +80,33 @@ public class DataMessageLayer {
         Optional<AbstractDataPacket> parsedPacket = parseResult.getParsedPacket();
         if (parsedPacket.isPresent()) {
             // Parse and return the message according to expected data type
-            DataMessage<?> resultMessage =
-                    switch (dataType) {
-                        case SUBSYSTEM_SFTP ->
-                                SftpMessageParser.delegateParsing(parsedPacket.get(), context);
-                        case SHELL ->
-                                new StringDataMessageParser(
+            DataMessage<?> resultMessage;
+            try {
+                resultMessage =
+                        switch (dataType) {
+                            case SUBSYSTEM_SFTP ->
+                                    SftpMessageParser.delegateParsing(parsedPacket.get(), context);
+                            case SHELL ->
+                                    new StringDataMessageParser(
+                                                    parsedPacket.get().getPayload().getValue())
+                                            .parse();
+                            default -> {
+                                LOGGER.debug(
+                                        "No parser implemented for ChannelDataType: {}", dataType);
+                                yield new UnknownDataMessageParser(
                                                 parsedPacket.get().getPayload().getValue())
                                         .parse();
-                        default -> {
-                            LOGGER.debug("No parser implemented for ChannelDataType: {}", dataType);
-                            yield new UnknownDataMessageParser(
-                                            parsedPacket.get().getPayload().getValue())
-                                    .parse();
-                        }
-                    };
+                            }
+                        };
+            } catch (ParserException ex) {
+                LOGGER.warn("{}. Parsing as UnknownDataMessage", ex::getMessage);
+                resultMessage =
+                        new UnknownDataMessageParser(parsedPacket.get().getPayload().getValue())
+                                .parse();
+            }
 
             // If the data message body was empty
-            if (resultMessage.getCompleteResultingMessage() == null) {
-                LOGGER.warn("Data in ChannelDataMessage is malformed and can not be parsed.");
-                LOGGER.debug(
-                        "Malformed ChannelDataMessage data: {}",
-                        () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
-                resultMessage.setCompleteResultingMessage(message.getData().getValue());
-            } else if (resultMessage.getCompleteResultingMessage().getValue().length
+            if (resultMessage.getCompleteResultingMessage().getValue().length
                     < parsedPacket.get().getPayload().getValue().length) {
                 // This usually means that we have not implemented the parser for the negotiated
                 // SFTP version.

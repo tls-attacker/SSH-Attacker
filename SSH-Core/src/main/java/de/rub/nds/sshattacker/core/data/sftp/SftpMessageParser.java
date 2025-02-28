@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.data.sftp;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.constants.SftpPacketTypeConstant;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
-import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.SftpRequestExtendedMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.SftpRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.SftpResponseUnknownMessage;
@@ -70,7 +69,7 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
     public static SftpMessage<?> delegateParsingV3(AbstractDataPacket packet, SshContext context) {
         byte[] raw = packet.getPayload().getValue();
         if (raw.length == 0) {
-            return new SftpUnknownMessage();
+            throw new ParserException("There is no payload to parse as SFTP message");
         }
         try {
             return switch (SftpPacketTypeConstant.fromId(raw[0])) {
@@ -103,14 +102,15 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_EXTENDED_REPLY -> handleExtendedResponseMessageParsing(raw, context);
                 default -> {
                     LOGGER.debug(
-                            "Received unimplemented SFTP Message {} ({})",
+                            "Received unimplemented SFTP Message {} ({}), parsing it as UnknownMessage",
                             SftpPacketTypeConstant.getNameById(raw[0]),
                             raw[0]);
                     yield new SftpUnknownMessageParser(raw).parse();
                 }
             };
-        } catch (ParserException e) {
-            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
+        } catch (ParserException ex) {
+            LOGGER.warn("Error while Parsing: {}. Now parsing as UnknownMessage", ex::getMessage);
+            LOGGER.debug("Parser Error:", ex);
             return new SftpUnknownMessageParser(raw).parse();
         }
     }
@@ -118,7 +118,7 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
     public static SftpMessage<?> delegateParsingV4(AbstractDataPacket packet, SshContext context) {
         byte[] raw = packet.getPayload().getValue();
         if (raw.length == 0) {
-            return new SftpUnknownMessage();
+            throw new ParserException("There is no payload to parse as SFTP message");
         }
         try {
             return switch (SftpPacketTypeConstant.fromId(raw[0])) {
@@ -133,8 +133,9 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
                 case SSH_FXP_ATTRS -> new SftpV4ResponseAttributesMessageParser(raw).parse();
                 default -> delegateParsingV3(packet, context);
             };
-        } catch (ParserException e) {
-            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
+        } catch (ParserException ex) {
+            LOGGER.warn("Error while Parsing: {}. Now parsing as UnknownMessage", ex::getMessage);
+            LOGGER.debug("Parser Error:", ex);
             return new SftpUnknownMessageParser(raw).parse();
         }
     }

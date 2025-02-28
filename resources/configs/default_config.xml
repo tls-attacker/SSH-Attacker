@@ -366,7 +366,7 @@
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <stopActionsAfterDisconnect>true</stopActionsAfterDisconnect>
-    <handleTimeoutOnReceiveAsIOException>true</handleTimeoutOnReceiveAsIOException>
+    <handleTimeoutOnReceiveAsIOException>false</handleTimeoutOnReceiveAsIOException>
     <stopActionsAfterIOException>true</stopActionsAfterIOException>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <resetWorkflowTraceBeforeSaving>false</resetWorkflowTraceBeforeSaving>

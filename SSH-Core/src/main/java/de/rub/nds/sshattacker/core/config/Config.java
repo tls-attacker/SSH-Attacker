@@ -609,7 +609,7 @@ public class Config implements Serializable {
      * Exception. or not. TODO: This actually also includes real IO Exceptions. Changes must be done
      * to the TransportHandler
      */
-    private Boolean handleTimeoutOnReceiveAsIOException = true;
+    private Boolean handleTimeoutOnReceiveAsIOException = false;
 
     /** Defines, whether the SSH-Attacker should stop after a IO exception or not */
     private Boolean stopActionsAfterIOException = true;
