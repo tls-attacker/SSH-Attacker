@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.data;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.ChannelDataType;
 import de.rub.nds.sshattacker.core.constants.DataPacketLayerType;
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
@@ -78,6 +79,7 @@ public class DataMessageLayer {
         }
         Optional<AbstractDataPacket> parsedPacket = parseResult.getParsedPacket();
         if (parsedPacket.isPresent()) {
+            // Parse and return the message according to expected data type
             DataMessage<?> resultMessage =
                     switch (dataType) {
                         case SUBSYSTEM_SFTP ->
@@ -93,9 +95,15 @@ public class DataMessageLayer {
                                     .parse();
                         }
                     };
-            // Parse and return the message according to expected data type
 
-            if (resultMessage.getCompleteResultingMessage().getValue().length
+            // If the data message body was empty
+            if (resultMessage.getCompleteResultingMessage() == null) {
+                LOGGER.warn("Data in ChannelDataMessage is malformed and can not be parsed.");
+                LOGGER.debug(
+                        "Malformed ChannelDataMessage data: {}",
+                        () -> ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+                resultMessage.setCompleteResultingMessage(message.getData().getValue());
+            } else if (resultMessage.getCompleteResultingMessage().getValue().length
                     < parsedPacket.get().getPayload().getValue().length) {
                 // This usually means that we have not implemented the parser for the negotiated
                 // SFTP version.
