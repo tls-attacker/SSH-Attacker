@@ -606,8 +606,7 @@ public class Config implements Serializable {
 
     /**
      * Defines, whether the SSH attacker should treat a timeout when receiving messages like an IO
-     * Exception. or not. TODO: This actually also includes real IO Exceptions. Changes must be done
-     * to the TransportHandler
+     * Exception. or not.
      */
     private Boolean handleTimeoutOnReceiveAsIOException = false;
 

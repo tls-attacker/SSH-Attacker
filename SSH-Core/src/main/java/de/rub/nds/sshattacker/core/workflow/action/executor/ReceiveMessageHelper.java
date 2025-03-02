@@ -18,6 +18,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessag
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,12 +93,20 @@ public final class ReceiveMessageHelper {
         }
         if (result.countMessages() == 0) {
             // Timeout exceptions and IO exceptions are caught in the fetchData method of the
-            // transport handler. So we can not be sure what happened.
-            LOGGER.warn("Received no message. Socket timed out or an IOException happened");
-            // TODO: Change TransportHandler so that we can get cachedSocketState or the exception
-            //  that was thrown.
-            if (config.getHandleTimeoutOnReceiveAsIOException()) {
-                context.setReceivedTransportHandlerException(true);
+            // transport handler. So we can not be sure what happened. We have to check the socket
+            // state.
+            if (context.getTransportHandler() instanceof TcpTransportHandler transportHandler) {
+                SocketState socketState = transportHandler.getSocketState();
+                if (socketState == SocketState.SOCKET_EXCEPTION
+                        || socketState == SocketState.IO_EXCEPTION
+                        || socketState == SocketState.UNAVAILABLE
+                        || socketState == SocketState.CLOSED) {
+                    LOGGER.warn("Received no message. Socket Exception happened");
+                    context.setReceivedTransportHandlerException(true);
+                } else if (config.getHandleTimeoutOnReceiveAsIOException()) {
+                    LOGGER.warn("Received no message. Socket timed out!");
+                    context.setReceivedTransportHandlerException(true);
+                }
             }
         }
         return result;
