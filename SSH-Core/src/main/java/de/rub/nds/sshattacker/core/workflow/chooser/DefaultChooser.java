@@ -1090,7 +1090,7 @@ public class DefaultChooser extends Chooser {
      * @return The SFTP negotiated protocol version
      */
     @Override
-    public Integer getSftpNegotiatedVersion(boolean forParsing) {
+    public Integer getSftpNegotiatedVersion() {
         return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
     }
 
