@@ -114,19 +114,21 @@ public class SftpV4FileAttributesParser extends Parser<SftpV4FileAttributes> {
         attributes.setAclLength(aclLength);
         LOGGER.debug("AclLength: {}", aclLength);
 
-        int aclEntriesCount = parseIntField();
-        attributes.setAclEntriesCount(aclEntriesCount);
-        LOGGER.debug("setAclEntriesCount: {}", aclEntriesCount);
+        if (aclLength >= 4) {
+            int aclEntriesCount = parseIntField();
+            attributes.setAclEntriesCount(aclEntriesCount);
+            LOGGER.debug("setAclEntriesCount: {}", aclEntriesCount);
 
-        for (int aclEntryIdx = 0, aclEntryStartPointer = getPointer();
-                aclEntryIdx < aclEntriesCount;
-                aclEntryIdx++, aclEntryStartPointer = getPointer()) {
+            for (int aclEntryIdx = 0, aclEntryStartPointer = getPointer();
+                    aclEntryIdx < aclEntriesCount;
+                    aclEntryIdx++, aclEntryStartPointer = getPointer()) {
 
-            SftpAclEntryParser aclEntryParser =
-                    new SftpAclEntryParser(getArray(), aclEntryStartPointer);
+                SftpAclEntryParser aclEntryParser =
+                        new SftpAclEntryParser(getArray(), aclEntryStartPointer);
 
-            attributes.addAclEntry(aclEntryParser.parse());
-            setPointer(aclEntryParser.getPointer());
+                attributes.addAclEntry(aclEntryParser.parse());
+                setPointer(aclEntryParser.getPointer());
+            }
         }
     }
 
