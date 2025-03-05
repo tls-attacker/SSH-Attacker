@@ -20,16 +20,17 @@ public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage>
 
     @Override
     public void adjustContext(SshContext context, SftpInitMessage object) {
-        int receivedClientVersion = object.getVersion().getValue();
-        context.setSftpClientVersion(receivedClientVersion);
+        context.setSftpClientVersion(object.getVersion().getValue());
         context.setSftpClientSupportedExtensions(object.getExtensions());
         object.getExtensions().forEach(extension -> extension.adjustContext(context));
     }
 
     @Override
     public void adjustContextAfterMessageSent(SshContext context, SftpInitMessage object) {
-        context.setSftpClientVersion(object.getVersion().getValue());
-        context.setSftpClientSupportedExtensions(object.getExtensions());
+        if (context.isClient()) {
+            context.setSftpClientVersion(object.getVersion().getValue());
+            context.setSftpClientSupportedExtensions(object.getExtensions());
+        }
     }
 
     @Override
