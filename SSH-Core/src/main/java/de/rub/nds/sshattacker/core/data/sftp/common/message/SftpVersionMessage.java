@@ -39,6 +39,11 @@ public class SftpVersionMessage extends SftpHandshakeMessage<SftpVersionMessage>
     }
 
     @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
     public void prepare(Chooser chooser) {
         SftpVersionMessageHandler.PREPARATOR.prepare(this, chooser);
     }

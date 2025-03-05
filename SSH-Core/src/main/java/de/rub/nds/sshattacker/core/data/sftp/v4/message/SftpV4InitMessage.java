@@ -40,6 +40,11 @@ public class SftpV4InitMessage extends SftpHandshakeMessage<SftpV4InitMessage> {
     }
 
     @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
     public void prepare(Chooser chooser) {
         SftpV4InitMessageHandler.PREPARATOR.prepare(this, chooser);
     }

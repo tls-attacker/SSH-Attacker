@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.*;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -19,8 +20,8 @@ import jakarta.xml.bind.annotation.XmlElements;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>>
-        extends SftpMessage<T> {
+public abstract class SftpHandshakeMessage<T extends SftpHandshakeMessage<T>> extends SftpMessage<T>
+        implements HasSentHandler {
 
     private ModifiableInteger version;
 
