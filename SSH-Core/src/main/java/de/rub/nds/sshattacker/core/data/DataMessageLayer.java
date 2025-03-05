@@ -109,7 +109,8 @@ public class DataMessageLayer {
             if (resultMessage.getCompleteResultingMessage().getValue().length
                     < parsedPacket.get().getPayload().getValue().length) {
                 // This usually means that we have not implemented the parser for the negotiated
-                // SFTP version.
+                // SFTP version, or we received malformed responses. Especially length of malformed
+                // filenames are often wrong.
                 DataMessage<?> finalResultMessage = resultMessage;
                 LOGGER.warn(
                         "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
