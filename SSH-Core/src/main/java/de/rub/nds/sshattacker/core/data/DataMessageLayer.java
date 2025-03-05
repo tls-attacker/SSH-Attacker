@@ -112,12 +112,11 @@ public class DataMessageLayer {
                 // This usually means that we have not implemented the parser for the negotiated
                 // SFTP version, or we received malformed responses. Especially length of malformed
                 // filenames are often wrong.
-                DataMessage<?> finalResultMessage = resultMessage;
                 LOGGER.debug(
                         "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
-                        () -> finalResultMessage.getClass().getSimpleName(),
-                        () -> resultMessageLength,
-                        () -> packetPayloadLength);
+                        resultMessage.getClass().getSimpleName(),
+                        resultMessageLength,
+                        packetPayloadLength);
             }
             resultMessage.setChannelDataWrapper(message);
             return resultMessage;
