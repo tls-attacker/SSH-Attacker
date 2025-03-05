@@ -18,6 +18,11 @@ public class SftpRequestFileSyncMessage
         super();
     }
 
+    public SftpRequestFileSyncMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestFileSyncMessage(SftpRequestFileSyncMessage other) {
         super(other);
     }

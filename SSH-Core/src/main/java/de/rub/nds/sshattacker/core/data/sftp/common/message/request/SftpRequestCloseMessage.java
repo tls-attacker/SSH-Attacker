@@ -17,6 +17,11 @@ public class SftpRequestCloseMessage extends SftpRequestWithHandleMessage<SftpRe
         super();
     }
 
+    public SftpRequestCloseMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestCloseMessage(SftpRequestCloseMessage other) {
         super(other);
     }

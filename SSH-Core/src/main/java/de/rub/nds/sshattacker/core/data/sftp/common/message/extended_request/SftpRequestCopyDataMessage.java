@@ -34,6 +34,12 @@ public class SftpRequestCopyDataMessage
         super();
     }
 
+    public SftpRequestCopyDataMessage(int handleIndex, int writeToHandleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+        configWriteToHandleIndex = writeToHandleIndex;
+    }
+
     public SftpRequestCopyDataMessage(SftpRequestCopyDataMessage other) {
         super(other);
         readFromOffset = other.readFromOffset != null ? other.readFromOffset.createCopy() : null;

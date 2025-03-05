@@ -32,6 +32,11 @@ public class SftpRequestCheckFileHandleMessage
         super();
     }
 
+    public SftpRequestCheckFileHandleMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestCheckFileHandleMessage(SftpRequestCheckFileHandleMessage other) {
         super(other);
         hashAlgorithmsLength =

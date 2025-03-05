@@ -24,7 +24,7 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     private ModifiableInteger senderChannelId;
 
     @XmlAttribute(name = "localChannel")
-    private Integer configLocalChannelId;
+    protected Integer configLocalChannelId;
 
     protected ChannelOpenMessage() {
         super();

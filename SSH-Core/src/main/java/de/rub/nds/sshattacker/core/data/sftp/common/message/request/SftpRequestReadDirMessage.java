@@ -18,6 +18,11 @@ public class SftpRequestReadDirMessage
         super();
     }
 
+    public SftpRequestReadDirMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestReadDirMessage(SftpRequestReadDirMessage other) {
         super(other);
     }

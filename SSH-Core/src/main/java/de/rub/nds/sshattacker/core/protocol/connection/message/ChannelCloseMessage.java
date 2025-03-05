@@ -21,7 +21,7 @@ public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage>
 
     public ChannelCloseMessage(int localChannelId) {
         super();
-        setConfigLocalChannelId(localChannelId);
+        configLocalChannelId = localChannelId;
     }
 
     public ChannelCloseMessage(ChannelCloseMessage other) {

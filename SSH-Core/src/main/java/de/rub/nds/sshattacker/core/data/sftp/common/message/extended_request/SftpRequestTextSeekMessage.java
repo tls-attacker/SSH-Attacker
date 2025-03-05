@@ -22,6 +22,11 @@ public class SftpRequestTextSeekMessage
         super();
     }
 
+    public SftpRequestTextSeekMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestTextSeekMessage(SftpRequestTextSeekMessage other) {
         super(other);
         lineNumber = other.lineNumber != null ? other.lineNumber.createCopy() : null;

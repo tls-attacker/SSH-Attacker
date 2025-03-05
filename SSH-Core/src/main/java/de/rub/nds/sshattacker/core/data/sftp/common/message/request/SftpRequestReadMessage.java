@@ -23,6 +23,11 @@ public class SftpRequestReadMessage extends SftpRequestWithHandleMessage<SftpReq
         super();
     }
 
+    public SftpRequestReadMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpRequestReadMessage(SftpRequestReadMessage other) {
         super(other);
         offset = other.offset != null ? other.offset.createCopy() : null;

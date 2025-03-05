@@ -19,7 +19,7 @@ public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSes
 
     public ChannelOpenSessionMessage(int localChannelId) {
         super();
-        setConfigLocalChannelId(localChannelId);
+        configLocalChannelId = localChannelId;
     }
 
     public ChannelOpenSessionMessage(ChannelOpenSessionMessage other) {

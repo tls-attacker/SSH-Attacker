@@ -25,6 +25,11 @@ public class SftpV4RequestFileSetStatMessage
         super();
     }
 
+    public SftpV4RequestFileSetStatMessage(int handleIndex) {
+        super();
+        configHandleIndex = handleIndex;
+    }
+
     public SftpV4RequestFileSetStatMessage(SftpV4RequestFileSetStatMessage other) {
         super(other);
         attributes = other.attributes != null ? other.attributes.createCopy() : null;
