@@ -72,7 +72,7 @@ public class DataMessageLayer {
         DataPacketLayerParseResult parseResult =
                 packetLayer.parsePacketSoftly(message.getData().getValue(), 0);
         if (parseResult.getParsedByteCount() < message.getDataLength().getValue()) {
-            LOGGER.warn(
+            LOGGER.debug(
                     "Data packet did not consume complete channel data. Only parsed {} of {} bytes.",
                     parseResult.getParsedByteCount(),
                     message.getDataLength().getValue());
@@ -106,37 +106,18 @@ public class DataMessageLayer {
             }
 
             // If the data message body was empty
-            if (resultMessage.getCompleteResultingMessage().getValue().length
-                    < parsedPacket.get().getPayload().getValue().length) {
+            int resultMessageLength = resultMessage.getCompleteResultingMessage().getValue().length;
+            int packetPayloadLength = parsedPacket.get().getPayload().getValue().length;
+            if (resultMessageLength < packetPayloadLength) {
                 // This usually means that we have not implemented the parser for the negotiated
                 // SFTP version, or we received malformed responses. Especially length of malformed
                 // filenames are often wrong.
                 DataMessage<?> finalResultMessage = resultMessage;
-                Integer sftpNegotiatedVersion = context.getChooser().getSftpNegotiatedVersion();
-                if (dataType == ChannelDataType.SUBSYSTEM_SFTP
-                        && sftpNegotiatedVersion >= 3
-                        && sftpNegotiatedVersion <= 4) {
-                    LOGGER.warn(
-                            "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
-                            () -> finalResultMessage.getClass().getSimpleName(),
-                            () ->
-                                    finalResultMessage
-                                            .getCompleteResultingMessage()
-                                            .getValue()
-                                            .length,
-                            () -> parsedPacket.get().getPayload().getValue().length);
-                } else {
-                    // expected to fail because the SFTP version is not implemented
-                    LOGGER.debug(
-                            "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
-                            () -> finalResultMessage.getClass().getSimpleName(),
-                            () ->
-                                    finalResultMessage
-                                            .getCompleteResultingMessage()
-                                            .getValue()
-                                            .length,
-                            () -> parsedPacket.get().getPayload().getValue().length);
-                }
+                LOGGER.debug(
+                        "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
+                        () -> finalResultMessage.getClass().getSimpleName(),
+                        () -> resultMessageLength,
+                        () -> packetPayloadLength);
             }
             resultMessage.setChannelDataWrapper(message);
             return resultMessage;
