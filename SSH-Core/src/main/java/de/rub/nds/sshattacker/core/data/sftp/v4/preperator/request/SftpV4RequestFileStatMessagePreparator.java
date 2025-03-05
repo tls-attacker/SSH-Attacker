@@ -23,7 +23,11 @@ public class SftpV4RequestFileStatMessagePreparator
     @Override
     public void prepareRequestSpecificContents(
             SftpV4RequestFileStatMessage object, Chooser chooser) {
-        object.setHandle(chooser.getContext().getSftpManager().getFileOrDirectoryHandle(), true);
+        object.setHandle(
+                chooser.getContext()
+                        .getSftpManager()
+                        .getFileOrDirectoryHandle(object.getConfigHandleIndex()),
+                true);
         object.setFlags(SftpFileAttributeFlag.SSH_FILEXFER_ATTR_SIZE);
     }
 }

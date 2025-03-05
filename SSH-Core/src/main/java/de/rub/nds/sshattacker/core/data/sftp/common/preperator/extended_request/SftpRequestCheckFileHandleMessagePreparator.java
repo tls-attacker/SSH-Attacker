@@ -23,7 +23,9 @@ public class SftpRequestCheckFileHandleMessagePreparator
     @Override
     public void prepareRequestExtendedSpecificContents(
             SftpRequestCheckFileHandleMessage object, Chooser chooser) {
-        object.setHandle(chooser.getContext().getSftpManager().getFileHandle(), true);
+        object.setHandle(
+                chooser.getContext().getSftpManager().getFileHandle(object.getConfigHandleIndex()),
+                true);
 
         object.setHashAlgorithms(List.of(HashAlgorithm.MD5, HashAlgorithm.SHA_1), true);
 

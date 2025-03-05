@@ -198,49 +198,72 @@ public class SftpManager {
     }
 
     /**
-     * Return a random valid handle for a directory.
+     * Return a known valid directory handle that has the specified index in the maintained list.
+     * The specified index is always calculated modulo the list size.
+     *
+     * <p>If index is null, return a random valid directory handle instead
      *
      * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */
-    public byte[] getDirectoryHandle() {
+    public byte[] getDirectoryHandle(Integer index) {
         if (!openDirectoryHandles.isEmpty()) {
+            if (index != null) {
+                return openDirectoryHandles.get(index % openDirectoryHandles.size());
+            }
             return openDirectoryHandles.get(random.nextInt(openDirectoryHandles.size()));
         }
+        LOGGER.debug("No directory handle availible, creating an invalid random handle");
         return getRandomHandle();
     }
 
     /**
-     * Return a random valid handle for a file.
+     * Return a known valid file handle that has the specified index in the maintained list. The
+     * specified index is always calculated modulo the list size.
+     *
+     * <p>If index is null, return a random valid file handle instead
      *
      * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */
-    public byte[] getFileHandle() {
+    public byte[] getFileHandle(Integer index) {
         if (!openFileHandles.isEmpty()) {
+            if (index != null) {
+                return openDirectoryHandles.get(index % openFileHandles.size());
+            }
             return openFileHandles.get(random.nextInt(openFileHandles.size()));
         }
+        LOGGER.debug("No file handle availible, creating an invalid random handle");
         return getRandomHandle();
     }
 
     /**
-     * Return a random valid handle for a file or a directory.
+     * Return a known valid file or directory handle that has the specified index in the maintained
+     * list. The specified index is always calculated modulo the combined list size.
+     *
+     * <p>If index is null, return a random valid file or directory handle instead
      *
      * <p>If there are no valid handles, return an invalid random handle.
      *
      * @return handle
      */
-    public byte[] getFileOrDirectoryHandle() {
+    public byte[] getFileOrDirectoryHandle(Integer index) {
         if (!openFileHandles.isEmpty() || !openDirectoryHandles.isEmpty()) {
-            int resultIdx = random.nextInt(openFileHandles.size() + openDirectoryHandles.size());
+            int resultIdx;
+            if (index != null) {
+                resultIdx = index % (openFileHandles.size() + openDirectoryHandles.size());
+            } else {
+                resultIdx = random.nextInt(openFileHandles.size() + openDirectoryHandles.size());
+            }
             if (resultIdx >= openFileHandles.size()) {
                 resultIdx -= openFileHandles.size();
                 return openDirectoryHandles.get(resultIdx);
             }
             return openFileHandles.get(resultIdx);
         }
+        LOGGER.debug("No handle availible, creating an invalid random handle");
         return getRandomHandle();
     }
 

@@ -10,12 +10,16 @@ package de.rub.nds.sshattacker.core.data.sftp.common.message.request;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHandleMessage<T>>
         extends SftpRequestMessage<T> {
 
     private ModifiableByteArray handle;
     private ModifiableInteger handleLength;
+
+    @XmlAttribute(name = "handleIndex")
+    protected Integer configHandleIndex;
 
     protected SftpRequestWithHandleMessage() {
         super();
@@ -25,6 +29,7 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
         super(other);
         handle = other.handle != null ? other.handle.createCopy() : null;
         handleLength = other.handleLength != null ? other.handleLength.createCopy() : null;
+        configHandleIndex = other.configHandleIndex;
     }
 
     @Override
@@ -67,5 +72,13 @@ public abstract class SftpRequestWithHandleMessage<T extends SftpRequestWithHand
         if (adjustLengthField) {
             setHandleLength(this.handle.getValue().length);
         }
+    }
+
+    public Integer getConfigHandleIndex() {
+        return configHandleIndex;
+    }
+
+    public void setConfigHandleIndex(Integer configHandleIndex) {
+        this.configHandleIndex = configHandleIndex;
     }
 }

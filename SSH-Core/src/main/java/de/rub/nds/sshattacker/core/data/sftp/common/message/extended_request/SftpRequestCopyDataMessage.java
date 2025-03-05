@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.sshattacker.core.data.sftp.common.handler.extended_request.SftpRequestCopyDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 public class SftpRequestCopyDataMessage
         extends SftpRequestExtendedWithHandleMessage<SftpRequestCopyDataMessage> {
@@ -25,6 +26,9 @@ public class SftpRequestCopyDataMessage
     private ModifiableInteger writeToHandleLength;
     private ModifiableByteArray writeToHandle;
     private ModifiableLong writeToOffset;
+
+    @XmlAttribute(name = "writeToHandleIndex")
+    private Integer configWriteToHandleIndex;
 
     public SftpRequestCopyDataMessage() {
         super();
@@ -38,6 +42,7 @@ public class SftpRequestCopyDataMessage
                 other.writeToHandleLength != null ? other.writeToHandleLength.createCopy() : null;
         writeToHandle = other.writeToHandle != null ? other.writeToHandle.createCopy() : null;
         writeToOffset = other.writeToOffset != null ? other.writeToOffset.createCopy() : null;
+        configWriteToHandleIndex = other.configWriteToHandleIndex;
     }
 
     @Override
@@ -123,6 +128,14 @@ public class SftpRequestCopyDataMessage
     public void setWriteToOffset(long writeToOffset) {
         this.writeToOffset =
                 ModifiableVariableFactory.safelySetValue(this.writeToOffset, writeToOffset);
+    }
+
+    public Integer getConfigWriteToHandleIndex() {
+        return configWriteToHandleIndex;
+    }
+
+    public void setConfigWriteToHandleIndex(Integer configWriteToHandleIndex) {
+        this.configWriteToHandleIndex = configWriteToHandleIndex;
     }
 
     public static final SftpRequestCopyDataMessageHandler HANDLER =
