@@ -56,7 +56,7 @@ public class SftpVersionMessageHandler extends SftpMessageHandler<SftpVersionMes
                 sftpClientVersion,
                 sftpServerVersion);
         if (negotiatedVersion < 3 || negotiatedVersion > 4) {
-            LOGGER.warn("Negotiated SFTP version {} is not implemented.", negotiatedVersion);
+            LOGGER.debug("Negotiated SFTP version {} is not implemented.", negotiatedVersion);
         }
     }
 

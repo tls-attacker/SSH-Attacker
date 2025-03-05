@@ -112,11 +112,31 @@ public class DataMessageLayer {
                 // SFTP version, or we received malformed responses. Especially length of malformed
                 // filenames are often wrong.
                 DataMessage<?> finalResultMessage = resultMessage;
-                LOGGER.warn(
-                        "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
-                        () -> finalResultMessage.getClass().getSimpleName(),
-                        () -> finalResultMessage.getCompleteResultingMessage().getValue().length,
-                        () -> parsedPacket.get().getPayload().getValue().length);
+                Integer sftpNegotiatedVersion = context.getChooser().getSftpNegotiatedVersion();
+                if (dataType == ChannelDataType.SUBSYSTEM_SFTP
+                        && sftpNegotiatedVersion >= 3
+                        && sftpNegotiatedVersion <= 4) {
+                    LOGGER.warn(
+                            "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
+                            () -> finalResultMessage.getClass().getSimpleName(),
+                            () ->
+                                    finalResultMessage
+                                            .getCompleteResultingMessage()
+                                            .getValue()
+                                            .length,
+                            () -> parsedPacket.get().getPayload().getValue().length);
+                } else {
+                    // expected to fail because the SFTP version is not implemented
+                    LOGGER.debug(
+                            "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
+                            () -> finalResultMessage.getClass().getSimpleName(),
+                            () ->
+                                    finalResultMessage
+                                            .getCompleteResultingMessage()
+                                            .getValue()
+                                            .length,
+                            () -> parsedPacket.get().getPayload().getValue().length);
+                }
             }
             resultMessage.setChannelDataWrapper(message);
             return resultMessage;
