@@ -12,13 +12,11 @@ import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpInitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.SftpInitMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.common.preperator.SftpInitMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.SftpInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage>
+        implements MessageSentHandler<SftpInitMessage> {
 
     @Override
     public void adjustContext(SshContext context, SftpInitMessage object) {
@@ -26,18 +24,12 @@ public class SftpInitMessageHandler extends SftpMessageHandler<SftpInitMessage> 
         context.setSftpClientVersion(receivedClientVersion);
         context.setSftpClientSupportedExtensions(object.getExtensions());
         object.getExtensions().forEach(extension -> extension.adjustContext(context));
+    }
 
-        // Set negotiated SFTP version based on own server version and received client version
-        int negotiatedVersion;
-        if (receivedClientVersion < context.getConfig().getSftpServerVersion()) {
-            negotiatedVersion = receivedClientVersion;
-        } else {
-            negotiatedVersion = context.getConfig().getSftpServerVersion();
-        }
-        context.setSftpNegotiatedVersion(negotiatedVersion);
-        if (negotiatedVersion < 3 || negotiatedVersion > 4) {
-            LOGGER.warn("Negotiated SFTP version {} is not implemented.", negotiatedVersion);
-        }
+    @Override
+    public void adjustContextAfterMessageSent(SshContext context, SftpInitMessage object) {
+        context.setSftpClientVersion(object.getVersion().getValue());
+        context.setSftpClientSupportedExtensions(object.getExtensions());
     }
 
     @Override

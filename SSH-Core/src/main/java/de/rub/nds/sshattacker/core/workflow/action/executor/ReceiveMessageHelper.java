@@ -194,8 +194,10 @@ public final class ReceiveMessageHelper {
             if (parsedPacket.isPresent()) {
                 AbstractPacket parsedPresentPacket = parsedPacket.get();
                 LOGGER.trace(
-                    "Complete packet payload bytes: {}",
-                    () -> ArrayConverter.bytesToHexString(parsedPresentPacket.getPayload().getValue()));
+                        "Complete packet payload bytes: {}",
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        parsedPresentPacket.getPayload().getValue()));
 
                 ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPresentPacket);
                 message.adjustContext(context);

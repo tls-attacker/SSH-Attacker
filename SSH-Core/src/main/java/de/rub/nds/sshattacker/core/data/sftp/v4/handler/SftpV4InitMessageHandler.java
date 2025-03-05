@@ -12,11 +12,13 @@ import de.rub.nds.sshattacker.core.data.sftp.v4.message.SftpV4InitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.v4.parser.SftpV4InitMessageParser;
 import de.rub.nds.sshattacker.core.data.sftp.v4.preperator.SftpV4InitMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.v4.serializer.SftpV4InitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SftpV4InitMessageHandler extends SftpMessageHandler<SftpV4InitMessage> {
+public class SftpV4InitMessageHandler extends SftpMessageHandler<SftpV4InitMessage>
+        implements MessageSentHandler<SftpV4InitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,18 +28,12 @@ public class SftpV4InitMessageHandler extends SftpMessageHandler<SftpV4InitMessa
         context.setSftpClientVersion(receivedClientVersion);
         context.setSftpClientSupportedExtensions(object.getExtensions());
         object.getExtensions().forEach(extension -> extension.adjustContext(context));
+    }
 
-        // Set negotiated SFTP version based on own server version and received client version
-        int negotiatedVersion;
-        if (receivedClientVersion < context.getConfig().getSftpServerVersion()) {
-            negotiatedVersion = receivedClientVersion;
-        } else {
-            negotiatedVersion = context.getConfig().getSftpServerVersion();
-        }
-        context.setSftpNegotiatedVersion(negotiatedVersion);
-        if (negotiatedVersion < 3 || negotiatedVersion > 4) {
-            LOGGER.warn("Negotiated SFTP version {} is not implemented.", negotiatedVersion);
-        }
+    @Override
+    public void adjustContextAfterMessageSent(SshContext context, SftpV4InitMessage object) {
+        context.setSftpClientVersion(object.getVersion().getValue());
+        context.setSftpClientSupportedExtensions(object.getExtensions());
     }
 
     @Override
