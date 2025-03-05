@@ -110,10 +110,12 @@ public class DataMessageLayer {
                     < parsedPacket.get().getPayload().getValue().length) {
                 // This usually means that we have not implemented the parser for the negotiated
                 // SFTP version.
+                DataMessage<?> finalResultMessage = resultMessage;
                 LOGGER.warn(
-                        "Data message did not consume complete data packet. Only parsed {} of {} bytes.",
-                        resultMessage.getCompleteResultingMessage().getValue().length,
-                        parsedPacket.get().getPayload().getValue().length);
+                        "Data message [{}] did not consume complete data packet. Only parsed {} of {} bytes.",
+                        () -> finalResultMessage.getClass().getSimpleName(),
+                        () -> finalResultMessage.getCompleteResultingMessage().getValue().length,
+                        () -> parsedPacket.get().getPayload().getValue().length);
             }
             resultMessage.setChannelDataWrapper(message);
             return resultMessage;
