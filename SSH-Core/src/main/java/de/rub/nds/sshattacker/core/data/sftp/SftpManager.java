@@ -231,7 +231,7 @@ public class SftpManager {
     public byte[] getFileHandle(Integer index) {
         if (!openFileHandles.isEmpty()) {
             if (index != null) {
-                return openDirectoryHandles.get(index % openFileHandles.size());
+                return openFileHandles.get(index % openFileHandles.size());
             }
             return openFileHandles.get(random.nextInt(openFileHandles.size()));
         }
