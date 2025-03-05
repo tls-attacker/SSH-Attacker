@@ -146,18 +146,18 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
         } catch (ParserException ex) {
             if (context.getChooser().getSftpNegotiatedVersion() == 4) {
                 LOGGER.warn(
-                        "Error while parsing {} v4: {}. Fallback to SFTP v3 Parsing",
+                        "Error while parsing {} v4: {}. Now parsing as SftpUnknownMessage",
                         () -> SftpPacketTypeConstant.fromId(raw[0]).toString(),
                         ex::getMessage);
             } else {
                 // It is expected to fail parsing if version 4 was not negotiated
                 LOGGER.debug(
-                        "Error while parsing {} v4: {}. Fallback to SFTP v3 Parsing",
+                        "Error while parsing {} v4: {}. Now parsing as SftpUnknownMessage",
                         () -> SftpPacketTypeConstant.fromId(raw[0]).toString(),
                         ex::getMessage);
             }
             LOGGER.debug("Parser Error:", ex);
-            return delegateParsingV3(packet, context);
+            return new SftpUnknownMessageParser(raw).parse();
         }
     }
 
