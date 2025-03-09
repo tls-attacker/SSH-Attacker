@@ -14,30 +14,44 @@ public enum SftpFilePermission {
      * Sources:
      *  - https://chromium.googlesource.com/native_client/nacl-newlib/+/a9ae3c60b36dea3d8a10e18b1b6db952d21268c2/newlib/libc/include/sys/stat.h#80
      */
+    // is a directory
+    IS_DIR(0040000),
+    // is a character special file / character device
+    IS_CHAR(0020000),
+    // is block special
+    IS_BLOCK(0060000),
+    // is regular file
+    IS_REGULAR(0100000),
+    // is symbolic link
+    IS_LINK(0120000),
+    // is socket
+    IS_SOCKET(0140000),
+    // is fifo
+    IS_FIFO(0010000),
     // set user id on execution
-    S_ISUID(04000),
+    SET_USER_ID(04000),
     // set group id on execution
-    S_ISGID(02000),
-    // save swapped text even after use
-    S_ISVTX(01000),
+    SET_GROUP_ID(02000),
+    // save swapped text even after use or prevents users from deleting others' files in a directory
+    STICKY_BIT(01000),
     // read permission, owner
-    S_IRUSR(0400),
+    USER_READ(0400),
     // write permission, owner
-    S_IWUSR(0200),
+    USER_WRITE(0200),
     // execute/search permission, owner
-    S_IXUSR(0100),
+    USER_EXEC(0100),
     // read permission, group
-    S_IRGRP(0040),
+    GROUP_READ(0040),
     // write permission, group
-    S_IWGRP(0020),
+    GROUP_WRITE(0020),
     // execute/search permission, group
-    S_IXGRP(0010),
+    GROUP_EXEC(0010),
     // read permission, other
-    S_IROTH(0004),
+    OTHER_READ(0004),
     // write permission, other
-    S_IWOTH(0002),
+    OTHER_WRITE(0002),
     // execute/search permission, other
-    S_IXOTH(0001);
+    OTHER_EXECUTE(0001);
 
     private final int value;
 
