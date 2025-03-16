@@ -277,14 +277,14 @@ public class Channel implements Serializable {
 
     public ChannelRequestMessage<?> removeFirstReceivedRequestThatWantReply() {
         if (!receivedRequestsThatWantReply.isEmpty()) {
-            return receivedRequestsThatWantReply.remove(0);
+            return receivedRequestsThatWantReply.removeFirst();
         }
         return null;
     }
 
     public ChannelRequestMessage<?> removeFirstSentRequestThatWantReply() {
         if (!sentRequestsThatWantReply.isEmpty()) {
-            return sentRequestsThatWantReply.remove(0);
+            return sentRequestsThatWantReply.removeFirst();
         }
         return null;
     }
