@@ -7,35 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWindowChangeMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestWindowChangeMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestWindowChangeMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
-        extends SshMessageHandler<ChannelRequestWindowChangeMessage>
-        implements MessageSentHandler<ChannelRequestWindowChangeMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestWindowChangeMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestWindowChangeMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestWindowChangeMessage> {
 
     @Override
     public ChannelRequestWindowChangeMessageParser getParser(byte[] array, SshContext context) {

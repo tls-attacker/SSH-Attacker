@@ -7,32 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestBreakMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestBreakMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestBreakMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestBreakMessageHandler extends SshMessageHandler<ChannelRequestBreakMessage>
-        implements MessageSentHandler<ChannelRequestBreakMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestBreakMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestBreakMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+public class ChannelRequestBreakMessageHandler
+        extends ChannelRequestMessageHandler<ChannelRequestBreakMessage> {
 
     @Override
     public ChannelRequestBreakMessageParser getParser(byte[] array, SshContext context) {

@@ -7,33 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSubsystemMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSubsystemMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSubsystemMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSubsystemMessageHandler
-        extends SshMessageHandler<ChannelRequestSubsystemMessage>
-        implements MessageSentHandler<ChannelRequestSubsystemMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestSubsystemMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestSubsystemMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestSubsystemMessage> {
 
     @Override
     public ChannelRequestSubsystemMessageParser getParser(byte[] array, SshContext context) {

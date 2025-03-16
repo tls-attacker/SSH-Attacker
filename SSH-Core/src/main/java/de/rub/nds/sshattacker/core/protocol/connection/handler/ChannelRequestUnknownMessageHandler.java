@@ -7,33 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
-        extends SshMessageHandler<ChannelRequestUnknownMessage>
-        implements MessageSentHandler<ChannelRequestUnknownMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestUnknownMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestUnknownMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestUnknownMessage> {
 
     @Override
     public ChannelRequestUnknownMessageParser getParser(byte[] array, SshContext context) {

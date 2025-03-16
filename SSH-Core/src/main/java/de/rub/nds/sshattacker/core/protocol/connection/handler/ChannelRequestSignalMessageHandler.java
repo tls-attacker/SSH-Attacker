@@ -7,35 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSignalMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSignalMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSignalMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSignalMessageHandler
-        extends SshMessageHandler<ChannelRequestSignalMessage>
-        implements MessageSentHandler<ChannelRequestSignalMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestSignalMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestSignalMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestSignalMessage> {
 
     @Override
     public ChannelRequestSignalMessageParser getParser(byte[] array, SshContext context) {

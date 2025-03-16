@@ -7,35 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitSignalMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitSignalMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExitSignalMessageHandler
-        extends SshMessageHandler<ChannelRequestExitSignalMessage>
-        implements MessageSentHandler<ChannelRequestExitSignalMessage> {
-
-    @Override
-    public void adjustContext(SshContext context, ChannelRequestExitSignalMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addReceivedRequestThatWantsReply(object);
-        }
-    }
-
-    @Override
-    public void adjustContextAfterMessageSent(
-            SshContext context, ChannelRequestExitSignalMessage object) {
-        if (Converter.byteToBoolean(object.getWantReply().getValue())) {
-            // This should not happen, because WantReply should always be false
-            context.getChannelManager().addSentRequestThatWantsReply(object);
-        }
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestExitSignalMessage> {
 
     @Override
     public ChannelRequestExitSignalMessageParser getParser(byte[] array, SshContext context) {
