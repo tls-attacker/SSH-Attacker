@@ -10,16 +10,17 @@ package de.rub.nds.sshattacker.core.data.packet.layer;
 import de.rub.nds.sshattacker.core.data.packet.DataPacket;
 import de.rub.nds.sshattacker.core.data.packet.parser.DataPacketParser;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DataPacketLayer extends AbstractDataPacketLayer {
+public final class DataPacketLayer extends AbstractDataPacketLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DataPacketLayer(SshContext context) {
-        super(context);
+    public static final DataPacketLayer INSTANCE = new DataPacketLayer();
+
+    private DataPacketLayer() {
+        super();
     }
 
     @Override

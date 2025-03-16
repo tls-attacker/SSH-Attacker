@@ -139,14 +139,11 @@ public class DataMessageLayer {
         AbstractDataPacketLayer packetLayer;
         if (message instanceof SftpMessage) {
             packet = new DataPacket();
-            packetLayer = new DataPacketLayer(context);
         } else if (message instanceof StringDataMessage) {
             packet = new PassThroughPacket();
-            packetLayer = new PassThroughPacketLayer(context);
         } else {
             // Unknown Data Messages
             packet = new PassThroughPacket();
-            packetLayer = new PassThroughPacketLayer(context);
         }
         packet.setPayload(message.serialize());
 
@@ -155,7 +152,8 @@ public class DataMessageLayer {
         resultMessage.prepare(context.getChooser());
 
         // Set prepared and serialized packet as data of ChannelDataMessage
-        resultMessage.setData(packetLayer.preparePacket(packet), true);
+        resultMessage.setData(
+                AbstractDataPacketLayer.preparePacket(packet, context.getChooser()), true);
 
         // TODO: If more than one channel is open:
         //  Try to set recipientChannelId to channel that expect that data type

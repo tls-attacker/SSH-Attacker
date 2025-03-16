@@ -15,11 +15,8 @@ public final class DataPacketLayerFactory {
     public static AbstractDataPacketLayer getDataPacketLayer(
             DataPacketLayerType type, SshContext context) {
         return switch (type) {
-            case DATA -> new DataPacketLayer(context);
-            case PASS_THROUGH -> new PassThroughPacketLayer(context);
-            default ->
-                    throw new UnsupportedOperationException(
-                            "Packet layer type '" + type + "' not supported!");
+            case DATA -> DataPacketLayer.INSTANCE;
+            case PASS_THROUGH -> PassThroughPacketLayer.INSTANCE;
         };
     }
 

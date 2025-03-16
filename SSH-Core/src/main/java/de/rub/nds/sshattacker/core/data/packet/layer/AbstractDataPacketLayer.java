@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.packet.layer;
 
 import de.rub.nds.sshattacker.core.data.packet.AbstractDataPacket;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 /**
  * An abstraction layer that can be used to define different packet layer types that can occur in
@@ -17,11 +17,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
  */
 public abstract class AbstractDataPacketLayer {
 
-    protected final SshContext context;
-
-    protected AbstractDataPacketLayer(SshContext context) {
+    protected AbstractDataPacketLayer() {
         super();
-        this.context = context;
     }
 
     /**
@@ -47,8 +44,8 @@ public abstract class AbstractDataPacketLayer {
     public abstract DataPacketLayerParseResult parsePacketSoftly(
             byte[] rawBytes, int startPosition);
 
-    public byte[] preparePacket(AbstractDataPacket packet) {
-        packet.prepare(context.getChooser());
+    public static byte[] preparePacket(AbstractDataPacket packet, Chooser chooser) {
+        packet.prepare(chooser);
         return packet.serialize();
     }
 }

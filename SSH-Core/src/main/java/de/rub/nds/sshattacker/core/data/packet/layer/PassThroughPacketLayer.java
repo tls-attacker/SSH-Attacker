@@ -10,16 +10,17 @@ package de.rub.nds.sshattacker.core.data.packet.layer;
 import de.rub.nds.sshattacker.core.data.packet.PassThroughPacket;
 import de.rub.nds.sshattacker.core.data.packet.parser.PassThroughPacketParser;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PassThroughPacketLayer extends AbstractDataPacketLayer {
+public final class PassThroughPacketLayer extends AbstractDataPacketLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PassThroughPacketLayer(SshContext context) {
-        super(context);
+    public static final PassThroughPacketLayer INSTANCE = new PassThroughPacketLayer();
+
+    private PassThroughPacketLayer() {
+        super();
     }
 
     @Override
