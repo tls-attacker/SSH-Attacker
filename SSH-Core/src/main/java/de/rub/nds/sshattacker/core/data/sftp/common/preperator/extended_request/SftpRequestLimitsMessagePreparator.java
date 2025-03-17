@@ -15,7 +15,7 @@ public class SftpRequestLimitsMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestLimitsMessage> {
 
     public SftpRequestLimitsMessagePreparator() {
-        super(SftpExtension.LIMITS);
+        super(SftpExtension.LIMITS_OPENSSH_COM);
     }
 
     @Override

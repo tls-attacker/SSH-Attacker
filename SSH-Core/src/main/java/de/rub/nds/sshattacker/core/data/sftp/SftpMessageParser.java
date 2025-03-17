@@ -169,10 +169,11 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
             case F_STAT_VFS_OPENSSH_COM -> new SftpRequestFileStatVfsMessageParser(raw).parse();
             case HARDLINK_OPENSSH_COM -> new SftpRequestHardlinkMessageParser(raw).parse();
             case F_SYNC_OPENSSH_COM -> new SftpRequestFileSyncMessageParser(raw).parse();
-            case L_SET_STAT -> new SftpRequestLinkSetStatMessageParser(raw).parse();
-            case LIMITS -> new SftpRequestLimitsMessageParser(raw).parse();
-            case EXPAND_PATH -> new SftpRequestExpandPathMessageParser(raw).parse();
-            case USERS_GROUPS_BY_ID -> new SftpRequestUsersGroupsByIdMessageParser(raw).parse();
+            case L_SET_STAT_OPENSSH_COM -> new SftpRequestLinkSetStatMessageParser(raw).parse();
+            case LIMITS_OPENSSH_COM -> new SftpRequestLimitsMessageParser(raw).parse();
+            case EXPAND_PATH_OPENSSH_COM -> new SftpRequestExpandPathMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID_OPENSSH_COM ->
+                    new SftpRequestUsersGroupsByIdMessageParser(raw).parse();
             default -> {
                 LOGGER.debug(
                         "Received unimplemented extended request message type: {}",
@@ -202,8 +203,9 @@ public abstract class SftpMessageParser<T extends SftpMessage<T>> extends Protoc
             // Vendor extensions
             case STAT_VFS_OPENSSH_COM, F_STAT_VFS_OPENSSH_COM ->
                     new SftpResponseStatVfsMessageParser(raw).parse();
-            case LIMITS -> new SftpResponseLimitsMessageParser(raw).parse();
-            case USERS_GROUPS_BY_ID -> new SftpResponseUsersGroupsByIdMessageParser(raw).parse();
+            case LIMITS_OPENSSH_COM -> new SftpResponseLimitsMessageParser(raw).parse();
+            case USERS_GROUPS_BY_ID_OPENSSH_COM ->
+                    new SftpResponseUsersGroupsByIdMessageParser(raw).parse();
             default -> {
                 LOGGER.debug(
                         "Received unimplemented extended response message type: {}",

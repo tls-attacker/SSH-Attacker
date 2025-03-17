@@ -34,7 +34,9 @@ public class SftpExtensionUsersGroupsByIdHandler
     }
 
     public static final SftpExtensionWithVersionPreparator<SftpExtensionUsersGroupsById>
-            PREPARATOR = new SftpExtensionWithVersionPreparator<>(SftpExtension.USERS_GROUPS_BY_ID);
+            PREPARATOR =
+                    new SftpExtensionWithVersionPreparator<>(
+                            SftpExtension.USERS_GROUPS_BY_ID_OPENSSH_COM);
 
     public static final SftpExtensionWithVersionSerializer<SftpExtensionUsersGroupsById>
             SERIALIZER = new SftpExtensionWithVersionSerializer<>();

@@ -34,7 +34,7 @@ public class SftpExtensionExpandPathHandler
     }
 
     public static final SftpExtensionWithVersionPreparator<SftpExtensionExpandPath> PREPARATOR =
-            new SftpExtensionWithVersionPreparator<>(SftpExtension.EXPAND_PATH);
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.EXPAND_PATH_OPENSSH_COM);
 
     public static final SftpExtensionWithVersionSerializer<SftpExtensionExpandPath> SERIALIZER =
             new SftpExtensionWithVersionSerializer<>();

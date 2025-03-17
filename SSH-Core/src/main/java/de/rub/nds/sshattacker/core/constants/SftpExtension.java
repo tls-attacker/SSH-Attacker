@@ -56,10 +56,10 @@ public enum SftpExtension {
     F_STAT_VFS_OPENSSH_COM("fstatvfs@openssh.com"),
     HARDLINK_OPENSSH_COM("hardlink@openssh.com"),
     F_SYNC_OPENSSH_COM("fsync@openssh.com"),
-    L_SET_STAT("lsetstat@openssh.com"),
-    LIMITS("limits@openssh.com"),
-    EXPAND_PATH("expand-path@openssh.com"),
-    USERS_GROUPS_BY_ID("users-groups-by-id@openssh.com"),
+    L_SET_STAT_OPENSSH_COM("lsetstat@openssh.com"),
+    LIMITS_OPENSSH_COM("limits@openssh.com"),
+    EXPAND_PATH_OPENSSH_COM("expand-path@openssh.com"),
+    USERS_GROUPS_BY_ID_OPENSSH_COM("users-groups-by-id@openssh.com"),
 
     UNKNOWN(null);
 

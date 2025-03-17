@@ -15,7 +15,7 @@ public class SftpRequestExpandPathMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestExpandPathMessage> {
 
     public SftpRequestExpandPathMessagePreparator() {
-        super(SftpExtension.EXPAND_PATH);
+        super(SftpExtension.EXPAND_PATH_OPENSSH_COM);
     }
 
     @Override

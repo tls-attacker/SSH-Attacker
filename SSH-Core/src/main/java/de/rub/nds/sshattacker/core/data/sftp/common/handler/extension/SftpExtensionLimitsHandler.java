@@ -32,7 +32,7 @@ public class SftpExtensionLimitsHandler extends SftpAbstractExtensionHandler<Sft
     }
 
     public static final SftpExtensionWithVersionPreparator<SftpExtensionLimits> PREPARATOR =
-            new SftpExtensionWithVersionPreparator<>(SftpExtension.LIMITS);
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.LIMITS_OPENSSH_COM);
 
     public static final SftpExtensionWithVersionSerializer<SftpExtensionLimits> SERIALIZER =
             new SftpExtensionWithVersionSerializer<>();

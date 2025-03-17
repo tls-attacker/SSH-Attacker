@@ -16,7 +16,7 @@ public class SftpRequestUsersGroupsByIdMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestUsersGroupsByIdMessage> {
 
     public SftpRequestUsersGroupsByIdMessagePreparator() {
-        super(SftpExtension.USERS_GROUPS_BY_ID);
+        super(SftpExtension.USERS_GROUPS_BY_ID_OPENSSH_COM);
     }
 
     @Override

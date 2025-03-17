@@ -118,22 +118,22 @@ public abstract class SftpHandshakeMessageParser<T extends SftpHandshakeMessage<
                                         SftpExtensionFileSync::new,
                                         getArray(),
                                         extensionStartPointer);
-                        case L_SET_STAT ->
+                        case L_SET_STAT_OPENSSH_COM ->
                                 new SftpExtensionWithVersionParser<>(
                                         SftpExtensionLinkSetStat::new,
                                         getArray(),
                                         extensionStartPointer);
-                        case LIMITS ->
+                        case LIMITS_OPENSSH_COM ->
                                 new SftpExtensionWithVersionParser<>(
                                         SftpExtensionLimits::new,
                                         getArray(),
                                         extensionStartPointer);
-                        case EXPAND_PATH ->
+                        case EXPAND_PATH_OPENSSH_COM ->
                                 new SftpExtensionWithVersionParser<>(
                                         SftpExtensionExpandPath::new,
                                         getArray(),
                                         extensionStartPointer);
-                        case USERS_GROUPS_BY_ID ->
+                        case USERS_GROUPS_BY_ID_OPENSSH_COM ->
                                 new SftpExtensionWithVersionParser<>(
                                         SftpExtensionUsersGroupsById::new,
                                         getArray(),

@@ -34,7 +34,7 @@ public class SftpExtensionLinkSetStatHandler
     }
 
     public static final SftpExtensionWithVersionPreparator<SftpExtensionLinkSetStat> PREPARATOR =
-            new SftpExtensionWithVersionPreparator<>(SftpExtension.L_SET_STAT);
+            new SftpExtensionWithVersionPreparator<>(SftpExtension.L_SET_STAT_OPENSSH_COM);
 
     public static final SftpExtensionWithVersionSerializer<SftpExtensionLinkSetStat> SERIALIZER =
             new SftpExtensionWithVersionSerializer<>();

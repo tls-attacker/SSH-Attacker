@@ -15,7 +15,7 @@ public class SftpRequestLinkSetStatMessagePreparator
         extends SftpRequestExtendedMessagePreparator<SftpRequestLinkSetStatMessage> {
 
     public SftpRequestLinkSetStatMessagePreparator() {
-        super(SftpExtension.L_SET_STAT);
+        super(SftpExtension.L_SET_STAT_OPENSSH_COM);
     }
 
     @Override
