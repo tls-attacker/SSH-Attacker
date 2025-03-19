@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.v4.handler;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.v4.message.SftpV4InitMessage;
 import de.rub.nds.sshattacker.core.data.sftp.v4.parser.SftpV4InitMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.v4.preperator.SftpV4InitMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.v4.preparator.SftpV4InitMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.v4.serializer.SftpV4InitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;

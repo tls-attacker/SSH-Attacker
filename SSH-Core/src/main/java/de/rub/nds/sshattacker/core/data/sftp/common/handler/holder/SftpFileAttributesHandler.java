@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.holder;
 
 import de.rub.nds.sshattacker.core.data.sftp.common.message.holder.SftpFileAttributes;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.holder.SftpFileAttributesParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.holder.SftpFileAttributesPreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.holder.SftpFileAttributesPreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.holder.SftpFileAttributesSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.state.SshContext;

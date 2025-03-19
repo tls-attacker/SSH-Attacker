@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.extension;
 import de.rub.nds.sshattacker.core.constants.SftpExtension;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpExtensionHardlink;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.extension.SftpExtensionWithVersionParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.extension.SftpExtensionWithVersionPreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.extension.SftpExtensionWithVersionPreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.extension.SftpExtensionWithVersionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

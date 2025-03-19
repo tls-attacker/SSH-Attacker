@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.data.sftp.SftpMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpUnknownMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.SftpUnknownMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.SftpUnknownMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.SftpUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.SftpUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;

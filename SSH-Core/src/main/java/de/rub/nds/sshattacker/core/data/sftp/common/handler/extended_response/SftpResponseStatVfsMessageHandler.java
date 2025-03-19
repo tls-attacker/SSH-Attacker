@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.extended_response;
 import de.rub.nds.sshattacker.core.data.sftp.common.handler.response.SftpResponseMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.SftpResponseStatVfsMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.extended_response.SftpResponseStatVfsMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.extended_response.SftpResponseStatVfsMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.extended_response.SftpResponseStatVfsMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.extended_response.SftpResponseStatVfsMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

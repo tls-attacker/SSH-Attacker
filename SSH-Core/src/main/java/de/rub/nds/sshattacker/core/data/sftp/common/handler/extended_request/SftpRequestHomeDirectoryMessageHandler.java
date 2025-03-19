@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.extended_request;
 import de.rub.nds.sshattacker.core.data.sftp.common.handler.request.SftpRequestMessageHandler;
 import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.SftpRequestHomeDirectoryMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.extended_request.SftpRequestHomeDirectoryMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.extended_request.SftpRequestHomeDirectoryMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.extended_request.SftpRequestHomeDirectoryMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.extended_request.SftpRequestHomeDirectoryMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

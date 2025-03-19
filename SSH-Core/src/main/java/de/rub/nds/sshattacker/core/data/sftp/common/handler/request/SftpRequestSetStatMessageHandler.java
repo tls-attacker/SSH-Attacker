@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.common.message.request.SftpRequestSetStatMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.request.SftpRequestSetStatMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.request.SftpRequestSetStatMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.request.SftpRequestSetStatMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.request.SftpRequestSetStatMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

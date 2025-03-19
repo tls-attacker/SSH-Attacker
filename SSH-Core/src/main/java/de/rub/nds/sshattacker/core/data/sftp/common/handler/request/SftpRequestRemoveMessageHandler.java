@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.data.sftp.common.handler.request;
 
 import de.rub.nds.sshattacker.core.data.sftp.common.message.request.SftpRequestRemoveMessage;
 import de.rub.nds.sshattacker.core.data.sftp.common.parser.request.SftpRequestRemoveMessageParser;
-import de.rub.nds.sshattacker.core.data.sftp.common.preperator.request.SftpRequestRemoveMessagePreparator;
+import de.rub.nds.sshattacker.core.data.sftp.common.preparator.request.SftpRequestRemoveMessagePreparator;
 import de.rub.nds.sshattacker.core.data.sftp.common.serializer.request.SftpRequestRemoveMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
