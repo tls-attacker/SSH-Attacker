@@ -14,9 +14,9 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 public class WorkflowTraceTypeConverter implements IStringConverter<WorkflowTraceType> {
 
     @Override
-    public WorkflowTraceType convert(String s) {
+    public WorkflowTraceType convert(String value) {
         try {
-            return WorkflowTraceType.valueOf(s);
+            return WorkflowTraceType.valueOf(value);
         } catch (IllegalArgumentException e) {
             throw new ParameterException("Could not parse WorkflowTraceType.");
         }

@@ -14,12 +14,29 @@ import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
 
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
+
+    public ServiceAcceptMessage() {
+        super();
+    }
+
+    public ServiceAcceptMessage(ServiceAcceptMessage other) {
+        super(other);
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+    }
+
+    @Override
+    public ServiceAcceptMessage createCopy() {
+        return new ServiceAcceptMessage(this);
+    }
 
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;
@@ -70,8 +87,25 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public static final ServiceAcceptMessageHandler HANDLER = new ServiceAcceptMessageHandler();
+
     @Override
-    public ServiceAcceptMessageHandler getHandler(SshContext context) {
-        return new ServiceAcceptMessageHandler(context, this);
+    public ServiceAcceptMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ServiceAcceptMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ServiceAcceptMessageHandler.SERIALIZER.serialize(this);
     }
 }

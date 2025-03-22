@@ -7,49 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExecMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage> {
-
-    public ChannelRequestExecMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestExecMessageHandler(SshContext context, ChannelRequestExecMessage message) {
-        super(context, message);
-    }
+public class ChannelRequestExecMessageHandler
+        extends ChannelRequestMessageHandler<ChannelRequestExecMessage> {
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelRequestExecMessage
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array) {
+    public ChannelRequestExecMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestExecMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array, int startPosition) {
+    public ChannelRequestExecMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestExecMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestExecMessagePreparator getPreparator() {
-        return new ChannelRequestExecMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestExecMessagePreparator PREPARATOR =
+            new ChannelRequestExecMessagePreparator();
 
-    @Override
-    public ChannelRequestExecMessageSerializer getSerializer() {
-        return new ChannelRequestExecMessageSerializer(message);
-    }
+    public static final ChannelRequestExecMessageSerializer SERIALIZER =
+            new ChannelRequestExecMessageSerializer();
 }

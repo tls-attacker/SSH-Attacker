@@ -12,10 +12,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
         extends ModifiableVariableHolder {
 
@@ -44,6 +42,24 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
+
+    protected ProtocolMessage() {
+        super();
+    }
+
+    protected ProtocolMessage(ProtocolMessage<T> other) {
+        super(other);
+        required = other.required != null ? other.required.createCopy() : null;
+        goingToBeSent = other.goingToBeSent != null ? other.goingToBeSent.createCopy() : null;
+        adjustContext = other.adjustContext != null ? other.adjustContext.createCopy() : null;
+        completeResultingMessage =
+                other.completeResultingMessage != null
+                        ? other.completeResultingMessage.createCopy()
+                        : null;
+    }
+
+    @Override
+    public abstract ProtocolMessage<T> createCopy();
 
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
@@ -102,7 +118,13 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
+    public abstract ProtocolMessageHandler<T> getHandler();
+
+    public abstract void adjustContext(SshContext context);
+
+    public abstract void prepare(Chooser chooser);
+
+    public abstract byte[] serialize();
 
     public abstract String toCompactString();
 }

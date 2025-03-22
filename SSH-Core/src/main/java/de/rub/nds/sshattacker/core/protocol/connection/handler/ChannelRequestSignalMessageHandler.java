@@ -7,50 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSignalMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSignalMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSignalMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSignalMessageHandler
-        extends SshMessageHandler<ChannelRequestSignalMessage> {
-
-    public ChannelRequestSignalMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestSignalMessageHandler(
-            SshContext context, ChannelRequestSignalMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestSignalMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array) {
+    public ChannelRequestSignalMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestSignalMessageParser(array);
     }
 
     @Override
-    public ChannelRequestSignalMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestSignalMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestSignalMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestSignalMessagePreparator getPreparator() {
-        return new ChannelRequestSignalMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestSignalMessagePreparator PREPARATOR =
+            new ChannelRequestSignalMessagePreparator();
 
-    @Override
-    public ChannelRequestSignalMessageSerializer getSerializer() {
-        return new ChannelRequestSignalMessageSerializer(message);
-    }
+    public static final ChannelRequestSignalMessageSerializer SERIALIZER =
+            new ChannelRequestSignalMessageSerializer();
 }

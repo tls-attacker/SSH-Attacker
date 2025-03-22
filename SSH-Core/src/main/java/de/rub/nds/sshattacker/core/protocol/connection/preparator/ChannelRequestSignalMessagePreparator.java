@@ -15,13 +15,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestSignalMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestSignalMessage> {
 
-    public ChannelRequestSignalMessagePreparator(
-            Chooser chooser, ChannelRequestSignalMessage message) {
-        super(chooser, message, ChannelRequestType.SIGNAL);
+    public ChannelRequestSignalMessagePreparator() {
+        super(ChannelRequestType.SIGNAL, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSignalName(SignalType.SIGINT, true);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestSignalMessage object, Chooser chooser) {
+        object.setSignalName(SignalType.SIGINT, true);
     }
 }

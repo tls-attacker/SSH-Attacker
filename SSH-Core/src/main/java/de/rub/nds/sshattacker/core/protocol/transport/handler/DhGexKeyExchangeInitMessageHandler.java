@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeInitMessagePreparator;
@@ -18,42 +17,29 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeInitMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeInitMessage> {
 
-    public DhGexKeyExchangeInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhGexKeyExchangeInitMessageHandler(
-            SshContext context, DhGexKeyExchangeInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, DhGexKeyExchangeInitMessage object) {
         context.getChooser()
                 .getDhGexKeyExchange()
-                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                .setRemotePublicKey(object.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setDhGexClientPublicKey(message.getEphemeralPublicKey().getValue());
+                .setDhGexClientPublicKey(object.getEphemeralPublicKey().getValue());
     }
 
     @Override
-    public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(byte[] array) {
+    public DhGexKeyExchangeInitMessageParser getParser(byte[] array, SshContext context) {
         return new DhGexKeyExchangeInitMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(
-            byte[] array, int startPosition) {
+    public DhGexKeyExchangeInitMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhGexKeyExchangeInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public DhGexKeyExchangeInitMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhGexKeyExchangeInitMessagePreparator PREPARATOR =
+            new DhGexKeyExchangeInitMessagePreparator();
 
-    @Override
-    public DhGexKeyExchangeInitMessageSerializer getSerializer() {
-        return new DhGexKeyExchangeInitMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeInitMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeInitMessageSerializer();
 }

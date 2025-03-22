@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthKeyboardInteractiveMessage
@@ -21,6 +22,25 @@ public class UserAuthKeyboardInteractiveMessage
     private ModifiableString languageTag;
     private ModifiableInteger subMethodsLength;
     private ModifiableString subMethods;
+
+    public UserAuthKeyboardInteractiveMessage() {
+        super();
+    }
+
+    public UserAuthKeyboardInteractiveMessage(UserAuthKeyboardInteractiveMessage other) {
+        super(other);
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+        subMethodsLength =
+                other.subMethodsLength != null ? other.subMethodsLength.createCopy() : null;
+        subMethods = other.subMethods != null ? other.subMethods.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthKeyboardInteractiveMessage createCopy() {
+        return new UserAuthKeyboardInteractiveMessage(this);
+    }
 
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;
@@ -102,8 +122,26 @@ public class UserAuthKeyboardInteractiveMessage
         }
     }
 
+    public static final UserAuthKeyboardInteractiveMessageHandler HANDLER =
+            new UserAuthKeyboardInteractiveMessageHandler();
+
     @Override
-    public UserAuthKeyboardInteractiveMessageHandler getHandler(SshContext context) {
-        return new UserAuthKeyboardInteractiveMessageHandler(context, this);
+    public UserAuthKeyboardInteractiveMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthKeyboardInteractiveMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthKeyboardInteractiveMessageHandler.SERIALIZER.serialize(this);
     }
 }

@@ -9,22 +9,34 @@ package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.ArrayList;
 
 public class UserAuthInfoRequestMessagePreparator
         extends SshMessagePreparator<UserAuthInfoRequestMessage> {
 
-    public UserAuthInfoRequestMessagePreparator(
-            Chooser chooser, UserAuthInfoRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST);
+    public UserAuthInfoRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setUserName("", true);
-        getObject().setInstruction("", true);
-        getObject().setLanguageTag("", true);
-        getObject().setPromptEntryCount(0);
+    protected void prepareMessageSpecificContents(
+            UserAuthInfoRequestMessage object, Chooser chooser) {
+        object.setUserName("", true);
+        object.setInstruction("", true);
+        object.setLanguageTag("", true);
+
+        ArrayList<AuthenticationPromptEntry> nextPrompts =
+                chooser.getNextPreConfiguredAuthPrompts();
+
+        if (nextPrompts != null) {
+            object.setPromptEntries(nextPrompts, true);
+        } else {
+            object.setPromptEntriesCount(object.getPromptEntries().size());
+        }
+
+        object.getPromptEntries().forEach(promptEntry -> promptEntry.prepare(chooser));
     }
 }

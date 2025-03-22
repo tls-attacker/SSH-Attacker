@@ -9,6 +9,17 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpVersionMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.SftpV4InitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseNameMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -119,36 +130,143 @@ public abstract class MessageAction extends ConnectionBoundAction {
         @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
+        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+        // SFTP
+        @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
+        @XmlElement(
+                type = SftpRequestCheckFileHandleMessage.class,
+                name = "SftpRequestCheckFileHandle"),
+        @XmlElement(
+                type = SftpRequestCheckFileNameMessage.class,
+                name = "SftpRequestCheckFileName"),
+        @XmlElement(type = SftpRequestCloseMessage.class, name = "SftpRequestClose"),
+        @XmlElement(type = SftpRequestCopyDataMessage.class, name = "SftpRequestCopyData"),
+        @XmlElement(type = SftpRequestCopyFileMessage.class, name = "SftpRequestCopyFile"),
+        @XmlElement(type = SftpRequestExpandPathMessage.class, name = "SftpRequestExpandPath"),
+        @XmlElement(type = SftpRequestFileSetStatMessage.class, name = "SftpRequestFileSetStat"),
+        @XmlElement(type = SftpRequestFileStatMessage.class, name = "SftpRequestFileStat"),
+        @XmlElement(type = SftpRequestFileStatVfsMessage.class, name = "SftpRequestFileStatVfs"),
+        @XmlElement(type = SftpRequestFileSyncMessage.class, name = "SftpRequestFileSync"),
+        @XmlElement(
+                type = SftpRequestGetTempFolderMessage.class,
+                name = "SftpRequestGetTempFolder"),
+        @XmlElement(type = SftpRequestHardlinkMessage.class, name = "SftpRequestHardlink"),
+        @XmlElement(
+                type = SftpRequestHomeDirectoryMessage.class,
+                name = "SftpRequestHomeDirectory"),
+        @XmlElement(type = SftpRequestLimitsMessage.class, name = "SftpRequestLimits"),
+        @XmlElement(type = SftpRequestLinkSetStatMessage.class, name = "SftpRequestLinkSetStat"),
+        @XmlElement(type = SftpRequestLinkStatMessage.class, name = "SftpRequestLinkStat"),
+        @XmlElement(type = SftpRequestMakeDirMessage.class, name = "SftpRequestMakeDir"),
+        @XmlElement(
+                type = SftpRequestMakeTempFolderMessage.class,
+                name = "SftpRequestMakeTempFolder"),
+        @XmlElement(type = SftpRequestOpenDirMessage.class, name = "SftpRequestOpenDir"),
+        @XmlElement(type = SftpRequestOpenMessage.class, name = "SftpRequestOpen"),
+        @XmlElement(type = SftpRequestPosixRenameMessage.class, name = "SftpRequestPosixRename"),
+        @XmlElement(type = SftpRequestReadDirMessage.class, name = "SftpRequestReadDir"),
+        @XmlElement(type = SftpRequestReadLinkMessage.class, name = "SftpRequestReadLink"),
+        @XmlElement(type = SftpRequestReadMessage.class, name = "SftpRequestRead"),
+        @XmlElement(type = SftpRequestRealPathMessage.class, name = "SftpRequestRealPath"),
+        @XmlElement(type = SftpRequestRemoveMessage.class, name = "SftpRequestRemove"),
+        @XmlElement(type = SftpRequestRenameMessage.class, name = "SftpRequestRename"),
+        @XmlElement(type = SftpRequestRemoveDirMessage.class, name = "SftpRequestRmdir"),
+        @XmlElement(type = SftpRequestSetStatMessage.class, name = "SftpRequestSetStat"),
+        @XmlElement(
+                type = SftpRequestSpaceAvailableMessage.class,
+                name = "SftpRequestSpaceAvailable"),
+        @XmlElement(type = SftpRequestStatMessage.class, name = "SftpRequestStat"),
+        @XmlElement(type = SftpRequestStatVfsMessage.class, name = "SftpRequestStatVfs"),
+        @XmlElement(type = SftpRequestSymbolicLinkMessage.class, name = "SftpRequestSymbolicLink"),
+        @XmlElement(type = SftpRequestUnknownMessage.class, name = "SftpRequestUnknown"),
+        @XmlElement(
+                type = SftpRequestUsersGroupsByIdMessage.class,
+                name = "SftpRequestUsersGroupsById"),
+        @XmlElement(type = SftpRequestVendorIdMessage.class, name = "SftpRequestVendorId"),
+        @XmlElement(type = SftpRequestWithHandleMessage.class, name = "SftpRequestWithHandle"),
+        @XmlElement(type = SftpRequestWithPathMessage.class, name = "SftpRequestWithPath"),
+        @XmlElement(type = SftpRequestWriteMessage.class, name = "SftpRequestWrite"),
+        @XmlElement(type = SftpResponseAttributesMessage.class, name = "SftpResponseAttributes"),
+        @XmlElement(type = SftpResponseCheckFileMessage.class, name = "SftpResponseCheckFile"),
+        @XmlElement(type = SftpResponseDataMessage.class, name = "SftpResponseData"),
+        @XmlElement(type = SftpResponseHandleMessage.class, name = "SftpResponseHandle"),
+        @XmlElement(type = SftpResponseLimitsMessage.class, name = "SftpResponseLimits"),
+        @XmlElement(type = SftpResponseNameMessage.class, name = "SftpResponseName"),
+        @XmlElement(
+                type = SftpResponseSpaceAvailableMessage.class,
+                name = "SftpResponseSpaceAvailable"),
+        @XmlElement(type = SftpResponseStatusMessage.class, name = "SftpResponseStatus"),
+        @XmlElement(type = SftpResponseStatVfsMessage.class, name = "SftpResponseStatVfs"),
+        @XmlElement(type = SftpResponseUnknownMessage.class, name = "SftpResponseUnknown"),
+        @XmlElement(
+                type = SftpResponseUsersGroupsByIdMessage.class,
+                name = "SftpResponseUsersGroupsById"),
+        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
+        // SFTP V4
+        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek"),
+        @XmlElement(type = SftpV4InitMessage.class, name = "SftpV4Init"),
+        @XmlElement(type = SftpV4ResponseNameMessage.class, name = "SftpV4ResponseName"),
+        @XmlElement(
+                type = SftpV4ResponseAttributesMessage.class,
+                name = "SftpV4ResponseAttributes"),
+        @XmlElement(type = SftpV4RequestOpenMessage.class, name = "SftpV4RequestOpen"),
+        @XmlElement(type = SftpV4RequestFileStatMessage.class, name = "SftpV4RequestFileStat"),
+        @XmlElement(
+                type = SftpV4RequestFileSetStatMessage.class,
+                name = "SftpV4RequestFileSetStat"),
+        @XmlElement(type = SftpV4RequestSetStatMessage.class, name = "SftpV4RequestSetStat"),
+        @XmlElement(type = SftpV4RequestMakeDirMessage.class, name = "SftpV4RequestMakeDir"),
+        @XmlElement(type = SftpV4RequestStatMessage.class, name = "SftpV4RequestStat")
     })
-    protected List<ProtocolMessage<?>> messages = new ArrayList<>();
+    protected ArrayList<ProtocolMessage<?>> messages = new ArrayList<>();
 
     protected MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    protected MessageAction(List<ProtocolMessage<?>> messages) {
+    protected MessageAction(ArrayList<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.messages = new ArrayList<>(messages);
+        this.messages = messages;
+    }
+
+    protected MessageAction(List<ProtocolMessage<?>> messages) {
+        this(new ArrayList<>(messages));
     }
 
     protected MessageAction(ProtocolMessage<?>... messages) {
-        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.messages = Arrays.asList(messages);
+        this(Arrays.asList(messages));
     }
 
     protected MessageAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    protected MessageAction(String connectionAlias, ArrayList<ProtocolMessage<?>> messages) {
         super(connectionAlias);
-        this.messages = new ArrayList<>(messages);
+        this.messages = messages;
+    }
+
+    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+        this(connectionAlias, new ArrayList<>(messages));
     }
 
     protected MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, Arrays.asList(messages));
     }
+
+    protected MessageAction(MessageAction other) {
+        super(other);
+        if (other.messages != null) {
+            messages = new ArrayList<>(other.messages.size());
+            for (ProtocolMessage<?> item : other.messages) {
+                messages.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public abstract MessageAction createCopy();
 
     public static String getReadableString(ProtocolMessage<?>... messages) {
         return getReadableString(Arrays.asList(messages));
@@ -163,7 +281,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        for (ProtocolMessage<?> message : messages) {
+
+        for (int i = 0; i < messages.size(); i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            ProtocolMessage<?> message = messages.get(i);
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -172,9 +295,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             if (!message.isRequired()) {
                 builder.append("*");
             }
-            builder.append(", ");
         }
-        return builder.deleteCharAt(builder.lastIndexOf(", ")).toString();
+        return builder.toString();
     }
 
     @Override

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -57,9 +58,9 @@ public abstract class Parser<T> {
         this.array = array;
         if (startPosition > array.length) {
             throw new ParserException(
-                    "Cannot creater parser beyond pointer. Pointer:"
+                    "Cannot creater parser beyond total array Length. Wanted pointer: "
                             + pointer
-                            + " ArrayLength:"
+                            + ", Total array Length :"
                             + array.length);
         }
     }
@@ -81,11 +82,11 @@ public abstract class Parser<T> {
         int nextPointer = pointer + length;
         if (!enoughBytesLeft(length)) {
             throw new ParserException(
-                    "Parsing over the end of the array. Current Pointer:"
+                    "Parsing over the end of the array. Current pointer: "
                             + pointer
-                            + " ToParse Length:"
+                            + ", Length of parsing field: "
                             + length
-                            + " ArrayLength:"
+                            + ", Total array Length: "
                             + array.length);
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
@@ -108,6 +109,40 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Parses four bytes from the Array and returns them as an int. Throws a ParserException if the
+     * number of bytes cannot be parsed. Moves the pointer accordingly.
+     *
+     * @return An integer representation of the partial byteArray
+     */
+    protected int parseIntField() {
+        return Converter.fourBytesToInt(parseByteArrayField(4));
+    }
+
+    /**
+     * Parses a number of bytes from the Array and returns them as a long. Throws a ParserException
+     * if the number of bytes cannot be parsed. Moves the pointer accordingly.
+     *
+     * @param length Number of bytes to be parsed
+     * @return A long representation of the partial byteArray
+     */
+    protected long parseLongField(int length) {
+        if (length == 0) {
+            throw new ParserException("Cannot parse long of size 0");
+        }
+        return ArrayConverter.bytesToLong(parseByteArrayField(length));
+    }
+
+    /**
+     * Parses eight bytes from the Array and returns them as a long. Throws a ParserException if the
+     * number of bytes cannot be parsed. Moves the pointer accordingly.
+     *
+     * @return A long representation of the partial byteArray
+     */
+    protected long parseLongField() {
+        return Converter.eigthBytesToLong(parseByteArrayField(8));
+    }
+
+    /**
      * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a
      * ParserException if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
@@ -116,7 +151,7 @@ public abstract class Parser<T> {
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
-            throw new ParserException("Cannot parse BigInt of size 0");
+            throw new ParserException("Cannot parse big int of size 0");
         }
         return new BigInteger(1, parseByteArrayField(length));
     }
@@ -136,6 +171,16 @@ public abstract class Parser<T> {
             LOGGER.warn("Parsing byte[] field into a byte of size >1");
         }
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
+    }
+
+    /**
+     * Parses one byte from the Array and return it as a byte. Throws a ParserException if the
+     * number of bytes cannot be parsed. Moves the pointer accordingly.
+     *
+     * @return An integer representation of the partial byteArray
+     */
+    protected byte parseByteField() {
+        return parseByteArrayField(1)[0];
     }
 
     /**
@@ -172,7 +217,7 @@ public abstract class Parser<T> {
     protected String parseStringTill(byte endSequence) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         while (true) {
-            byte b = parseByteField(1);
+            byte b = parseByteField();
             stream.write(b);
             if (b == endSequence) {
                 return stream.toString(StandardCharsets.UTF_8);
@@ -191,7 +236,7 @@ public abstract class Parser<T> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int endSequencePosition = 0;
         while (true) {
-            byte b = parseByteField(1);
+            byte b = parseByteField();
             stream.write(b);
             if (b == endSequence[endSequencePosition]) {
                 endSequencePosition++;
@@ -213,7 +258,7 @@ public abstract class Parser<T> {
         if (pointer < array.length) {
             return array[pointer];
         } else {
-            throw new ParserException("Cannot peek, would peek over the end ot the array");
+            throw new ParserException("Cannot peek, would peek over the end of the array");
         }
     }
 

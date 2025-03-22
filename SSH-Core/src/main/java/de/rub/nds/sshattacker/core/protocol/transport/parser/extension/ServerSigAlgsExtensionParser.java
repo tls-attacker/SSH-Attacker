@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -30,27 +29,19 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
         return new ServerSigAlgsExtension();
     }
 
+    private void parseAcceptedPublicKeyAlgorithms() {
+        int acceptedPublicKeyAlgorithmsLength = parseIntField();
+        extension.setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength);
+        LOGGER.debug(
+                "Accepted public key algorithms length: {}", acceptedPublicKeyAlgorithmsLength);
+        String acceptedPublicKeyAlgorithms =
+                parseByteString(acceptedPublicKeyAlgorithmsLength, StandardCharsets.US_ASCII);
+        extension.setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms);
+        LOGGER.debug("Accepted public key algorithms: {}", acceptedPublicKeyAlgorithms);
+    }
+
     @Override
     protected void parseExtensionValue() {
-        parseAcceptedPublicKeyAlgorithmsLength();
         parseAcceptedPublicKeyAlgorithms();
-    }
-
-    private void parseAcceptedPublicKeyAlgorithmsLength() {
-        extension.setAcceptedPublicKeyAlgorithmsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Accepted public key algorithms length: {}",
-                extension.getAcceptedPublicKeyAlgorithmsLength().getValue());
-    }
-
-    private void parseAcceptedPublicKeyAlgorithms() {
-        extension.setAcceptedPublicKeyAlgorithms(
-                parseByteString(
-                        extension.getAcceptedPublicKeyAlgorithmsLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Accepted public key algorithms: {}",
-                extension.getAcceptedPublicKeyAlgorithms().getValue());
     }
 }

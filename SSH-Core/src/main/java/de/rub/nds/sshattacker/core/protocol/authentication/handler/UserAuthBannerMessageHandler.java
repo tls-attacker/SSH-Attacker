@@ -11,41 +11,30 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBanne
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthBannerMessageHandler(SshContext context, UserAuthBannerMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthBannerMessage object) {
         // TODO: Handle UserAuthBannerMessage
     }
 
     @Override
-    public UserAuthBannerMessageParser getParser(byte[] array) {
+    public UserAuthBannerMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthBannerMessageParser(array);
     }
 
     @Override
-    public UserAuthBannerMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthBannerMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthBannerMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthBannerMessagePreparator getPreparator() {
-        return new UserAuthBannerMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthBannerMessagePreparator PREPARATOR =
+            new UserAuthBannerMessagePreparator();
 
-    @Override
-    public UserAuthBannerMessageSerializer getSerializer() {
-        return new UserAuthBannerMessageSerializer(message);
-    }
+    public static final UserAuthBannerMessageSerializer SERIALIZER =
+            new UserAuthBannerMessageSerializer();
 }

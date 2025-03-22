@@ -21,3 +21,13 @@ nbactions.xml
 # VS Code
 .factorypath
 .vscode
+
+### IntelliJ IDEA ###
+.idea/*
+!.idea/inspectionProfiles
+!.idea/runConfigurations
+*.iws
+*.iml
+*.ipr
+
+

@@ -7,15 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.crypto.util;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.*;
-import de.rub.nds.sshattacker.core.crypto.keys.serializer.*;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
@@ -50,7 +49,7 @@ public final class PublicKeyHelper {
     public static SshPublicKey<?, ?> parse(byte[] encodedPublicKey) {
         try {
             int keyFormatLength =
-                    ArrayConverter.bytesToInt(
+                    Converter.fourBytesToInt(
                             Arrays.copyOfRange(
                                     encodedPublicKey, 0, DataFormatConstants.STRING_SIZE_LENGTH));
             String keyFormatName =
@@ -285,99 +284,6 @@ public final class PublicKeyHelper {
      *     implemented.
      */
     public static byte[] encode(SshPublicKey<?, ?> publicKey) {
-        return encode(publicKey.getPublicKeyFormat(), publicKey.getPublicKey());
-    }
-
-    /**
-     * Serializes the given public key using the specified key format into a byte array.
-     *
-     * @param keyFormat The public key format
-     * @param publicKey Public key to serialize
-     * @return A serialized representation of the public key in the specified public key format or
-     *     null, if key format does not support the given key.
-     * @throws NotImplementedException Thrown whenever support for the specified key format has not
-     *     yet been implemented.
-     */
-    public static byte[] encode(PublicKeyFormat keyFormat, PublicKey publicKey) {
-        try {
-            return switch (keyFormat) {
-                case SSH_RSA ->
-                        new RsaPublicKeySerializer((CustomRsaPublicKey) publicKey).serialize();
-                case SSH_DSS ->
-                        new DsaPublicKeySerializer((CustomDsaPublicKey) publicKey).serialize();
-                case ECDSA_SHA2_SECP160K1,
-                        ECDSA_SHA2_SECP160R1,
-                        ECDSA_SHA2_SECP160R2,
-                        ECDSA_SHA2_SECP192K1,
-                        ECDSA_SHA2_NISTP256,
-                        ECDSA_SHA2_NISTP384,
-                        ECDSA_SHA2_NISTP521 ->
-                        new EcdsaPublicKeySerializer((CustomEcPublicKey) publicKey).serialize();
-                case SSH_RSA_CERT_V01_OPENSSH_COM ->
-                        new CertRsaPublicKeySerializer((CustomCertRsaPublicKey) publicKey)
-                                .serialize();
-                case SSH_DSS_CERT_V01_OPENSSH_COM ->
-                        new CertDsaPublicKeySerializer((CustomCertDsaPublicKey) publicKey)
-                                .serialize();
-                case ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                        ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
-                        ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM ->
-                        new CertEcdsaPublicKeySerializer((CustomCertEcdsaPublicKey) publicKey)
-                                .serialize();
-                case SSH_ED25519_CERT_V01_OPENSSH_COM ->
-                        new CertXCurvePublicKeySerializer((CustomCertXCurvePublicKey) publicKey)
-                                .serialize();
-                case SSH_ED25519, SSH_ED448 ->
-                        new XCurvePublicKeySerializer((XCurveEcPublicKey) publicKey).serialize();
-                case X509V3_SSH_RSA, X509V3_RSA2048_SHA256 ->
-                        new X509RsaPublicKeySerializer((CustomX509RsaPublicKey) publicKey)
-                                .serialize();
-                case X509V3_ECDSA_SHA2_SECP160K1,
-                        X509V3_ECDSA_SHA2_SECP160R1,
-                        X509V3_ECDSA_SHA2_SECP160R2,
-                        X509V3_ECDSA_SHA2_SECP192K1,
-                        X509V3_ECDSA_SHA2_SECP192R1,
-                        X509V3_ECDSA_SHA2_SECP224K1,
-                        X509V3_ECDSA_SHA2_SECP224R1,
-                        X509V3_ECDSA_SHA2_SECP256K1,
-                        X509V3_ECDSA_SHA2_NISTP256,
-                        X509V3_ECDSA_SHA2_NISTP384,
-                        X509V3_ECDSA_SHA2_NISTP521,
-                        X509V3_ECDSA_SHA2_SECT163K1,
-                        X509V3_ECDSA_SHA2_SECT163R1,
-                        X509V3_ECDSA_SHA2_SECT163R2,
-                        X509V3_ECDSA_SHA2_SECT193R1,
-                        X509V3_ECDSA_SHA2_SECT193R2,
-                        X509V3_ECDSA_SHA2_SECT233K1,
-                        X509V3_ECDSA_SHA2_SECT233R1,
-                        X509V3_ECDSA_SHA2_SECT239K1,
-                        X509V3_ECDSA_SHA2_SECT283K1,
-                        X509V3_ECDSA_SHA2_SECT283R1,
-                        X509V3_ECDSA_SHA2_SECT409K1,
-                        X509V3_ECDSA_SHA2_SECT409R1,
-                        X509V3_ECDSA_SHA2_SECT571K1,
-                        X509V3_ECDSA_SHA2_SECT571R1 ->
-                        new X509EcdsaPublicKeySerializer((CustomX509EcdsaPublicKey) publicKey)
-                                .serialize();
-                case X509V3_SSH_DSS ->
-                        new X509DsaPublicKeySerializer((CustomX509DsaPublicKey) publicKey)
-                                .serialize();
-                case X509V3_SSH_ED25519 ->
-                        new X509XCurvePublicKeySerializer((CustomX509XCurvePublicKey) publicKey)
-                                .serialize();
-                default ->
-                        throw new NotImplementedException(
-                                "Serializer für Public Key Format "
-                                        + keyFormat
-                                        + " ist noch nicht implementiert.");
-            };
-        } catch (ClassCastException e) {
-            LOGGER.error(
-                    "Unable to encode public key with key format '{}' due to mismatching classes, got '{}'",
-                    keyFormat,
-                    publicKey.getClass().getSimpleName());
-            LOGGER.debug(e);
-            return null;
-        }
+        return publicKey.getPublicKey().serialize();
     }
 }

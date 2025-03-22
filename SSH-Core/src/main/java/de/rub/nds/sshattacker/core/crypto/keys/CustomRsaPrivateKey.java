@@ -7,15 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 
 /** A serializable RSA private key used in RSA encryption and signatures. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateKey {
 
     private BigInteger modulus;
@@ -35,6 +32,17 @@ public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateK
         super();
         this.modulus = modulus;
         this.privateExponent = privateExponent;
+    }
+
+    public CustomRsaPrivateKey(CustomRsaPrivateKey other) {
+        super(other);
+        modulus = other.modulus;
+        privateExponent = other.privateExponent;
+    }
+
+    @Override
+    public CustomRsaPrivateKey createCopy() {
+        return new CustomRsaPrivateKey(this);
     }
 
     @Override

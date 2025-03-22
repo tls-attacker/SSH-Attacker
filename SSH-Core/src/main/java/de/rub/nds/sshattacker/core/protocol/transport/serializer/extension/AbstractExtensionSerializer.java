@@ -7,37 +7,34 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>>
-        extends Serializer<E> {
+public abstract class AbstractExtensionSerializer<T extends AbstractExtension<T>>
+        extends Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final E extension;
-
-    protected AbstractExtensionSerializer(E extension) {
-        super();
-        this.extension = extension;
-    }
-
     @Override
-    protected final void serializeBytes() {
-        serializeExtensionName();
-        serializeExtensionValue();
+    protected final void serializeBytes(T object, SerializerStream output) {
+        serializeExtensionName(object, output);
+        serializeExtensionValue(object, output);
     }
 
-    private void serializeExtensionName() {
-        LOGGER.debug("Extension name length: {}", extension.getNameLength().getValue());
-        appendInt(extension.getNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Extension name: {}", extension.getName().getValue());
-        appendString(extension.getName().getValue(), StandardCharsets.US_ASCII);
+    private void serializeExtensionName(T object, SerializerStream output) {
+        Integer nameLength = object.getNameLength().getValue();
+        LOGGER.debug("Extension name length: {}", nameLength);
+        output.appendInt(nameLength);
+        String name = object.getName().getValue();
+        LOGGER.debug("Extension name: {}", () -> backslashEscapeString(name));
+        output.appendString(name, StandardCharsets.US_ASCII);
     }
 
-    protected abstract void serializeExtensionValue();
+    protected abstract void serializeExtensionValue(T object, SerializerStream output);
 }

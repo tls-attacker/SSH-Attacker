@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.packet.preparator;
 
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,26 +16,11 @@ public class BlobPacketPreparator extends AbstractPacketPreparator<BlobPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final AbstractPacketEncryptor encryptor;
-    private final PacketCompressor compressor;
-
-    public BlobPacketPreparator(
-            Chooser chooser,
-            BlobPacket packet,
-            AbstractPacketEncryptor encryptor,
-            PacketCompressor compressor) {
-        super(chooser, packet);
-        this.encryptor = encryptor;
-        this.compressor = compressor;
-    }
-
     @Override
-    public void prepare() {
-        LOGGER.debug(
-                "Compressing BlobPacket using {} compression algorithm",
-                compressor.getCompressionAlgorithm());
-        compressor.compress(getObject());
+    protected void preparePacketContents(BlobPacket object, Chooser chooser) {
+        LOGGER.debug("Compressing blob packet");
+        chooser.getContext().getPacketLayer().getCompressor().compress(object);
         LOGGER.debug("Encrypting BlobPacket");
-        encryptor.encrypt(getObject());
+        chooser.getContext().getPacketLayer().getEncryptor().encrypt(object);
     }
 }

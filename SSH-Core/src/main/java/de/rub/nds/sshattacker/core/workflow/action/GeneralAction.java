@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -21,7 +20,7 @@ import java.util.Set;
  */
 public class GeneralAction extends SshAction {
 
-    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
+    private LinkedHashSet<String> aliases = new LinkedHashSet<>();
 
     public GeneralAction() {
         super();
@@ -42,10 +41,14 @@ public class GeneralAction extends SshAction {
         this.aliases.addAll(Arrays.asList(aliases));
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
+    public GeneralAction(GeneralAction other) {
+        super(other);
+        aliases = other.aliases != null ? new LinkedHashSet<>(other.aliases) : null;
+    }
+
     @Override
-    public Set<String> getAllAliases() {
-        return aliases;
+    public GeneralAction createCopy() {
+        return new GeneralAction(this);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class GeneralAction extends SshAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -86,5 +89,10 @@ public class GeneralAction extends SshAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<String> getAllAliases() {
+        return aliases;
     }
 }

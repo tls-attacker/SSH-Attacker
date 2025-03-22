@@ -11,10 +11,26 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequestUnknownMessage> {
 
     private ModifiableByteArray typeSpecificData;
+
+    public GlobalRequestUnknownMessage() {
+        super();
+    }
+
+    public GlobalRequestUnknownMessage(GlobalRequestUnknownMessage other) {
+        super(other);
+        typeSpecificData =
+                other.typeSpecificData != null ? other.typeSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestUnknownMessage createCopy() {
+        return new GlobalRequestUnknownMessage(this);
+    }
 
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
@@ -29,8 +45,26 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
         this.typeSpecificData = typeSpecificData;
     }
 
+    public static final GlobalRequestUnknownMessageHandler HANDLER =
+            new GlobalRequestUnknownMessageHandler();
+
     @Override
-    public GlobalRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestUnknownMessageHandler(context, this);
+    public GlobalRequestUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestUnknownMessageHandler.SERIALIZER.serialize(this);
     }
 }

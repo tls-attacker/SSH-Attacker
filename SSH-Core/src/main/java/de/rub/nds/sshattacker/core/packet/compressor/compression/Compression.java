@@ -8,6 +8,8 @@
 package de.rub.nds.sshattacker.core.packet.compressor.compression;
 
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.CompressionException;
+import de.rub.nds.sshattacker.core.exceptions.DecompressionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,9 +23,9 @@ public abstract class Compression {
         this.algorithm = algorithm;
     }
 
-    public abstract byte[] compress(byte[] data);
+    public abstract byte[] compress(byte[] data) throws CompressionException;
 
-    public abstract byte[] decompress(byte[] data);
+    public abstract byte[] decompress(byte[] data) throws DecompressionException;
 
     public CompressionAlgorithm getAlgorithm() {
         return algorithm;

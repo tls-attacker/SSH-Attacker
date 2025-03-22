@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.config;
 
-import org.apache.commons.lang3.SerializationUtils;
-
 public class ConfigCache {
 
     private final Config cachedConfig;
@@ -19,6 +17,6 @@ public class ConfigCache {
     }
 
     public Config getCachedCopy() {
-        return SerializationUtils.clone(cachedConfig);
+        return cachedConfig.createCopy();
     }
 }

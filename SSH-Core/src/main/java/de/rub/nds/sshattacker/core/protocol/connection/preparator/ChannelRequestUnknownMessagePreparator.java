@@ -13,13 +13,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestUnknownMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestUnknownMessage> {
 
-    public ChannelRequestUnknownMessagePreparator(
-            Chooser chooser, ChannelRequestUnknownMessage message) {
-        super(chooser, message, "");
+    public ChannelRequestUnknownMessagePreparator() {
+        super("", true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setTypeSpecificData(new byte[0]);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestUnknownMessage object, Chooser chooser) {
+        object.setTypeSpecificData(new byte[10]);
     }
 }

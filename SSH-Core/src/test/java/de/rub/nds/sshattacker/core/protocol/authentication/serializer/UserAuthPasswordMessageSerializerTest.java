@@ -75,8 +75,8 @@ public class UserAuthPasswordMessageSerializerTest {
         msg.setServiceName(providedServiceType, true);
         msg.setChangePassword(providedChangePassword);
         msg.setPassword(providedPassword, true);
-        UserAuthPasswordMessageSerializer serializer = new UserAuthPasswordMessageSerializer(msg);
+        UserAuthPasswordMessageSerializer serializer = new UserAuthPasswordMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

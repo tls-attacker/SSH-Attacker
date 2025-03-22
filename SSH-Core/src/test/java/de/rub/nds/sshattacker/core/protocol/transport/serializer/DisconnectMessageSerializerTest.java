@@ -48,8 +48,8 @@ public class DisconnectMessageSerializerTest {
         msg.setReasonCode(providedReason);
         msg.setDescription(providedDescription, true);
         msg.setLanguageTag(providedLanguageTag, true);
-        DisconnectMessageSerializer serializer = new DisconnectMessageSerializer(msg);
+        DisconnectMessageSerializer serializer = new DisconnectMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

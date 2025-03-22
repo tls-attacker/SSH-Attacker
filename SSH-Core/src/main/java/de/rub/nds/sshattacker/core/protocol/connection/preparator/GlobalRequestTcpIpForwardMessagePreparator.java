@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestTcpIpForwardMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestTcpIpForwardMessage> {
 
-    public GlobalRequestTcpIpForwardMessagePreparator(
-            Chooser chooser, GlobalRequestTcpIpForwardMessage message) {
-        super(chooser, message, GlobalRequestType.TCPIP_FORWARD);
+    public GlobalRequestTcpIpForwardMessagePreparator() {
+        super(GlobalRequestType.TCPIP_FORWARD, true);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
-        getObject().setIpAddressToBind("127.0.0.1", true);
-        getObject().setPortToBind(22);
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestTcpIpForwardMessage object, Chooser chooser) {
+        object.setIpAddressToBind("127.0.0.1", true);
+        object.setPortToBind(0);
     }
 }

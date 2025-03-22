@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestShellMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestShellMessage> {
 
-    public ChannelRequestShellMessagePreparator(
-            Chooser chooser, ChannelRequestShellMessage message) {
-        super(chooser, message, ChannelRequestType.SHELL);
+    public ChannelRequestShellMessagePreparator() {
+        super(ChannelRequestType.SHELL, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {}
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestShellMessage object, Chooser chooser) {}
 }

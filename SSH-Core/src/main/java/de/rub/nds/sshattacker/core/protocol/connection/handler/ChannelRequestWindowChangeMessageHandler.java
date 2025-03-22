@@ -7,49 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWindowChangeMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestWindowChangeMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestWindowChangeMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
-        extends SshMessageHandler<ChannelRequestWindowChangeMessage> {
-    public ChannelRequestWindowChangeMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestWindowChangeMessageHandler(
-            SshContext context, ChannelRequestWindowChangeMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestWindowChangeMessage> {
 
     @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array) {
+    public ChannelRequestWindowChangeMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestWindowChangeMessageParser(array);
     }
 
     @Override
-    public ChannelRequestWindowChangeMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestWindowChangeMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestWindowChangeMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestWindowChangeMessagePreparator getPreparator() {
-        return new ChannelRequestWindowChangeMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestWindowChangeMessagePreparator PREPARATOR =
+            new ChannelRequestWindowChangeMessagePreparator();
 
-    @Override
-    public ChannelRequestWindowChangeMessageSerializer getSerializer() {
-        return new ChannelRequestWindowChangeMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
+    public static final ChannelRequestWindowChangeMessageSerializer SERIALIZER =
+            new ChannelRequestWindowChangeMessageSerializer();
 }

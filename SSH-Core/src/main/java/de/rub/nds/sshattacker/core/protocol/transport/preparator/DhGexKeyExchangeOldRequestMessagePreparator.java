@@ -15,16 +15,19 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class DhGexKeyExchangeOldRequestMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeOldRequestMessage> {
 
-    public DhGexKeyExchangeOldRequestMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeOldRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
+    public DhGexKeyExchangeOldRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(
+            DhGexKeyExchangeOldRequestMessage object, Chooser chooser) {
+        Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
+
+        object.setPreferredGroupSize(preferredDhGroupSize);
+
         chooser.getContext()
                 .getExchangeHashInputHolder()
-                .setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());
+                .setDhGexPreferredGroupSize(preferredDhGroupSize);
     }
 }

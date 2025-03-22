@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DebugMessagePreparator;
@@ -21,44 +21,30 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DebugMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DebugMessageHandler(SshContext context, DebugMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getAlwaysDisplay().getValue())) {
+    public void adjustContext(SshContext context, DebugMessage object) {
+        if (Converter.byteToBoolean(object.getAlwaysDisplay().getValue())) {
             LOGGER.info(
                     "DebugMessage retrieved from remote, message: {}",
-                    message.getMessage().getValue());
+                    object.getMessage().getValue());
         } else {
             LOGGER.debug(
                     "DebugMessage retrieved from remote, message: {}",
-                    message.getMessage().getValue());
+                    () -> object.getMessage().getValue());
         }
     }
 
     @Override
-    public DebugMessageParser getParser(byte[] array) {
+    public DebugMessageParser getParser(byte[] array, SshContext context) {
         return new DebugMessageParser(array);
     }
 
     @Override
-    public DebugMessageParser getParser(byte[] array, int startPosition) {
+    public DebugMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new DebugMessageParser(array, startPosition);
     }
 
-    @Override
-    public DebugMessagePreparator getPreparator() {
-        return new DebugMessagePreparator(context.getChooser(), message);
-    }
+    public static final DebugMessagePreparator PREPARATOR = new DebugMessagePreparator();
 
-    @Override
-    public DebugMessageSerializer getSerializer() {
-        return new DebugMessageSerializer(message);
-    }
+    public static final DebugMessageSerializer SERIALIZER = new DebugMessageSerializer();
 }

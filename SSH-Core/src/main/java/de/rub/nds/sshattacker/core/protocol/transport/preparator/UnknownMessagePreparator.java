@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownMessagePreparator extends SshMessagePreparator<UnknownMessage> {
 
-    public UnknownMessagePreparator(Chooser chooser, UnknownMessage message) {
-        super(chooser, message, MessageIdConstant.UNKNOWN);
+    public UnknownMessagePreparator() {
+        super(MessageIdConstant.UNKNOWN);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setPayload(new byte[0]);
+    protected void prepareMessageSpecificContents(UnknownMessage object, Chooser chooser) {
+        object.setPayload(new byte[0]);
     }
 }

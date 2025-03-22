@@ -8,18 +8,24 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BlobPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class BlobPacket extends AbstractPacket {
+
+    public BlobPacket() {
+        super();
+    }
+
+    public BlobPacket(BlobPacket other) {
+        super(other);
+    }
+
     @Override
-    public BlobPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-        return new BlobPacketPreparator(chooser, this, encryptor, compressor);
+    public BlobPacket createCopy() {
+        return new BlobPacket(this);
     }
 
     @Override
@@ -28,9 +34,16 @@ public class BlobPacket extends AbstractPacket {
         return new BlobPacketParser(array, startPosition);
     }
 
-    @Override
-    public BlobPacketSerializer getPacketSerializer() {
-        return new BlobPacketSerializer(this);
+    public static final BlobPacketPreparator PREPARATOR = new BlobPacketPreparator();
+
+    public void prepare(Chooser chooser) {
+        PREPARATOR.prepare(this, chooser);
+    }
+
+    public static final BlobPacketSerializer SERIALIZER = new BlobPacketSerializer();
+
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 
     @Override

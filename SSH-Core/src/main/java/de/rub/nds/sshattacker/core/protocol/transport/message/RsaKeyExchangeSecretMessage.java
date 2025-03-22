@@ -11,14 +11,32 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeSecretMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecretMessage> {
 
     private ModifiableInteger encryptedSecretLength;
     private ModifiableByteArray encryptedSecret;
+
+    public RsaKeyExchangeSecretMessage() {
+        super();
+    }
+
+    public RsaKeyExchangeSecretMessage(RsaKeyExchangeSecretMessage other) {
+        super(other);
+        encryptedSecretLength =
+                other.encryptedSecretLength != null
+                        ? other.encryptedSecretLength.createCopy()
+                        : null;
+        encryptedSecret = other.encryptedSecret != null ? other.encryptedSecret.createCopy() : null;
+    }
+
+    @Override
+    public RsaKeyExchangeSecretMessage createCopy() {
+        return new RsaKeyExchangeSecretMessage(this);
+    }
 
     public ModifiableInteger getEncryptedSecretLength() {
         return encryptedSecretLength;
@@ -57,8 +75,26 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
         }
     }
 
+    public static final RsaKeyExchangeSecretMessageHandler HANDLER =
+            new RsaKeyExchangeSecretMessageHandler();
+
     @Override
-    public SshMessageHandler<RsaKeyExchangeSecretMessage> getHandler(SshContext context) {
-        return new RsaKeyExchangeSecretMessageHandler(context, this);
+    public RsaKeyExchangeSecretMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangeSecretMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangeSecretMessageHandler.SERIALIZER.serialize(this);
     }
 }

@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 public class WorkflowOutputDelegate extends Delegate {
 
     @Parameter(
-            names = "-workflow_output",
+            names = "--workflow-output",
             description =
                     "This parameter allows you to serialize the whole workflow trace into a specific XML file")
     private String workflowOutput;

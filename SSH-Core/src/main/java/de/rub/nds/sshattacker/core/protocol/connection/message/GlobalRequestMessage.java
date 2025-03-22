@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 
 public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
@@ -21,6 +22,21 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     private ModifiableInteger requestNameLength;
     private ModifiableString requestName;
     private ModifiableByte wantReply;
+
+    protected GlobalRequestMessage() {
+        super();
+    }
+
+    protected GlobalRequestMessage(GlobalRequestMessage<T> other) {
+        super(other);
+        requestNameLength =
+                other.requestNameLength != null ? other.requestNameLength.createCopy() : null;
+        requestName = other.requestName != null ? other.requestName.createCopy() : null;
+        wantReply = other.wantReply != null ? other.wantReply.createCopy() : null;
+    }
+
+    @Override
+    public abstract GlobalRequestMessage<T> createCopy();
 
     public ModifiableInteger getRequestNameLength() {
         return requestNameLength;
@@ -81,5 +97,9 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
 
     public void setWantReply(byte wantReply) {
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
+    }
+
+    public void setWantReply(boolean wantReply) {
+        setWantReply(Converter.booleanToByte(wantReply));
     }
 }

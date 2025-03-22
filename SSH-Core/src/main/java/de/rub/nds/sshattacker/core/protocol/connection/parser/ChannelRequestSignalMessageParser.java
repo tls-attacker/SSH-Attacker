@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,11 +31,13 @@ public class ChannelRequestSignalMessageParser
         return new ChannelRequestSignalMessage();
     }
 
-    public void parseSignalName() {
-        message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
-        message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
-        LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
+    private void parseSignalName() {
+        int signalNameLength = parseIntField();
+        message.setSignalNameLength(signalNameLength);
+        LOGGER.debug("Signal name length: {}", signalNameLength);
+        String signalName = parseByteString(signalNameLength);
+        message.setSignalName(signalName);
+        LOGGER.debug("Signal name: {}", () -> backslashEscapeString(signalName));
     }
 
     @Override

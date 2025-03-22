@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,17 +15,19 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestPtyMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestPtyMessage> {
 
-    public ChannelRequestPtyMessagePreparator(Chooser chooser, ChannelRequestPtyMessage message) {
-        super(chooser, message, ChannelRequestType.PTY_REQ);
+    public ChannelRequestPtyMessagePreparator() {
+        super(ChannelRequestType.PTY_REQ, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setTermEnvVariable(chooser.getConfig().getDefaultTermEnvVariable(), true);
-        getObject().setWidthCharacters(chooser.getConfig().getDefaultTerminalWidthColumns());
-        getObject().setHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
-        getObject().setWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
-        getObject().setHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
-        getObject().setEncodedTerminalModes(new byte[0], true);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestPtyMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
+        object.setTermEnvVariable(config.getDefaultTermEnvVariable(), true);
+        object.setWidthCharacters(config.getDefaultTerminalWidthColumns());
+        object.setHeightRows(config.getDefaultTerminalHeightRows());
+        object.setWidthPixels(config.getDefaultTerminalWidthPixels());
+        object.setHeightPixels(config.getDefaultTerminalHeightPixels());
+        object.setEncodedTerminalModes(new byte[0], true);
     }
 }

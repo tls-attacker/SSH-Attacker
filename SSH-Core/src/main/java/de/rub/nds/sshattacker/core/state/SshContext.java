@@ -16,22 +16,25 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.data.DataMessageLayer;
+import de.rub.nds.sshattacker.core.data.sftp.SftpManager;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpAbstractExtension;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +67,9 @@ public class SshContext {
 
     /** A layer to serialize messages */
     private MessageLayer messageLayer = new MessageLayer(this);
+
+    /** A layer to serialize data messages to ChannelDataMessages */
+    private DataMessageLayer dataMessageLayer = new DataMessageLayer(this);
 
     /**
      * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,
@@ -161,16 +167,16 @@ public class SshContext {
     private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
     /** List of languages (client to server) supported by the client */
-    private List<String> clientSupportedLanguagesClientToServer;
+    private List<LanguageTag> clientSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the client */
-    private List<String> clientSupportedLanguagesServerToClient;
+    private List<LanguageTag> clientSupportedLanguagesServerToClient;
 
     /** List of languages (client to server) supported by the server */
-    private List<String> serverSupportedLanguagesClientToServer;
+    private List<LanguageTag> serverSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the server */
-    private List<String> serverSupportedLanguagesServerToClient;
+    private List<LanguageTag> serverSupportedLanguagesServerToClient;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
@@ -285,10 +291,10 @@ public class SshContext {
 
     // region SSH Extensions
     /** List of extensions supported by the client */
-    public List<AbstractExtension<?>> clientSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> clientSupportedExtensions;
 
     /** List of extensions supported by the server */
-    public List<AbstractExtension<?>> serverSupportedExtensions;
+    private ArrayList<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Add this new field for supported public key algorithms */
     private String supportedPublicKeyAlgorithms;
@@ -331,6 +337,12 @@ public class SshContext {
 
     // endregion
 
+    // region Authentication
+    private int nextPreConfiguredAuthResponsesIndex;
+
+    private int nextPreConfiguredAuthPromptsIndex;
+    // endregion
+
     // region Connection Protocol
 
     private ChannelManager channelManager;
@@ -338,11 +350,43 @@ public class SshContext {
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
+    // region Connection Protocol
+
+    private SftpManager sftpManager;
+
+    // endregion
+
+    // region SFTP Version Exchange
+    /** SFTP Client protocol version */
+    private Integer sftpClientVersion;
+
+    /** SFTP Server protocol version */
+    private Integer sftpServerVersion;
+
+    /** SFTP negotiated protocol version */
+    private Integer sftpNegotiatedVersion;
+
+    // endregion
+
+    // region SFTP Extensions
+    /** List of SFTP extensions supported by the client */
+    private ArrayList<SftpAbstractExtension<?>> sftpClientSupportedExtensions;
+
+    /** List of SFTP extensions supported by the server */
+    private ArrayList<SftpAbstractExtension<?>> sftpServerSupportedExtensions;
+
+    // endregion
+
     /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived;
 
-    /** If set to true, a version exchange message was sent by each side */
-    private boolean versionExchangeComplete;
+    /**
+     * Actions that should be executed and injected into the workflow trace of the state that holds
+     * this ssh context. The actions should be executed by the workflow executor before the next
+     * official workflow action is executed and should be inserted into the workflow trace at the
+     * correct position for logging purposes.
+     */
+    private ArrayList<SshAction> dynamicGeneratedActions;
 
     // region Constructors and Initialization
     public SshContext() {
@@ -386,7 +430,12 @@ public class SshContext {
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
         handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
+
+        nextPreConfiguredAuthResponsesIndex = 0;
+        nextPreConfiguredAuthPromptsIndex = 0;
+
         channelManager = new ChannelManager(this);
+        sftpManager = new SftpManager(this);
     }
 
     // endregion
@@ -476,6 +525,14 @@ public class SshContext {
 
     public void setMessageLayer(MessageLayer messageLayer) {
         this.messageLayer = messageLayer;
+    }
+
+    public DataMessageLayer getDataMessageLayer() {
+        return dataMessageLayer;
+    }
+
+    public void setDataMessageLayer(DataMessageLayer dataMessageLayer) {
+        this.dataMessageLayer = dataMessageLayer;
     }
 
     // region Getters and Setters for Sequence Numbers
@@ -651,19 +708,19 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedCompressionMethodsClientToServer);
     }
 
-    public Optional<List<String>> getClientSupportedLanguagesClientToServer() {
+    public Optional<List<LanguageTag>> getClientSupportedLanguagesClientToServer() {
         return Optional.ofNullable(clientSupportedLanguagesClientToServer);
     }
 
-    public Optional<List<String>> getClientSupportedLanguagesServerToClient() {
+    public Optional<List<LanguageTag>> getClientSupportedLanguagesServerToClient() {
         return Optional.ofNullable(clientSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<String>> getServerSupportedLanguagesServerToClient() {
+    public Optional<List<LanguageTag>> getServerSupportedLanguagesServerToClient() {
         return Optional.ofNullable(serverSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<String>> getServerSupportedLanguagesClientToServer() {
+    public Optional<List<LanguageTag>> getServerSupportedLanguagesClientToServer() {
         return Optional.ofNullable(serverSupportedLanguagesClientToServer);
     }
 
@@ -786,22 +843,22 @@ public class SshContext {
     }
 
     public void setClientSupportedLanguagesClientToServer(
-            List<String> clientSupportedLanguagesClientToServer) {
+            List<LanguageTag> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
     public void setClientSupportedLanguagesServerToClient(
-            List<String> clientSupportedLanguagesServerToClient) {
+            List<LanguageTag> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesServerToClient(
-            List<String> serverSupportedLanguagesServerToClient) {
+            List<LanguageTag> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
     public void setServerSupportedLanguagesClientToServer(
-            List<String> serverSupportedLanguagesClientToServer) {
+            List<LanguageTag> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 
@@ -1052,11 +1109,11 @@ public class SshContext {
     // region Getters for SSH Extensions
 
     // section general extensions
-    public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
+    public Optional<ArrayList<AbstractExtension<?>>> getClientSupportedExtensions() {
         return Optional.ofNullable(clientSupportedExtensions);
     }
 
-    public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
+    public Optional<ArrayList<AbstractExtension<?>>> getServerSupportedExtensions() {
         return Optional.ofNullable(serverSupportedExtensions);
     }
 
@@ -1108,11 +1165,11 @@ public class SshContext {
     // region Setters for SSH Extensions
 
     // section general extensions
-    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+    public void setClientSupportedExtensions(ArrayList<AbstractExtension<?>> extensions) {
         clientSupportedExtensions = extensions;
     }
 
-    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+    public void setServerSupportedExtensions(ArrayList<AbstractExtension<?>> extensions) {
         serverSupportedExtensions = extensions;
     }
 
@@ -1169,10 +1226,27 @@ public class SshContext {
 
     // endregion
 
-    // region for Connection Protocol Fields
-    public HashMap<Integer, Channel> getChannels() {
-        return channelManager.getChannels();
+    // region for Authentication
+
+    public int getNextPreConfiguredAuthResponsesIndex() {
+        return nextPreConfiguredAuthResponsesIndex;
     }
+
+    public void setNextPreConfiguredAuthResponsesIndex(int nextPreConfiguredAuthResponsesIndex) {
+        this.nextPreConfiguredAuthResponsesIndex = nextPreConfiguredAuthResponsesIndex;
+    }
+
+    public int getNextPreConfiguredAuthPromptsIndex() {
+        return nextPreConfiguredAuthPromptsIndex;
+    }
+
+    public void setNextPreConfiguredAuthPromptsIndex(int nextPreConfiguredAuthPromptsIndex) {
+        this.nextPreConfiguredAuthPromptsIndex = nextPreConfiguredAuthPromptsIndex;
+    }
+
+    // endregion
+
+    // region for Connection Protocol Fields
 
     public ChannelManager getChannelManager() {
         return channelManager;
@@ -1192,12 +1266,28 @@ public class SshContext {
         this.disconnectMessageReceived = disconnectMessageReceived;
     }
 
-    public boolean isVersionExchangeComplete() {
-        return versionExchangeComplete;
+    public ArrayList<SshAction> getDynamicGeneratedActions() {
+        return dynamicGeneratedActions;
     }
 
-    public void setVersionExchangeComplete(Boolean complete) {
-        versionExchangeComplete = complete;
+    public void addDynamicGeneratedActions(ArrayList<SshAction> dynamicGeneratedActions) {
+        if (this.dynamicGeneratedActions == null) {
+            this.dynamicGeneratedActions = new ArrayList<>();
+        }
+        this.dynamicGeneratedActions.addAll(dynamicGeneratedActions);
+    }
+
+    public void addDynamicGeneratedAction(SshAction dynamicGeneratedAction) {
+        if (dynamicGeneratedActions == null) {
+            dynamicGeneratedActions = new ArrayList<>();
+        }
+        dynamicGeneratedActions.add(dynamicGeneratedAction);
+    }
+
+    public void clearDynamicGeneratedActions() {
+        if (dynamicGeneratedActions != null) {
+            dynamicGeneratedActions.clear();
+        }
     }
 
     public boolean isClient() {
@@ -1215,4 +1305,71 @@ public class SshContext {
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
     }
+
+    // region for Data Managers
+
+    public SftpManager getSftpManager() {
+        return sftpManager;
+    }
+
+    public void setSftpManager(SftpManager sftpManager) {
+        this.sftpManager = sftpManager;
+    }
+
+    // endregion
+
+    // region Getters for SFTP Version Exchange Fields
+    public Optional<Integer> getSftpClientVersion() {
+        return Optional.ofNullable(sftpClientVersion);
+    }
+
+    public Optional<Integer> getSftpServerVersion() {
+        return Optional.ofNullable(sftpServerVersion);
+    }
+
+    public Optional<Integer> getSftpNegotiatedVersion() {
+        return Optional.ofNullable(sftpNegotiatedVersion);
+    }
+
+    // endregion
+    // region Setters for SFTP Version Exchange Fields
+    public void setSftpClientVersion(Integer sftpClientVersion) {
+        this.sftpClientVersion = sftpClientVersion;
+    }
+
+    public void setSftpServerVersion(Integer sftpServerVersion) {
+        this.sftpServerVersion = sftpServerVersion;
+    }
+
+    public void setSftpNegotiatedVersion(Integer sftpNegotiatedVersion) {
+        this.sftpNegotiatedVersion = sftpNegotiatedVersion;
+    }
+
+    // endregion
+
+    // region Getters for SFTP Extensions
+
+    // section general SFTP extensions
+    public Optional<ArrayList<SftpAbstractExtension<?>>> getSftpClientSupportedExtensions() {
+        return Optional.ofNullable(sftpClientSupportedExtensions);
+    }
+
+    public Optional<ArrayList<SftpAbstractExtension<?>>> getSftpServerSupportedExtensions() {
+        return Optional.ofNullable(sftpServerSupportedExtensions);
+    }
+
+    // endregion
+
+    // region Setters for SFTP Extensions
+
+    // section general SFTP extensions
+    public void setSftpClientSupportedExtensions(ArrayList<SftpAbstractExtension<?>> extensions) {
+        sftpClientSupportedExtensions = extensions;
+    }
+
+    public void setSftpServerSupportedExtensions(ArrayList<SftpAbstractExtension<?>> extensions) {
+        sftpServerSupportedExtensions = extensions;
+    }
+    // endregion
+
 }

@@ -13,15 +13,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelCloseMessagePreparator extends ChannelMessagePreparator<ChannelCloseMessage> {
 
-    public ChannelCloseMessagePreparator(Chooser chooser, ChannelCloseMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_CLOSE);
+    public ChannelCloseMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_CLOSE);
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {
-        channel.setCloseMessageSent(true);
-        if (!channel.isOpen().getValue()) {
-            chooser.getContext().getChannels().remove(channel.getLocalChannelId().getValue());
-        }
-    }
+    protected void prepareChannelMessageSpecificContents(
+            ChannelCloseMessage object, Chooser chooser) {}
 }

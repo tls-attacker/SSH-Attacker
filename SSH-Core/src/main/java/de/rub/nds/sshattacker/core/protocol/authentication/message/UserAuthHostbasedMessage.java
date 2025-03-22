@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostb
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHostbasedMessage>
@@ -32,6 +33,34 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     private ModifiableString clientUserName;
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public UserAuthHostbasedMessage() {
+        super();
+    }
+
+    public UserAuthHostbasedMessage(UserAuthHostbasedMessage other) {
+        super(other);
+        pubKeyAlgorithmLength =
+                other.pubKeyAlgorithmLength != null
+                        ? other.pubKeyAlgorithmLength.createCopy()
+                        : null;
+        pubKeyAlgorithm = other.pubKeyAlgorithm != null ? other.pubKeyAlgorithm.createCopy() : null;
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        hostNameLength = other.hostNameLength != null ? other.hostNameLength.createCopy() : null;
+        hostName = other.hostName != null ? other.hostName.createCopy() : null;
+        clientUserNameLength =
+                other.clientUserNameLength != null ? other.clientUserNameLength.createCopy() : null;
+        clientUserName = other.clientUserName != null ? other.clientUserName.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthHostbasedMessage createCopy() {
+        return new UserAuthHostbasedMessage(this);
+    }
 
     public ModifiableInteger getPubKeyAlgorithmLength() {
         return pubKeyAlgorithmLength;
@@ -261,8 +290,26 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         }
     }
 
+    public static final UserAuthHostbasedMessageHandler HANDLER =
+            new UserAuthHostbasedMessageHandler();
+
     @Override
-    public UserAuthHostbasedMessageHandler getHandler(SshContext context) {
-        return new UserAuthHostbasedMessageHandler(context, this);
+    public UserAuthHostbasedMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthHostbasedMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthHostbasedMessageHandler.SERIALIZER.serialize(this);
     }
 }

@@ -7,8 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertRsaPublicKeySerializer;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable RSA public key used in RSA certificates (SSH-RSA-CERT). */
@@ -31,8 +33,9 @@ public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> extensions; // Map to hold extensions as key-value pairs
-    private Map<String, String> criticalOptions; // Map to hold critical options as key-value pairs
+    private HashMap<String, String> extensions; // Map to hold extensions as key-value pairs
+    private HashMap<String, String>
+            criticalOptions; // Map to hold critical options as key-value pairs
 
     public CustomCertRsaPublicKey() {
         super();
@@ -44,6 +47,29 @@ public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
 
     public CustomCertRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
         super(publicExponent, modulus);
+    }
+
+    public CustomCertRsaPublicKey(CustomCertRsaPublicKey other) {
+        super(other);
+        serial = other.serial;
+        signature = other.signature != null ? other.signature.clone() : null;
+        signatureKey = other.signatureKey != null ? other.signatureKey.clone() : null;
+        certformat = other.certformat;
+        certType = other.certType;
+        keyId = other.keyId;
+        reserved = other.reserved;
+        validPrincipals = other.validPrincipals != null ? other.validPrincipals.clone() : null;
+        nonce = other.nonce != null ? other.nonce.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+        criticalOptions =
+                other.criticalOptions != null ? new HashMap<>(other.criticalOptions) : null;
+    }
+
+    @Override
+    public CustomCertRsaPublicKey createCopy() {
+        return new CustomCertRsaPublicKey(this);
     }
 
     public void setCertFormat(String certformat) {
@@ -138,7 +164,7 @@ public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
     }
 
@@ -146,7 +172,14 @@ public class CustomCertRsaPublicKey extends CustomRsaPublicKey {
         return criticalOptions;
     }
 
-    public void setCriticalOptions(Map<String, String> criticalOptions) {
+    public void setCriticalOptions(HashMap<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
+    }
+
+    public static final CertRsaPublicKeySerializer SERIALIZER = new CertRsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

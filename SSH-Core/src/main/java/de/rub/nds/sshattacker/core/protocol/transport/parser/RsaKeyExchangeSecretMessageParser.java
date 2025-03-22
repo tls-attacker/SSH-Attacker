@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,11 +31,12 @@ public class RsaKeyExchangeSecretMessageParser
     }
 
     private void parseEncryptedSecret() {
-        message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
-        message.setEncryptedSecret(
-                parseByteArrayField(message.getEncryptedSecretLength().getValue()));
-        LOGGER.debug("Encrypted secret: {}", message.getEncryptedSecret());
+        int encryptedSecretLength = parseIntField();
+        message.setEncryptedSecretLength(encryptedSecretLength);
+        LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
+        byte[] encryptedSecret = parseByteArrayField(encryptedSecretLength);
+        message.setEncryptedSecret(encryptedSecret);
+        LOGGER.debug("Encrypted secret: {}", encryptedSecret);
     }
 
     @Override

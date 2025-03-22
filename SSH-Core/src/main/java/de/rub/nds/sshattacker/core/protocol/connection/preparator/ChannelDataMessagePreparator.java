@@ -13,13 +13,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelDataMessagePreparator extends ChannelMessagePreparator<ChannelDataMessage> {
 
-    public ChannelDataMessagePreparator(Chooser chooser, ChannelDataMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_DATA);
+    public ChannelDataMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_DATA);
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {
+    protected void prepareChannelMessageSpecificContents(
+            ChannelDataMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        getObject().setData(new byte[100], true);
+        object.setData(new byte[100], true);
     }
 }

@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
@@ -32,48 +33,46 @@ public class UserAuthHostbasedMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthHostbasedMessagePreparator(Chooser chooser, UserAuthHostbasedMessage message) {
-        super(chooser, message, AuthenticationMethod.HOST_BASED);
+    public UserAuthHostbasedMessagePreparator() {
+        super(AuthenticationMethod.HOST_BASED);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
-        getObject().setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
-        getObject().setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
-        Optional<String> hostName =
-                Optional.ofNullable(chooser.getContext().getConnection().getIp());
-        getObject().setHostName(hostName.orElse(AliasedConnection.DEFAULT_IP), true);
+    protected void prepareUserAuthRequestSpecificContents(
+            UserAuthHostbasedMessage object, Chooser chooser) {
+
+        Config config = chooser.getConfig();
+        object.setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
+        object.setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
+        object.setHostName(
+                Optional.ofNullable(chooser.getContext().getConnection().getIp())
+                        .orElse(AliasedConnection.DEFAULT_IP),
+                true);
         // set the username on client machine to the username on remote, specify if needed
-        getObject().setClientUserName(chooser.getConfig().getUsername(), true);
-        prepareSignature();
+        object.setClientUserName(config.getUsername(), true);
+        prepareSignature(object, chooser);
     }
 
-    public byte[] prepareSignatureInput() {
+    public static byte[] prepareSignatureInput(UserAuthHostbasedMessage object, Chooser chooser) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         chooser.getContext().getSessionID().orElse(new byte[] {})),
-                new byte[] {getObject().getMessageId().getValue()},
-                Converter.stringToLengthPrefixedBinaryString(getObject().getUserName().getValue()),
+                new byte[] {object.getMessageId().getValue()},
+                Converter.stringToLengthPrefixedBinaryString(object.getUserName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getServiceName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getMethodName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getServiceName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getMethodName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(
-                        getObject().getPubKeyAlgorithm().getValue()),
+                        object.getPubKeyAlgorithm().getValue()),
+                Converter.bytesToLengthPrefixedBinaryString(object.getHostKeyBytes().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getHostName().getValue()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        getObject().getHostKeyBytes().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(getObject().getHostName().getValue()),
-                Converter.bytesToLengthPrefixedBinaryString(
-                        getObject()
-                                .getClientUserName()
-                                .getValue()
-                                .getBytes(StandardCharsets.UTF_8)));
+                        object.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
     }
 
-    public void prepareSignature() {
+    public static void prepareSignature(UserAuthHostbasedMessage object, Chooser chooser) {
         SigningSignature signingSignature;
         PublicKeyAlgorithm publicKeyAlgorithm =
-                PublicKeyAlgorithm.fromName(getObject().getPubKeyAlgorithm().getValue());
+                PublicKeyAlgorithm.fromName(object.getPubKeyAlgorithm().getValue());
         try {
             signingSignature =
                     SignatureFactory.getSigningSignature(
@@ -85,22 +84,22 @@ public class UserAuthHostbasedMessagePreparator
                             signatureEncoding.getName().length(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(prepareSignatureInput());
+            byte[] rawSignature = signingSignature.sign(prepareSignatureInput(object, chooser));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(rawSignature);
-            getObject().setSignature(signatureOutput.toByteArray(), true);
+            object.setSignature(signatureOutput.toByteArray(), true);
         } catch (CryptoException e) {
             LOGGER.error(
                     "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSignature(new byte[0], true);
+            object.setSignature(new byte[0], true);
         } catch (IOException e) {
             LOGGER.error(
                     "An unexpected IOException occured during signature generation, workflow will continue but signature is left blank");
             LOGGER.debug(e);
-            getObject().setSignature(new byte[0], true);
+            object.setSignature(new byte[0], true);
         }
     }
 }

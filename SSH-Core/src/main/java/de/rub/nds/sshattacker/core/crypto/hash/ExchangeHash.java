@@ -148,7 +148,7 @@ public final class ExchangeHash {
 
     private static byte[] compute(KeyExchangeAlgorithm algorithm, byte[] input)
             throws CryptoException {
-        LOGGER.debug("Exchange hash input: {}", ArrayConverter.bytesToRawHexString(input));
+        LOGGER.debug("Exchange hash input: {}", () -> ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
             md = MessageDigest.getInstance(algorithm.getHashFunction().getJavaName());
@@ -162,7 +162,7 @@ public final class ExchangeHash {
                     e);
         }
         byte[] hash = md.digest(input);
-        LOGGER.info("Computed exchange hash: {}", ArrayConverter.bytesToRawHexString(hash));
+        LOGGER.info("Computed exchange hash: {}", () -> ArrayConverter.bytesToRawHexString(hash));
         return hash;
     }
 
@@ -203,13 +203,9 @@ public final class ExchangeHash {
                         Converter.stringToLengthPrefixedBinaryString(
                                 inputHolder.getServerVersion().get().getIdentification()),
                         Converter.bytesToLengthPrefixedBinaryString(
-                                new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getClientKeyExchangeInit().get())
-                                        .serialize()),
+                                inputHolder.getClientKeyExchangeInit().get().serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
-                                new KeyExchangeInitMessageSerializer(
-                                                inputHolder.getServerKeyExchangeInit().get())
-                                        .serialize()),
+                                inputHolder.getServerKeyExchangeInit().get().serialize()),
                         Converter.bytesToLengthPrefixedBinaryString(
                                 PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
         // Restore the old log level

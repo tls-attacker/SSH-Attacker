@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceAcceptMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceAcceptMessagePreparator;
@@ -16,36 +16,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAcceptMessage> {
 
-    public ServiceAcceptMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ServiceAcceptMessageHandler(SshContext context, ServiceAcceptMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ServiceAcceptMessage object) {
         // TODO: Handle ServiceAcceptMessage
     }
 
     @Override
-    public ServiceAcceptMessageParser getParser(byte[] array) {
+    public ServiceAcceptMessageParser getParser(byte[] array, SshContext context) {
         return new ServiceAcceptMessageParser(array);
     }
 
     @Override
-    public ServiceAcceptMessageParser getParser(byte[] array, int startPosition) {
+    public ServiceAcceptMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ServiceAcceptMessageParser(array, startPosition);
     }
 
-    @Override
-    public ServiceAcceptMessagePreparator getPreparator() {
-        return new ServiceAcceptMessagePreparator(context.getChooser(), message);
-    }
+    public static final ServiceAcceptMessagePreparator PREPARATOR =
+            new ServiceAcceptMessagePreparator();
 
-    @Override
-    public ServiceAcceptMessageSerializer getSerializer() {
-        return new ServiceAcceptMessageSerializer(message);
-    }
+    public static final ServiceAcceptMessageSerializer SERIALIZER =
+            new ServiceAcceptMessageSerializer();
 }

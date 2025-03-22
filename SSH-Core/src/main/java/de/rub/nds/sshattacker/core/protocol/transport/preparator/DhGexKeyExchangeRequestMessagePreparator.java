@@ -16,20 +16,24 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class DhGexKeyExchangeRequestMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeRequestMessage> {
 
-    public DhGexKeyExchangeRequestMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+    public DhGexKeyExchangeRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        inputHolder.setDhGexMinimalGroupSize(chooser.getMinimalDhGroupSize());
-        inputHolder.setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        inputHolder.setDhGexMaximalGroupSize(chooser.getMaximalDhGroupSize());
+    protected void prepareMessageSpecificContents(
+            DhGexKeyExchangeRequestMessage object, Chooser chooser) {
+        Integer minimalDhGroupSize = chooser.getMinimalDhGroupSize();
+        Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
+        Integer maximalDhGroupSize = chooser.getMaximalDhGroupSize();
 
-        getObject().setMinimalGroupSize(chooser.getMinimalDhGroupSize());
-        getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());
-        getObject().setMaximalGroupSize(chooser.getMaximalDhGroupSize());
+        object.setMinimalGroupSize(minimalDhGroupSize);
+        object.setPreferredGroupSize(preferredDhGroupSize);
+        object.setMaximalGroupSize(maximalDhGroupSize);
+
+        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        inputHolder.setDhGexMinimalGroupSize(minimalDhGroupSize);
+        inputHolder.setDhGexPreferredGroupSize(preferredDhGroupSize);
+        inputHolder.setDhGexMaximalGroupSize(maximalDhGroupSize);
     }
 }

@@ -7,13 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.HashMap;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,43 +23,50 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ChannelOpenMessagePreparator(Chooser chooser, T message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
+    protected Channel channel;
+
+    private final String channelType;
+
+    protected ChannelOpenMessagePreparator(ChannelType channelType) {
+        this(channelType.toString());
+    }
+
+    protected ChannelOpenMessagePreparator(String channelType) {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
+        this.channelType = channelType;
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        HashMap<Integer, Channel> channelMap = chooser.getContext().getChannels();
-        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
+    protected void prepareMessageSpecificContents(T object, Chooser chooser) {
+        ChannelManager channelManager = chooser.getContext().getChannelManager();
 
-        int channelId;
-        if (getObject().getConfigSenderChannelId() != null) {
-            channelId = getObject().getConfigSenderChannelId();
-        } else {
-            channelId = channelDefaults.getLocalChannelId();
-        }
-        getObject().setSenderChannelId(channelId);
-        Channel channel =
-                chooser.getContext().getChannels().get(getObject().getSenderChannelId().getValue());
+        Integer localChannelId =
+                Optional.ofNullable(object.getConfigLocalChannelId())
+                        .orElse(chooser.getConfig().getChannelDefaults().getLocalChannelId());
+
+        object.setSenderChannelId(localChannelId);
+        Integer senderChannelId = object.getSenderChannelId().getValue();
+
+        channel = channelManager.getChannelByLocalId(senderChannelId);
         if (channel != null) {
             LOGGER.warn(
-                    "Channel with id {} is already exists, reusing the existing channel object.",
-                    getObject().getSenderChannelId().getValue());
+                    "Channel with id {} already exists, reusing the existing channel object.",
+                    senderChannelId);
             if (channel.isOpen().getValue()) {
                 LOGGER.warn(
                         "Channel with id {} is already open, sending ChannelOpenMessage with current channel details again.",
-                        getObject().getSenderChannelId().getValue());
+                        senderChannelId);
             }
         } else {
-            channel = channelDefaults.newChannelFromDefaults();
-            channel.setLocalChannelId(getObject().getSenderChannelId().getValue());
-            channelMap.put(getObject().getSenderChannelId().getValue(), channel);
+            channel = channelManager.createPrendingChannel(senderChannelId);
         }
-        getObject().setChannelType(channel.getChannelType(), true);
-        getObject().setWindowSize(channel.getLocalWindowSize());
-        getObject().setPacketSize(32768);
-        prepareChannelOpenMessageSpecificContents();
+        channel.setChannelType(ChannelType.fromName(channelType));
+        // Always set correct channel type -> Don't use soft set
+        object.setChannelType(channelType, true);
+        object.setWindowSize(channel.getLocalWindowSize().getValue());
+        object.setPacketSize(32768);
+        prepareChannelOpenMessageSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareChannelOpenMessageSpecificContents();
+    protected abstract void prepareChannelOpenMessageSpecificContents(T object, Chooser chooser);
 }

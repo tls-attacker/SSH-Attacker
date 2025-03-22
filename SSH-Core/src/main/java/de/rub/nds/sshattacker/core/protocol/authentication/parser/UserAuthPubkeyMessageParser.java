@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -36,37 +35,36 @@ public class UserAuthPubkeyMessageParser
     }
 
     private void parsePubkey() {
-        message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
-        message.setPubkey(parseByteArrayField(message.getPubkeyLength().getValue()));
-        LOGGER.debug(
-                "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
+        int pubkeyLength = parseIntField();
+        message.setPubkeyLength(pubkeyLength);
+        LOGGER.debug("Pubkey length: {}", pubkeyLength);
+        byte[] pubkey = parseByteArrayField(pubkeyLength);
+        message.setPubkey(pubkey);
+        LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
     }
 
     private void parsePubkeyAlgName() {
-        message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
-        message.setPubkeyAlgName(
-                parseByteString(
-                        message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Pubkey algorithm name: {}",
-                backslashEscapeString(message.getPubkeyAlgName().getValue()));
+        int pubkeyAlgNameLength = parseIntField();
+        message.setPubkeyAlgNameLength(pubkeyAlgNameLength);
+        LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
+        String pubkeyAlgName = parseByteString(pubkeyAlgNameLength, StandardCharsets.US_ASCII);
+        message.setPubkeyAlgName(pubkeyAlgName);
+        LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
     }
 
     private void parseUseSignature() {
-        message.setUseSignature(parseByteField(1));
-        LOGGER.debug("Use signature: {}", message.getUseSignature().getValue());
+        byte useSignature = parseByteField();
+        message.setUseSignature(useSignature);
+        LOGGER.debug("Use signature: {}", useSignature);
     }
 
     private void parseSignature() {
-        message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug(
-                "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+        int signatureLength = parseIntField();
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 
     @Override

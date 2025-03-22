@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.PingMessage;
 import org.apache.logging.log4j.LogManager;
@@ -33,9 +32,11 @@ public class PingMessageParser extends SshMessageParser<PingMessage> {
 
     @Override
     protected void parseMessageSpecificContents() {
-        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        message.setData(parseByteArrayField(message.getDataLength().getValue()));
-        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        int dataLength = parseIntField();
+        message.setDataLength(dataLength);
+        LOGGER.debug("Data length: {}", dataLength);
+        byte[] data = parseByteArrayField(dataLength);
+        message.setData(data);
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
     }
 }

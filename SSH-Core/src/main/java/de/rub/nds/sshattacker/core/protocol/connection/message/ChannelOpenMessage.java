@@ -23,8 +23,26 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     private ModifiableInteger packetSize;
     private ModifiableInteger senderChannelId;
 
-    @XmlAttribute(name = "channel")
-    private Integer configSenderChannelId;
+    @XmlAttribute(name = "localChannel")
+    protected Integer configLocalChannelId;
+
+    protected ChannelOpenMessage() {
+        super();
+    }
+
+    protected ChannelOpenMessage(ChannelOpenMessage<T> other) {
+        super(other);
+        channelTypeLength =
+                other.channelTypeLength != null ? other.channelTypeLength.createCopy() : null;
+        channelType = other.channelType != null ? other.channelType.createCopy() : null;
+        windowSize = other.windowSize != null ? other.windowSize.createCopy() : null;
+        packetSize = other.packetSize != null ? other.packetSize.createCopy() : null;
+        senderChannelId = other.senderChannelId != null ? other.senderChannelId.createCopy() : null;
+        configLocalChannelId = other.configLocalChannelId;
+    }
+
+    @Override
+    public abstract ChannelOpenMessage<T> createCopy();
 
     public ModifiableInteger getChannelTypeLength() {
         return channelTypeLength;
@@ -112,11 +130,11 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
     }
 
-    public Integer getConfigSenderChannelId() {
-        return configSenderChannelId;
+    public Integer getConfigLocalChannelId() {
+        return configLocalChannelId;
     }
 
-    public void setConfigSenderChannelId(int configSenderChannelId) {
-        this.configSenderChannelId = configSenderChannelId;
+    public void setConfigLocalChannelId(int configLocalChannelId) {
+        this.configLocalChannelId = configLocalChannelId;
     }
 }

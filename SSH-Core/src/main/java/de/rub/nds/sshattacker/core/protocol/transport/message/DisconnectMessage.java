@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessage extends SshMessage<DisconnectMessage> {
@@ -23,6 +24,26 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     private ModifiableString description;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public DisconnectMessage() {
+        super();
+    }
+
+    public DisconnectMessage(DisconnectMessage other) {
+        super(other);
+        reasonCode = other.reasonCode != null ? other.reasonCode.createCopy() : null;
+        descriptionLength =
+                other.descriptionLength != null ? other.descriptionLength.createCopy() : null;
+        description = other.description != null ? other.description.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public DisconnectMessage createCopy() {
+        return new DisconnectMessage(this);
+    }
 
     public ModifiableInteger getReasonCode() {
         return reasonCode;
@@ -122,8 +143,25 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
         }
     }
 
+    public static final DisconnectMessageHandler HANDLER = new DisconnectMessageHandler();
+
     @Override
-    public DisconnectMessageHandler getHandler(SshContext context) {
-        return new DisconnectMessageHandler(context, this);
+    public DisconnectMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DisconnectMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DisconnectMessageHandler.SERIALIZER.serialize(this);
     }
 }

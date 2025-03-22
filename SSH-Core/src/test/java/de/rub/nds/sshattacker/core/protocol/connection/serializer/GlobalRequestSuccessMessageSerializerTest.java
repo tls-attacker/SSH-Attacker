@@ -34,12 +34,13 @@ public class GlobalRequestSuccessMessageSerializerTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes) {
+    public void testSerialize(byte[] expectedBytes, byte[] responseSpecificData) {
         GlobalRequestSuccessMessage msg = new GlobalRequestSuccessMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_REQUEST_SUCCESS);
+        msg.setResponseSpecificData(responseSpecificData);
         GlobalRequestSuccessMessageSerializer serializer =
-                new GlobalRequestSuccessMessageSerializer(msg);
+                new GlobalRequestSuccessMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

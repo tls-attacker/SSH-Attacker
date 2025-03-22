@@ -12,20 +12,41 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     private ModifiableInteger possibleAuthenticationMethodsLength;
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
+
+    public UserAuthFailureMessage() {
+        super();
+    }
+
+    public UserAuthFailureMessage(UserAuthFailureMessage other) {
+        super(other);
+        possibleAuthenticationMethodsLength =
+                other.possibleAuthenticationMethodsLength != null
+                        ? other.possibleAuthenticationMethodsLength.createCopy()
+                        : null;
+        possibleAuthenticationMethods =
+                other.possibleAuthenticationMethods != null
+                        ? other.possibleAuthenticationMethods.createCopy()
+                        : null;
+        partialSuccess = other.partialSuccess != null ? other.partialSuccess.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthFailureMessage createCopy() {
+        return new UserAuthFailureMessage(this);
+    }
 
     public ModifiableInteger getPossibleAuthenticationMethodsLength() {
         return possibleAuthenticationMethodsLength;
@@ -92,18 +113,14 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     public void setPossibleAuthenticationMethods(
             String[] possibleAuthenticationMethods, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, possibleAuthenticationMethods);
-        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+        setPossibleAuthenticationMethods(
+                Converter.listOfNamesToString(possibleAuthenticationMethods), adjustLengthField);
     }
 
     public void setPossibleAuthenticationMethods(
             List<AuthenticationMethod> possibleAuthenticationMethods, boolean adjustLengthField) {
-        String nameList =
-                possibleAuthenticationMethods.stream()
-                        .map(AuthenticationMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+        setPossibleAuthenticationMethods(
+                Converter.listOfNamesToString(possibleAuthenticationMethods), adjustLengthField);
     }
 
     public ModifiableByte getPartialSuccess() {
@@ -123,8 +140,25 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
         setPartialSuccess(Converter.booleanToByte(partialSuccess));
     }
 
+    public static final UserAuthFailureMessageHandler HANDLER = new UserAuthFailureMessageHandler();
+
     @Override
-    public UserAuthFailureMessageHandler getHandler(SshContext context) {
-        return new UserAuthFailureMessageHandler(context, this);
+    public UserAuthFailureMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthFailureMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthFailureMessageHandler.SERIALIZER.serialize(this);
     }
 }

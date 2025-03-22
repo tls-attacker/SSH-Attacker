@@ -7,15 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
+import de.rub.nds.sshattacker.core.state.SshContext;
+
 public interface Handler<T> {
 
-    Parser<T> getParser(byte[] array);
+    Parser<T> getParser(byte[] array, SshContext context);
 
-    Parser<T> getParser(byte[] array, int startPosition);
+    Parser<T> getParser(byte[] array, int startPosition, SshContext context);
 
-    Preparator<T> getPreparator();
-
-    Serializer<T> getSerializer();
-
-    void adjustContext();
+    void adjustContext(SshContext context, T object);
 }

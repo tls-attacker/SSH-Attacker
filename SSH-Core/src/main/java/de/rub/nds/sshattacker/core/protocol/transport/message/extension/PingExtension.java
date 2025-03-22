@@ -12,12 +12,28 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PingExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class PingExtension extends AbstractExtension<PingExtension> {
 
     private ModifiableInteger versionLength;
     private ModifiableString version;
+
+    public PingExtension() {
+        super();
+    }
+
+    public PingExtension(PingExtension other) {
+        super(other);
+        versionLength = other.versionLength != null ? other.versionLength.createCopy() : null;
+        version = other.version != null ? other.version.createCopy() : null;
+    }
+
+    @Override
+    public PingExtension createCopy() {
+        return new PingExtension(this);
+    }
 
     public ModifiableInteger getVersionLength() {
         return versionLength;
@@ -52,14 +68,31 @@ public class PingExtension extends AbstractExtension<PingExtension> {
     }
 
     public void setVersion(String version, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setVersionLength(version.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
+        if (adjustLengthField) {
+            setVersionLength(this.version.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+    }
+
+    public static final PingExtensionHandler HANDLER = new PingExtensionHandler();
+
+    @Override
+    public PingExtensionHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public PingExtensionHandler getHandler(SshContext context) {
-        return new PingExtensionHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PingExtensionHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PingExtensionHandler.SERIALIZER.serialize(this);
     }
 }

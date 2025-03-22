@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,18 +17,17 @@ public class ChannelRequestExitStatusMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitStatusMessageSerializer(ChannelRequestExitStatusMessage message) {
-        super(message);
-    }
-
-    public void serializeExitStatus() {
-        LOGGER.debug("Exit status: {}", message.getExitStatus().getValue());
-        appendInt(message.getExitStatus().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeExitStatus(
+            ChannelRequestExitStatusMessage object, SerializerStream output) {
+        Integer exitStatus = object.getExitStatus().getValue();
+        LOGGER.debug("Exit status: {}", exitStatus);
+        output.appendInt(exitStatus);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeExitStatus();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestExitStatusMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeExitStatus(object, output);
     }
 }

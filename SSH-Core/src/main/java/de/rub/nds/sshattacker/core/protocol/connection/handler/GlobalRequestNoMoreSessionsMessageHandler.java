@@ -17,35 +17,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestNoMoreSessionsMessageHandler
         extends SshMessageHandler<GlobalRequestNoMoreSessionsMessage> {
 
-    public GlobalRequestNoMoreSessionsMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestNoMoreSessionsMessageHandler(
-            SshContext context, GlobalRequestNoMoreSessionsMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestNoMoreSessionsMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array) {
+    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestNoMoreSessionsMessageParser(array);
     }
 
     @Override
-    public GlobalRequestNoMoreSessionsMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestNoMoreSessionsMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestNoMoreSessionsMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestNoMoreSessionsMessagePreparator getPreparator() {
-        return new GlobalRequestNoMoreSessionsMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestNoMoreSessionsMessagePreparator PREPARATOR =
+            new GlobalRequestNoMoreSessionsMessagePreparator();
 
-    @Override
-    public GlobalRequestNoMoreSessionsMessageSerializer getSerializer() {
-        return new GlobalRequestNoMoreSessionsMessageSerializer(message);
-    }
+    public static final GlobalRequestNoMoreSessionsMessageSerializer SERIALIZER =
+            new GlobalRequestNoMoreSessionsMessageSerializer();
 }

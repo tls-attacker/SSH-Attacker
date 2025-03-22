@@ -51,9 +51,8 @@ public class ChannelOpenSessionMessageSerializerTest {
         msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
-        ChannelOpenSessionMessageSerializer serializer =
-                new ChannelOpenSessionMessageSerializer(msg);
+        ChannelOpenSessionMessageSerializer serializer = new ChannelOpenSessionMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

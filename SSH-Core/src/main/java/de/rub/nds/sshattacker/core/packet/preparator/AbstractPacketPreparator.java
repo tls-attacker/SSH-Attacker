@@ -13,7 +13,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class AbstractPacketPreparator<T extends AbstractPacket> extends Preparator<T> {
 
-    protected AbstractPacketPreparator(Chooser chooser, T object) {
-        super(chooser, object);
+    protected AbstractPacketPreparator() {
+        super();
     }
+
+    @Override
+    public final void prepare(T object, Chooser chooser) {
+        preparePacketContents(object, chooser);
+    }
+
+    protected abstract void preparePacketContents(T object, Chooser chooser);
 }

@@ -7,49 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSubsystemMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSubsystemMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSubsystemMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSubsystemMessageHandler
-        extends SshMessageHandler<ChannelRequestSubsystemMessage> {
-    public ChannelRequestSubsystemMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestSubsystemMessageHandler(
-            SshContext context, ChannelRequestSubsystemMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestSubsystemMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array) {
+    public ChannelRequestSubsystemMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestSubsystemMessageParser(array);
     }
 
     @Override
-    public ChannelRequestSubsystemMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestSubsystemMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestSubsystemMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestSubsystemMessagePreparator getPreparator() {
-        return new ChannelRequestSubsystemMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestSubsystemMessagePreparator PREPARATOR =
+            new ChannelRequestSubsystemMessagePreparator();
 
-    @Override
-    public ChannelRequestSubsystemMessageSerializer getSerializer() {
-        return new ChannelRequestSubsystemMessageSerializer(message);
-    }
+    public static final ChannelRequestSubsystemMessageSerializer SERIALIZER =
+            new ChannelRequestSubsystemMessageSerializer();
 }

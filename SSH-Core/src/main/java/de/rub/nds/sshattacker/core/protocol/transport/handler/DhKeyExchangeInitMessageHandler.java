@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
@@ -17,40 +16,29 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExchangeInitMessage> {
 
-    public DhKeyExchangeInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhKeyExchangeInitMessageHandler(SshContext context, DhKeyExchangeInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, DhKeyExchangeInitMessage object) {
         context.getChooser()
                 .getDhKeyExchange()
-                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                .setRemotePublicKey(object.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setDhClientPublicKey(message.getEphemeralPublicKey().getValue());
+                .setDhClientPublicKey(object.getEphemeralPublicKey().getValue());
     }
 
     @Override
-    public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array) {
+    public DhKeyExchangeInitMessageParser getParser(byte[] array, SshContext context) {
         return new DhKeyExchangeInitMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array, int startPosition) {
+    public DhKeyExchangeInitMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhKeyExchangeInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public DhKeyExchangeInitMessagePreparator getPreparator() {
-        return new DhKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhKeyExchangeInitMessagePreparator PREPARATOR =
+            new DhKeyExchangeInitMessagePreparator();
 
-    @Override
-    public DhKeyExchangeInitMessageSerializer getSerializer() {
-        return new DhKeyExchangeInitMessageSerializer(message);
-    }
+    public static final DhKeyExchangeInitMessageSerializer SERIALIZER =
+            new DhKeyExchangeInitMessageSerializer();
 }

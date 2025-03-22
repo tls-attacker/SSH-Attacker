@@ -9,6 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -17,7 +19,7 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ModifiableVariableHolder implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -25,6 +27,17 @@ public abstract class ModifiableVariableHolder implements Serializable {
     protected ModifiableVariableHolder() {
         super();
     }
+
+    protected ModifiableVariableHolder(ModifiableVariableHolder other) {
+        super();
+    }
+
+    /**
+     * Copies this ModifiableVariableHolder
+     *
+     * @return A copy of this ModifiableVariableHolder
+     */
+    public abstract ModifiableVariableHolder createCopy();
 
     /**
      * Lists all the modifiable variables declared in the class
@@ -70,7 +83,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
         return holders.get(randomHolder);
     }
 
-    public void reset() {
+    public void resetUsingRefelctions() {
         List<Field> fields = getAllModifiableVariableFields();
         for (Field field : fields) {
             field.setAccessible(true);
@@ -83,7 +96,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
                 LOGGER.debug(ex);
             }
             if (mv != null) {
-                if (mv.getModification() != null || mv.isCreateRandomModification()) {
+                if (mv.getModifications() != null) {
                     mv.setOriginalValue(null);
                 } else {
                     try {

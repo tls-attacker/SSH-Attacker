@@ -13,11 +13,27 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.IgnoreMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public IgnoreMessage() {
+        super();
+    }
+
+    public IgnoreMessage(IgnoreMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public IgnoreMessage createCopy() {
+        return new IgnoreMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -57,8 +73,25 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
         }
     }
 
+    public static final IgnoreMessageHandler HANDLER = new IgnoreMessageHandler();
+
     @Override
-    public IgnoreMessageHandler getHandler(SshContext context) {
-        return new IgnoreMessageHandler(context, this);
+    public IgnoreMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        IgnoreMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return IgnoreMessageHandler.SERIALIZER.serialize(this);
     }
 }

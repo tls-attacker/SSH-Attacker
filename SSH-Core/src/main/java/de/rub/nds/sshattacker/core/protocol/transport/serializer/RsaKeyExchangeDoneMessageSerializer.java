@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,19 +18,18 @@ public class RsaKeyExchangeDoneMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeDoneMessageSerializer(RsaKeyExchangeDoneMessage message) {
-        super(message);
-    }
-
-    private void serializeSignature() {
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature: {}", message.getSignature());
-        appendBytes(message.getSignature().getValue());
+    private static void serializeSignature(
+            RsaKeyExchangeDoneMessage object, SerializerStream output) {
+        Integer signatureLength = object.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        output.appendInt(signatureLength);
+        LOGGER.debug("Signature: {}", object.getSignature());
+        output.appendBytes(object.getSignature().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeSignature();
+    protected void serializeMessageSpecificContents(
+            RsaKeyExchangeDoneMessage object, SerializerStream output) {
+        serializeSignature(object, output);
     }
 }

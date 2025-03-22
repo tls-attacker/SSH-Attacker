@@ -9,11 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,57 +20,52 @@ public class UserAuthInfoRequestMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoRequestMessageSerializer(UserAuthInfoRequestMessage message) {
-        super(message);
+    private static void serializeUserName(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer userNameLength = object.getUserNameLength().getValue();
+        LOGGER.debug("User name length: {}", userNameLength);
+        output.appendInt(userNameLength);
+        String userName = object.getUserName().getValue();
+        LOGGER.debug("User name: {}", () -> backslashEscapeString(userName));
+        output.appendString(userName);
     }
 
-    private void serializeUserName() {
-        LOGGER.debug("User name length: {}", message.getUserNameLength().getValue());
-        appendInt(message.getUserNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("User name: {}", backslashEscapeString(message.getUserName().getValue()));
-        appendString(message.getUserName().getValue());
+    private static void serializeInstruction(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer instructionLength = object.getInstructionLength().getValue();
+        LOGGER.debug("Instruction length: {}", instructionLength);
+        output.appendInt(instructionLength);
+        String instruction = object.getInstruction().getValue();
+        LOGGER.debug("Instruction: {}", () -> backslashEscapeString(instruction));
+        output.appendString(instruction);
     }
 
-    private void serializeInstruction() {
-        LOGGER.debug("Instruction length: {}", message.getInstructionLength().getValue());
-        appendInt(
-                message.getInstructionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Instruction: {}", backslashEscapeString(message.getInstruction().getValue()));
-        appendString(message.getInstruction().getValue());
+    private static void serializeLanguageTag(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        output.appendInt(languageTagLength);
+        String languageTag = object.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        output.appendString(languageTag);
     }
 
-    private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue());
-    }
+    private static void serializePrompt(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        Integer promptEntryCount = object.getPromptEntriesCount().getValue();
+        LOGGER.debug("Number of prompt entries: {}", promptEntryCount);
+        output.appendInt(promptEntryCount);
 
-    private void serializePrompt() {
-        LOGGER.debug("Number of prompt entries: {}", message.getPromptEntryCount().getValue());
-        appendInt(message.getPromptEntryCount().getValue(), DataFormatConstants.UINT32_SIZE);
-
-        for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
-            AuthenticationPrompt.PromptEntry entry = message.getPrompt().get(i);
-            LOGGER.debug("Prompt entry [{}] length: {}", i, entry.getPromptLength().getValue());
-            appendInt(entry.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("Prompt entry [{}]: {}", i, entry.getPrompt());
-            appendString(entry.getPrompt().getValue());
-            LOGGER.debug(
-                    "Prompt entry [{}] wants echo: {}",
-                    i,
-                    Converter.byteToBoolean(entry.getEcho().getValue()));
-            appendByte(entry.getEcho().getValue());
-        }
+        object.getPromptEntries()
+                .forEach(promptEntry -> output.appendBytes(promptEntry.serialize()));
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeUserName();
-        serializeInstruction();
-        serializeLanguageTag();
-        serializePrompt();
+    protected void serializeMessageSpecificContents(
+            UserAuthInfoRequestMessage object, SerializerStream output) {
+        serializeUserName(object, output);
+        serializeInstruction(object, output);
+        serializeLanguageTag(object, output);
+        serializePrompt(object, output);
     }
 }

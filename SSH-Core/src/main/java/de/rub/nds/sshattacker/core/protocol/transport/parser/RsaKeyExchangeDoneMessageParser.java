@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import org.apache.logging.log4j.LogManager;
@@ -30,15 +30,17 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
         return new RsaKeyExchangeDoneMessage();
     }
 
+    private void parseSignature() {
+        int signatureLength = parseIntField();
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
+    }
+
     @Override
     protected void parseMessageSpecificContents() {
         parseSignature();
-    }
-
-    private void parseSignature() {
-        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: {}", message.getSignature());
     }
 }

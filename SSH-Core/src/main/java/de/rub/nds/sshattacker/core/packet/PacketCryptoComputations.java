@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     private ModifiableByteArray iv;
 
     /** The set of binary packet fields covered by the encryption */
-    private Set<BinaryPacketField> encryptedPacketFields;
+    private HashSet<BinaryPacketField> encryptedPacketFields;
 
     /** A flag indicating whether the padding is considered valid */
     private Boolean paddingValid;
@@ -51,9 +52,42 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     /** A flag indicating whether the mac is considered valid */
     private Boolean macValid;
 
+    public PacketCryptoComputations() {
+        super();
+    }
+
+    public PacketCryptoComputations(PacketCryptoComputations other) {
+        super(other);
+        encryptionKey = other.encryptionKey != null ? other.encryptionKey.createCopy() : null;
+        integrityKey = other.integrityKey != null ? other.integrityKey.createCopy() : null;
+        plainPacketBytesFirstBlockOnly = other.plainPacketBytesFirstBlockOnly;
+        plainPacketBytes =
+                other.plainPacketBytes != null ? other.plainPacketBytes.createCopy() : null;
+        authenticatedPacketBytes =
+                other.authenticatedPacketBytes != null
+                        ? other.authenticatedPacketBytes.createCopy()
+                        : null;
+        additionalAuthenticatedData =
+                other.additionalAuthenticatedData != null
+                        ? other.additionalAuthenticatedData.createCopy()
+                        : null;
+        iv = other.iv != null ? other.iv.createCopy() : null;
+        encryptedPacketFields =
+                other.encryptedPacketFields != null
+                        ? new HashSet<>(other.encryptedPacketFields)
+                        : null;
+        paddingValid = other.paddingValid;
+        macValid = other.macValid;
+    }
+
     @Override
-    public void reset() {
-        super.reset();
+    public PacketCryptoComputations createCopy() {
+        return new PacketCryptoComputations(this);
+    }
+
+    @Override
+    public void resetUsingRefelctions() {
+        super.resetUsingRefelctions();
         encryptedPacketFields.clear();
         plainPacketBytesFirstBlockOnly = false;
         paddingValid = null;
@@ -156,7 +190,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         return encryptedPacketFields;
     }
 
-    public void setEncryptedPacketFields(Set<BinaryPacketField> encryptedPacketFields) {
+    public void setEncryptedPacketFields(HashSet<BinaryPacketField> encryptedPacketFields) {
         this.encryptedPacketFields = encryptedPacketFields;
     }
 

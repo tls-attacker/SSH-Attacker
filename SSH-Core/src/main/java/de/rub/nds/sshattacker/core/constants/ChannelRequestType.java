@@ -16,6 +16,8 @@ public enum ChannelRequestType {
      * Sources:
      * - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-13
      * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
+     * - https://www.ietf.org/archive/id/draft-miller-ssh-agent-11.html for auth-agent-req@openssh.com
+     * - http://cvsweb.openbsd.org/cgi-bin/cvsweb/~checkout~/src/usr.bin/ssh/PROTOCOL for eow@openssh.com
      */
     // [ RFC 4254 ]
     PTY_REQ("pty-req"),

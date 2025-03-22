@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.workflow.chooser;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChooserType;
-import de.rub.nds.sshattacker.core.exceptions.InvalidChooserTypeException;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public final class ChooserFactory {
@@ -17,7 +17,7 @@ public final class ChooserFactory {
         if (type == ChooserType.DEFAULT) {
             return new DefaultChooser(context, config);
         }
-        throw new InvalidChooserTypeException("ChooserType \"" + type + "\" not supported");
+        throw new ConfigurationException("ChooserType \"" + type + "\" not implemented");
     }
 
     private ChooserFactory() {

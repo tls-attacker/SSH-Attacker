@@ -8,11 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
@@ -20,7 +22,25 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     private ModifiableInteger pubkeyAlgNameLength;
     private ModifiableString pubkeyAlgName;
     private ModifiableInteger pubkeyLength;
-    private ModifiableString pubkey;
+    private ModifiableByteArray pubkey;
+
+    public UserAuthPkOkMessage() {
+        super();
+    }
+
+    public UserAuthPkOkMessage(UserAuthPkOkMessage other) {
+        super(other);
+        pubkeyAlgNameLength =
+                other.pubkeyAlgNameLength != null ? other.pubkeyAlgNameLength.createCopy() : null;
+        pubkeyAlgName = other.pubkeyAlgName != null ? other.pubkeyAlgName.createCopy() : null;
+        pubkeyLength = other.pubkeyLength != null ? other.pubkeyLength.createCopy() : null;
+        pubkey = other.pubkey != null ? other.pubkey.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPkOkMessage createCopy() {
+        return new UserAuthPkOkMessage(this);
+    }
 
     public ModifiableInteger getPubkeyAlgNameLength() {
         return pubkeyAlgNameLength;
@@ -61,43 +81,60 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
         setPubkeyAlgName(pubkeyAlgName, false);
     }
 
-    public ModifiableInteger getPubkeyLength() {
-        return pubkeyLength;
-    }
-
     public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength =
                 ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
     }
 
-    public ModifiableString getPubkey() {
+    public ModifiableInteger getPubkeyLength() {
+        return pubkeyLength;
+    }
+
+    public void setPubkey(ModifiableByteArray pubkey, boolean adjustLengthField) {
+        this.pubkey = pubkey;
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().length);
+        }
+    }
+
+    public void setPubkey(byte[] pubkey, boolean adjustLengthField) {
+        this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().length);
+        }
+    }
+
+    public void setPubkey(ModifiableByteArray pubkey) {
+        setPubkey(pubkey, false);
+    }
+
+    public void setPubkey(byte[] pubkey) {
+        setPubkey(pubkey, false);
+    }
+
+    public ModifiableByteArray getPubkey() {
         return pubkey;
     }
 
-    public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
-        this.pubkey = pubkey;
-        if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
+    public static final UserAuthPkOkMessageHandler HANDLER = new UserAuthPkOkMessageHandler();
 
-    public void setPubkey(String pubkey, boolean adjustLengthField) {
-        this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
-        if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setPubkey(ModifiableString pubkey) {
-        setPubkey(pubkey, false);
-    }
-
-    public void setPubkey(String pubkey) {
-        setPubkey(pubkey, false);
+    @Override
+    public UserAuthPkOkMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public UserAuthPkOkMessageHandler getHandler(SshContext context) {
-        return new UserAuthPkOkMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPkOkMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPkOkMessageHandler.SERIALIZER.serialize(this);
     }
 }

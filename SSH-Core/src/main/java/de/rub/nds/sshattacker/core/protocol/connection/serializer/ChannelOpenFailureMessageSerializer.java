@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -20,36 +20,38 @@ public class ChannelOpenFailureMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenFailureMessageSerializer(ChannelOpenFailureMessage message) {
-        super(message);
+    private static void serializeReasonCode(
+            ChannelOpenFailureMessage object, SerializerStream output) {
+        Integer reasonCode = object.getReasonCode().getValue();
+        LOGGER.debug("Reason code: {}", reasonCode);
+        output.appendInt(reasonCode);
     }
 
-    private void serializeReasonCode() {
-        LOGGER.debug("Reason code: {}", message.getReasonCode().getValue());
-        appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeReason(ChannelOpenFailureMessage object, SerializerStream output) {
+        Integer reasonLength = object.getReasonLength().getValue();
+        LOGGER.debug("Reason length: {}", reasonLength);
+        output.appendInt(reasonLength);
+        String reason = object.getReason().getValue();
+        LOGGER.debug("Reason: {}", () -> backslashEscapeString(reason));
+        output.appendString(reason, StandardCharsets.UTF_8);
     }
 
-    private void serializeReason() {
-        LOGGER.debug("Reason length: {}", message.getReasonLength().getValue());
-        appendInt(message.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
-        appendString(message.getReason().getValue(), StandardCharsets.UTF_8);
-    }
-
-    private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeLanguageTag(
+            ChannelOpenFailureMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        output.appendInt(languageTagLength);
+        String languageTag = object.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        output.appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeReasonCode();
-        serializeReason();
-        serializeLanguageTag();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenFailureMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeReasonCode(object, output);
+        serializeReason(object, output);
+        serializeLanguageTag(object, output);
     }
 }

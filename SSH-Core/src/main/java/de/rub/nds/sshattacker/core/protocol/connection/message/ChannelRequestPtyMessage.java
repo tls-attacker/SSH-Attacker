@@ -11,11 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage> {
+public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger termEnvVariableLength;
     private ModifiableString termEnvVariable;
@@ -25,6 +28,34 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger heightPixels;
     private ModifiableInteger encodedTerminalModesLength;
     private ModifiableByteArray encodedTerminalModes;
+
+    public ChannelRequestPtyMessage() {
+        super();
+    }
+
+    public ChannelRequestPtyMessage(ChannelRequestPtyMessage other) {
+        super(other);
+        termEnvVariableLength =
+                other.termEnvVariableLength != null
+                        ? other.termEnvVariableLength.createCopy()
+                        : null;
+        termEnvVariable = other.termEnvVariable != null ? other.termEnvVariable.createCopy() : null;
+        widthCharacters = other.widthCharacters != null ? other.widthCharacters.createCopy() : null;
+        heightRows = other.heightRows != null ? other.heightRows.createCopy() : null;
+        widthPixels = other.widthPixels != null ? other.widthPixels.createCopy() : null;
+        heightPixels = other.heightPixels != null ? other.heightPixels.createCopy() : null;
+        encodedTerminalModesLength =
+                other.encodedTerminalModesLength != null
+                        ? other.encodedTerminalModesLength.createCopy()
+                        : null;
+        encodedTerminalModes =
+                other.encodedTerminalModes != null ? other.encodedTerminalModes.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestPtyMessage createCopy() {
+        return new ChannelRequestPtyMessage(this);
+    }
 
     public ModifiableInteger getTermEnvVariableLength() {
         return termEnvVariableLength;
@@ -165,8 +196,31 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
         }
     }
 
+    public static final ChannelRequestPtyMessageHandler HANDLER =
+            new ChannelRequestPtyMessageHandler();
+
     @Override
-    public ChannelRequestPtyMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestPtyMessageHandler(context, this);
+    public ChannelRequestPtyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestPtyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestPtyMessageHandler.SERIALIZER.serialize(this);
     }
 }

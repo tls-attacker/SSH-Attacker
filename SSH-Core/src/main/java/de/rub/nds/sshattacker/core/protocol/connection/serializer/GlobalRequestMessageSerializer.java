@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -22,27 +22,24 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected GlobalRequestMessageSerializer(T message) {
-        super(message);
+    private void serializeRequestName(T object, SerializerStream output) {
+        Integer requestNameLength = object.getRequestNameLength().getValue();
+        LOGGER.debug("Request name length: {}", requestNameLength);
+        output.appendInt(requestNameLength);
+        String requestName = object.getRequestName().getValue();
+        LOGGER.debug("Request name: {}", () -> backslashEscapeString(requestName));
+        output.appendString(requestName, StandardCharsets.US_ASCII);
     }
 
-    private void serializeRequestName() {
-        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
-        appendInt(
-                message.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
-        appendString(message.getRequestName().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeWantReply() {
-        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
-        appendByte(message.getWantReply().getValue());
+    private void serializeWantReply(T object, SerializerStream output) {
+        Byte wantReply = object.getWantReply().getValue();
+        LOGGER.debug("Want reply: {}", () -> Converter.byteToBoolean(wantReply));
+        output.appendByte(wantReply);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeRequestName();
-        serializeWantReply();
+    protected void serializeMessageSpecificContents(T object, SerializerStream output) {
+        serializeRequestName(object, output);
+        serializeWantReply(object, output);
     }
 }

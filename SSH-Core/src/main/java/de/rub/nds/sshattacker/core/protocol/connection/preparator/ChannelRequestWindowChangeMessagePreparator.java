@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,16 +15,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestWindowChangeMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestWindowChangeMessage> {
 
-    public ChannelRequestWindowChangeMessagePreparator(
-            Chooser chooser, ChannelRequestWindowChangeMessage message) {
-        super(chooser, message, ChannelRequestType.WINDOW_CHANGE);
+    public ChannelRequestWindowChangeMessagePreparator() {
+        super(ChannelRequestType.WINDOW_CHANGE, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setWidthColumns(chooser.getConfig().getDefaultTerminalWidthColumns());
-        getObject().setHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
-        getObject().setWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
-        getObject().setHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestWindowChangeMessage object, Chooser chooser) {
+        Config config = chooser.getConfig();
+        object.setWidthColumns(config.getDefaultTerminalWidthColumns());
+        object.setHeightRows(config.getDefaultTerminalHeightRows());
+        object.setWidthPixels(config.getDefaultTerminalWidthPixels());
+        object.setHeightPixels(config.getDefaultTerminalHeightPixels());
     }
 }

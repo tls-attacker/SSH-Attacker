@@ -10,91 +10,108 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
+public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage>
+        implements HasSentHandler {
 
-    private ModifiableInteger publicValuesLength;
-    private ModifiableByteArray publicValues;
+    private ModifiableInteger concatenatedHybridKeysLength;
+    private ModifiableByteArray concatenatedHybridKeys;
 
-    private ModifiableByteArray classicalPublicKey;
-    private ModifiableByteArray postQuantumPublicKey;
-
-    public ModifiableInteger getPublicValuesLength() {
-        return publicValuesLength;
+    public HybridKeyExchangeInitMessage() {
+        super();
     }
 
-    public void setPublicValuesLength(ModifiableInteger publicValuesLength) {
-        this.publicValuesLength = publicValuesLength;
-    }
-
-    public void setPublicValuesLength(int publicValuesLength) {
-        this.publicValuesLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.publicValuesLength, publicValuesLength);
-    }
-
-    public ModifiableByteArray getPublicValues() {
-        return publicValues;
-    }
-
-    public void setPublicValues(ModifiableByteArray publicValues) {
-        this.publicValues = publicValues;
-    }
-
-    public void setPublicValues(byte[] publicValues) {
-        this.publicValues =
-                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
-    }
-
-    public void setPublicValues(ModifiableByteArray publicValues, boolean adjustLengthField) {
-        this.publicValues = publicValues;
-        if (adjustLengthField) {
-            setPublicValuesLength(this.publicValues.getValue().length);
-        }
-    }
-
-    public void setPublicValues(byte[] publicValues, boolean adjustLengthField) {
-        this.publicValues =
-                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
-        if (adjustLengthField) {
-            setPublicValuesLength(this.publicValues.getValue().length);
-        }
-    }
-
-    public ModifiableByteArray getClassicalPublicKey() {
-        return classicalPublicKey;
-    }
-
-    public void setClassicalPublicKey(ModifiableByteArray classicalPublicKey) {
-        this.classicalPublicKey = classicalPublicKey;
-    }
-
-    public void setClassicalPublicKey(byte[] classicalPublicKey) {
-        this.classicalPublicKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.classicalPublicKey, classicalPublicKey);
-    }
-
-    public ModifiableByteArray getPostQuantumPublicKey() {
-        return postQuantumPublicKey;
-    }
-
-    public void setPostQuantumPublicKey(ModifiableByteArray postQuantumPublicKey) {
-        this.postQuantumPublicKey = postQuantumPublicKey;
-    }
-
-    public void setPostQuantumPublicKey(byte[] postQuantumPublicKey) {
-        this.postQuantumPublicKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.postQuantumPublicKey, postQuantumPublicKey);
+    public HybridKeyExchangeInitMessage(HybridKeyExchangeInitMessage other) {
+        super(other);
+        concatenatedHybridKeysLength =
+                other.concatenatedHybridKeysLength != null
+                        ? other.concatenatedHybridKeysLength.createCopy()
+                        : null;
+        concatenatedHybridKeys =
+                other.concatenatedHybridKeys != null
+                        ? other.concatenatedHybridKeys.createCopy()
+                        : null;
     }
 
     @Override
-    public SshMessageHandler<HybridKeyExchangeInitMessage> getHandler(SshContext context) {
-        return new HybridKeyExchangeInitMessageHandler(context, this);
+    public HybridKeyExchangeInitMessage createCopy() {
+        return new HybridKeyExchangeInitMessage(this);
+    }
+
+    public ModifiableInteger getConcatenatedHybridKeysLength() {
+        return concatenatedHybridKeysLength;
+    }
+
+    public void setConcatenatedHybridKeysLength(ModifiableInteger concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength = concatenatedHybridKeysLength;
+    }
+
+    public void setConcatenatedHybridKeysLength(int concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.concatenatedHybridKeysLength, concatenatedHybridKeysLength);
+    }
+
+    public ModifiableByteArray getConcatenatedHybridKeys() {
+        return concatenatedHybridKeys;
+    }
+
+    public void setConcatenatedHybridKeys(ModifiableByteArray concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
+    }
+
+    public void setConcatenatedHybridKeys(byte[] concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
+    }
+
+    public void setConcatenatedHybridKeys(
+            ModifiableByteArray concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys = concatenatedHybridKeys;
+        if (adjustLengthField) {
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
+        }
+    }
+
+    public void setConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys =
+                ModifiableVariableFactory.safelySetValue(
+                        this.concatenatedHybridKeys, concatenatedHybridKeys);
+        if (adjustLengthField) {
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
+        }
+    }
+
+    public static final HybridKeyExchangeInitMessageHandler HANDLER =
+            new HybridKeyExchangeInitMessageHandler();
+
+    @Override
+    public HybridKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        HybridKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return HybridKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
     }
 }

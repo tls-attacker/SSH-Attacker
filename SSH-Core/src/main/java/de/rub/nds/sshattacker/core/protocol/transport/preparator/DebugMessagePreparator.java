@@ -14,15 +14,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DebugMessagePreparator extends SshMessagePreparator<DebugMessage> {
 
-    public DebugMessagePreparator(Chooser chooser, DebugMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_DEBUG);
+    public DebugMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_DEBUG);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(DebugMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        getObject().setAlwaysDisplay(true);
-        getObject().setMessage("", true);
-        getObject().setLanguageTag("", true);
+        object.setAlwaysDisplay(true);
+
+        object.setMessage("", true);
+        object.setLanguageTag("", true);
     }
 }

@@ -13,15 +13,36 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.PublicKeyAlgorithmsRoumenPetrovExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PublicKeyAlgorithmsRoumenPetrovExtension
         extends AbstractExtension<PublicKeyAlgorithmsRoumenPetrovExtension> {
 
     private ModifiableInteger publicKeyAlgorithmsLength;
     private ModifiableString publicKeyAlgorithms;
+
+    public PublicKeyAlgorithmsRoumenPetrovExtension() {
+        super();
+    }
+
+    public PublicKeyAlgorithmsRoumenPetrovExtension(
+            PublicKeyAlgorithmsRoumenPetrovExtension other) {
+        super(other);
+        publicKeyAlgorithmsLength =
+                other.publicKeyAlgorithmsLength != null
+                        ? other.publicKeyAlgorithmsLength.createCopy()
+                        : null;
+        publicKeyAlgorithms =
+                other.publicKeyAlgorithms != null ? other.publicKeyAlgorithms.createCopy() : null;
+    }
+
+    @Override
+    public PublicKeyAlgorithmsRoumenPetrovExtension createCopy() {
+        return new PublicKeyAlgorithmsRoumenPetrovExtension(this);
+    }
 
     public ModifiableInteger getPublicKeyAlgorithmsLength() {
         return publicKeyAlgorithmsLength;
@@ -42,40 +63,72 @@ public class PublicKeyAlgorithmsRoumenPetrovExtension
     }
 
     public void setPublicKeyAlgorithms(ModifiableString publicKeyAlgorithms) {
-        this.publicKeyAlgorithms = publicKeyAlgorithms;
+        setPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setPublicKeyAlgorithms(String publicKeyAlgorithms) {
+        setPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    }
+
+    public void setPublicKeyAlgorithms(String[] publicKeyAlgorithms) {
+        setPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    }
+
+    public void setPublicKeyAlgorithms(List<PublicKeyAlgorithm> publicKeyAlgorithms) {
+        setPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    }
+
+    public void setPublicKeyAlgorithms(
+            ModifiableString publicKeyAlgorithms, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPublicKeyAlgorithmsLength(
+                    publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyAlgorithmsLength(publicKeyAlgorithmsLength.getValue());
+        }
+        this.publicKeyAlgorithms = publicKeyAlgorithms;
+    }
+
+    public void setPublicKeyAlgorithms(String publicKeyAlgorithms, boolean adjustLengthField) {
         this.publicKeyAlgorithms =
                 ModifiableVariableFactory.safelySetValue(
                         this.publicKeyAlgorithms, publicKeyAlgorithms);
-    }
-
-    // Add this method to return the accepted public key algorithms
-    public ModifiableString getAcceptedPublicKeyAlgorithms() {
-        return publicKeyAlgorithms;
-    }
-
-    // New method to set PublicKeyAlgorithm list and adjust length if needed
-    public void setPublicKeyAlgorithms(
-            List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
-        // Convert the list of PublicKeyAlgorithm to a comma-separated string
-        String nameList =
-                publicKeyAlgorithms.stream()
-                        .map(PublicKeyAlgorithm::toString)
-                        .collect(Collectors.joining(","));
-
-        // Set the publicKeyAlgorithms field using the existing method
-        setPublicKeyAlgorithms(nameList);
-
-        // Adjust the length field if required
         if (adjustLengthField) {
-            setPublicKeyAlgorithmsLength(nameList.getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyAlgorithmsLength(
+                    this.publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 
+    public void setPublicKeyAlgorithms(String[] publicKeyAlgorithms, boolean adjustLengthField) {
+        setPublicKeyAlgorithms(
+                Converter.listOfNamesToString(publicKeyAlgorithms), adjustLengthField);
+    }
+
+    public void setPublicKeyAlgorithms(
+            List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
+        setPublicKeyAlgorithms(
+                Converter.listOfNamesToString(publicKeyAlgorithms), adjustLengthField);
+    }
+
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionHandler HANDLER =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionHandler();
+
     @Override
-    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler getHandler(SshContext context) {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionHandler(context, this);
+    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PublicKeyAlgorithmsRoumenPetrovExtensionHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PublicKeyAlgorithmsRoumenPetrovExtensionHandler.SERIALIZER.serialize(this);
     }
 }

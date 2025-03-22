@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnknownMessagePreparator;
@@ -21,38 +21,24 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UnknownMessageHandler(SshContext context, UnknownMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UnknownMessage object) {
         LOGGER.debug(
                 "Received unknown message:\n{}",
-                ArrayConverter.bytesToHexString(message.getPayload()));
+                () -> ArrayConverter.bytesToHexString(object.getPayload()));
     }
 
     @Override
-    public UnknownMessageParser getParser(byte[] array) {
+    public UnknownMessageParser getParser(byte[] array, SshContext context) {
         return new UnknownMessageParser(array);
     }
 
     @Override
-    public UnknownMessageParser getParser(byte[] array, int startPosition) {
+    public UnknownMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new UnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<UnknownMessage> getPreparator() {
-        return new UnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final UnknownMessagePreparator PREPARATOR = new UnknownMessagePreparator();
 
-    @Override
-    public UnknownMessageSerializer getSerializer() {
-        return new UnknownMessageSerializer(message);
-    }
+    public static final UnknownMessageSerializer SERIALIZER = new UnknownMessageSerializer();
 }

@@ -13,6 +13,13 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpVersionMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.SftpResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.SftpResponseDataMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.SftpResponseHandleMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.SftpResponseNameMessage;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -22,6 +29,7 @@ import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,6 +67,10 @@ public class WorkflowConfigurationFactory {
                     createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
             case AUTH_DYNAMIC -> createDynamicAuthenticationWorkflowTrace();
             case FULL -> createFullWorkflowTrace();
+            case REQ_SUBSYSTEM -> createRequestSubsystemWorkflowTrace();
+            case SFTP_INIT -> createSftpInitWorkflowTrace();
+            case SFTP_FULL -> createSftpFullWorkflowTrace();
+            case REQ_TCP_IP_FORWARD -> createRequestTcpIpForwardWorkflowTrace();
             case MITM -> createSimpleMitmProxyWorkflow();
             default ->
                     throw new ConfigurationException(
@@ -127,6 +139,37 @@ public class WorkflowConfigurationFactory {
         addTransportProtocolActions(workflow);
         addAuthenticationProtocolActions(workflow);
         addConnectionProtocolActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createRequestSubsystemWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
+        // Connection Protocol Actions
+        addChannelOpenActions(workflow);
+        addChannelRequestSubsystemActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSftpInitWorkflowTrace() {
+        WorkflowTrace workflow = createRequestSubsystemWorkflowTrace();
+        addSftpInitActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSftpFullWorkflowTrace() {
+        WorkflowTrace workflow = createSftpInitWorkflowTrace();
+        addSftpTestActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createRequestTcpIpForwardWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
+        // Connection Protocol Actions
+        addGlobalRequestActions(workflow);
         return workflow;
     }
 
@@ -237,9 +280,9 @@ public class WorkflowConfigurationFactory {
         return sshActions;
     }
 
-    public static List<SshAction> createKeyExchangeActions(
+    public static ArrayList<SshAction> createKeyExchangeActions(
             KeyExchangeFlowType flowType, AliasedConnection connection) {
-        List<SshAction> sshActions = new ArrayList<>();
+        ArrayList<SshAction> sshActions = new ArrayList<>();
         if (flowType == null) {
             // This may happen if the key exchange algorithm is `ext-info-s` or
             // `ext-info-c` [RFC 8308], since they do not have an associated
@@ -260,6 +303,9 @@ public class WorkflowConfigurationFactory {
                     "Unable to add key exchange actions to workflow trace - key exchange algorithm has no flow type!");
         }
 
+        // TODO: Some Servers send NewKeysMessage first after the client has send its NewKeysMessage
+        //  Make it dynamic, so that the trace can still execute as planed.
+        //  For this maybe keep track in the context about the state of the key (re-)exchange
         switch (flowType) {
             case HYBRID:
                 sshActions.add(
@@ -371,6 +417,8 @@ public class WorkflowConfigurationFactory {
      */
     public void addAuthenticationProtocolActions(
             AuthenticationMethod method, WorkflowTrace workflow) {
+        // TODO: Some servers send UserAuthBannerMessage. Optionally expect UserAuthBannerMessage,
+        //  so that the trace can be completed as expected
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
             case NONE:
@@ -449,31 +497,108 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Add connections protocol actions to an existing workflow.
+     * Add connections protocol actions to an existing workflow. The actions include opening a
+     * channel and executing two channel requests. First a PTY is requested and then an environment
+     * variable is passed.
      *
      * @param workflow the workflow trace to add actions to
      */
     public void addConnectionProtocolActions(WorkflowTrace workflow) {
+        addChannelOpenActions(workflow);
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelOpenSessionMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 SshActionFactory.createMessageAction(
                         connection,
                         ConnectionEndType.CLIENT,
                         new ChannelRequestPtyMessage(),
-                        new ChannelRequestEnvMessage(),
-                        new ChannelRequestEnvMessage(),
-                        new ChannelRequestEnvMessage(),
                         new ChannelRequestEnvMessage()),
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()));
+    }
+
+    public void addChannelOpenActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelRequestEnvMessage()));
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenSessionMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new ChannelOpenConfirmationMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)));
+    }
+
+    public void addChannelRequestSubsystemActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelRequestSubsystemMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)));
+    }
+
+    public void addGlobalRequestActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new GlobalRequestTcpIpForwardMessage()),
+                SshActionFactory.withReceiveOptions(
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new GlobalRequestSuccessMessage()),
+                        Set.of(
+                                ReceiveAction.ReceiveOption
+                                        .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)));
+    }
+
+    public void addSftpInitActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpInitMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpVersionMessage()));
+    }
+
+    public void addSftpTestActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestOpenMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseHandleMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestFileStatMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseAttributesMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestReadMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseDataMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestOpenDirMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseHandleMessage()));
+        workflow.addSshActions(
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.CLIENT, new SftpRequestReadDirMessage()),
+                SshActionFactory.createDataMessageAction(
+                        connection, ConnectionEndType.SERVER, new SftpResponseNameMessage()));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

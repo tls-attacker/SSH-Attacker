@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PingMessagePreparator extends SshMessagePreparator<PingMessage> {
 
-    public PingMessagePreparator(Chooser chooser, PingMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_PING);
+    public PingMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_PING);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setData(new byte[0], true);
+    protected void prepareMessageSpecificContents(PingMessage object, Chooser chooser) {
+        object.setData(new byte[0], true);
     }
 }

@@ -13,11 +13,27 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PingMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PingMessage extends SshMessage<PingMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public PingMessage() {
+        super();
+    }
+
+    public PingMessage(PingMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PingMessage createCopy() {
+        return new PingMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -51,14 +67,31 @@ public class PingMessage extends SshMessage<PingMessage> {
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public static final PingMessageHandler HANDLER = new PingMessageHandler();
+
+    @Override
+    public PingMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public PingMessageHandler getHandler(SshContext context) {
-        return new PingMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PingMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PingMessageHandler.SERIALIZER.serialize(this);
     }
 }

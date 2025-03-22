@@ -13,14 +13,28 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public abstract class AbstractExtension<E extends AbstractExtension<E>>
+public abstract class AbstractExtension<T extends AbstractExtension<T>>
         extends ModifiableVariableHolder {
 
     protected ModifiableInteger nameLength;
 
     protected ModifiableString name;
+
+    protected AbstractExtension() {
+        super();
+    }
+
+    protected AbstractExtension(AbstractExtension<T> other) {
+        super(other);
+        nameLength = other.nameLength != null ? other.nameLength.createCopy() : null;
+        name = other.name != null ? other.name.createCopy() : null;
+    }
+
+    @Override
+    public abstract AbstractExtension<T> createCopy();
 
     public ModifiableInteger getNameLength() {
         return nameLength;
@@ -54,11 +68,17 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>>
     }
 
     public void setName(String name, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setNameLength(name.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
+        if (adjustLengthField) {
+            setNameLength(this.name.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
-    public abstract AbstractExtensionHandler<E> getHandler(SshContext context);
+    public abstract AbstractExtensionHandler<T> getHandler();
+
+    public abstract void adjustContext(SshContext context);
+
+    public abstract void prepare(Chooser chooser);
+
+    public abstract byte[] serialize();
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
@@ -17,26 +17,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExchangeReplyMessage> {
 
-    public DhKeyExchangeReplyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithRemotePublicKey(message);
+    public void adjustContext(SshContext context, DhKeyExchangeReplyMessage object) {
+        KeyExchangeUtil.handleHostKeyMessage(context, object);
+        updateContextWithRemotePublicKey(context, object);
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void updateContextWithRemotePublicKey(DhKeyExchangeReplyMessage message) {
+    private static void updateContextWithRemotePublicKey(
+            SshContext context, DhKeyExchangeReplyMessage message) {
         context.getChooser()
                 .getDhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -45,22 +38,19 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
     }
 
     @Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array) {
+    public DhKeyExchangeReplyMessageParser getParser(byte[] array, SshContext context) {
         return new DhKeyExchangeReplyMessageParser(array);
     }
 
     @Override
-    public DhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+    public DhKeyExchangeReplyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhKeyExchangeReplyMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator() {
-        return new DhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhKeyExchangeReplyMessagePreparator PREPARATOR =
+            new DhKeyExchangeReplyMessagePreparator();
 
-    @Override
-    public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer() {
-        return new DhKeyExchangeReplyMessageSerializer(message);
-    }
+    public static final DhKeyExchangeReplyMessageSerializer SERIALIZER =
+            new DhKeyExchangeReplyMessageSerializer();
 }

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
@@ -31,20 +30,20 @@ public class DsaPublicKeyParser
     public SshPublicKey<CustomDsaPublicKey, CustomDsaPrivateKey> parse() {
         CustomDsaPublicKey publicKey = new CustomDsaPublicKey();
         // The ssh-dss format specified the ssh-dss to be part of the encoded key
-        int formatLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        int formatLength = parseIntField();
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_DSS.getName())) {
             LOGGER.warn(
                     "Trying to parse an DSA public key, but encountered unexpected public key format '{}'. Parsing will continue but may not yield the expected results.",
                     format);
         }
-        int pLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        int pLength = parseIntField();
         publicKey.setP(parseBigIntField(pLength));
-        int qLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        int qLength = parseIntField();
         publicKey.setQ(parseBigIntField(qLength));
-        int gLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        int gLength = parseIntField();
         publicKey.setG(parseBigIntField(gLength));
-        int yLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        int yLength = parseIntField();
         publicKey.setY(parseBigIntField(yLength));
 
         return new SshPublicKey<>(PublicKeyFormat.SSH_DSS, publicKey);

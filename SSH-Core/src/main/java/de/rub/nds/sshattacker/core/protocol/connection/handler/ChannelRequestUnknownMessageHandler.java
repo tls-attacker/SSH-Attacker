@@ -7,50 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
-        extends SshMessageHandler<ChannelRequestUnknownMessage> {
-
-    public ChannelRequestUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestUnknownMessageHandler(
-            SshContext context, ChannelRequestUnknownMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestUnknownMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array) {
+    public ChannelRequestUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestUnknownMessageParser(array);
     }
 
     @Override
-    public ChannelRequestUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestUnknownMessagePreparator getPreparator() {
-        return new ChannelRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestUnknownMessagePreparator PREPARATOR =
+            new ChannelRequestUnknownMessagePreparator();
 
-    @Override
-    public ChannelRequestUnknownMessageSerializer getSerializer() {
-        return new ChannelRequestUnknownMessageSerializer(message);
-    }
+    public static final ChannelRequestUnknownMessageSerializer SERIALIZER =
+            new ChannelRequestUnknownMessageSerializer();
 }

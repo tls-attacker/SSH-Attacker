@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -17,23 +19,17 @@ public class PingExtensionSerializer extends AbstractExtensionSerializer<PingExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingExtensionSerializer(PingExtension extension) {
-        super(extension);
-    }
-
     @Override
-    protected void serializeExtensionValue() {
-        serializeVersionLength();
-        serializeVersion();
+    protected void serializeExtensionValue(PingExtension object, SerializerStream output) {
+        serializeVersion(object, output);
     }
 
-    private void serializeVersionLength() {
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
-        appendInt(extension.getVersionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
-    private void serializeVersion() {
-        LOGGER.debug("Version: {}", extension.getVersion().getValue());
-        appendString(extension.getVersion().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeVersion(PingExtension object, SerializerStream output) {
+        Integer versionLength = object.getVersionLength().getValue();
+        LOGGER.debug("Version length: {}", versionLength);
+        output.appendInt(versionLength);
+        String version = object.getVersion().getValue();
+        LOGGER.debug("Version: {}", () -> backslashEscapeString(version));
+        output.appendString(version, StandardCharsets.US_ASCII);
     }
 }

@@ -111,8 +111,8 @@ public class KeyExchangeInitMessageSerializerTest {
         msg.setLanguagesServerToClient(providedLanguagesSToC);
         msg.setFirstKeyExchangePacketFollows(providedFirstKeyExchangePacketFollows);
         msg.setReserved(providedReserved);
-        KeyExchangeInitMessageSerializer serializer = new KeyExchangeInitMessageSerializer(msg);
+        KeyExchangeInitMessageSerializer serializer = new KeyExchangeInitMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

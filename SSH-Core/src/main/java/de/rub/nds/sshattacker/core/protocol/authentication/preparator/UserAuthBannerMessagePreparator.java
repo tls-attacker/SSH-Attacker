@@ -14,14 +14,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthBannerMessagePreparator extends SshMessagePreparator<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessagePreparator(Chooser chooser, UserAuthBannerMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
+    public UserAuthBannerMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(UserAuthBannerMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        getObject().setMessage("", true);
-        getObject().setLanguageTag("", true);
+
+        object.setMessage("", true);
+        object.setLanguageTag("", true);
     }
 }

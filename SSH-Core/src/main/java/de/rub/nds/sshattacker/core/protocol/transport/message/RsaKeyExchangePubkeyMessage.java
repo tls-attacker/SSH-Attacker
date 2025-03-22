@@ -16,11 +16,10 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
         implements HostKeyMessage {
@@ -30,6 +29,30 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     private ModifiableInteger transientPublicKeyBytesLength;
     private ModifiableByteArray transientPublicKeyBytes;
+
+    public RsaKeyExchangePubkeyMessage() {
+        super();
+    }
+
+    public RsaKeyExchangePubkeyMessage(RsaKeyExchangePubkeyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        transientPublicKeyBytesLength =
+                other.transientPublicKeyBytesLength != null
+                        ? other.transientPublicKeyBytesLength.createCopy()
+                        : null;
+        transientPublicKeyBytes =
+                other.transientPublicKeyBytes != null
+                        ? other.transientPublicKeyBytes.createCopy()
+                        : null;
+    }
+
+    @Override
+    public RsaKeyExchangePubkeyMessage createCopy() {
+        return new RsaKeyExchangePubkeyMessage(this);
+    }
 
     // Host Key (K_S) Methods
     @Override
@@ -138,15 +161,33 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     public BigInteger getModulus() {
-        return ((RSAPublicKey) getTransientPublicKey().getPublicKey()).getModulus();
+        return getTransientPublicKey().getPublicKey().getModulus();
     }
 
     public BigInteger getPublicExponent() {
-        return ((RSAPublicKey) getTransientPublicKey().getPublicKey()).getPublicExponent();
+        return getTransientPublicKey().getPublicKey().getPublicExponent();
+    }
+
+    public static final RsaKeyExchangePubkeyMessageHandler HANDLER =
+            new RsaKeyExchangePubkeyMessageHandler();
+
+    @Override
+    public RsaKeyExchangePubkeyMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
-        return new RsaKeyExchangePubkeyMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangePubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangePubkeyMessageHandler.SERIALIZER.serialize(this);
     }
 }

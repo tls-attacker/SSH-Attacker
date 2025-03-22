@@ -10,9 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
-import java.nio.charset.StandardCharsets;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,64 +20,64 @@ public class UserAuthHostbasedMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthHostbasedMessageSerializer(UserAuthHostbasedMessage message) {
-        super(message);
+    private static void serializePubKeyAlgorithm(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        Integer pubKeyAlgorithmLength = object.getPubKeyAlgorithmLength().getValue();
+        LOGGER.debug("Public key algorithm length: {}", pubKeyAlgorithmLength);
+        output.appendInt(pubKeyAlgorithmLength);
+        String pubKeyAlgorithm = object.getPubKeyAlgorithm().getValue();
+        LOGGER.debug("Public key algorithm: {}", () -> backslashEscapeString(pubKeyAlgorithm));
+        output.appendString(pubKeyAlgorithm);
     }
 
-    private void serializePubKeyAlgorithm() {
-        appendInt(
-                message.getPubKeyAlgorithmLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Public key algorithm length: {}", message.getPubKeyAlgorithmLength().getValue());
-        appendString(message.getPubKeyAlgorithm().getValue());
-        LOGGER.debug("Public key algorithm: {}", message.getPubKeyAlgorithm().getValue());
+    private static void serializeHostKeyBytes(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
+        LOGGER.debug("Host key length: {}", hostKeyBytesLength);
+        output.appendInt(hostKeyBytesLength);
+        byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
+        LOGGER.debug("Host key: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
+        output.appendBytes(hostKeyBytes);
     }
 
-    private void serializeHostKeyBytes() {
-        appendInt(
-                message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key length: {}", message.getHostKeyBytesLength().getValue());
-        appendBytes(message.getHostKeyBytes().getValue());
-        LOGGER.debug(
-                "Host key: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+    private static void serializeHostName(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        Integer hostNameLength = object.getHostNameLength().getValue();
+        LOGGER.debug("Host name length: {}", hostNameLength);
+        output.appendInt(hostNameLength);
+        String hostName = object.getHostName().getValue();
+        LOGGER.debug("Host name: {}", () -> backslashEscapeString(hostName));
+        output.appendString(hostName);
     }
 
-    private void serializeHostName() {
-        appendInt(message.getHostNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host name length: {}", message.getHostNameLength().getValue());
-        appendString(message.getHostName().getValue());
-        LOGGER.debug("Host name: {}", backslashEscapeString(message.getHostName().getValue()));
+    private static void serializeClientUserName(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        Integer clientUserNameLength = object.getClientUserNameLength().getValue();
+        LOGGER.debug("Client user name length: {}", clientUserNameLength);
+        output.appendInt(clientUserNameLength);
+        String clientUserName = object.getClientUserName().getValue();
+        LOGGER.debug("Client user name: {}", () -> backslashEscapeString(clientUserName));
+        output.appendString(clientUserName);
     }
 
-    private void serializeClientUserName() {
-        appendInt(
-                message.getClientUserNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Client user name length: {}", message.getClientUserNameLength().getValue());
-        appendString(message.getClientUserName().getValue(), StandardCharsets.UTF_8);
-        LOGGER.debug(
-                "Client user name: {}",
-                backslashEscapeString(message.getClientUserName().getValue()));
-    }
-
-    private void serializeSignature() {
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        appendBytes(message.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+    private static void serializeSignature(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        Integer signatureLength = object.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        output.appendInt(signatureLength);
+        byte[] signature = object.getSignature().getValue();
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
+        output.appendBytes(signature);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializePubKeyAlgorithm();
-        serializeHostKeyBytes();
-        serializeHostName();
-        serializeClientUserName();
-        serializeSignature();
+    protected void serializeMessageSpecificContents(
+            UserAuthHostbasedMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializePubKeyAlgorithm(object, output);
+        serializeHostKeyBytes(object, output);
+        serializeHostName(object, output);
+        serializeClientUserName(object, output);
+        serializeSignature(object, output);
     }
 }

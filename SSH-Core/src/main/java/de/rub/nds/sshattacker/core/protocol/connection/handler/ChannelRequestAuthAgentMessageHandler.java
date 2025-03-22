@@ -7,50 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestAuthAgentMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestAuthAgentMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestAuthAgentMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestAuthAgentMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestAuthAgentMessageHandler
-        extends SshMessageHandler<ChannelRequestAuthAgentMessage> {
-
-    public ChannelRequestAuthAgentMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestAuthAgentMessageHandler(
-            SshContext context, ChannelRequestAuthAgentMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestAuthAgentMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestAuthAgentMessageParser getParser(byte[] array) {
+    public ChannelRequestAuthAgentMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestAuthAgentMessageParser(array);
     }
 
     @Override
-    public ChannelRequestAuthAgentMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestAuthAgentMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestAuthAgentMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestAuthAgentMessagePreparator getPreparator() {
-        return new ChannelRequestAuthAgentMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestAuthAgentMessagePreparator PREPARATOR =
+            new ChannelRequestAuthAgentMessagePreparator();
 
-    @Override
-    public ChannelRequestAuthAgentMessageSerializer getSerializer() {
-        return new ChannelRequestAuthAgentMessageSerializer(message);
-    }
+    public static final ChannelRequestAuthAgentMessageSerializer SERIALIZER =
+            new ChannelRequestAuthAgentMessageSerializer();
 }

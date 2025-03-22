@@ -11,15 +11,30 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage>
         implements ExchangeHashSignatureMessage {
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public RsaKeyExchangeDoneMessage() {
+        super();
+    }
+
+    public RsaKeyExchangeDoneMessage(RsaKeyExchangeDoneMessage other) {
+        super(other);
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public RsaKeyExchangeDoneMessage createCopy() {
+        return new RsaKeyExchangeDoneMessage(this);
+    }
 
     @Override
     public ModifiableInteger getSignatureLength() {
@@ -68,8 +83,26 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
         }
     }
 
+    public static final RsaKeyExchangeDoneMessageHandler HANDLER =
+            new RsaKeyExchangeDoneMessageHandler();
+
     @Override
-    public SshMessageHandler<RsaKeyExchangeDoneMessage> getHandler(SshContext context) {
-        return new RsaKeyExchangeDoneMessageHandler(context, this);
+    public RsaKeyExchangeDoneMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        RsaKeyExchangeDoneMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return RsaKeyExchangeDoneMessageHandler.SERIALIZER.serialize(this);
     }
 }

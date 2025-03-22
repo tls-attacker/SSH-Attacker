@@ -14,15 +14,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestX11MessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestX11Message> {
 
-    public ChannelRequestX11MessagePreparator(Chooser chooser, ChannelRequestX11Message message) {
-        super(chooser, message, ChannelRequestType.X11_REQ);
+    public ChannelRequestX11MessagePreparator() {
+        super(ChannelRequestType.X11_REQ, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSingleConnection(true);
-        getObject().setX11AuthenticationProtocol("", true);
-        getObject().setX11AuthenticationCookie("", true);
-        getObject().setX11ScreenNumber(1);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestX11Message object, Chooser chooser) {
+        object.setSingleConnection(true);
+
+        object.setX11AuthenticationProtocol("", true);
+        object.setX11AuthenticationCookie("", true);
+        object.setX11ScreenNumber(1);
     }
 }

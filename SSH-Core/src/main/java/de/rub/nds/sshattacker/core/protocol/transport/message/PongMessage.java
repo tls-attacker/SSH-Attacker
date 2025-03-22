@@ -13,11 +13,27 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PongMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PongMessage extends SshMessage<PongMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public PongMessage() {
+        super();
+    }
+
+    public PongMessage(PongMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PongMessage createCopy() {
+        return new PongMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -40,10 +56,10 @@ public class PongMessage extends SshMessage<PongMessage> {
     }
 
     public void setData(ModifiableByteArray data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.getValue().length);
-        }
         this.data = data;
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     public void setData(byte[] data) {
@@ -51,14 +67,31 @@ public class PongMessage extends SshMessage<PongMessage> {
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public static final PongMessageHandler HANDLER = new PongMessageHandler();
+
+    @Override
+    public PongMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public PongMessageHandler getHandler(SshContext context) {
-        return new PongMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PongMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PongMessageHandler.SERIALIZER.serialize(this);
     }
 }

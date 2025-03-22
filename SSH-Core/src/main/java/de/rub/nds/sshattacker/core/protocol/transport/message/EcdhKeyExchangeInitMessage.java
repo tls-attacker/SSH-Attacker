@@ -13,11 +13,31 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMessage> {
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableByteArray ephemeralPublicKey;
+
+    public EcdhKeyExchangeInitMessage() {
+        super();
+    }
+
+    public EcdhKeyExchangeInitMessage(EcdhKeyExchangeInitMessage other) {
+        super(other);
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+    }
+
+    @Override
+    public EcdhKeyExchangeInitMessage createCopy() {
+        return new EcdhKeyExchangeInitMessage(this);
+    }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;
@@ -62,8 +82,26 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
         }
     }
 
+    public static final EcdhKeyExchangeInitMessageHandler HANDLER =
+            new EcdhKeyExchangeInitMessageHandler();
+
     @Override
-    public EcdhKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeInitMessageHandler(context, this);
+    public EcdhKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        EcdhKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return EcdhKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
     }
 }

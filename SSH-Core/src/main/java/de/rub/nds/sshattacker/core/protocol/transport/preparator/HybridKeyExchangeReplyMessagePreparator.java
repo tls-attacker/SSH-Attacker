@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,27 +24,28 @@ public class HybridKeyExchangeReplyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HybridKeyExchangeReplyMessagePreparator(
-            Chooser chooser, HybridKeyExchangeReplyMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_HBR_REPLY);
+    public HybridKeyExchangeReplyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_HBR_REPLY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
-        prepareHybridPublicValue();
+    protected void prepareMessageSpecificContents(
+            HybridKeyExchangeReplyMessage object, Chooser chooser) {
+        SshContext context = chooser.getContext();
+        KeyExchangeUtil.prepareHostKeyMessage(context, object);
+        prepareHybridKey(object, chooser);
         KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getHybridKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeExchangeHash(context);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
+        KeyExchangeUtil.setSessionId(context);
+        KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void prepareHybridPublicValue() {
-        HybridKeyExchange kex = chooser.getHybridKeyExchange();
-        AbstractEcdhKeyExchange<?, ?> classical = kex.getClassical();
+    private static void prepareHybridKey(HybridKeyExchangeReplyMessage object, Chooser chooser) {
+        HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
+        AbstractEcdhKeyExchange<?, ?> classical = keyExchange.getClassical();
         classical.generateKeyPair();
-        KemKeyExchange postQuantum = kex.getPostQuantum();
+        KemKeyExchange postQuantum = keyExchange.getPostQuantum();
         if (postQuantum.getPublicKey() == null) {
             LOGGER.warn(
                     "Post quantum key exchange public key is null, generating new key pair before encapsulation");
@@ -62,24 +64,22 @@ public class HybridKeyExchangeReplyMessagePreparator
                     "Error while preparing HybridKeyExchangeReplyMessage - encapsulation failed",
                     e);
         }
-        byte[] encapsPostQuantum = postQuantum.getEncapsulation();
-        getObject().setPostQuantumKeyEncapsulation(encapsPostQuantum);
+
         byte[] pkClassical = classical.getLocalKeyPair().getPublicKey().getEncoded();
-        getObject().setClassicalPublicKey(pkClassical);
-        switch (kex.getCombiner()) {
+        byte[] encapsPostQuantum = postQuantum.getEncapsulation();
+
+        byte[] keys = null;
+        switch (chooser.getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                getObject()
-                        .setPublicValues(
-                                ArrayConverter.concatenate(pkClassical, encapsPostQuantum), true);
+                keys = ArrayConverter.concatenate(pkClassical, encapsPostQuantum);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                getObject()
-                        .setPublicValues(
-                                ArrayConverter.concatenate(encapsPostQuantum, pkClassical), true);
+                keys = ArrayConverter.concatenate(encapsPostQuantum, pkClassical);
+                break;
+            default:
+                LOGGER.warn("Combiner is not supported. Can not set Hybrid Key.");
                 break;
         }
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setHybridClientPublicValues(getObject().getPublicValues().getValue());
+        object.setConcatenatedHybridKeys(keys, true);
     }
 }

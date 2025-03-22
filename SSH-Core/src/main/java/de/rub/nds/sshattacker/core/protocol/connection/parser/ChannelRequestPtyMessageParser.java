@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,46 +30,48 @@ public class ChannelRequestPtyMessageParser
         return new ChannelRequestPtyMessage();
     }
 
-    public void parseTermEnvVariable() {
-        message.setTermEnvVariableLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "TERM environment variable length: {}",
-                message.getTermEnvVariableLength().getValue());
-        message.setTermEnvVariable(parseByteString(message.getTermEnvVariableLength().getValue()));
-        LOGGER.debug("TERM environment variable: {}", message.getTermEnvVariable().getValue());
+    private void parseTermEnvVariable() {
+        int termEnvVariableLength = parseIntField();
+        message.setTermEnvVariableLength(termEnvVariableLength);
+        LOGGER.debug("TERM environment variable length: {}", termEnvVariableLength);
+        String termEnvVariable = parseByteString(termEnvVariableLength);
+        message.setTermEnvVariable(termEnvVariable);
+        LOGGER.debug("TERM environment variable: {}", termEnvVariable);
     }
 
-    public void parseWidthCharacters() {
-        message.setWidthCharacters(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in characters: {}", message.getWidthCharacters().getValue());
+    private void parseWidthCharacters() {
+        int widthCharacters = parseIntField();
+        message.setWidthCharacters(widthCharacters);
+        LOGGER.debug("Terminal width in characters: {}", widthCharacters);
     }
 
-    public void parseHeightRows() {
-        message.setHeightRows(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
+    private void parseHeightRows() {
+        int heightRows = parseIntField();
+        message.setHeightRows(heightRows);
+        LOGGER.debug("Terminal height in rows: {}", heightRows);
     }
 
-    public void parseWidthPixels() {
-        message.setWidthPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
+    private void parseWidthPixels() {
+        int widthPixels = parseIntField();
+        message.setWidthPixels(widthPixels);
+        LOGGER.debug("Terminal width in pixels: {}", widthPixels);
     }
 
-    public void parseHeightPixels() {
-        message.setHeightPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
+    private void parseHeightPixels() {
+        int heightPixels = parseIntField();
+        message.setHeightPixels(heightPixels);
+        LOGGER.debug("Terminal height in pixels: {}", heightPixels);
     }
 
-    public void parseEncodedTerminalModes() {
-        message.setEncodedTerminalModesLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Encoded terminal modes length: {}",
-                message.getEncodedTerminalModesLength().getValue());
-        message.setEncodedTerminalModes(
-                parseByteArrayField(message.getEncodedTerminalModesLength().getValue()));
+    private void parseEncodedTerminalModes() {
+        int encodedTerminalModesLength = parseIntField();
+        message.setEncodedTerminalModesLength(encodedTerminalModesLength);
+        LOGGER.debug("Encoded terminal modes length: {}", encodedTerminalModesLength);
+        byte[] encodedTerminalModes = parseByteArrayField(encodedTerminalModesLength);
+        message.setEncodedTerminalModes(encodedTerminalModes);
         LOGGER.debug(
                 "Encoded terminal modes: {}",
-                ArrayConverter.bytesToHexString(message.getEncodedTerminalModes().getValue()));
+                () -> ArrayConverter.bytesToHexString(encodedTerminalModes));
     }
 
     @Override

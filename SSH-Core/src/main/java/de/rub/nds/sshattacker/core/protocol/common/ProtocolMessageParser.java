@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
@@ -54,7 +54,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
                 "Complete message bytes parsed: {}",
-                ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+                () ->
+                        ArrayConverter.bytesToHexString(
+                                message.getCompleteResultingMessage().getValue()));
     }
 
     public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, SshContext context) {

@@ -7,45 +7,61 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelEofMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessage> {
 
-    public ChannelEofMessageHandler(SshContext context) {
-        super(context);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelEofMessageHandler(SshContext context, ChannelEofMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, ChannelEofMessage object) {
+        // The other side will no longer send something in this channel
+        ChannelManager channelManager = context.getChannelManager();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
+        Channel channel = channelManager.getChannelByLocalId(recipientChannelId);
+        if (channel != null) {
+            if (!channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "{} received but channel with id {} is not open.",
+                        object.getClass().getSimpleName(),
+                        recipientChannelId);
+            } else {
+                LOGGER.warn(
+                        "{} received for channel with id {}",
+                        object.getClass().getSimpleName(),
+                        recipientChannelId);
+                // TODO: set eofMessageReceived to true for the channel
+                // TODO: add sent handler and if eof received and sent -> send close channel message
+            }
+        } else {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally.",
+                    object.getClass().getSimpleName(),
+                    recipientChannelId);
+        }
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelEofMessage
-    }
-
-    @Override
-    public ChannelEofMessageParser getParser(byte[] array) {
+    public ChannelEofMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelEofMessageParser(array);
     }
 
     @Override
-    public ChannelEofMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelEofMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new ChannelEofMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelEofMessagePreparator getPreparator() {
-        return new ChannelEofMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelEofMessagePreparator PREPARATOR = new ChannelEofMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelEofMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

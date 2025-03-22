@@ -66,8 +66,8 @@ public class DhGexKeyExchangeInitMessageSerializerTest {
         msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
         msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         DhGexKeyExchangeInitMessageSerializer serializer =
-                new DhGexKeyExchangeInitMessageSerializer(msg);
+                new DhGexKeyExchangeInitMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

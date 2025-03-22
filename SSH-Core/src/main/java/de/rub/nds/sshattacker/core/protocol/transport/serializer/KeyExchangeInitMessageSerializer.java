@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -21,180 +21,183 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage message) {
-        super(message);
+    private static void serializeCookie(KeyExchangeInitMessage object, SerializerStream output) {
+        LOGGER.debug("Cookie: {}", object.getCookie());
+        output.appendBytes(object.getCookie().getValue());
     }
 
-    private void serializeCookie() {
-        LOGGER.debug("Cookie: {}", message.getCookie());
-        appendBytes(message.getCookie().getValue());
+    private static void serializeKeyExchangeAlgorithms(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer keyExchangeAlgorithmsLength = object.getKeyExchangeAlgorithmsLength().getValue();
+        LOGGER.debug("Key exchange algorithms: {}", keyExchangeAlgorithmsLength);
+        output.appendInt(keyExchangeAlgorithmsLength);
+        String keyExchangeAlgorithms = object.getKeyExchangeAlgorithms().getValue();
+        LOGGER.debug(
+                "Key exchange algorithms: {}", () -> backslashEscapeString(keyExchangeAlgorithms));
+        output.appendString(keyExchangeAlgorithms, StandardCharsets.US_ASCII);
     }
 
-    private void serializeKeyExchangeAlgorithms() {
-        LOGGER.debug(
-                "Key exchange algorithms: {}", message.getKeyExchangeAlgorithmsLength().getValue());
-        appendInt(
-                message.getKeyExchangeAlgorithmsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Key exchange algorithms: {}",
-                backslashEscapeString(message.getKeyExchangeAlgorithms().getValue()));
-        appendString(message.getKeyExchangeAlgorithms().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeServerHostKeyAlgorithms() {
-        LOGGER.debug(
-                "Server host key algorithms: {}",
-                message.getServerHostKeyAlgorithmsLength().getValue());
-        appendInt(
-                message.getServerHostKeyAlgorithmsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeServerHostKeyAlgorithms(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer serverHostKeyAlgorithmsLength =
+                object.getServerHostKeyAlgorithmsLength().getValue();
+        LOGGER.debug("Server host key algorithms: {}", serverHostKeyAlgorithmsLength);
+        output.appendInt(serverHostKeyAlgorithmsLength);
+        String serverHostKeyAlgorithms = object.getServerHostKeyAlgorithms().getValue();
         LOGGER.debug(
                 "Server host key algorithms: {}",
-                backslashEscapeString(message.getServerHostKeyAlgorithms().getValue()));
-        appendString(message.getServerHostKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(serverHostKeyAlgorithms));
+        output.appendString(serverHostKeyAlgorithms, StandardCharsets.US_ASCII);
     }
 
-    private void serializeEncryptionAlgorithmsClientToServer() {
+    private static void serializeEncryptionAlgorithmsClientToServer(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer encryptionAlgorithmsClientToServerLength =
+                object.getEncryptionAlgorithmsClientToServerLength().getValue();
         LOGGER.debug(
                 "Encryption algorithms length (client to server): {}",
-                message.getEncryptionAlgorithmsClientToServerLength().getValue());
-        appendInt(
-                message.getEncryptionAlgorithmsClientToServerLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                encryptionAlgorithmsClientToServerLength);
+        output.appendInt(encryptionAlgorithmsClientToServerLength);
+        String encryptionAlgorithmsClientToServer =
+                object.getEncryptionAlgorithmsClientToServer().getValue();
         LOGGER.debug(
                 "Encryption algorithms (client to server): {}",
-                backslashEscapeString(message.getEncryptionAlgorithmsClientToServer().getValue()));
-        appendString(
-                message.getEncryptionAlgorithmsClientToServer().getValue(),
-                StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(encryptionAlgorithmsClientToServer));
+        output.appendString(encryptionAlgorithmsClientToServer, StandardCharsets.US_ASCII);
     }
 
-    private void serializeEncryptionAlgorithmsServerToClient() {
+    private static void serializeEncryptionAlgorithmsServerToClient(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer encryptionAlgorithmsServerToClientLength =
+                object.getEncryptionAlgorithmsServerToClientLength().getValue();
         LOGGER.debug(
                 "Encryption algorithms length (server to client): {}",
-                message.getEncryptionAlgorithmsServerToClientLength().getValue());
-        appendInt(
-                message.getEncryptionAlgorithmsServerToClientLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                encryptionAlgorithmsServerToClientLength);
+        output.appendInt(encryptionAlgorithmsServerToClientLength);
+        String encryptionAlgorithmsServerToClient =
+                object.getEncryptionAlgorithmsServerToClient().getValue();
         LOGGER.debug(
                 "Encryption algorithms (server to client): {}",
-                backslashEscapeString(message.getEncryptionAlgorithmsServerToClient().getValue()));
-        appendString(
-                message.getEncryptionAlgorithmsServerToClient().getValue(),
-                StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(encryptionAlgorithmsServerToClient));
+        output.appendString(encryptionAlgorithmsServerToClient, StandardCharsets.US_ASCII);
     }
 
-    private void serializeMacAlgorithmsClientToServer() {
+    private static void serializeMacAlgorithmsClientToServer(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer macAlgorithmsClientToServerLength =
+                object.getMacAlgorithmsClientToServerLength().getValue();
         LOGGER.debug(
-                "MAC algorithms length (client to server): {}",
-                message.getMacAlgorithmsClientToServerLength().getValue());
-        appendInt(
-                message.getMacAlgorithmsClientToServerLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                "MAC algorithms length (client to server): {}", macAlgorithmsClientToServerLength);
+        output.appendInt(macAlgorithmsClientToServerLength);
+        String macAlgorithmsClientToServer = object.getMacAlgorithmsClientToServer().getValue();
         LOGGER.debug(
                 "MAC algorithms (client to server): {}",
-                backslashEscapeString(message.getMacAlgorithmsClientToServer().getValue()));
-        appendString(
-                message.getMacAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(macAlgorithmsClientToServer));
+        output.appendString(macAlgorithmsClientToServer, StandardCharsets.US_ASCII);
     }
 
-    private void serializeMacAlgorithmsServerToClient() {
+    private static void serializeMacAlgorithmsServerToClient(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer macAlgorithmsServerToClientLength =
+                object.getMacAlgorithmsServerToClientLength().getValue();
         LOGGER.debug(
-                "MAC algorithms length (server to client): {}",
-                message.getMacAlgorithmsServerToClientLength().getValue());
-        appendInt(
-                message.getMacAlgorithmsServerToClientLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                "MAC algorithms length (server to client): {}", macAlgorithmsServerToClientLength);
+        output.appendInt(macAlgorithmsServerToClientLength);
+        String macAlgorithmsServerToClient = object.getMacAlgorithmsServerToClient().getValue();
         LOGGER.debug(
                 "MAC algorithms (server to client): {}",
-                backslashEscapeString(message.getMacAlgorithmsServerToClient().getValue()));
-        appendString(
-                message.getMacAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(macAlgorithmsServerToClient));
+        output.appendString(macAlgorithmsServerToClient, StandardCharsets.US_ASCII);
     }
 
-    private void serializeCompressionMethodsClientToServer() {
+    private static void serializeCompressionMethodsClientToServer(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer compressionMethodsClientToServerLength =
+                object.getCompressionMethodsClientToServerLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (client to server): {}",
-                message.getCompressionMethodsClientToServerLength().getValue());
-        appendInt(
-                message.getCompressionMethodsClientToServerLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                compressionMethodsClientToServerLength);
+        output.appendInt(compressionMethodsClientToServerLength);
+        String compressionMethodsClientToServer =
+                object.getCompressionMethodsClientToServer().getValue();
         LOGGER.debug(
                 "Compression algorithms (client to server): {}",
-                backslashEscapeString(message.getCompressionMethodsClientToServer().getValue()));
-        appendString(
-                message.getCompressionMethodsClientToServer().getValue(),
-                StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(compressionMethodsClientToServer));
+        output.appendString(compressionMethodsClientToServer, StandardCharsets.US_ASCII);
     }
 
-    private void serializeCompressionMethodsServerToClient() {
+    private static void serializeCompressionMethodsServerToClient(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer compressionMethodsServerToClientLength =
+                object.getCompressionMethodsServerToClientLength().getValue();
         LOGGER.debug(
                 "Compression algorithms length (server to client): {}",
-                message.getCompressionMethodsServerToClientLength().getValue());
-        appendInt(
-                message.getCompressionMethodsServerToClientLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                compressionMethodsServerToClientLength);
+        output.appendInt(compressionMethodsServerToClientLength);
+        String compressionMethodsServerToClient =
+                object.getCompressionMethodsServerToClient().getValue();
         LOGGER.debug(
                 "Compression algorithms (server to client): {}",
-                backslashEscapeString(message.getCompressionMethodsServerToClient().getValue()));
-        appendString(
-                message.getCompressionMethodsServerToClient().getValue(),
-                StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(compressionMethodsServerToClient));
+        output.appendString(compressionMethodsServerToClient, StandardCharsets.US_ASCII);
     }
 
-    private void serializeLanguagesClientToServer() {
-        LOGGER.debug(
-                "Languages length (client to server): {}",
-                message.getLanguagesClientToServerLength().getValue());
-        appendInt(
-                message.getLanguagesClientToServerLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeLanguagesClientToServer(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer languagesClientToServerLength =
+                object.getLanguagesClientToServerLength().getValue();
+        LOGGER.debug("Languages length (client to server): {}", languagesClientToServerLength);
+        output.appendInt(languagesClientToServerLength);
+        String languagesClientToServer = object.getLanguagesClientToServer().getValue();
         LOGGER.debug(
                 "Languages (client to server): {}",
-                backslashEscapeString(message.getLanguagesClientToServer().getValue()));
-        appendString(message.getLanguagesClientToServer().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(languagesClientToServer));
+        output.appendString(languagesClientToServer, StandardCharsets.US_ASCII);
     }
 
-    private void serializeLanguagesServerToClient() {
-        LOGGER.debug(
-                "Languages length (server to client): {}",
-                message.getLanguagesServerToClientLength().getValue());
-        appendInt(
-                message.getLanguagesServerToClientLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeLanguagesServerToClient(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Integer languagesServerToClientLength =
+                object.getLanguagesServerToClientLength().getValue();
+        LOGGER.debug("Languages length (server to client): {}", languagesServerToClientLength);
+        output.appendInt(languagesServerToClientLength);
+        String languagesServerToClient = object.getLanguagesServerToClient().getValue();
         LOGGER.debug(
                 "Languages (server to client): {}",
-                backslashEscapeString(message.getLanguagesServerToClient().getValue()));
-        appendString(message.getLanguagesServerToClient().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(languagesServerToClient));
+        output.appendString(languagesServerToClient, StandardCharsets.US_ASCII);
     }
 
-    private void serializeFirstKeyExchangePacketFollows() {
+    private static void serializeFirstKeyExchangePacketFollows(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        Byte firstKeyExchangePacketFollows = object.getFirstKeyExchangePacketFollows().getValue();
         LOGGER.debug(
                 "First key exchange packet follows: {}",
-                Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
-        appendByte(message.getFirstKeyExchangePacketFollows().getValue());
+                () -> Converter.byteToBoolean(firstKeyExchangePacketFollows));
+        output.appendByte(firstKeyExchangePacketFollows);
     }
 
-    private void serializeReserved() {
-        LOGGER.debug("Reserved: {}", message.getReserved().getValue());
-        appendInt(message.getReserved().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeReserved(KeyExchangeInitMessage object, SerializerStream output) {
+        Integer reserved = object.getReserved().getValue();
+        LOGGER.debug("Reserved: {}", reserved);
+        output.appendInt(reserved);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeCookie();
-        serializeKeyExchangeAlgorithms();
-        serializeServerHostKeyAlgorithms();
-        serializeEncryptionAlgorithmsClientToServer();
-        serializeEncryptionAlgorithmsServerToClient();
-        serializeMacAlgorithmsClientToServer();
-        serializeMacAlgorithmsServerToClient();
-        serializeCompressionMethodsClientToServer();
-        serializeCompressionMethodsServerToClient();
-        serializeLanguagesClientToServer();
-        serializeLanguagesServerToClient();
-        serializeFirstKeyExchangePacketFollows();
-        serializeReserved();
+    protected void serializeMessageSpecificContents(
+            KeyExchangeInitMessage object, SerializerStream output) {
+        serializeCookie(object, output);
+        serializeKeyExchangeAlgorithms(object, output);
+        serializeServerHostKeyAlgorithms(object, output);
+        serializeEncryptionAlgorithmsClientToServer(object, output);
+        serializeEncryptionAlgorithmsServerToClient(object, output);
+        serializeMacAlgorithmsClientToServer(object, output);
+        serializeMacAlgorithmsServerToClient(object, output);
+        serializeCompressionMethodsClientToServer(object, output);
+        serializeCompressionMethodsServerToClient(object, output);
+        serializeLanguagesClientToServer(object, output);
+        serializeLanguagesServerToClient(object, output);
+        serializeFirstKeyExchangePacketFollows(object, output);
+        serializeReserved(object, output);
     }
 }

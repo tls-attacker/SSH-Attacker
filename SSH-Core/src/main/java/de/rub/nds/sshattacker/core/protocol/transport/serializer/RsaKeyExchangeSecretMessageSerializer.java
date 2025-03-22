@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,22 +19,20 @@ public class RsaKeyExchangeSecretMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeSecretMessageSerializer(RsaKeyExchangeSecretMessage message) {
-        super(message);
-    }
-
-    private void serializeEncryptedSecret() {
-        LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
-        appendInt(
-                message.getEncryptedSecretLength().getValue(),
-                DataFormatConstants.MPINT_SIZE_LENGTH);
+    private static void serializeEncryptedSecret(
+            RsaKeyExchangeSecretMessage object, SerializerStream output) {
+        Integer encryptedSecretLength = object.getEncryptedSecretLength().getValue();
+        LOGGER.debug("Encrypted secret length: {}", encryptedSecretLength);
+        output.appendInt(encryptedSecretLength);
+        byte[] encryptedSecret = object.getEncryptedSecret().getValue();
         LOGGER.debug(
-                "Encrypted secret: {}", Arrays.toString(message.getEncryptedSecret().getValue()));
-        appendBytes(message.getEncryptedSecret().getValue());
+                "Encrypted secret: {}", () -> ArrayConverter.bytesToRawHexString(encryptedSecret));
+        output.appendBytes(encryptedSecret);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeEncryptedSecret();
+    protected void serializeMessageSpecificContents(
+            RsaKeyExchangeSecretMessage object, SerializerStream output) {
+        serializeEncryptedSecret(object, output);
     }
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -26,16 +26,21 @@ public class HybridKeyExchangeInitMessageParser
         super(array, startPosition);
     }
 
-    private void parsePublicValues() {
-        message.setPublicValuesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Public values length: {}", message.getPublicValuesLength());
-        message.setPublicValues(parseByteArrayField(message.getPublicValuesLength().getValue()));
-        LOGGER.debug("Public values: {}", message.getPublicValues().getValue());
+    private void parseHybridKey() {
+        int length = parseIntField();
+        LOGGER.debug("ConcatenatedHybridKeys Length: {}", length);
+        message.setConcatenatedHybridKeysLength(length);
+
+        byte[] concatenatedHybridKeys = parseByteArrayField(length);
+        LOGGER.debug(
+                "ConcatenatedHybridKeys: {}",
+                () -> ArrayConverter.bytesToRawHexString(concatenatedHybridKeys));
+        message.setConcatenatedHybridKeys(concatenatedHybridKeys);
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parsePublicValues();
+        parseHybridKey();
     }
 
     @Override

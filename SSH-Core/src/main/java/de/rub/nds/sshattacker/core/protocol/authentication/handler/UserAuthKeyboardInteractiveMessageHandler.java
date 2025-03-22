@@ -17,36 +17,24 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthKeyboardInteractiveMessageHandler
         extends SshMessageHandler<UserAuthKeyboardInteractiveMessage> {
 
-    public UserAuthKeyboardInteractiveMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthKeyboardInteractiveMessageHandler(
-            SshContext context, UserAuthKeyboardInteractiveMessage message) {
-        super(context, message);
-    }
-
     // ToDo Handle UserAuthKeyboardInteractive
     @Override
-    public void adjustContext() {}
+    public void adjustContext(SshContext context, UserAuthKeyboardInteractiveMessage object) {}
 
     @Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array) {
+    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthKeyboardInteractiveMessageParser(array);
     }
 
     @Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthKeyboardInteractiveMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthKeyboardInteractiveMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthKeyboardInteractiveMessagePreparator getPreparator() {
-        return new UserAuthKeyboardInteractiveMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthKeyboardInteractiveMessagePreparator PREPARATOR =
+            new UserAuthKeyboardInteractiveMessagePreparator();
 
-    @Override
-    public UserAuthKeyboardInteractiveMessageSerializer getSerializer() {
-        return new UserAuthKeyboardInteractiveMessageSerializer(message);
-    }
+    public static final UserAuthKeyboardInteractiveMessageSerializer SERIALIZER =
+            new UserAuthKeyboardInteractiveMessageSerializer();
 }

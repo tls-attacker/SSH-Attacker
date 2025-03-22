@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ExtensionInfoMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -28,12 +29,36 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements({
-        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = NoFlowControlExtension.class, name = "NoFlowControlExtension"),
         @XmlElement(type = PingExtension.class, name = "PingExtension"),
+        @XmlElement(
+                type = PublicKeyAlgorithmsRoumenPetrovExtension.class,
+                name = "PublicKeyAlgorithmsRoumenPetrovExtension"),
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
-    private List<AbstractExtension<?>> extensions = new ArrayList<>();
+    private ArrayList<AbstractExtension<?>> extensions = new ArrayList<>();
+
+    public ExtensionInfoMessage() {
+        super();
+    }
+
+    public ExtensionInfoMessage(ExtensionInfoMessage other) {
+        super(other);
+        extensionCount = other.extensionCount != null ? other.extensionCount.createCopy() : null;
+        if (other.extensions != null) {
+            extensions = new ArrayList<>(other.extensions.size());
+            for (AbstractExtension<?> item : other.extensions) {
+                extensions.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ExtensionInfoMessage createCopy() {
+        return new ExtensionInfoMessage(this);
+    }
 
     public ModifiableInteger getExtensionCount() {
         return extensionCount;
@@ -48,15 +73,16 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
                 ModifiableVariableFactory.safelySetValue(this.extensionCount, extensionCount);
     }
 
-    public List<AbstractExtension<?>> getExtensions() {
+    public ArrayList<AbstractExtension<?>> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<AbstractExtension<?>> extensions) {
+    public void setExtensions(ArrayList<AbstractExtension<?>> extensions) {
         setExtensions(extensions, false);
     }
 
-    public void setExtensions(List<AbstractExtension<?>> extensions, boolean adjustLengthField) {
+    public void setExtensions(
+            ArrayList<AbstractExtension<?>> extensions, boolean adjustLengthField) {
         if (adjustLengthField) {
             setExtensionCount(extensions.size());
         }
@@ -64,18 +90,41 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     }
 
     public void addExtension(AbstractExtension<?> extension) {
+        addExtension(extension, false);
+    }
+
+    public void addExtension(AbstractExtension<?> extension, boolean adjustLengthField) {
         extensions.add(extension);
     }
 
+    public static final ExtensionInfoMessageHandler HANDLER = new ExtensionInfoMessageHandler();
+
     @Override
-    public ExtensionInfoMessageHandler getHandler(SshContext context) {
-        return new ExtensionInfoMessageHandler(context, this);
+    public ExtensionInfoMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ExtensionInfoMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ExtensionInfoMessageHandler.SERIALIZER.serialize(this);
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.addAll(extensions);
+        if (extensions != null) {
+            holders.addAll(extensions);
+        }
         return holders;
     }
 }

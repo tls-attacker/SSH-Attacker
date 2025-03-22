@@ -8,11 +8,15 @@
 package de.rub.nds.sshattacker.core.protocol.connection;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
+import de.rub.nds.sshattacker.core.exceptions.ChannelManagerException;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,14 +24,20 @@ import org.apache.logging.log4j.Logger;
 public class ChannelManager {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final HashMap<Integer, Channel> channels = new HashMap<>();
+
+    // Open channels accessible via remote channel number (recipient channel ID for outgoing
+    // messages)
+    private final HashMap<Integer, Channel> channelsByRemoteId = new HashMap<>();
+    // Open channels accessible via local channel number (recipient channel ID of incoming messages)
+    private final HashMap<Integer, Channel> channelsByLocalId = new HashMap<>();
+
+    // Pending channels that were requested (by the client) but not confirmed
+    private final HashMap<Integer, Channel> pendingChannelsByLocalId = new HashMap<>();
 
     private final SshContext context;
 
     private final List<ChannelOpenConfirmationMessage> pendingChannelOpenConfirmations =
             new LinkedList<>();
-
-    private final List<ChannelMessage<?>> channelRequestResponseQueue = new LinkedList<>();
 
     public ChannelManager(SshContext context) {
         super();
@@ -44,7 +54,7 @@ public class ChannelManager {
      */
     private int findUnusedChannelId() {
         return IntStream.iterate(0, i -> i + 1)
-                .filter(i -> channels.get(i) == null)
+                .filter(i -> channelsByLocalId.get(i) == null)
                 .findFirst()
                 .orElseThrow(); // should never occur with infinite stream
     }
@@ -68,8 +78,9 @@ public class ChannelManager {
         if (!pendingChannelOpenConfirmations.isEmpty()) {
             return pendingChannelOpenConfirmations.removeFirst();
         }
+        // Create a new ChannelOpenConfirmationMessage, that is not a reply to a ChannelOpenMessage
         ChannelOpenConfirmationMessage fresh = new ChannelOpenConfirmationMessage();
-        guessChannelByReceivedMessages()
+        getChannelByReceivedRequestThatWantReply()
                 .ifPresentOrElse(
                         channel -> {
                             fresh.setSenderChannelId(channel.getLocalChannelId());
@@ -80,12 +91,88 @@ public class ChannelManager {
                                     "Failed to guess channel, setting sender and receiver channel IDs to 0!");
                             fresh.setSenderChannelId(0);
                             fresh.setRecipientChannelId(0);
+                            createNewChannelFromDefaults(0, 0);
                         });
         return fresh;
     }
 
-    public HashMap<Integer, Channel> getChannels() {
-        return channels;
+    public Channel getChannelByRemoteId(Integer remoteId) {
+        return channelsByRemoteId.get(remoteId);
+    }
+
+    public Channel getChannelByLocalId(Integer localId) {
+        return channelsByLocalId.get(localId);
+    }
+
+    public Channel removeChannelByRemoteId(Integer remoteId) {
+        Channel channelRemoved = channelsByRemoteId.remove(remoteId);
+        if (channelRemoved != null) {
+            channelsByLocalId.remove(channelRemoved.getLocalChannelId().getValue());
+        }
+        return channelRemoved;
+    }
+
+    public Channel removeChannelByLocalId(Integer remoteId) {
+        Channel channelRemoved = channelsByLocalId.remove(remoteId);
+        if (channelRemoved != null) {
+            channelsByRemoteId.remove(channelRemoved.getRemoteChannelId().getValue());
+        }
+        return channelRemoved;
+    }
+
+    public void addChannel(Channel channel) {
+        if (channel.getRemoteChannelId().getValue() == null
+                || channel.getLocalChannelId().getValue() == null) {
+            throw new ChannelManagerException(
+                    "Channel cannot be managed. Either the local or remote channel ID is not set");
+        }
+        channelsByRemoteId.put(channel.getRemoteChannelId().getValue(), channel);
+        channelsByLocalId.put(channel.getLocalChannelId().getValue(), channel);
+    }
+
+    public boolean containsChannelWithLocalId(Integer localId) {
+        return channelsByLocalId.containsKey(localId);
+    }
+
+    public boolean containsChannelWithRemoteId(Integer remoteId) {
+        return channelsByRemoteId.containsKey(remoteId);
+    }
+
+    public Channel getPendingChannelByLocalId(Integer localId) {
+        return pendingChannelsByLocalId.get(localId);
+    }
+
+    public int countChannels() {
+        return channelsByLocalId.size();
+    }
+
+    public void addPendingChannel(Channel channel) {
+        if (channel.getLocalChannelId().getValue() == null) {
+            throw new ChannelManagerException(
+                    "Pending channel cannot have an empty local channel ID");
+        }
+        pendingChannelsByLocalId.put(channel.getLocalChannelId().getValue(), channel);
+    }
+
+    public Channel removePendingChannelByLocalId(Integer localId) {
+        return pendingChannelsByLocalId.remove(localId);
+    }
+
+    public Channel removePendingChannel(Channel channel) {
+        return pendingChannelsByLocalId.remove(channel.getLocalChannelId().getValue());
+    }
+
+    public boolean containsPendingChannelWithLocalId(Integer localId) {
+        return pendingChannelsByLocalId.containsKey(localId);
+    }
+
+    public int countPendingChannels() {
+        return pendingChannelsByLocalId.size();
+    }
+
+    public void confirmPendingChannel(Channel channel) {
+        removePendingChannel(channel);
+        addChannel(channel);
     }
 
     /**
@@ -95,11 +182,11 @@ public class ChannelManager {
      * @param remoteChannelId the remote channel ID
      * @return the created channel
      */
-    private Channel createNewChannelFromDefaults(int localChannelId, int remoteChannelId) {
+    public Channel createNewChannelFromDefaults(int localChannelId, int remoteChannelId) {
         Channel channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
         channel.setLocalChannelId(localChannelId);
         channel.setRemoteChannelId(remoteChannelId);
-        channels.put(remoteChannelId, channel);
+        addChannel(channel);
         return channel;
     }
 
@@ -112,25 +199,90 @@ public class ChannelManager {
      * @return the created channel
      */
     public Channel createNewChannelFromDefaults(int remoteChannelId) {
-        int localChannelId = findUnusedChannelId();
-        return createNewChannelFromDefaults(localChannelId, remoteChannelId);
+        return createNewChannelFromDefaults(findUnusedChannelId(), remoteChannelId);
     }
 
-    public Optional<Channel> guessChannelByReceivedMessages() {
-        if (!channelRequestResponseQueue.isEmpty()) {
-            ChannelMessage<?> message = channelRequestResponseQueue.removeFirst();
-            for (Integer object : channels.keySet()) {
-                if (Objects.equals(
-                        channels.get(object).getLocalChannelId().getValue(),
-                        message.getRecipientChannelId().getValue())) {
-                    return Optional.ofNullable(channels.get(object));
-                }
+    /**
+     * Create a new pending channel from the configured defaults and add it to the pending channel
+     * map. This channel is not yet confirmed, so it does not have a remote channel ID (recipient
+     * Channel ID)
+     *
+     * @param localChannelId the local channel ID
+     * @return the created pending channel
+     */
+    public Channel createPrendingChannel(int localChannelId) {
+        Channel channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+        channel.setLocalChannelId(localChannelId);
+        addPendingChannel(channel);
+        return channel;
+    }
+
+    /**
+     * Create a new pending channel from the configured defaults and add it to the pending channel
+     * map. This channel is not yet confirmed, so it does not have a remote channel ID (recipient
+     * Channel ID)
+     *
+     * <p>This is a convenience method that selects the next free local channel ID automatically.
+     *
+     * @return the created pending channel
+     */
+    public Channel createPrendingChannel() {
+        return createPrendingChannel(findUnusedChannelId());
+    }
+
+    /**
+     * Remove the "first" request received on any channel, that wants a reply, and return it or
+     * return none if there are no more requests in the queue.
+     *
+     * @return ChannelRequestMessage
+     */
+    public ChannelRequestMessage<?> removeFirstReceivedRequestThatWantReply() {
+        for (Channel channel : channelsByLocalId.values()) {
+            ChannelRequestMessage<?> firstRequest =
+                    channel.removeFirstReceivedRequestThatWantReply();
+            if (firstRequest != null) {
+                return firstRequest;
             }
         }
-        return channels.values().stream().findFirst();
+        return null;
     }
 
-    public void addToChannelRequestResponseQueue(ChannelMessage<?> message) {
-        channelRequestResponseQueue.add(message);
+    /**
+     * Return a channel on which a received request wants reply, or return none.
+     *
+     * <p>Also removes the ChannelRequestMessage from the queue
+     *
+     * @return channel
+     */
+    public Optional<Channel> getChannelByReceivedRequestThatWantReply() {
+        ChannelRequestMessage<?> message = removeFirstReceivedRequestThatWantReply();
+        if (message != null) {
+            Optional.ofNullable(channelsByLocalId.get(message.getRecipientChannelId().getValue()));
+        }
+        return Optional.empty();
+    }
+
+    public void addReceivedRequestThatWantsReply(ChannelRequestMessage<?> message) {
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        if (channelsByLocalId.containsKey(recipientChannelId)) {
+            channelsByLocalId.get(recipientChannelId).addReceivedRequestThatWantsReply(message);
+        } else {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, ignoring it.",
+                    message.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+        }
+    }
+
+    public void addSentRequestThatWantsReply(ChannelRequestMessage<?> message) {
+        Integer recipientChannelId = message.getRecipientChannelId().getValue();
+        if (channelsByRemoteId.containsKey(recipientChannelId)) {
+            channelsByRemoteId.get(recipientChannelId).addSentRequestsThatWantsReply(message);
+        } else {
+            LOGGER.warn(
+                    "{} sent but no channel with remote id {} found, ignoring it.",
+                    message.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+        }
     }
 }

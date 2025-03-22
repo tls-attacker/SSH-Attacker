@@ -15,16 +15,16 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestExitSignalMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestExitSignalMessage> {
 
-    public ChannelRequestExitSignalMessagePreparator(
-            Chooser chooser, ChannelRequestExitSignalMessage message) {
-        super(chooser, message, ChannelRequestType.EXIT_SIGNAL);
+    public ChannelRequestExitSignalMessagePreparator() {
+        super(ChannelRequestType.EXIT_SIGNAL, false);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setSignalName(SignalType.SIGINT, true);
-        getObject().setCoreDump(false);
-        getObject().setErrorMessage("", true);
-        getObject().setLanguageTag("", true);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestExitSignalMessage object, Chooser chooser) {
+        object.setSignalName(SignalType.SIGINT, true);
+        object.setCoreDump(false);
+        object.setErrorMessage("", true);
+        object.setLanguageTag("", true);
     }
 }

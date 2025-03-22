@@ -14,15 +14,17 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelOpenFailureMessagePreparator
         extends ChannelMessagePreparator<ChannelOpenFailureMessage> {
 
-    public ChannelOpenFailureMessagePreparator(Chooser chooser, ChannelOpenFailureMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
+    public ChannelOpenFailureMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents() {
+    protected void prepareChannelMessageSpecificContents(
+            ChannelOpenFailureMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        getObject().setReasonCode(Integer.MAX_VALUE);
-        getObject().setReason("", true);
-        getObject().setLanguageTag("", true);
+        object.setReasonCode(Integer.MAX_VALUE);
+
+        object.setReason("", true);
+        object.setLanguageTag("", true);
     }
 }

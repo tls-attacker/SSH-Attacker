@@ -14,12 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthUnknownMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthUnknownMessage> {
 
-    public UserAuthUnknownMessagePreparator(Chooser chooser, UserAuthUnknownMessage message) {
-        super(chooser, message, AuthenticationMethod.NONE);
+    public UserAuthUnknownMessagePreparator() {
+        super(AuthenticationMethod.NONE);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
-        getObject().setMethodSpecificFields(new byte[0]);
+    protected void prepareUserAuthRequestSpecificContents(
+            UserAuthUnknownMessage object, Chooser chooser) {
+        object.setMethodSpecificFields(new byte[10]);
     }
 }

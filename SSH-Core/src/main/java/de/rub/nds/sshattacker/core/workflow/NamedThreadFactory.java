@@ -23,8 +23,8 @@ public class NamedThreadFactory implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(Runnable r) {
-        Thread newThread = Executors.defaultThreadFactory().newThread(r);
+    public Thread newThread(Runnable runnable) {
+        Thread newThread = Executors.defaultThreadFactory().newThread(runnable);
         newThread.setName(prefix + "-" + number);
         number++;
         return newThread;

@@ -7,49 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestBreakMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestBreakMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestBreakMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestBreakMessageHandler
-        extends SshMessageHandler<ChannelRequestBreakMessage> {
-    public ChannelRequestBreakMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestBreakMessageHandler(
-            SshContext context, ChannelRequestBreakMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestBreakMessage> {
 
     @Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array) {
+    public ChannelRequestBreakMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestBreakMessageParser(array);
     }
 
     @Override
-    public ChannelRequestBreakMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestBreakMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestBreakMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestBreakMessagePreparator getPreparator() {
-        return new ChannelRequestBreakMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestBreakMessagePreparator PREPARATOR =
+            new ChannelRequestBreakMessagePreparator();
 
-    @Override
-    public ChannelRequestBreakMessageSerializer getSerializer() {
-        return new ChannelRequestBreakMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
+    public static final ChannelRequestBreakMessageSerializer SERIALIZER =
+            new ChannelRequestBreakMessageSerializer();
 }

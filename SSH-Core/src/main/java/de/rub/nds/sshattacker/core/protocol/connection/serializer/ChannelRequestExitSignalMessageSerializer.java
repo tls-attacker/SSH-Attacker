@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
-import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,46 +20,50 @@ public class ChannelRequestExitSignalMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitSignalMessageSerializer(ChannelRequestExitSignalMessage message) {
-        super(message);
+    private static void serializeSignalName(
+            ChannelRequestExitSignalMessage object, SerializerStream output) {
+        Integer signalNameLength = object.getSignalNameLength().getValue();
+        LOGGER.debug("Signal name length: {}", signalNameLength);
+        output.appendInt(signalNameLength);
+        String signalName = object.getSignalName().getValue();
+        LOGGER.debug("Signal name: {}", () -> backslashEscapeString(signalName));
+        output.appendString(signalName, StandardCharsets.UTF_8);
     }
 
-    public void serializeSignalName() {
-        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
-        appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
-        appendString(message.getSignalName().getValue(), StandardCharsets.UTF_8);
+    private static void serializeCoreDump(
+            ChannelRequestExitSignalMessage object, SerializerStream output) {
+        byte coreDump = object.getCoreDump().getValue();
+        LOGGER.debug("Core dumped:{}", coreDump);
+        output.appendByte(coreDump);
     }
 
-    public void serializeCoreDump() {
-        LOGGER.debug("Core dumped:{}", message.getCoreDump().getValue());
-        appendByte(Converter.booleanToByte(message.getCoreDump().getValue()));
+    private static void serializeErrorMessage(
+            ChannelRequestExitSignalMessage object, SerializerStream output) {
+        Integer errorMessageLength = object.getErrorMessageLength().getValue();
+        LOGGER.debug("Error message length: {}", errorMessageLength);
+        output.appendInt(errorMessageLength);
+        String errorMessage = object.getErrorMessage().getValue();
+        LOGGER.debug("Error message: {}", () -> backslashEscapeString(errorMessage));
+        output.appendString(errorMessage, StandardCharsets.UTF_8);
     }
 
-    public void serializeErrorMessage() {
-        LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
-        appendInt(
-                message.getErrorMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Error message: {}", backslashEscapeString(message.getErrorMessage().getValue()));
-        appendString(message.getErrorMessage().getValue(), StandardCharsets.UTF_8);
-    }
-
-    private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeLanguageTag(
+            ChannelRequestExitSignalMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        output.appendInt(languageTagLength);
+        String languageTag = object.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        output.appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSignalName();
-        serializeCoreDump();
-        serializeErrorMessage();
-        serializeLanguageTag();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestExitSignalMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSignalName(object, output);
+        serializeCoreDump(object, output);
+        serializeErrorMessage(object, output);
+        serializeLanguageTag(object, output);
     }
 }

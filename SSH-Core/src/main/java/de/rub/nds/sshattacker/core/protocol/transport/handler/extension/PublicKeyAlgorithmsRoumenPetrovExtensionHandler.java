@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.PublicKeyAlgorithmsRoumenPetrovExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.PublicKeyAlgorithmsRoumenPetrovExtensionPreparator;
@@ -21,17 +19,10 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
         extends AbstractExtensionHandler<PublicKeyAlgorithmsRoumenPetrovExtension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private SshContext context;
-
-    public PublicKeyAlgorithmsRoumenPetrovExtensionHandler(
-            SshContext context, PublicKeyAlgorithmsRoumenPetrovExtension extension) {
-        super(context, extension);
-        this.context = context;
-    }
 
     @Override
-    public void adjustContext() {
-        String acceptedAlgorithms = this.extension.getAcceptedPublicKeyAlgorithms().getValue();
+    public void adjustContext(SshContext context, PublicKeyAlgorithmsRoumenPetrovExtension object) {
+        String acceptedAlgorithms = object.getPublicKeyAlgorithms().getValue();
 
         if (acceptedAlgorithms != null) {
             LOGGER.debug(
@@ -44,24 +35,20 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionHandler
     }
 
     @Override
-    public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(byte[] array) {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array, 0);
+    public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(
+            byte[] array, SshContext context) {
+        return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array);
     }
 
     @Override
     public PublicKeyAlgorithmsRoumenPetrovExtensionParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new PublicKeyAlgorithmsRoumenPetrovExtensionParser(array, startPosition);
     }
 
-    @Override
-    public Preparator<PublicKeyAlgorithmsRoumenPetrovExtension> getPreparator() {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionPreparator(
-                context.getChooser(), extension);
-    }
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionPreparator PREPARATOR =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionPreparator();
 
-    @Override
-    public Serializer<PublicKeyAlgorithmsRoumenPetrovExtension> getSerializer() {
-        return new PublicKeyAlgorithmsRoumenPetrovExtensionSerializer(extension);
-    }
+    public static final PublicKeyAlgorithmsRoumenPetrovExtensionSerializer SERIALIZER =
+            new PublicKeyAlgorithmsRoumenPetrovExtensionSerializer();
 }

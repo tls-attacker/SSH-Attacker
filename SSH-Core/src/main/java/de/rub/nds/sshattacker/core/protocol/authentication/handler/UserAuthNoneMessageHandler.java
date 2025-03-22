@@ -11,41 +11,30 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneM
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthNoneMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthNoneMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthNoneMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMessage> {
 
-    public UserAuthNoneMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthNoneMessageHandler(SshContext context, UserAuthNoneMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthNoneMessage object) {
         // TODO: Handle UserAuthNoneMessage
     }
 
     @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array) {
+    public UserAuthNoneMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthNoneMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array, int startPosition) {
+    public UserAuthNoneMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthNoneMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthNoneMessagePreparator getPreparator() {
-        return new UserAuthNoneMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthNoneMessagePreparator PREPARATOR =
+            new UserAuthNoneMessagePreparator();
 
-    @Override
-    public UserAuthNoneMessageSerializer getSerializer() {
-        return new UserAuthNoneMessageSerializer(message);
-    }
+    public static final UserAuthNoneMessageSerializer SERIALIZER =
+            new UserAuthNoneMessageSerializer();
 }

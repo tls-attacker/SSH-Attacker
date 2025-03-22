@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
@@ -34,23 +34,21 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     }
 
     private void parsePubkey() {
-        message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
-        message.setPubkey(
-                parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey: {}", backslashEscapeString(message.getPubkey().getValue()));
+        int pubkeyLength = parseIntField();
+        message.setPubkeyLength(pubkeyLength);
+        LOGGER.debug("Pubkey length: {}", pubkeyLength);
+        byte[] pubkey = parseByteArrayField(pubkeyLength);
+        message.setPubkey(pubkey);
+        LOGGER.debug("Pubkey: {}", () -> ArrayConverter.bytesToRawHexString(pubkey));
     }
 
     private void parsePubkeyAlgName() {
-        message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
-        message.setPubkeyAlgName(
-                parseByteString(
-                        message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Pubkey algorithm name: {}",
-                backslashEscapeString(message.getPubkeyAlgName().getValue()));
+        int pubkeyAlgNameLength = parseIntField();
+        message.setPubkeyAlgNameLength(pubkeyAlgNameLength);
+        LOGGER.debug("Pubkey algorithm name length: {}", pubkeyAlgNameLength);
+        String pubkeyAlgName = parseByteString(pubkeyAlgNameLength, StandardCharsets.US_ASCII);
+        message.setPubkeyAlgName(pubkeyAlgName);
+        LOGGER.debug("Pubkey algorithm name: {}", () -> backslashEscapeString(pubkeyAlgName));
     }
 
     @Override

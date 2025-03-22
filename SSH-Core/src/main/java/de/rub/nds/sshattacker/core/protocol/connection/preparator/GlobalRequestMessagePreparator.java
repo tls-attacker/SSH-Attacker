@@ -17,23 +17,26 @@ public abstract class GlobalRequestMessagePreparator<T extends GlobalRequestMess
         extends SshMessagePreparator<T> {
 
     private final String globalRequestType;
+    private final boolean wantReply;
 
     protected GlobalRequestMessagePreparator(
-            Chooser chooser, T message, GlobalRequestType globalRequestType) {
-        this(chooser, message, globalRequestType.toString());
+            GlobalRequestType globalRequestType, boolean wantReply) {
+        this(globalRequestType.toString(), wantReply);
     }
 
-    protected GlobalRequestMessagePreparator(Chooser chooser, T message, String globalRequestType) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
+    protected GlobalRequestMessagePreparator(String globalRequestType, boolean wantReply) {
+        super(MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
         this.globalRequestType = globalRequestType;
+        this.wantReply = wantReply;
     }
 
     @Override
-    public final void prepareMessageSpecificContents() {
-        getObject().setRequestName(globalRequestType, true);
-        getObject().setWantReply((byte) 0x00);
-        prepareGlobalRequestMessageSpecificContents();
+    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+        // Always set correct request name -> Don't use soft set
+        object.setRequestName(globalRequestType, true);
+        object.setWantReply(wantReply);
+        prepareGlobalRequestMessageSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareGlobalRequestMessageSpecificContents();
+    protected abstract void prepareGlobalRequestMessageSpecificContents(T object, Chooser chooser);
 }

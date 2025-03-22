@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PublicKeyAlgorithmsRoumenPetrovExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,25 +20,24 @@ public class PublicKeyAlgorithmsRoumenPetrovExtensionSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PublicKeyAlgorithmsRoumenPetrovExtensionSerializer(
-            PublicKeyAlgorithmsRoumenPetrovExtension extension) {
-        super(extension);
-    }
-
     @Override
-    protected void serializeExtensionValue() {
-        LOGGER.debug("Serializing PublicKeyAlgorithmsRoumenPetrovExtension...");
-        serializePublicKeyAlgorithmsLength();
-        serializePublicKeyAlgorithms();
+    protected void serializeExtensionValue(
+            PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
+        serializePublicKeyAlgorithmsLength(object, output);
+        serializePublicKeyAlgorithms(object, output);
     }
 
-    private void serializePublicKeyAlgorithmsLength() {
-        appendInt(
-                extension.getPublicKeyAlgorithmsLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializePublicKeyAlgorithmsLength(
+            PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
+        Integer publicKeyAlgorithmsLength = object.getPublicKeyAlgorithmsLength().getValue();
+        LOGGER.debug("Public key algorithms length: {}", publicKeyAlgorithmsLength);
+        output.appendInt(publicKeyAlgorithmsLength);
     }
 
-    private void serializePublicKeyAlgorithms() {
-        appendString(extension.getPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+    private static void serializePublicKeyAlgorithms(
+            PublicKeyAlgorithmsRoumenPetrovExtension object, SerializerStream output) {
+        String publicKeyAlgorithms = object.getPublicKeyAlgorithms().getValue();
+        LOGGER.debug("Public key algorithms: {}", () -> backslashEscapeString(publicKeyAlgorithms));
+        output.appendString(publicKeyAlgorithms, StandardCharsets.US_ASCII);
     }
 }

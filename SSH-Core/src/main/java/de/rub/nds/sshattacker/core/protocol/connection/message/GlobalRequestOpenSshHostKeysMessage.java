@@ -15,12 +15,27 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestOpenSshHostKeysMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class GlobalRequestOpenSshHostKeysMessage
         extends GlobalRequestMessage<GlobalRequestOpenSshHostKeysMessage> {
 
     private ModifiableByteArray hostKeys;
+
+    public GlobalRequestOpenSshHostKeysMessage() {
+        super();
+    }
+
+    public GlobalRequestOpenSshHostKeysMessage(GlobalRequestOpenSshHostKeysMessage other) {
+        super(other);
+        hostKeys = other.hostKeys != null ? other.hostKeys.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestOpenSshHostKeysMessage createCopy() {
+        return new GlobalRequestOpenSshHostKeysMessage(this);
+    }
 
     public ModifiableByteArray getHostKeys() {
         return hostKeys;
@@ -39,9 +54,27 @@ public class GlobalRequestOpenSshHostKeysMessage
                 ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
     }
 
+    public static final GlobalRequestOpenSshHostKeysMessageHandler HANDLER =
+            new GlobalRequestOpenSshHostKeysMessageHandler();
+
     @Override
-    public GlobalRequestOpenSshHostKeysMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestOpenSshHostKeysMessageHandler(context, this);
+    public GlobalRequestOpenSshHostKeysMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestOpenSshHostKeysMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestOpenSshHostKeysMessageHandler.SERIALIZER.serialize(this);
     }
 
     /**

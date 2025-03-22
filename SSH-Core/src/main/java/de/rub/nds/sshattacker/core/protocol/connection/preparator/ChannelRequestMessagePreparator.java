@@ -16,24 +16,26 @@ public abstract class ChannelRequestMessagePreparator<T extends ChannelRequestMe
         extends ChannelMessagePreparator<T> {
 
     private final String channelRequestType;
+    private final boolean wantReply;
 
     protected ChannelRequestMessagePreparator(
-            Chooser chooser, T message, ChannelRequestType channelRequestType) {
-        this(chooser, message, channelRequestType.toString());
+            ChannelRequestType channelRequestType, boolean wantReply) {
+        this(channelRequestType.toString(), wantReply);
     }
 
-    protected ChannelRequestMessagePreparator(
-            Chooser chooser, T message, String channelRequestType) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
+    protected ChannelRequestMessagePreparator(String channelRequestType, boolean wantReply) {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
         this.channelRequestType = channelRequestType;
+        this.wantReply = wantReply;
     }
 
     @Override
-    protected final void prepareChannelMessageSpecificContents() {
-        getObject().setRequestType(channelRequestType, true);
-        getObject().setWantReply(false);
-        prepareChannelRequestMessageSpecificContents();
+    protected final void prepareChannelMessageSpecificContents(T object, Chooser chooser) {
+        // Always set correct channel request type -> Don't use soft set
+        object.setRequestType(channelRequestType, true);
+        object.setWantReply(wantReply);
+        prepareChannelRequestMessageSpecificContents(object, chooser);
     }
 
-    protected abstract void prepareChannelRequestMessageSpecificContents();
+    protected abstract void prepareChannelRequestMessageSpecificContents(T object, Chooser chooser);
 }

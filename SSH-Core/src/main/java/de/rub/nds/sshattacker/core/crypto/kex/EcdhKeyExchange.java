@@ -9,7 +9,10 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import de.rub.nds.sshattacker.core.crypto.ec.*;
+import de.rub.nds.sshattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.sshattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.sshattacker.core.crypto.ec.Point;
+import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
@@ -89,6 +92,6 @@ public class EcdhKeyExchange
         sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 }

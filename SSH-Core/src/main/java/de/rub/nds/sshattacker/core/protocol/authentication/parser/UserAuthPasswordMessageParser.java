@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -33,24 +32,27 @@ public class UserAuthPasswordMessageParser
     }
 
     private void parseChangePassword() {
-        message.setChangePassword(parseByteField(1));
-        LOGGER.debug("Change password: {}", message.getChangePassword().getValue());
+        byte changePassword = parseByteField();
+        message.setChangePassword(changePassword);
+        LOGGER.debug("Change password: {}", changePassword);
     }
 
     private void parsePassword() {
-        message.setPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Password length: {}", message.getPasswordLength().getValue());
-        message.setPassword(
-                parseByteString(message.getPasswordLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Password: {}", message.getPassword().getValue());
+        int passwordLength = parseIntField();
+        message.setPasswordLength(passwordLength);
+        LOGGER.debug("Password length: {}", passwordLength);
+        String password = parseByteString(passwordLength, StandardCharsets.UTF_8);
+        message.setPassword(password);
+        LOGGER.debug("Password: {}", password);
     }
 
     private void parseNewPassword() {
-        message.setNewPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("New password length: {}", message.getNewPasswordLength().getValue());
-        message.setNewPassword(
-                parseByteString(message.getNewPasswordLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("New password: {}", message.getNewPassword().getValue());
+        int newPasswordLength = parseIntField();
+        message.setNewPasswordLength(newPasswordLength);
+        LOGGER.debug("New password length: {}", newPasswordLength);
+        String newPassword = parseByteString(newPasswordLength, StandardCharsets.UTF_8);
+        message.setNewPassword(newPassword);
+        LOGGER.debug("New password: {}", newPassword);
     }
 
     @Override

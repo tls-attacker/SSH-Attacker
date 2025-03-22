@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage> {
@@ -26,6 +27,27 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     private ModifiableByte useSignature;
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public UserAuthPubkeyMessage() {
+        super();
+    }
+
+    public UserAuthPubkeyMessage(UserAuthPubkeyMessage other) {
+        super(other);
+        pubkeyLength = other.pubkeyLength != null ? other.pubkeyLength.createCopy() : null;
+        pubkey = other.pubkey != null ? other.pubkey.createCopy() : null;
+        pubkeyAlgNameLength =
+                other.pubkeyAlgNameLength != null ? other.pubkeyAlgNameLength.createCopy() : null;
+        pubkeyAlgName = other.pubkeyAlgName != null ? other.pubkeyAlgName.createCopy() : null;
+        useSignature = other.useSignature != null ? other.useSignature.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPubkeyMessage createCopy() {
+        return new UserAuthPubkeyMessage(this);
+    }
 
     public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength =
@@ -153,8 +175,25 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return signature;
     }
 
+    public static final UserAuthPubkeyMessageHandler HANDLER = new UserAuthPubkeyMessageHandler();
+
     @Override
-    public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
-        return new UserAuthPubkeyMessageHandler(context, this);
+    public UserAuthPubkeyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPubkeyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPubkeyMessageHandler.SERIALIZER.serialize(this);
     }
 }

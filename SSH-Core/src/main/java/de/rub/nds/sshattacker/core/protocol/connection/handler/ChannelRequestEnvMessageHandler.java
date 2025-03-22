@@ -7,48 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestEnvMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestEnvMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestEnvMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRequestEnvMessage> {
-
-    public ChannelRequestEnvMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestEnvMessageHandler(SshContext context, ChannelRequestEnvMessage message) {
-        super(context, message);
-    }
+public class ChannelRequestEnvMessageHandler
+        extends ChannelRequestMessageHandler<ChannelRequestEnvMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array) {
+    public ChannelRequestEnvMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestEnvMessageParser(array);
     }
 
     @Override
-    public ChannelRequestEnvMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestEnvMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestEnvMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestEnvMessagePreparator getPreparator() {
-        return new ChannelRequestEnvMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestEnvMessagePreparator PREPARATOR =
+            new ChannelRequestEnvMessagePreparator();
 
-    @Override
-    public ChannelRequestEnvMessageSerializer getSerializer() {
-        return new ChannelRequestEnvMessageSerializer(message);
-    }
+    public static final ChannelRequestEnvMessageSerializer SERIALIZER =
+            new ChannelRequestEnvMessageSerializer();
 }

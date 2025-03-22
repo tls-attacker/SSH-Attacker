@@ -13,13 +13,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestUnknownMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestUnknownMessage> {
 
-    public GlobalRequestUnknownMessagePreparator(
-            Chooser chooser, GlobalRequestUnknownMessage message) {
-        super(chooser, message, "");
+    public GlobalRequestUnknownMessagePreparator() {
+        super("hello-from@ssh-attacker.de", true);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
-        getObject().setTypeSpecificData(new byte[0]);
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestUnknownMessage object, Chooser chooser) {
+        object.setTypeSpecificData(new byte[10]);
     }
 }

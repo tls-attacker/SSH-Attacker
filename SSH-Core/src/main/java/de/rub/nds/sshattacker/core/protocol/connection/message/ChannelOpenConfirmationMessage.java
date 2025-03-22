@@ -9,14 +9,33 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger senderChannelId;
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
+
+    public ChannelOpenConfirmationMessage() {
+        super();
+    }
+
+    public ChannelOpenConfirmationMessage(ChannelOpenConfirmationMessage other) {
+        super(other);
+        senderChannelId = other.senderChannelId != null ? other.senderChannelId.createCopy() : null;
+        windowSize = other.windowSize != null ? other.windowSize.createCopy() : null;
+        packetSize = other.packetSize != null ? other.packetSize.createCopy() : null;
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessage createCopy() {
+        return new ChannelOpenConfirmationMessage(this);
+    }
 
     public ModifiableInteger getSenderChannelId() {
         return senderChannelId;
@@ -26,9 +45,9 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         this.senderChannelId = senderChannelId;
     }
 
-    public void setSenderChannelId(int modSenderChannel) {
-        senderChannelId =
-                ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
+    public void setSenderChannelId(int senderChannelId) {
+        this.senderChannelId =
+                ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
     }
 
     public ModifiableInteger getWindowSize() {
@@ -55,8 +74,31 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
     }
 
+    public static final ChannelOpenConfirmationMessageHandler HANDLER =
+            new ChannelOpenConfirmationMessageHandler();
+
     @Override
-    public ChannelOpenConfirmationMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenConfirmationMessageHandler(context, this);
+    public ChannelOpenConfirmationMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenConfirmationMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenConfirmationMessageHandler.SERIALIZER.serialize(this);
     }
 }

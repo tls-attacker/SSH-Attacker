@@ -7,19 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509XCurvePublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import jakarta.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,8 +32,9 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
     public SshPublicKey<CustomX509XCurvePublicKey, ?> parse() {
         try {
             // Start parsing the certificate dynamically based on the ASN.1 structure
-            int startIndex = findX509StartIndex(getArray());
-            X509Certificate cert = extractCertificateWithBC(getArray(), startIndex);
+            int startIndex = PublicKeyParserHelper.findX509StartIndex(getArray());
+            X509Certificate cert =
+                    PublicKeyParserHelper.extractCertificate(getArray(), startIndex, true);
             PublicKey publicKey = cert.getPublicKey();
 
             // Falls der Key Ed25519 oder Ed448 ist
@@ -71,28 +69,28 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
                 // X.509-Extensions
                 byte[] authorityKeyIdentifier = cert.getExtensionValue("2.5.29.35");
                 if (authorityKeyIdentifier != null) {
-                    String authorityKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(authorityKeyIdentifier);
-                    LOGGER.debug("Parsed Authority Key Identifier: {}", authorityKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Authority Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(authorityKeyIdentifier));
                 }
 
                 byte[] subjectKeyIdentifier = cert.getExtensionValue("2.5.29.14");
                 if (subjectKeyIdentifier != null) {
-                    String subjectKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(subjectKeyIdentifier);
-                    LOGGER.debug("Parsed Subject Key Identifier: {}", subjectKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Subject Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(subjectKeyIdentifier));
                 }
 
                 boolean[] keyUsage = cert.getKeyUsage();
                 if (keyUsage != null) {
-                    LOGGER.debug("Parsed Key Usage: {}", keyUsage);
+                    LOGGER.debug("Parsed Key Usage:");
                     for (int i = 0; i < keyUsage.length; i++) {
                         LOGGER.debug("  Key Usage {}: {}", i, keyUsage[i]);
                     }
                 }
 
                 // Set Extensions
-                Map<String, String> extensionsMap = new HashMap<>();
+                HashMap<String, String> extensionsMap = new HashMap<>();
                 if (authorityKeyIdentifier != null) {
                     extensionsMap.put(
                             "AuthorityKeyIdentifier", Arrays.toString(authorityKeyIdentifier));
@@ -124,33 +122,8 @@ public class X509XCurvePublicKeyParser extends Parser<SshPublicKey<CustomX509XCu
         }
     }
 
-    // Find offset for start of ASN.1-block
-    private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
-        int startIndex = 8; // SSH-Header überspringen
-        while (startIndex < encodedPublicKeyBytes.length) {
-            if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
-                return startIndex;
-            }
-            startIndex++;
-        }
-        throw new IllegalArgumentException("Konnte Start des X.509 Zertifikats nicht finden.");
-    }
-
-    // Extract Certificate with BouncyCastle
-    private X509Certificate extractCertificateWithBC(byte[] encodedCertificateBytes, int startIndex)
-            throws Exception {
-        ByteArrayInputStream certInputStream =
-                new ByteArrayInputStream(
-                        encodedCertificateBytes,
-                        startIndex,
-                        encodedCertificateBytes.length - startIndex);
-        CertificateFactory certFactory =
-                CertificateFactory.getInstance("X.509", "BC"); // Force usage of BouncyCastle
-        return (X509Certificate) certFactory.generateCertificate(certInputStream);
-    }
-
     // Find EdDSA-Curve
-    private NamedEcGroup detectEdCurveGroup(String algorithm) {
+    private static NamedEcGroup detectEdCurveGroup(String algorithm) {
         if (algorithm.equalsIgnoreCase("Ed25519")) {
             return NamedEcGroup.CURVE25519;
         } else if (algorithm.equalsIgnoreCase("Ed448")) {

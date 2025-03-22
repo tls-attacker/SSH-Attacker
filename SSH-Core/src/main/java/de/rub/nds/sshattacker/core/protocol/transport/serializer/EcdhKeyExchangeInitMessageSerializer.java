@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,25 +19,21 @@ public class EcdhKeyExchangeInitMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeInitMessageSerializer(EcdhKeyExchangeInitMessage message) {
-        super(message);
-    }
-
-    private void serializeEphemeralPublicKey() {
-        LOGGER.debug(
-                "Ephemeral public key (client) length: {}",
-                message.getEphemeralPublicKeyLength().getValue());
-        appendInt(
-                message.getEphemeralPublicKeyLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeEphemeralPublicKey(
+            EcdhKeyExchangeInitMessage object, SerializerStream output) {
+        Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
+        LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
+        output.appendInt(ephemeralPublicKeyLength);
+        byte[] ephemeralPublicKey = object.getEphemeralPublicKey().getValue();
         LOGGER.debug(
                 "Ephemeral public key (client): {}",
-                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
-        appendBytes(message.getEphemeralPublicKey().getValue());
+                () -> ArrayConverter.bytesToRawHexString(ephemeralPublicKey));
+        output.appendBytes(ephemeralPublicKey);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeEphemeralPublicKey();
+    protected void serializeMessageSpecificContents(
+            EcdhKeyExchangeInitMessage object, SerializerStream output) {
+        serializeEphemeralPublicKey(object, output);
     }
 }

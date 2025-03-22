@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
@@ -17,13 +18,11 @@ public class UnknownMessageSerializer extends SshMessageSerializer<UnknownMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownMessageSerializer(UnknownMessage message) {
-        super(message);
-    }
-
     @Override
-    public void serializeMessageSpecificContents() {
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(message.getPayload()));
-        appendBytes(message.getPayload().getValue());
+    protected void serializeMessageSpecificContents(
+            UnknownMessage object, SerializerStream output) {
+        byte[] payload = object.getPayload().getValue();
+        LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));
+        output.appendBytes(payload);
     }
 }

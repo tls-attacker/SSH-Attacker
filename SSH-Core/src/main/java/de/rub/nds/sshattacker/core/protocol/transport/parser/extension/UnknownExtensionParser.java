@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +31,11 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
 
     @Override
     protected void parseExtensionValue() {
-        extension.setValueLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
-        LOGGER.debug("Extension value: {}", extension.getValue().getValue());
+        int valueLength = parseIntField();
+        extension.setValueLength(valueLength);
+        extension.setValue(parseArrayOrTillEnd(valueLength));
+        LOGGER.debug(
+                "Extension value: {}",
+                () -> ArrayConverter.bytesToRawHexString(extension.getValue().getValue()));
     }
 }

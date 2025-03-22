@@ -9,12 +9,44 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestNoMoreSessionsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestNoMoreSessionsMessage
         extends GlobalRequestMessage<GlobalRequestNoMoreSessionsMessage> {
 
+    public GlobalRequestNoMoreSessionsMessage() {
+        super();
+    }
+
+    public GlobalRequestNoMoreSessionsMessage(GlobalRequestNoMoreSessionsMessage other) {
+        super(other);
+    }
+
     @Override
-    public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestNoMoreSessionsMessageHandler(context, this);
+    public GlobalRequestNoMoreSessionsMessage createCopy() {
+        return new GlobalRequestNoMoreSessionsMessage(this);
+    }
+
+    public static final GlobalRequestNoMoreSessionsMessageHandler HANDLER =
+            new GlobalRequestNoMoreSessionsMessageHandler();
+
+    @Override
+    public GlobalRequestNoMoreSessionsMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestNoMoreSessionsMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestNoMoreSessionsMessageHandler.SERIALIZER.serialize(this);
     }
 }

@@ -11,10 +11,26 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnknownMessage> {
 
     private ModifiableByteArray typeSpecificData;
+
+    public ChannelOpenUnknownMessage() {
+        super();
+    }
+
+    public ChannelOpenUnknownMessage(ChannelOpenUnknownMessage other) {
+        super(other);
+        typeSpecificData =
+                other.typeSpecificData != null ? other.typeSpecificData.createCopy() : null;
+    }
+
+    @Override
+    public ChannelOpenUnknownMessage createCopy() {
+        return new ChannelOpenUnknownMessage(this);
+    }
 
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
@@ -29,8 +45,26 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
         this.typeSpecificData = typeSpecificData;
     }
 
+    public static final ChannelOpenUnknownMessageHandler HANDLER =
+            new ChannelOpenUnknownMessageHandler();
+
     @Override
-    public ChannelOpenUnknownMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenUnknownMessageHandler(context, this);
+    public ChannelOpenUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenUnknownMessageHandler.SERIALIZER.serialize(this);
     }
 }

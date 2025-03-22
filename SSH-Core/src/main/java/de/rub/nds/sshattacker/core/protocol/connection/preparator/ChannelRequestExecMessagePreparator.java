@@ -14,12 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestExecMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestExecMessage> {
 
-    public ChannelRequestExecMessagePreparator(Chooser chooser, ChannelRequestExecMessage message) {
-        super(chooser, message, ChannelRequestType.EXEC);
+    public ChannelRequestExecMessagePreparator() {
+        super(ChannelRequestType.EXEC, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setCommand(chooser.getConfig().getChannelCommand(), true);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestExecMessage object, Chooser chooser) {
+        object.setCommand(chooser.getConfig().getChannelCommand(), true);
     }
 }

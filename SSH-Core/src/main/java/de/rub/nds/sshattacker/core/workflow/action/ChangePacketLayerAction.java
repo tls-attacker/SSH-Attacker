@@ -49,6 +49,17 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
         this.enableAsciiMode = enableAsciiMode;
     }
 
+    public ChangePacketLayerAction(ChangePacketLayerAction other) {
+        super(other);
+        packetLayerType = other.packetLayerType;
+        enableAsciiMode = other.enableAsciiMode;
+    }
+
+    @Override
+    public ChangePacketLayerAction createCopy() {
+        return new ChangePacketLayerAction(this);
+    }
+
     /**
      * Get the type of packet layer that this action will change to.
      *
@@ -81,10 +92,31 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {}
+    public void reset(boolean resetModifiableVariables) {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    @Override
+    public String toString() {
+        if (isExecuted()) {
+            return "ChangePacketLayerAction{"
+                    + "packetLayerType="
+                    + packetLayerType
+                    + ", enableAsciiMode="
+                    + enableAsciiMode
+                    + "}";
+        } else {
+            return "ChangePacketLayerAction{"
+                    + "packetLayerType="
+                    + packetLayerType
+                    + ", enableAsciiMode="
+                    + enableAsciiMode
+                    + "} (not executed)";
+        }
     }
 }

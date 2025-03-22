@@ -28,6 +28,8 @@ public enum Extension {
     PUBLICKEY_ALGORITHMS_ROUMENPETROV("publickey-algorithms@roumenpetrov.info"),
     UNKNOWN(null);
 
+    // TODO: SFTPv5 defines the extensions: supported, md5-hash and md5-hash-handle
+
     private final String name;
 
     private static final Map<String, Extension> map;
@@ -55,8 +57,9 @@ public enum Extension {
     }
 
     public static Extension fromName(String name) {
-        if (map.containsKey(name)) {
-            return map.get(name);
+        Extension result = map.get(name);
+        if (result != null) {
+            return result;
         }
         return UNKNOWN;
     }

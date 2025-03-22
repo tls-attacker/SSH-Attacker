@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
@@ -35,33 +34,33 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
+        message.setReasonCode(parseIntField());
         if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
             LOGGER.debug(
                     "Reason: {} (Code: {})",
                     DisconnectReason.fromId(message.getReasonCode().getValue()).toString(),
                     message.getReasonCode().getValue());
         } else {
-            LOGGER.debug("Reason: [unknown] (Code: {})", message.getReasonCode().getValue());
+            LOGGER.debug("Reason: [unknown] (Code: {})", () -> message.getReasonCode().getValue());
         }
     }
 
     private void parseDescription() {
-        message.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
-        message.setDescription(
-                parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
+        int descriptionLength = parseIntField();
+        message.setDescriptionLength(descriptionLength);
+        LOGGER.debug("Description length: {}", descriptionLength);
+        String description = parseByteString(descriptionLength, StandardCharsets.UTF_8);
+        message.setDescription(description);
+        LOGGER.debug("Description: {}", () -> backslashEscapeString(description));
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        message.setLanguageTag(
-                parseByteString(
-                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+        int languageTagLength = parseIntField();
+        message.setLanguageTagLength(languageTagLength);
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);
+        message.setLanguageTag(languageTag);
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
     }
 
     @Override

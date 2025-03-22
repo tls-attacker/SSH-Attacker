@@ -14,13 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestEnvMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestEnvMessage> {
 
-    public ChannelRequestEnvMessagePreparator(Chooser chooser, ChannelRequestEnvMessage message) {
-        super(chooser, message, ChannelRequestType.ENV);
+    public ChannelRequestEnvMessagePreparator() {
+        super(ChannelRequestType.ENV, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {
-        getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
-        getObject().setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestEnvMessage object, Chooser chooser) {
+        object.setVariableName(chooser.getConfig().getDefaultVariableName(), true);
+        object.setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
     }
 }

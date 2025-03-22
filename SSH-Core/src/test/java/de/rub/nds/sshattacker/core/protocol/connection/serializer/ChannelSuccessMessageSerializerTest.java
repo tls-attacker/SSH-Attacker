@@ -40,8 +40,8 @@ public class ChannelSuccessMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS);
         msg.setRecipientChannelId(providedRecipientChannelId);
         ChannelMessageSerializer<ChannelSuccessMessage> serializer =
-                new ChannelMessageSerializer<>(msg);
+                new ChannelMessageSerializer<>();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

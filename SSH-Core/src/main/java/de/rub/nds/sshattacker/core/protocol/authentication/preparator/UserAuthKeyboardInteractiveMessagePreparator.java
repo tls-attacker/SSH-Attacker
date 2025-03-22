@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthKeyboardInteractiveMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthKeyboardInteractiveMessage> {
 
-    public UserAuthKeyboardInteractiveMessagePreparator(
-            Chooser chooser, UserAuthKeyboardInteractiveMessage message) {
-        super(chooser, message, AuthenticationMethod.KEYBOARD_INTERACTIVE);
+    public UserAuthKeyboardInteractiveMessagePreparator() {
+        super(AuthenticationMethod.KEYBOARD_INTERACTIVE);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
-        getObject().setLanguageTag("", true);
-        getObject().setSubMethods("pam", true);
+    protected void prepareUserAuthRequestSpecificContents(
+            UserAuthKeyboardInteractiveMessage object, Chooser chooser) {
+        object.setLanguageTag("", true);
+        object.setSubMethods("pam", true);
     }
 }

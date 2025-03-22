@@ -19,37 +19,23 @@ public class PingExtensionHandler extends AbstractExtensionHandler<PingExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingExtensionHandler(SshContext context) {
-        super(context);
-    }
-
-    public PingExtensionHandler(SshContext context, PingExtension extension) {
-        super(context, extension);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, PingExtension object) {
         LOGGER.info(
                 "Remote peer signaled support for ping@openssh.com extension via SSH_MSG_EXT_INFO");
     }
 
     @Override
-    public PingExtensionParser getParser(byte[] array) {
+    public PingExtensionParser getParser(byte[] array, SshContext context) {
         return new PingExtensionParser(array);
     }
 
     @Override
-    public PingExtensionParser getParser(byte[] array, int startPosition) {
+    public PingExtensionParser getParser(byte[] array, int startPosition, SshContext context) {
         return new PingExtensionParser(array, startPosition);
     }
 
-    @Override
-    public PingExtensionPreparator getPreparator() {
-        return new PingExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final PingExtensionPreparator PREPARATOR = new PingExtensionPreparator();
 
-    @Override
-    public PingExtensionSerializer getSerializer() {
-        return new PingExtensionSerializer(extension);
-    }
+    public static final PingExtensionSerializer SERIALIZER = new PingExtensionSerializer();
 }

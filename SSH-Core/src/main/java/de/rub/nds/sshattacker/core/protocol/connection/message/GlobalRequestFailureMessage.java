@@ -7,13 +7,46 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class GlobalRequestFailureMessage extends ChannelMessage<GlobalRequestFailureMessage> {
+public class GlobalRequestFailureMessage extends SshMessage<GlobalRequestFailureMessage> {
+
+    public GlobalRequestFailureMessage() {
+        super();
+    }
+
+    public GlobalRequestFailureMessage(GlobalRequestFailureMessage other) {
+        super(other);
+    }
 
     @Override
-    public GlobalRequestFailureMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestFailureMessageHandler(context, this);
+    public GlobalRequestFailureMessage createCopy() {
+        return new GlobalRequestFailureMessage(this);
+    }
+
+    public static final GlobalRequestFailureMessageHandler HANDLER =
+            new GlobalRequestFailureMessageHandler();
+
+    @Override
+    public GlobalRequestFailureMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestFailureMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestFailureMessageHandler.SERIALIZER.serialize(this);
     }
 }

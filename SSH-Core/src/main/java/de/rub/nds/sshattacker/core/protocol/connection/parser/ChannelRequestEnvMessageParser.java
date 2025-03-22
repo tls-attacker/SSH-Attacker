@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,20 +31,22 @@ public class ChannelRequestEnvMessageParser
         return new ChannelRequestEnvMessage();
     }
 
-    public void parseVariableName() {
-        message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
-        message.setVariableName(parseByteString(message.getVariableNameLength().getValue()));
-        LOGGER.debug(
-                "Variable name: {}", backslashEscapeString(message.getVariableName().getValue()));
+    private void parseVariableName() {
+        int variableNameLength = parseIntField();
+        message.setVariableNameLength(variableNameLength);
+        LOGGER.debug("Variable name length: {}", variableNameLength);
+        String variableName = parseByteString(variableNameLength);
+        message.setVariableName(variableName);
+        LOGGER.debug("Variable name: {}", () -> backslashEscapeString(variableName));
     }
 
-    public void parseVariableValue() {
-        message.setVariableValueLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
-        message.setVariableValue(parseByteString(message.getVariableValueLength().getValue()));
-        LOGGER.debug(
-                "Variable value: {}", backslashEscapeString(message.getVariableValue().getValue()));
+    private void parseVariableValue() {
+        int variableValueLength = parseIntField();
+        message.setVariableValueLength(variableValueLength);
+        LOGGER.debug("Variable value length: {}", variableValueLength);
+        String variableValue = parseByteString(variableValueLength);
+        message.setVariableValue(variableValue);
+        LOGGER.debug("Variable value: {}", () -> backslashEscapeString(variableValue));
     }
 
     @Override

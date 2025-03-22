@@ -12,41 +12,29 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthUnknow
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthUnknownMessageHandler extends SshMessageHandler<UserAuthUnknownMessage> {
 
-    public UserAuthUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthUnknownMessageHandler(SshContext context, UserAuthUnknownMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthUnknownMessage object) {
         // TODO: Handle UserAuthUnknownMessage
     }
 
     @Override
-    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array) {
+    public UserAuthUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthUnknownMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array, int startPosition) {
+    public UserAuthUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthUnknownMessagePreparator getPreparator() {
-        return new UserAuthUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthUnknownMessagePreparator PREPARATOR =
+            new UserAuthUnknownMessagePreparator();
 
-    @Override
-    public UserAuthUnknownMessageSerializer getSerializer() {
-        return new UserAuthUnknownMessageSerializer(message);
-    }
+    public static final UserAuthUnknownMessageSerializer SERIALIZER =
+            new UserAuthUnknownMessageSerializer();
 }

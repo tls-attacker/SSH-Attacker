@@ -7,22 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.VariableModification;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.util.JAXBSource;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -33,6 +25,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.reflections.Reflections;
 
 public final class WorkflowTraceSerializer {
 
@@ -43,7 +36,12 @@ public final class WorkflowTraceSerializer {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
-            context = JAXBContext.newInstance(WorkflowTrace.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(WorkflowTrace.class);
+            // Add all VariableModification classes because they aren't strongly typed
+            Reflections reflections = new Reflections("de.rub.nds");
+            classes.addAll(reflections.getSubTypesOf(VariableModification.class));
+            context = JAXBContext.newInstance(classes.toArray(new Class<?>[0]));
         }
         return context;
     }
@@ -53,14 +51,14 @@ public final class WorkflowTraceSerializer {
      *
      * @param file File to which the WorkflowTrace should be written
      * @param workflowTrace WorkflowTrace that should be written
-     * @throws FileNotFoundException Is thrown if the File cannot be found
      * @throws JAXBException Is thrown if the Object cannot be serialized
-     * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
-    public static void write(File file, WorkflowTrace workflowTrace)
-            throws FileNotFoundException, JAXBException, IOException {
-        FileOutputStream fos = new FileOutputStream(file, true);
-        write(fos, workflowTrace);
+    public static void write(File file, WorkflowTrace workflowTrace) throws JAXBException {
+        try (FileOutputStream fos = new FileOutputStream(file, true)) {
+            write(fos, workflowTrace);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -147,8 +145,8 @@ public final class WorkflowTraceSerializer {
                     continue;
                 }
                 WorkflowTrace trace;
-                try {
-                    trace = insecureRead(new FileInputStream(file));
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    trace = insecureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {

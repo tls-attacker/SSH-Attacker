@@ -12,11 +12,27 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public ChannelDataMessage() {
+        super();
+    }
+
+    public ChannelDataMessage(ChannelDataMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public ChannelDataMessage createCopy() {
+        return new ChannelDataMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -56,8 +72,25 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
         }
     }
 
+    public static final ChannelDataMessageHandler HANDLER = new ChannelDataMessageHandler();
+
     @Override
-    public ChannelDataMessageHandler getHandler(SshContext context) {
-        return new ChannelDataMessageHandler(context, this);
+    public ChannelDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelDataMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelDataMessageHandler.SERIALIZER.serialize(this);
     }
 }

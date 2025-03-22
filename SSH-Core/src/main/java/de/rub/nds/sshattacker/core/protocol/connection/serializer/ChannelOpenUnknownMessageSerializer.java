@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,20 +18,18 @@ public class ChannelOpenUnknownMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenUnknownMessageSerializer(ChannelOpenUnknownMessage message) {
-        super(message);
-    }
-
-    public void serializeTypeSpecificData() {
+    private static void serializeTypeSpecificData(
+            ChannelOpenUnknownMessage object, SerializerStream output) {
+        byte[] typeSpecificData = object.getTypeSpecificData().getValue();
         LOGGER.debug(
-                "Type specific data: {}",
-                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
-        appendBytes(message.getTypeSpecificData().getValue());
+                "Type specific data: {}", () -> ArrayConverter.bytesToHexString(typeSpecificData));
+        output.appendBytes(typeSpecificData);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeTypeSpecificData();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenUnknownMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeTypeSpecificData(object, output);
     }
 }

@@ -11,7 +11,8 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
@@ -20,49 +21,45 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
-        implements MessageSentHandler {
+        implements MessageSentHandler<NewKeysMessage> {
 
-    public NewKeysMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
-        super(context, message);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, NewKeysMessage object) {
         ConnectionDirection enableEncryptionOnNewKeysMessage =
                 context.getConfig().getEnableEncryptionOnNewKeysMessage();
         if (enableEncryptionOnNewKeysMessage == ConnectionDirection.BOTH
                 || enableEncryptionOnNewKeysMessage == ConnectionDirection.RECEIVE) {
-            adjustEncryptionForDirection(true);
+            adjustEncryptionForDirection(true, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting read sequence number to 0 because of strict key exchange");
                 context.setReadSequenceNumber(0);
             }
         }
-        adjustCompressionForDirection(true);
+        adjustCompressionForDirection(true, context);
     }
 
     @Override
-    public void adjustContextAfterMessageSent() {
+    public void adjustContextAfterMessageSent(SshContext context, NewKeysMessage object) {
         ConnectionDirection enableEncryptionOnNewKeysMessageType =
                 context.getConfig().getEnableEncryptionOnNewKeysMessage();
         if (enableEncryptionOnNewKeysMessageType == ConnectionDirection.BOTH
                 || enableEncryptionOnNewKeysMessageType == ConnectionDirection.SEND) {
-            adjustEncryptionForDirection(false);
+            adjustEncryptionForDirection(false, context);
             if (context.getStrictKeyExchangeEnabled().orElse(false)) {
                 LOGGER.info("Resetting write sequence number to 0 because of strict key exchange");
                 context.setWriteSequenceNumber(0);
             }
         }
-        adjustCompressionForDirection(false);
+        adjustCompressionForDirection(false, context);
     }
 
-    private void adjustEncryptionForDirection(boolean receive) {
+    private static void adjustEncryptionForDirection(boolean receive, SshContext context) {
         Chooser chooser = context.getChooser();
         Optional<KeySet> keySet = context.getKeySet();
         if (keySet.isEmpty()) {
@@ -131,7 +128,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         }
     }
 
-    private void adjustCompressionForDirection(boolean receive) {
+    private static void adjustCompressionForDirection(boolean receive, SshContext context) {
         Chooser chooser = context.getChooser();
         CompressionMethod method =
                 receive
@@ -147,22 +144,16 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     }
 
     @Override
-    public NewKeysMessageParser getParser(byte[] array) {
+    public NewKeysMessageParser getParser(byte[] array, SshContext context) {
         return new NewKeysMessageParser(array);
     }
 
     @Override
-    public NewKeysMessageParser getParser(byte[] array, int startPosition) {
+    public NewKeysMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new NewKeysMessageParser(array, startPosition);
     }
 
-    @Override
-    public NewKeysMessagePreparator getPreparator() {
-        return new NewKeysMessagePreparator(context.getChooser(), message);
-    }
+    public static final NewKeysMessagePreparator PREPARATOR = new NewKeysMessagePreparator();
 
-    @Override
-    public NewKeysMessageSerializer getSerializer() {
-        return new NewKeysMessageSerializer(message);
-    }
+    public static final NewKeysMessageSerializer SERIALIZER = new NewKeysMessageSerializer();
 }

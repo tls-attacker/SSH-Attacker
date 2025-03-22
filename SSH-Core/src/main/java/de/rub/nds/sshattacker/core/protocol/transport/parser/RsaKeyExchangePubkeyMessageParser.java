@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,21 +32,23 @@ public class RsaKeyExchangePubkeyMessageParser
     }
 
     private void parseHostKeyBytes() {
-        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug("Host key bytes: {}", message.getHostKeyBytes());
+        int hostKeyBytesLength = parseIntField();
+        message.setHostKeyBytesLength(hostKeyBytesLength);
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
+        message.setHostKeyBytes(hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
     }
 
     private void parseTransientPublicKey() {
-        message.setTransientPublicKeyBytesLength(
-                parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        int transientPublicKeyBytesLength = parseIntField();
+        message.setTransientPublicKeyBytesLength(transientPublicKeyBytesLength);
+        LOGGER.debug("Transient public key length: {}", transientPublicKeyBytesLength);
+        byte[] transientPublicKeyBytes = parseByteArrayField(transientPublicKeyBytesLength);
+        message.setTransientPublicKeyBytes(transientPublicKeyBytes);
         LOGGER.debug(
-                "Transient public key length: {}",
-                message.getTransientPublicKeyBytesLength().getValue());
-        message.setTransientPublicKeyBytes(
-                parseByteArrayField(message.getTransientPublicKeyBytesLength().getValue()));
-        LOGGER.debug("Transient public key: {}", message.getTransientPublicKeyBytes());
+                "Transient public key: {}",
+                () -> ArrayConverter.bytesToRawHexString(transientPublicKeyBytes));
     }
 
     @Override

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -31,18 +30,18 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
     }
 
     private void parseRequestName() {
-        message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
-        message.setRequestName(
-                parseByteString(
-                        message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
+        int requestNameLength = parseIntField();
+        message.setRequestNameLength(requestNameLength);
+        LOGGER.debug("Request name length: {}", requestNameLength);
+        String requestName = parseByteString(requestNameLength, StandardCharsets.US_ASCII);
+        message.setRequestName(requestName);
+        LOGGER.debug("Request name: {}", () -> backslashEscapeString(requestName));
     }
 
     private void parseWantReply() {
-        message.setWantReply(parseByteField(1));
-        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
+        byte wantReply = parseByteField();
+        message.setWantReply(wantReply);
+        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(wantReply));
     }
 
     @Override

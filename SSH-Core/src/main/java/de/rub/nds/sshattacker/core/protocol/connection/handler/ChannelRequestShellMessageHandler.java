@@ -7,50 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShellMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestShellMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestShellMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestShellMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestShellMessageHandler
-        extends SshMessageHandler<ChannelRequestShellMessage> {
-
-    public ChannelRequestShellMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestShellMessageHandler(
-            SshContext context, ChannelRequestShellMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestShellMessage> {
 
     @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestShellMessageParser getParser(byte[] array) {
+    public ChannelRequestShellMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestShellMessageParser(array);
     }
 
     @Override
-    public ChannelRequestShellMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestShellMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestShellMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestShellMessagePreparator getPreparator() {
-        return new ChannelRequestShellMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestShellMessagePreparator PREPARATOR =
+            new ChannelRequestShellMessagePreparator();
 
-    @Override
-    public ChannelRequestShellMessageSerializer getSerializer() {
-        return new ChannelRequestShellMessageSerializer(message);
-    }
+    public static final ChannelRequestShellMessageSerializer SERIALIZER =
+            new ChannelRequestShellMessageSerializer();
 }

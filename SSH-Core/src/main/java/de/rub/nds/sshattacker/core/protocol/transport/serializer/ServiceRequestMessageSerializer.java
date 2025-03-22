@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import java.nio.charset.StandardCharsets;
@@ -20,20 +20,19 @@ public class ServiceRequestMessageSerializer extends SshMessageSerializer<Servic
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceRequestMessageSerializer(ServiceRequestMessage message) {
-        super(message);
-    }
-
-    private void serializeServiceName() {
-        LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
-        appendInt(message.getServiceNameLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug(
-                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
-        appendString(message.getServiceName().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeServiceName(
+            ServiceRequestMessage object, SerializerStream output) {
+        Integer serviceNameLength = object.getServiceNameLength().getValue();
+        LOGGER.debug("Service name length: {}", serviceNameLength);
+        output.appendInt(serviceNameLength);
+        String serviceName = object.getServiceName().getValue();
+        LOGGER.debug("Service name: {}", () -> backslashEscapeString(serviceName));
+        output.appendString(serviceName, StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeServiceName();
+    protected void serializeMessageSpecificContents(
+            ServiceRequestMessage object, SerializerStream output) {
+        serializeServiceName(object, output);
     }
 }

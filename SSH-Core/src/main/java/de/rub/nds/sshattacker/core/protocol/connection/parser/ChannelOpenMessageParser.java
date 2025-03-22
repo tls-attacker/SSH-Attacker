@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import java.nio.charset.StandardCharsets;
@@ -29,29 +28,31 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
         super(array, startPosition);
     }
 
-    public void parseChannelType() {
-        message.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Channel type length: {}", message.getChannelTypeLength().getValue());
-        message.setChannelType(
-                parseByteString(
-                        message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Channel type: {}", backslashEscapeString(message.getChannelType().getValue()));
+    private void parseChannelType() {
+        int channelTypeLength = parseIntField();
+        message.setChannelTypeLength(channelTypeLength);
+        LOGGER.debug("Channel type length: {}", channelTypeLength);
+        String channelType = parseByteString(channelTypeLength, StandardCharsets.US_ASCII);
+        message.setChannelType(channelType);
+        LOGGER.debug("Channel type: {}", () -> backslashEscapeString(channelType));
     }
 
-    public void parseSenderChannel() {
-        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
+    private void parseSenderChannel() {
+        int senderChannelId = parseIntField();
+        message.setSenderChannelId(senderChannelId);
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
-    public void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
+    private void parseWindowSize() {
+        int windowSize = parseIntField();
+        message.setWindowSize(windowSize);
+        LOGGER.debug("Initial window size: {}", windowSize);
     }
 
-    public void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
+    private void parsePacketSize() {
+        int packetSize = parseIntField();
+        message.setPacketSize(packetSize);
+        LOGGER.debug("Maximum packet size: {}", packetSize);
     }
 
     @Override

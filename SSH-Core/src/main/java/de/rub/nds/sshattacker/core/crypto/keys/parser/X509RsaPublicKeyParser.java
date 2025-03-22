@@ -7,15 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509RsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import jakarta.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
-import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
@@ -26,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,10 +44,10 @@ public class X509RsaPublicKeyParser
     public SshPublicKey<CustomX509RsaPublicKey, CustomRsaPrivateKey> parse() {
         try {
             // Start parsing the certificate dynamically based on the ASN.1 structure
-            int startIndex = findX509StartIndex(getArray());
-            LOGGER.debug("Found X.509 start index at: {}", startIndex);
+            int startIndex = PublicKeyParserHelper.findX509StartIndex(getArray());
 
-            X509Certificate cert = extractCertificate(getArray(), startIndex);
+            X509Certificate cert =
+                    PublicKeyParserHelper.extractCertificate(getArray(), startIndex, false);
             PublicKey publicKey = cert.getPublicKey();
 
             if (publicKey instanceof RSAPublicKey rsaPublicKey) {
@@ -98,16 +95,16 @@ public class X509RsaPublicKeyParser
 
                 byte[] authorityKeyIdentifier = cert.getExtensionValue("2.5.29.35");
                 if (authorityKeyIdentifier != null) {
-                    String authorityKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(authorityKeyIdentifier);
-                    LOGGER.debug("Parsed Authority Key Identifier: {}", authorityKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Authority Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(authorityKeyIdentifier));
                 }
 
                 byte[] subjectKeyIdentifier = cert.getExtensionValue("2.5.29.14");
                 if (subjectKeyIdentifier != null) {
-                    String subjectKeyIdentifierHex =
-                            DatatypeConverter.printHexBinary(subjectKeyIdentifier);
-                    LOGGER.debug("Parsed Subject Key Identifier: {}", subjectKeyIdentifierHex);
+                    LOGGER.debug(
+                            "Parsed Subject Key Identifier: {}",
+                            () -> ArrayConverter.bytesToRawHexString(subjectKeyIdentifier));
                 }
 
                 boolean[] keyUsage = cert.getKeyUsage();
@@ -119,7 +116,7 @@ public class X509RsaPublicKeyParser
                 }
 
                 // Set Extensions
-                Map<String, String> extensionsMap = new HashMap<>();
+                HashMap<String, String> extensionsMap = new HashMap<>();
                 if (authorityKeyIdentifier != null) {
                     extensionsMap.put(
                             "AuthorityKeyIdentifier", Arrays.toString(authorityKeyIdentifier));
@@ -158,45 +155,6 @@ public class X509RsaPublicKeyParser
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("Ungültiges X.509 Zertifikat!", e);
-        }
-    }
-
-    // Function for determining the offset for the start of the ASN.1 block
-    private int findX509StartIndex(byte[] encodedPublicKeyBytes) {
-        int startIndex = 8; // SSH-Header überspringen
-        while (startIndex < encodedPublicKeyBytes.length) {
-            if (encodedPublicKeyBytes[startIndex] == 0x30) { // ASN.1 SEQUENCE Tag
-                LOGGER.debug("Found ASN.1 SEQUENCE at index: {}", startIndex);
-                return startIndex;
-            }
-            startIndex++;
-        }
-        LOGGER.error("Failed to find start of X.509 certificate");
-        throw new IllegalArgumentException("Konnte Start des X.509 Zertifikats nicht finden.");
-    }
-
-    // Extracts the complete certificate
-    private X509Certificate extractCertificate(byte[] encodedCertificateBytes, int startIndex)
-            throws Exception {
-        if (startIndex >= encodedCertificateBytes.length) {
-            LOGGER.error("Start index exceeds the length of the byte array");
-            throw new IllegalArgumentException("Start index exceeds the length of the byte array");
-        }
-
-        LOGGER.debug("Extracting certificate starting at index: {}", startIndex);
-        ByteArrayInputStream certInputStream =
-                new ByteArrayInputStream(
-                        encodedCertificateBytes,
-                        startIndex,
-                        encodedCertificateBytes.length - startIndex);
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-
-        try {
-            return (X509Certificate) certFactory.generateCertificate(certInputStream);
-        } catch (Exception e) {
-            LOGGER.error("Failed to extract certificate", e);
-            throw new IllegalArgumentException(
-                    "Could not parse X.509 certificate: " + e.getMessage(), e);
         }
     }
 }

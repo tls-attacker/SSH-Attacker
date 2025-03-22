@@ -26,14 +26,14 @@ public class MitmDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(
-            names = "-accept",
+            names = {"-p", "--accept"},
             description =
                     "A MiTM client can connect to this connection end."
                             + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
     protected String inboundConnectionStr;
 
     @Parameter(
-            names = "-connect",
+            names = {"-to", "--connect"},
             description =
                     "Add a server to which the MiTM will connect to."
                             + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")

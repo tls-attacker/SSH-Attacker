@@ -10,15 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.common;
 public abstract class SshMessageSerializer<T extends SshMessage<T>>
         extends ProtocolMessageSerializer<T> {
 
-    protected SshMessageSerializer(T message) {
-        super(message);
-    }
-
     @Override
-    protected final void serializeProtocolMessageContents() {
-        appendByte(message.getMessageId().getValue());
-        serializeMessageSpecificContents();
+    protected final void serializeProtocolMessageContents(T object, SerializerStream output) {
+        output.appendByte(object.getMessageId().getValue());
+        serializeMessageSpecificContents(object, output);
     }
 
-    public abstract void serializeMessageSpecificContents();
+    protected abstract void serializeMessageSpecificContents(T object, SerializerStream output);
 }

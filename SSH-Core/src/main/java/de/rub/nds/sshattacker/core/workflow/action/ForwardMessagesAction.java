@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
@@ -41,11 +40,13 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
 
-    @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> receivedMessages;
+    @HoldsModifiableVariable @XmlElementWrapper
+    protected ArrayList<ProtocolMessage<?>> receivedMessages;
 
-    @XmlTransient protected List<ProtocolMessage<?>> messages;
+    @XmlTransient protected ArrayList<ProtocolMessage<?>> messages;
 
-    @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
+    @HoldsModifiableVariable @XmlElementWrapper
+    protected ArrayList<ProtocolMessage<?>> sendMessages;
 
     @XmlAttribute(name = "onConnection")
     protected String forwardedConnectionAlias;
@@ -58,7 +59,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         @XmlElement(type = BinaryPacket.class, name = "BinaryPacket"),
         @XmlElement(type = BlobPacket.class, name = "BlobPacket")
     })
-    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
+    protected ArrayList<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ForwardMessagesAction() {
         super();
@@ -73,7 +74,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     public ForwardMessagesAction(
-            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
+            String receiveFromAlias,
+            String forwardToAlias,
+            ArrayList<ProtocolMessage<?>> messages) {
         super();
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
@@ -84,6 +87,45 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     public ForwardMessagesAction(
             String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public ForwardMessagesAction(ForwardMessagesAction other) {
+        super(other);
+        receiveFromAlias = other.receiveFromAlias;
+        forwardToAlias = other.forwardToAlias;
+        executedAsPlanned = other.executedAsPlanned;
+        withPrepare = other.withPrepare;
+        if (other.receivedMessages != null) {
+            receivedMessages = new ArrayList<>(other.receivedMessages.size());
+            for (ProtocolMessage<?> item : other.receivedMessages) {
+                receivedMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.messages != null) {
+            messages = new ArrayList<>(other.messages.size());
+            for (ProtocolMessage<?> item : other.messages) {
+                messages.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.sendMessages != null) {
+            sendMessages = new ArrayList<>(other.sendMessages.size());
+            for (ProtocolMessage<?> item : other.sendMessages) {
+                sendMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+        forwardedConnectionAlias = other.forwardedConnectionAlias;
+        receivedBytes = other.receivedBytes != null ? other.receivedBytes.clone() : null;
+        if (other.receivedPackets != null) {
+            receivedPackets = new ArrayList<>(other.receivedPackets.size());
+            for (AbstractPacket item : other.receivedPackets) {
+                receivedPackets.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ForwardMessagesAction createCopy() {
+        return new ForwardMessagesAction(this);
     }
 
     public static void initLoggingSide(SshContext context) {
@@ -171,8 +213,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         changeSshContextHandling(ctx);
         for (ProtocolMessage<?> msg : receivedMessages) {
             LOGGER.debug("Applying {} to forward context {}", msg.toCompactString(), ctx);
-            ProtocolMessageHandler<?> h = msg.getHandler(ctx);
-            h.adjustContext();
+            msg.adjustContext(ctx);
         }
         changeSshContextHandling(ctx);
     }
@@ -225,10 +266,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         receivedMessages = null;
         sendMessages = null;
-        executedAsPlanned = false;
+        executedAsPlanned = null;
         setExecuted(null);
     }
 
@@ -251,7 +292,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         return receivedPackets;
     }
 
-    public void setMessages(List<ProtocolMessage<?>> messages) {
+    public void setMessages(ArrayList<ProtocolMessage<?>> messages) {
         this.messages = messages;
     }
 
@@ -285,7 +326,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @Override
     public Set<String> getAllAliases() {
-        Set<String> aliases = new LinkedHashSet<>();
+        HashSet<String> aliases = new HashSet<>(2);
         aliases.add(forwardToAlias);
         aliases.add(receiveFromAlias);
         return aliases;

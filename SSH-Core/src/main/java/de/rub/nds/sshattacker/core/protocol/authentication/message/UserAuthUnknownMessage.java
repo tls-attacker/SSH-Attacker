@@ -11,9 +11,25 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnknownMessage> {
     private ModifiableByteArray methodSpecificFields;
+
+    public UserAuthUnknownMessage() {
+        super();
+    }
+
+    public UserAuthUnknownMessage(UserAuthUnknownMessage other) {
+        super(other);
+        methodSpecificFields =
+                other.methodSpecificFields != null ? other.methodSpecificFields.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthUnknownMessage createCopy() {
+        return new UserAuthUnknownMessage(this);
+    }
 
     public ModifiableByteArray getMethodSpecificFields() {
         return methodSpecificFields;
@@ -29,8 +45,25 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
                         this.methodSpecificFields, methodSpecificFields);
     }
 
+    public static final UserAuthUnknownMessageHandler HANDLER = new UserAuthUnknownMessageHandler();
+
     @Override
-    public UserAuthUnknownMessageHandler getHandler(SshContext context) {
-        return new UserAuthUnknownMessageHandler(context, this);
+    public UserAuthUnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthUnknownMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthUnknownMessageHandler.SERIALIZER.serialize(this);
     }
 }

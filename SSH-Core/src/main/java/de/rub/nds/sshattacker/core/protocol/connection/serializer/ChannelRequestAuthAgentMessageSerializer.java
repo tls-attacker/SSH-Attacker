@@ -10,9 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestAuthAgentMessage;
 
 public class ChannelRequestAuthAgentMessageSerializer
-        extends ChannelRequestMessageSerializer<ChannelRequestAuthAgentMessage> {
-
-    public ChannelRequestAuthAgentMessageSerializer(ChannelRequestAuthAgentMessage message) {
-        super(message);
-    }
-}
+        extends ChannelRequestMessageSerializer<ChannelRequestAuthAgentMessage> {}

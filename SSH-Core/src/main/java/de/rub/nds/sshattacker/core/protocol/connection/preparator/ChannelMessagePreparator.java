@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
@@ -23,50 +25,46 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
 
     protected Channel channel;
 
-    protected ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
-        super(chooser, message, messageId);
+    protected ChannelMessagePreparator(MessageIdConstant messageId) {
+        super(messageId);
     }
 
     @Override
-    public final void prepareMessageSpecificContents() {
-        prepareChannel();
-        prepareChannelMessageSpecificContents();
+    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+        prepareChannel(object, chooser);
+        prepareChannelMessageSpecificContents(object, chooser);
     }
 
-    private void prepareChannel() {
-        Optional<Integer> configSenderChannelId =
-                Optional.ofNullable(getObject().getConfigSenderChannelId());
+    private void prepareChannel(T object, Chooser chooser) {
+        ChannelManager channelManager = chooser.getContext().getChannelManager();
+
+        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
+        Integer localChannelId =
+                Optional.ofNullable(object.getConfigLocalChannelId())
+                        .orElse(channelDefaults.getLocalChannelId());
+
+        // ChannelMessages should only be sent for an opened channel
         channel =
-                configSenderChannelId
-                        .flatMap(
-                                senderChannelId ->
-                                        Optional.ofNullable(
-                                                chooser.getContext()
-                                                        .getChannels()
-                                                        .get(senderChannelId)))
-                        .or(
-                                () ->
-                                        chooser.getContext()
-                                                .getChannelManager()
-                                                .guessChannelByReceivedMessages())
+                Optional.ofNullable(channelManager.getChannelByLocalId(localChannelId))
+                        .or(channelManager::getChannelByReceivedRequestThatWantReply)
                         .orElseGet(
                                 () -> {
                                     LOGGER.warn(
-                                            "About to prepare channel message, but no corresponding was channel found or guessed. Creating a new one from defaults.");
-                                    Integer remoteChannelId = configSenderChannelId.orElse(0);
-                                    return chooser.getContext()
-                                            .getChannelManager()
-                                            .createNewChannelFromDefaults(remoteChannelId);
+                                            "About to prepare channel message, but no corresponding channel was found or guessed. Creating a new channel from defaults. The other party will not know this channel either.");
+                                    Integer remoteChannelId =
+                                            Optional.ofNullable(object.getConfigRemoteChannelId())
+                                                    .orElse(channelDefaults.getRemoteChannelId());
+                                    return channelManager.createNewChannelFromDefaults(
+                                            localChannelId, remoteChannelId);
                                 });
 
         if (!channel.isOpen().getValue()) {
-            int localChannelId = channel.getLocalChannelId().getValue();
             LOGGER.warn(
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
-                    localChannelId);
+                    channel.getLocalChannelId().getValue());
         }
-        getObject().setRecipientChannelId(channel.getRemoteChannelId());
+        object.setRecipientChannelId(channel.getRemoteChannelId().getValue());
     }
 
-    protected abstract void prepareChannelMessageSpecificContents();
+    protected abstract void prepareChannelMessageSpecificContents(T object, Chooser chooser);
 }

@@ -28,19 +28,20 @@ public class ParallelExecutor {
     private Callable<Integer> timeoutAction;
 
     private final int size;
-    private boolean shouldShutdown = false;
+    private boolean shouldShutdown;
 
     private final int reexecutions;
 
-    private Function<State, Integer> defaultBeforeTransportPreInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportPreInitCallback;
 
-    private Function<State, Integer> defaultBeforeTransportInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportInitCallback;
 
-    private Function<State, Integer> defaultAfterTransportInitCallback = null;
+    private Function<State, Integer> defaultAfterTransportInitCallback;
 
-    private Function<State, Integer> defaultAfterExecutionCallback = null;
+    private Function<State, Integer> defaultAfterExecutionCallback;
 
     public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
+        super();
         this.executorService = executorService;
         this.reexecutions = reexecutions;
         this.size = size;

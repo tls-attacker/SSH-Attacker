@@ -11,41 +11,30 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailu
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFailureMessage> {
 
-    public UserAuthFailureMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthFailureMessageHandler(SshContext context, UserAuthFailureMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthFailureMessage object) {
         // TODO: Handle UserAuthFailureMessage
     }
 
     @Override
-    public UserAuthFailureMessageParser getParser(byte[] array) {
+    public UserAuthFailureMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthFailureMessageParser(array);
     }
 
     @Override
-    public UserAuthFailureMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthFailureMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthFailureMessagePreparator getPreparator() {
-        return new UserAuthFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthFailureMessagePreparator PREPARATOR =
+            new UserAuthFailureMessagePreparator();
 
-    @Override
-    public UserAuthFailureMessageSerializer getSerializer() {
-        return new UserAuthFailureMessageSerializer(message);
-    }
+    public static final UserAuthFailureMessageSerializer SERIALIZER =
+            new UserAuthFailureMessageSerializer();
 }

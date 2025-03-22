@@ -9,21 +9,11 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509RsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -34,23 +24,15 @@ import org.bouncycastle.asn1.x509.Extensions;
  */
 public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKey> {
 
-    private final CustomX509RsaPublicKey publicKey;
-
-    public X509RsaPublicKeySerializer(CustomX509RsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomX509RsaPublicKey object, SerializerStream output) {
         try {
             // Step 1: Add additional bytes at the beginning
-            byte[] prefix = new byte[] {0x30, (byte) 0x82}; // Example: exact bytes from server
-            appendBytes(prefix);
+            byte[] prefix = {0x30, (byte) 0x82}; // Example: exact bytes from server
+            output.appendBytes(prefix);
 
             // Step 2: Create the ASN.1 vector for the entire certificate
             ASN1EncodableVector topLevelVector = new ASN1EncodableVector();
-
             // 1. Version (uint32)
             appendInt(
                     topLevelVector,
@@ -60,7 +42,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             // 2. Serial Number (mpint)
             appendBigInteger(
                     topLevelVector,
-                    BigInteger.valueOf(publicKey.getSerial()),
+                    BigInteger.valueOf(object.getSerial()),
                     20); // Updated to use correct serial number size
 
             // 3. Signature Algorithm
@@ -71,16 +53,18 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(signatureAlgorithm);
 
             // 4. Issuer (Distinguished Name)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(publicKey.getIssuer());
+            ASN1Sequence issuerSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getIssuer(), true);
             topLevelVector.add(issuerSequence);
 
             // 5. Validity Period (ASN.1 GeneralizedTime)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+                    getValidityPeriodAsASN1(object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // 6. Subject (Distinguished Name)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(publicKey.getSubject());
+            ASN1Sequence subjectSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getSubject(), true);
             topLevelVector.add(subjectSequence);
 
             // 7. Public Key Algorithm (OID)
@@ -92,13 +76,13 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
 
             // 8. Public Key (Modulus and Exponent as ASN.1 SEQUENCE)
             ASN1EncodableVector publicKeyVector = new ASN1EncodableVector();
-            publicKeyVector.add(new ASN1Integer(publicKey.getModulus()));
-            publicKeyVector.add(new ASN1Integer(publicKey.getPublicExponent()));
+            publicKeyVector.add(new ASN1Integer(object.getModulus()));
+            publicKeyVector.add(new ASN1Integer(object.getPublicExponent()));
             ASN1Sequence publicKeySequence = new DERSequence(publicKeyVector);
             topLevelVector.add(publicKeySequence);
 
             // 9. Extensions (ASN.1 encoded as Extensions sequence)
-            Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
+            Extensions extensions = getExtensionsAsASN1(object.getExtensions());
             if (extensions != null) {
                 topLevelVector.add(extensions);
             }
@@ -111,7 +95,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             topLevelVector.add(signatureAlgId);
 
             // Step 4: Signature Value (ASN.1 Bit String)
-            byte[] signature = publicKey.getSignature();
+            byte[] signature = object.getSignature();
             if (signature == null) {
                 throw new IllegalStateException("Signature is not set in the publicKey");
             }
@@ -120,41 +104,15 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
             // Step 5: Serialize the entire ASN.1 block
             ASN1Sequence topLevelSequence = new DERSequence(topLevelVector);
             byte[] asn1Encoded = topLevelSequence.getEncoded();
-            appendBytes(asn1Encoded);
+            output.appendBytes(asn1Encoded);
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 RSA Public Key", e);
         }
     }
 
-    /** Helper method to serialize Distinguished Names (DN) in ASN.1 format. */
-    private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
-        if (dn == null || dn.trim().isEmpty()) {
-            throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
-        }
-        try {
-            X500Name x500Name = new X500Name(reverseDistinguishedName(dn));
-            return (ASN1Sequence) x500Name.toASN1Primitive();
-        } catch (Exception e) {
-            throw new RuntimeException("Error encoding Distinguished Name", e);
-        }
-    }
-
-    /** Helper method to reverse the order of Distinguished Name components. */
-    private String reverseDistinguishedName(String dn) {
-        return Arrays.stream(dn.split(","))
-                .map(String::trim)
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                lst -> {
-                                    java.util.Collections.reverse(lst);
-                                    return String.join(", ", lst);
-                                }));
-    }
-
     /** Helper method to serialize the validity period in ASN.1 format. */
-    private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
+    private static ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
         try {
             ASN1GeneralizedTime notBefore = new ASN1GeneralizedTime(new Date(validAfter));
             ASN1GeneralizedTime notAfter = new ASN1GeneralizedTime(new Date(validBefore));
@@ -170,7 +128,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize Extensions in ASN.1 format. */
-    private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
+    private static Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
@@ -180,23 +138,33 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
                             switch (entry.getKey()) {
                                 case "SubjectKeyIdentifier" -> {
                                     oid = Extension.subjectKeyIdentifier;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 case "AuthorityKeyIdentifier" -> {
                                     oid = Extension.authorityKeyIdentifier;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 case "KeyUsage" -> {
                                     oid = Extension.keyUsage;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 case "ExtendedKeyUsage" -> {
                                     oid = Extension.extendedKeyUsage;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 case "BasicConstraints" -> {
                                     oid = Extension.basicConstraints;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 default ->
                                         throw new IllegalArgumentException(
@@ -214,40 +182,9 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
         return null;
     }
 
-    /** Helper method to convert an extension from String to byte array. */
-    private byte[] parseExtensionValue(String value) {
-        if (value.startsWith("[")) {
-            value = value.replaceAll("[\\[\\]\\s]", "");
-            String[] byteValues = value.split(",");
-            byte[] data = new byte[byteValues.length];
-            for (int i = 0; i < byteValues.length; i++) {
-                data[i] = Byte.parseByte(byteValues[i]);
-            }
-            return data;
-        } else {
-            return hexStringToByteArray(value);
-        }
-    }
-
-    /** Helper method to convert a hex string into a byte array. */
-    private byte[] hexStringToByteArray(String s) {
-        if (s.length() % 2 != 0) {
-            throw new IllegalArgumentException("Hex string must have an even length");
-        }
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] =
-                    (byte)
-                            ((Character.digit(s.charAt(i), 16) << 4)
-                                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
     /** Helper method to serialize a BigInteger (mpint) in SSH format. */
-    private void appendBigInteger(ASN1EncodableVector vector, BigInteger value, int length) {
-        if (value.bitLength() > (length * 8)) {
+    private static void appendBigInteger(ASN1EncodableVector vector, BigInteger value, int length) {
+        if (value.bitLength() > length * 8) {
             throw new IllegalArgumentException("mpint too large");
         }
         byte[] mpintBytes = value.toByteArray();
@@ -255,7 +192,7 @@ public class X509RsaPublicKeySerializer extends Serializer<CustomX509RsaPublicKe
     }
 
     /** Helper method to serialize integer values. */
-    private void appendInt(ASN1EncodableVector vector, int value, int length) {
+    private static void appendInt(ASN1EncodableVector vector, int value, int length) {
         byte[] intBytes = new byte[length];
         for (int i = length - 1; i >= 0; i--) {
             intBytes[i] = (byte) (value & 0xFF);

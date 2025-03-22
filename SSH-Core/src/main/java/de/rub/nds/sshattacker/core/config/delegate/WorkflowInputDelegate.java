@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 public class WorkflowInputDelegate extends Delegate {
 
     @Parameter(
-            names = "-workflow_input",
+            names = "--workflow-input",
             description =
                     "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
     private String workflowInput;

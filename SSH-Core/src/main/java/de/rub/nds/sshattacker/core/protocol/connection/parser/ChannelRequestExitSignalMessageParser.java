@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -33,34 +32,37 @@ public class ChannelRequestExitSignalMessageParser
         return new ChannelRequestExitSignalMessage();
     }
 
-    public void parseSignalName() {
-        message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
-        message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
-        LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
+    private void parseSignalName() {
+        int signalNameLength = parseIntField();
+        message.setSignalNameLength(signalNameLength);
+        LOGGER.debug("Signal name length: {}", signalNameLength);
+        String signalName = parseByteString(signalNameLength);
+        message.setSignalName(signalName);
+        LOGGER.debug("Signal name: {}", () -> backslashEscapeString(signalName));
     }
 
-    public void parseCoreDump() {
-        message.setCoreDump(false);
-        LOGGER.debug("Core dumped: {}", message.getCoreDump().getValue());
+    private void parseCoreDump() {
+        byte coreDump = parseByteField();
+        message.setCoreDump(coreDump);
+        LOGGER.debug("Core dumped: {}", coreDump);
     }
 
-    public void parseErrorMessage() {
-        message.setErrorMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
-        message.setErrorMessage(parseByteString(message.getErrorMessageLength().getValue()));
-        LOGGER.debug(
-                "Error message: {}", backslashEscapeString(message.getErrorMessage().getValue()));
+    private void parseErrorMessage() {
+        int errorMessageLength = parseIntField();
+        message.setErrorMessageLength(errorMessageLength);
+        LOGGER.debug("Error message length: {}", errorMessageLength);
+        String errorMessage = parseByteString(errorMessageLength);
+        message.setErrorMessage(errorMessage);
+        LOGGER.debug("Error message: {}", () -> backslashEscapeString(errorMessage));
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        message.setLanguageTag(
-                parseByteString(
-                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+        int languageTagLength = parseIntField();
+        message.setLanguageTagLength(languageTagLength);
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);
+        message.setLanguageTag(languageTag);
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
     }
 
     @Override

@@ -10,8 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurveEcPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.IOException;
@@ -29,13 +28,23 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
  * X25519 / X448 key exchange.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class XCurveEcPublicKey extends CustomPublicKey {
 
     protected NamedEcGroup group;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     protected byte[] coordinate;
+
+    public XCurveEcPublicKey(XCurveEcPublicKey other) {
+        super(other);
+        group = other.group;
+        coordinate = other.coordinate != null ? other.coordinate.clone() : null;
+    }
+
+    @Override
+    public XCurveEcPublicKey createCopy() {
+        return new XCurveEcPublicKey(this);
+    }
 
     public XCurveEcPublicKey() {
         super();
@@ -111,5 +120,12 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @Override
     public byte[] getEncoded() {
         return coordinate;
+    }
+
+    public static final XCurveEcPublicKeySerializer SERIALIZER = new XCurveEcPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

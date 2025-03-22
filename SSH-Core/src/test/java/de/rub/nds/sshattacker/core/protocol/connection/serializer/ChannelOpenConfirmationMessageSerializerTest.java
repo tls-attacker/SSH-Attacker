@@ -51,8 +51,8 @@ public class ChannelOpenConfirmationMessageSerializerTest {
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
         ChannelOpenConfirmationMessageSerializer serializer =
-                new ChannelOpenConfirmationMessageSerializer(msg);
+                new ChannelOpenConfirmationMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

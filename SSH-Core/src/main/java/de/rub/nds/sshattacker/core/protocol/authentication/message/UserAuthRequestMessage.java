@@ -13,12 +13,9 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.nio.charset.StandardCharsets;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({
     UserAuthNoneMessage.class,
     UserAuthPasswordMessage.class,
@@ -35,6 +32,25 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     protected ModifiableString serviceName;
     protected ModifiableInteger methodNameLength;
     protected ModifiableString methodName;
+
+    protected UserAuthRequestMessage() {
+        super();
+    }
+
+    protected UserAuthRequestMessage(UserAuthRequestMessage<T> other) {
+        super(other);
+        userNameLength = other.userNameLength != null ? other.userNameLength.createCopy() : null;
+        userName = other.userName != null ? other.userName.createCopy() : null;
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+        methodNameLength =
+                other.methodNameLength != null ? other.methodNameLength.createCopy() : null;
+        methodName = other.methodName != null ? other.methodName.createCopy() : null;
+    }
+
+    @Override
+    public abstract UserAuthRequestMessage<T> createCopy();
 
     public ModifiableInteger getUserNameLength() {
         return userNameLength;

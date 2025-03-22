@@ -15,24 +15,23 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessage> {
 
-    public DisconnectMessagePreparator(Chooser chooser, DisconnectMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_DISCONNECT);
+    public DisconnectMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_DISCONNECT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        // TODO save values in config
-        getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
-        getObject().setDescription("Test", true);
-        getObject().setLanguageTag("", true);
+    protected void prepareMessageSpecificContents(DisconnectMessage object, Chooser chooser) {
 
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
-            getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
-            getObject()
-                    .setDescription(
-                            "No common compression algorithm found in delay-compression extension!",
-                            true);
-            getObject().setLanguageTag("", true);
+            object.setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
+            object.setDescription(
+                    "No common compression algorithm found in delay-compression extension!", true);
+            object.setLanguageTag("", true);
+        } else {
+            // TODO save values in chooser.getConfig()
+            object.setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
+            object.setDescription("Test", true);
+            object.setLanguageTag("", true);
         }
     }
 }

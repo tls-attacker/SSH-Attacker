@@ -15,7 +15,10 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 
 public class ServerDelegate extends Delegate {
 
-    @Parameter(names = "-port", required = true, description = "ServerPort")
+    @Parameter(
+            names = {"-p", "-port"},
+            required = true,
+            description = "ServerPort")
     protected Integer port;
 
     public Integer getPort() {

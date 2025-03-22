@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.packet.layer;
 
+import de.rub.nds.sshattacker.core.exceptions.DecompressionException;
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -39,7 +41,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
             decryptPacket(packet);
             decompressPacket(packet);
             return new PacketLayerParseResult(packet, parser.getPointer() - startPosition);
-        } catch (ParserException e) {
+        } catch (ParserException | DecryptionException | DecompressionException e) {
             throw new ParserException("Could not parse provided data as binary packet", e);
         }
     }
@@ -57,7 +59,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
             decryptPacket(packet);
             decompressPacket(packet);
             return new PacketLayerParseResult(packet, parser.getPointer() - startPosition, true);
-        } catch (ParserException e) {
+        } catch (ParserException | DecryptionException | DecompressionException e) {
             LOGGER.debug("Could not parse binary packet, parsing as blob");
             LOGGER.trace(e);
             try {
@@ -67,18 +69,21 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                 decompressPacket(packet);
                 return new PacketLayerParseResult(
                         packet, parser.getPointer() - startPosition, true);
-            } catch (ParserException ex) {
-                LOGGER.warn("Could not parse data as blob packet, dropping remaining bytes");
-                LOGGER.trace(ex);
+            } catch (ParserException | DecryptionException | DecompressionException ex) {
+                LOGGER.warn(
+                        "Could not parse data as blob packet, dropping remaining {} bytes",
+                        rawBytes.length - startPosition);
+                LOGGER.trace("ParserException", ex);
                 return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
             }
         }
     }
 
     @Override
-    protected void decryptPacket(AbstractPacket packet) {
+    protected void decryptPacket(AbstractPacket packet) throws DecryptionException {
         if (!(packet instanceof BinaryPacket)) {
-            LOGGER.warn("Decrypting received non binary packet: {}", packet);
+            LOGGER.warn(
+                    "Decrypting received non binary packet: {}", packet.getClass().getSimpleName());
         }
         super.decryptPacket(packet);
     }

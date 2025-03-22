@@ -9,8 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import java.nio.charset.StandardCharsets;
@@ -21,39 +21,37 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageSerializer(DisconnectMessage message) {
-        super(message);
-    }
-
-    private void serializeReasonCode() {
+    private static void serializeReasonCode(DisconnectMessage object, SerializerStream output) {
         LOGGER.debug(
                 "Reason: {} (Code: {})",
-                DisconnectReason.fromId(message.getReasonCode().getValue()),
-                message.getReasonCode().getValue());
-        appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
+                DisconnectReason.fromId(object.getReasonCode().getValue()),
+                object.getReasonCode().getValue());
+        output.appendInt(object.getReasonCode().getValue());
     }
 
-    private void serializeDescription() {
-        LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
-        appendInt(
-                message.getDescriptionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Description: {}", message.getDescription().getValue());
-        appendString(message.getDescription().getValue(), StandardCharsets.UTF_8);
+    private static void serializeDescription(DisconnectMessage object, SerializerStream output) {
+        Integer descriptionLength = object.getDescriptionLength().getValue();
+        LOGGER.debug("Description length: {}", descriptionLength);
+        output.appendInt(descriptionLength);
+        String description = object.getDescription().getValue();
+        LOGGER.debug("Description: {}", () -> backslashEscapeString(description));
+        output.appendString(description, StandardCharsets.UTF_8);
     }
 
-    private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeLanguageTag(DisconnectMessage object, SerializerStream output) {
+        Integer languageTagLength = object.getLanguageTagLength().getValue();
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        output.appendInt(languageTagLength);
+        String languageTag = object.getLanguageTag().getValue();
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
+        output.appendString(languageTag, StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeReasonCode();
-        serializeDescription();
-        serializeLanguageTag();
+    protected void serializeMessageSpecificContents(
+            DisconnectMessage object, SerializerStream output) {
+        serializeReasonCode(object, output);
+        serializeDescription(object, output);
+        serializeLanguageTag(object, output);
     }
 }

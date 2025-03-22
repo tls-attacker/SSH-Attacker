@@ -266,10 +266,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
             return null;
         }
         LOGGER.info(
-                String.format(
-                        "Fetched server public key with exponent %s and modulus: %s",
-                        publicKey.getPublicExponent().toString(16),
-                        publicKey.getModulus().toString(16)));
+                "Fetched server public key with exponent {} and modulus: {}",
+                publicKey.getPublicExponent().toString(16),
+                publicKey.getModulus().toString(16));
         return publicKey;
     }
 
@@ -330,10 +329,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
 
         LOGGER.info(
-                String.format(
-                        "Fetched server public key with exponent %s and modulus: %s",
-                        publicKey.getPublicExponent().toString(16),
-                        publicKey.getModulus().toString(16)));
+                "Fetched server public key with exponent {} and modulus: {}",
+                publicKey.getPublicExponent().toString(16),
+                publicKey.getModulus().toString(16));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
         if (encryptedSecret.length * Byte.SIZE != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException(

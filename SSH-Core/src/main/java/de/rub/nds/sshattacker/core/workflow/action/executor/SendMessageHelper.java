@@ -7,17 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
+import de.rub.nds.sshattacker.core.data.DataMessage;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,28 +35,55 @@ public final class SendMessageHelper {
         transportHandler.sendData(packetLayer.preparePacket(packet));
     }
 
-    public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
-        MessageLayer messageLayer = context.getMessageLayer();
+    public static MessageActionResult sendMessage(
+            SshContext context, ProtocolMessage<?> message, boolean prepareBeforeSending) {
         try {
-            AbstractPacket packet = messageLayer.serialize(message);
-            sendPacket(context, packet);
-            Handler<?> handler = message.getHandler(context);
-            if (handler instanceof MessageSentHandler) {
-                ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+            // Prepare message
+            if (prepareBeforeSending) {
+                message.prepare(context.getChooser());
             }
-            return new MessageActionResult(
-                    Collections.singletonList(packet), Collections.singletonList(message));
+
+            if (message instanceof DataMessage<?>) {
+                // Serialize data message to ChannelDataMessage
+                if (message instanceof HasSentHandler) {
+                    ((HasSentHandler) message).adjustContextAfterSent(context);
+                }
+                // TODO: decide if we should pass prepareBeforeSending
+
+                // serialize also prepares the ChannelDataMessage
+                ChannelDataMessage messageWrapper =
+                        context.getDataMessageLayer().serialize((DataMessage<?>) message);
+                ((DataMessage<?>) message).setChannelDataWrapper(messageWrapper);
+                message = messageWrapper;
+            }
+
+            AbstractPacket packet = context.getMessageLayer().serialize(message);
+            sendPacket(context, packet);
+            if (message instanceof HasSentHandler) {
+                ((HasSentHandler) message).adjustContextAfterSent(context);
+            }
+            ArrayList<AbstractPacket> packetList = new ArrayList<>(1);
+            packetList.add(packet);
+            ArrayList<ProtocolMessage<?>> messageList;
+
+            messageList = new ArrayList<>(1);
+            messageList.add(message);
+            return new MessageActionResult(packetList, messageList);
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: {}", e.getMessage());
+            context.setReceivedTransportHandlerException(true);
             return new MessageActionResult();
         }
     }
 
     public static MessageActionResult sendMessages(
-            SshContext context, Stream<ProtocolMessage<?>> messageStream) {
-        return messageStream
-                .map(message -> sendMessage(context, message))
-                .reduce(MessageActionResult::merge)
-                .orElse(new MessageActionResult());
+            SshContext context,
+            ArrayList<ProtocolMessage<?>> messages,
+            boolean prepareBeforeSending) {
+        LinkedList<MessageActionResult> sendResults = new LinkedList<>();
+        for (ProtocolMessage<?> message : messages) {
+            sendResults.add(sendMessage(context, message, prepareBeforeSending));
+        }
+        return new MessageActionResult(sendResults);
     }
 }

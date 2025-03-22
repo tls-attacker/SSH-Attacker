@@ -11,20 +11,23 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangeDoneMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeDoneMessage> {
 
-    public RsaKeyExchangeDoneMessagePreparator(Chooser chooser, RsaKeyExchangeDoneMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_DONE);
+    public RsaKeyExchangeDoneMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_DONE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+    protected void prepareMessageSpecificContents(
+            RsaKeyExchangeDoneMessage object, Chooser chooser) {
+        SshContext context = chooser.getContext();
+        KeyExchangeUtil.computeExchangeHash(context);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
+        KeyExchangeUtil.setSessionId(context);
+        KeyExchangeUtil.generateKeySet(context);
     }
 }

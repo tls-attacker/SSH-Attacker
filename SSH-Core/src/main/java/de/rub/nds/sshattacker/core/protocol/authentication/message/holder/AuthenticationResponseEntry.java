@@ -1,0 +1,92 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.authentication.message.holder;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.protocol.authentication.handler.holder.AuthenticationResponseEntryHandler;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.nio.charset.StandardCharsets;
+
+public class AuthenticationResponseEntry extends ModifiableVariableHolder {
+
+    private ModifiableInteger responseLength;
+    private ModifiableString response;
+
+    public AuthenticationResponseEntry() {
+        super();
+    }
+
+    public AuthenticationResponseEntry(AuthenticationResponseEntry other) {
+        super(other);
+        responseLength = other.responseLength != null ? other.responseLength.createCopy() : null;
+        response = other.response != null ? other.response.createCopy() : null;
+    }
+
+    @Override
+    public AuthenticationResponseEntry createCopy() {
+        return new AuthenticationResponseEntry(this);
+    }
+
+    public ModifiableInteger getResponseLength() {
+        return responseLength;
+    }
+
+    public void setResponseLength(ModifiableInteger responseLength) {
+        this.responseLength = responseLength;
+    }
+
+    public void setResponseLength(int responseLength) {
+        this.responseLength =
+                ModifiableVariableFactory.safelySetValue(this.responseLength, responseLength);
+    }
+
+    public ModifiableString getResponse() {
+        return response;
+    }
+
+    public void setResponse(ModifiableString response) {
+        this.response = response;
+    }
+
+    public void setResponse(String response) {
+        this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
+    }
+
+    public void setResponse(ModifiableString response, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setResponseLength(response.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+        this.response = response;
+    }
+
+    public void setResponse(String response, boolean adjustLengthField) {
+        this.response = ModifiableVariableFactory.safelySetValue(this.response, response);
+        if (adjustLengthField) {
+            setResponseLength(this.response.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public static final AuthenticationResponseEntryHandler HANDLER =
+            new AuthenticationResponseEntryHandler();
+
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    public void prepare(Chooser chooser) {
+        AuthenticationResponseEntryHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    public byte[] serialize() {
+        return AuthenticationResponseEntryHandler.SERIALIZER.serialize(this);
+    }
+}

@@ -7,20 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.config;
 
+import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.util.JAXBSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -29,6 +24,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
+import org.reflections.Reflections;
 
 public final class ConfigIO {
 
@@ -37,15 +33,20 @@ public final class ConfigIO {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
-            context = JAXBContext.newInstance(Config.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(Config.class);
+            // Add all VariableModification classes because they aren't strongly typed
+            Reflections reflections = new Reflections("de.rub.nds");
+            classes.addAll(reflections.getSubTypesOf(VariableModification.class));
+            context = JAXBContext.newInstance(classes.toArray(new Class<?>[0]));
         }
         return context;
     }
 
     public static void write(Config config, File file) {
-        try {
-            write(config, new FileOutputStream(file));
-        } catch (FileNotFoundException ex) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            write(config, fos);
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -89,10 +90,12 @@ public final class ConfigIO {
                         // Raise an exception also on warnings
                         return false;
                     });
-            return read(new FileInputStream(file), unmarshaller);
+            try (FileInputStream fis = new FileInputStream(file)) {
+                return read(fis, unmarshaller);
+            }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("File cannot be found", e);
         }
     }

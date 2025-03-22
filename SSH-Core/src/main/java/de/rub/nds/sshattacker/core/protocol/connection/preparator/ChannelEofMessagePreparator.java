@@ -13,10 +13,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelEofMessagePreparator extends ChannelMessagePreparator<ChannelEofMessage> {
 
-    public ChannelEofMessagePreparator(Chooser chooser, ChannelEofMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_EOF);
+    public ChannelEofMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_EOF);
     }
 
     @Override
-    protected void prepareChannelMessageSpecificContents() {}
+    protected void prepareChannelMessageSpecificContents(
+            ChannelEofMessage object, Chooser chooser) {}
 }

@@ -9,6 +9,17 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpInitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpUnknownMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.SftpVersionMessage;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extended_response.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.response.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.SftpV4InitMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.request.*;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseAttributesMessage;
+import de.rub.nds.sshattacker.core.data.sftp.v4.message.response.SftpV4ResponseNameMessage;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -130,9 +141,96 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
         @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
         @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
-        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
+        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply"),
+        // SFTP
+        @XmlElement(type = SftpInitMessage.class, name = "SftpInit"),
+        @XmlElement(
+                type = SftpRequestCheckFileHandleMessage.class,
+                name = "SftpRequestCheckFileHandle"),
+        @XmlElement(
+                type = SftpRequestCheckFileNameMessage.class,
+                name = "SftpRequestCheckFileName"),
+        @XmlElement(type = SftpRequestCloseMessage.class, name = "SftpRequestClose"),
+        @XmlElement(type = SftpRequestCopyDataMessage.class, name = "SftpRequestCopyData"),
+        @XmlElement(type = SftpRequestCopyFileMessage.class, name = "SftpRequestCopyFile"),
+        @XmlElement(type = SftpRequestExpandPathMessage.class, name = "SftpRequestExpandPath"),
+        @XmlElement(type = SftpRequestFileSetStatMessage.class, name = "SftpRequestFileSetStat"),
+        @XmlElement(type = SftpRequestFileStatMessage.class, name = "SftpRequestFileStat"),
+        @XmlElement(type = SftpRequestFileStatVfsMessage.class, name = "SftpRequestFileStatVfs"),
+        @XmlElement(type = SftpRequestFileSyncMessage.class, name = "SftpRequestFileSync"),
+        @XmlElement(
+                type = SftpRequestGetTempFolderMessage.class,
+                name = "SftpRequestGetTempFolder"),
+        @XmlElement(type = SftpRequestHardlinkMessage.class, name = "SftpRequestHardlink"),
+        @XmlElement(
+                type = SftpRequestHomeDirectoryMessage.class,
+                name = "SftpRequestHomeDirectory"),
+        @XmlElement(type = SftpRequestLimitsMessage.class, name = "SftpRequestLimits"),
+        @XmlElement(type = SftpRequestLinkSetStatMessage.class, name = "SftpRequestLinkSetStat"),
+        @XmlElement(type = SftpRequestLinkStatMessage.class, name = "SftpRequestLinkStat"),
+        @XmlElement(type = SftpRequestMakeDirMessage.class, name = "SftpRequestMakeDir"),
+        @XmlElement(
+                type = SftpRequestMakeTempFolderMessage.class,
+                name = "SftpRequestMakeTempFolder"),
+        @XmlElement(type = SftpRequestOpenDirMessage.class, name = "SftpRequestOpenDir"),
+        @XmlElement(type = SftpRequestOpenMessage.class, name = "SftpRequestOpen"),
+        @XmlElement(type = SftpRequestPosixRenameMessage.class, name = "SftpRequestPosixRename"),
+        @XmlElement(type = SftpRequestReadDirMessage.class, name = "SftpRequestReadDir"),
+        @XmlElement(type = SftpRequestReadLinkMessage.class, name = "SftpRequestReadLink"),
+        @XmlElement(type = SftpRequestReadMessage.class, name = "SftpRequestRead"),
+        @XmlElement(type = SftpRequestRealPathMessage.class, name = "SftpRequestRealPath"),
+        @XmlElement(type = SftpRequestRemoveMessage.class, name = "SftpRequestRemove"),
+        @XmlElement(type = SftpRequestRenameMessage.class, name = "SftpRequestRename"),
+        @XmlElement(type = SftpRequestRemoveDirMessage.class, name = "SftpRequestRmdir"),
+        @XmlElement(type = SftpRequestSetStatMessage.class, name = "SftpRequestSetStat"),
+        @XmlElement(
+                type = SftpRequestSpaceAvailableMessage.class,
+                name = "SftpRequestSpaceAvailable"),
+        @XmlElement(type = SftpRequestStatMessage.class, name = "SftpRequestStat"),
+        @XmlElement(type = SftpRequestStatVfsMessage.class, name = "SftpRequestStatVfs"),
+        @XmlElement(type = SftpRequestSymbolicLinkMessage.class, name = "SftpRequestSymbolicLink"),
+        @XmlElement(type = SftpRequestUnknownMessage.class, name = "SftpRequestUnknown"),
+        @XmlElement(
+                type = SftpRequestUsersGroupsByIdMessage.class,
+                name = "SftpRequestUsersGroupsById"),
+        @XmlElement(type = SftpRequestVendorIdMessage.class, name = "SftpRequestVendorId"),
+        @XmlElement(type = SftpRequestWithHandleMessage.class, name = "SftpRequestWithHandle"),
+        @XmlElement(type = SftpRequestWithPathMessage.class, name = "SftpRequestWithPath"),
+        @XmlElement(type = SftpRequestWriteMessage.class, name = "SftpRequestWrite"),
+        @XmlElement(type = SftpResponseAttributesMessage.class, name = "SftpResponseAttributes"),
+        @XmlElement(type = SftpResponseCheckFileMessage.class, name = "SftpResponseCheckFile"),
+        @XmlElement(type = SftpResponseDataMessage.class, name = "SftpResponseData"),
+        @XmlElement(type = SftpResponseHandleMessage.class, name = "SftpResponseHandle"),
+        @XmlElement(type = SftpResponseLimitsMessage.class, name = "SftpResponseLimits"),
+        @XmlElement(type = SftpResponseNameMessage.class, name = "SftpResponseName"),
+        @XmlElement(
+                type = SftpResponseSpaceAvailableMessage.class,
+                name = "SftpResponseSpaceAvailable"),
+        @XmlElement(type = SftpResponseStatusMessage.class, name = "SftpResponseStatus"),
+        @XmlElement(type = SftpResponseStatVfsMessage.class, name = "SftpResponseStatVfs"),
+        @XmlElement(type = SftpResponseUnknownMessage.class, name = "SftpResponseUnknown"),
+        @XmlElement(
+                type = SftpResponseUsersGroupsByIdMessage.class,
+                name = "SftpResponseUsersGroupsById"),
+        @XmlElement(type = SftpUnknownMessage.class, name = "SftpUnknown"),
+        @XmlElement(type = SftpVersionMessage.class, name = "SftpVersion"),
+        // SFTP V4
+        @XmlElement(type = SftpRequestTextSeekMessage.class, name = "SftpRequestTextSeek"),
+        @XmlElement(type = SftpV4InitMessage.class, name = "SftpV4Init"),
+        @XmlElement(type = SftpV4ResponseNameMessage.class, name = "SftpV4ResponseName"),
+        @XmlElement(
+                type = SftpV4ResponseAttributesMessage.class,
+                name = "SftpV4ResponseAttributes"),
+        @XmlElement(type = SftpV4RequestOpenMessage.class, name = "SftpV4RequestOpen"),
+        @XmlElement(type = SftpV4RequestFileStatMessage.class, name = "SftpV4RequestFileStat"),
+        @XmlElement(
+                type = SftpV4RequestFileSetStatMessage.class,
+                name = "SftpV4RequestFileSetStat"),
+        @XmlElement(type = SftpV4RequestSetStatMessage.class, name = "SftpV4RequestSetStat"),
+        @XmlElement(type = SftpV4RequestMakeDirMessage.class, name = "SftpV4RequestMakeDir"),
+        @XmlElement(type = SftpV4RequestStatMessage.class, name = "SftpV4RequestStat")
     })
-    protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
+    protected ArrayList<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
     /**
      * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
@@ -160,40 +258,58 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages;
 
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS}
+     * option has been set.
+     */
+    @XmlElement protected Boolean ignoreUnexpectedChannelWindowAdjusts;
+
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements({
         @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
         @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
     })
-    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
+    protected ArrayList<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    public ReceiveAction(List<ProtocolMessage<?>> expectedMessages) {
+    public ReceiveAction(ArrayList<ProtocolMessage<?>> expectedMessages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.expectedMessages = expectedMessages;
     }
 
+    public ReceiveAction(List<ProtocolMessage<?>> expectedMessages) {
+        this(new ArrayList<>(expectedMessages));
+    }
+
     public ReceiveAction(ProtocolMessage<?>... expectedMessages) {
-        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+        this(Arrays.asList(expectedMessages));
     }
 
     public ReceiveAction(
-            Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> expectedMessages) {
+            Set<ReceiveOption> receiveOptions, ArrayList<ProtocolMessage<?>> expectedMessages) {
         this(expectedMessages);
         setReceiveOptions(receiveOptions);
+    }
+
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
+        this(receiveOptions, new ArrayList<>(messages));
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage<?>... messages) {
         this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> expectedMessages) {
+    public ReceiveAction(
+            ReceiveOption receiveOption, ArrayList<ProtocolMessage<?>> expectedMessages) {
         this(Set.of(receiveOption), expectedMessages);
+    }
+
+    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
+        this(receiveOption, new ArrayList<>(messages));
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -204,37 +320,70 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    public ReceiveAction(String connectionAlias, ArrayList<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         expectedMessages = messages;
+    }
+
+    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+        this(connectionAlias, new ArrayList<>(messages));
     }
 
     public ReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
+    public ReceiveAction(ReceiveAction other) {
+        super(other);
+        if (other.expectedMessages != null) {
+            expectedMessages = new ArrayList<>(other.expectedMessages.size());
+            for (ProtocolMessage<?> item : other.expectedMessages) {
+                expectedMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+        earlyCleanShutdown = other.earlyCleanShutdown;
+        checkOnlyExpected = other.checkOnlyExpected;
+        ignoreUnexpectedGlobalRequestsWithoutWantReply =
+                other.ignoreUnexpectedGlobalRequestsWithoutWantReply;
+        failOnUnexpectedIgnoreMessages = other.failOnUnexpectedIgnoreMessages;
+        failOnUnexpectedDebugMessages = other.failOnUnexpectedDebugMessages;
+        ignoreUnexpectedChannelWindowAdjusts = other.ignoreUnexpectedChannelWindowAdjusts;
+        if (other.receivedPackets != null) {
+            receivedPackets = new ArrayList<>(other.receivedPackets.size());
+            for (AbstractPacket item : other.receivedPackets) {
+                receivedPackets.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ReceiveAction createCopy() {
+        return new ReceiveAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        SshContext context = state.getSshContext(getConnectionAlias());
+        SshContext context = state.getSshContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
+        LOGGER.debug("Receiving messages for connection alias '{}'...", connectionAlias);
         MessageActionResult result =
                 ReceiveMessageHelper.receiveMessages(context, expectedMessages);
         messages = result.getMessageList();
         receivedPackets = result.getPacketList();
         setExecuted(true);
 
-        String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Expected messages: {}", expected);
-        String received = getReadableString(messages);
+        LOGGER.debug("Expected messages: {}", () -> getReadableString(expectedMessages));
         if (hasDefaultAlias()) {
-            LOGGER.info("Received messages: {}", received);
+            LOGGER.info("Received messages: {}", () -> getReadableString(messages));
         } else {
-            LOGGER.info("Received messages ({}): {}", getConnectionAlias(), received);
+            LOGGER.info(
+                    "Received messages ({}): {}",
+                    this::getConnectionAlias,
+                    () -> getReadableString(messages));
         }
     }
 
@@ -242,25 +391,28 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
-        sb.append("\tExpected:");
+        sb.append("\tExpected: ");
         if (expectedMessages != null) {
-            for (ProtocolMessage<?> message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < expectedMessages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(expectedMessages.get(i).toCompactString());
             }
         } else {
             sb.append(" (no messages set)");
         }
-        sb.append("\n\tActual:");
+        sb.append("\n\tActual: ");
         if (messages != null && !messages.isEmpty()) {
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
         } else {
             sb.append(" (no messages set)");
         }
-        sb.append("\n");
         return sb.toString();
     }
 
@@ -269,11 +421,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             sb.append(" (");
-            for (ProtocolMessage<?> message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
+            for (int i = 0; i < expectedMessages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(expectedMessages.get(i).toCompactString());
             }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }
@@ -336,6 +490,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 //   to 0.
                 // - the `FAIL_ON_UNEXPECTED_IGNORE_MESSAGES` receive option is not
                 //   set and the actual message is an SSH_MSG_IGNORE message.
+                // - the `IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS`
+                //   receive option is set and the actual message is an
+                //   SSH_MSG_CHANNEL_WINDOW_ADJUST.
+                // - the `IGNORE_CHANNEL_DATA_WRAPPER`
+                //   receive option is set and the actual message is an
+                //   SSH_MSG_CHANNEL_DATA.
                 //
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
@@ -351,7 +511,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                                 && actualMessage instanceof IgnoreMessage
                         || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
-                                && actualMessage instanceof DebugMessage) {
+                                && actualMessage instanceof DebugMessage
+                        || hasReceiveOption(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS)
+                                && actualMessage instanceof ChannelWindowAdjustMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }
@@ -382,8 +544,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @SuppressWarnings("SuspiciousGetterSetter")
-    void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
+    void setReceivedMessages(ArrayList<ProtocolMessage<?>> receivedMessages) {
         messages = receivedMessages;
+    }
+
+    void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
+        messages = new ArrayList<>(receivedMessages);
     }
 
     @Override
@@ -391,12 +557,20 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return receivedPackets;
     }
 
-    public void setReceivedPackets(List<AbstractPacket> packetList) {
+    public void setReceivedPackets(ArrayList<AbstractPacket> receivedPackets) {
         this.receivedPackets = receivedPackets;
     }
 
-    public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
+    public void setReceivedPackets(List<AbstractPacket> receivedPackets) {
+        this.receivedPackets = new ArrayList<>(receivedPackets);
+    }
+
+    public void setExpectedMessages(ArrayList<ProtocolMessage<?>> expectedMessages) {
         this.expectedMessages = expectedMessages;
+    }
+
+    public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
+        this.expectedMessages = new ArrayList<>(expectedMessages);
     }
 
     public void setExpectedMessages(ProtocolMessage<?>... expectedMessages) {
@@ -418,6 +592,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                             ignoreUnexpectedGlobalRequestsWithoutWantReply;
                     case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES -> failOnUnexpectedIgnoreMessages;
                     case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES -> failOnUnexpectedDebugMessages;
+                    case IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS ->
+                            ignoreUnexpectedChannelWindowAdjusts;
                 };
 
         return value != null && value;
@@ -449,6 +625,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
         failOnUnexpectedDebugMessages =
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
+        ignoreUnexpectedChannelWindowAdjusts =
+                receiveOptions.contains(ReceiveOption.IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS);
 
         if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                 && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
@@ -458,13 +636,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         messages = null;
         receivedPackets = null;
         setExecuted(null);
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
@@ -549,7 +726,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
          *     section 11.3 "Debug Message"</a>
          */
-        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES;
+        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES,
+        /**
+         * Ignore unexpected {@code SSH_MSG_CHANNEL_WINDOW_ADJUST} messages when checking if the
+         * reception action was executed as planned.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-5.2">RFC 4254,
+         *     section 5.2 "Data Transfer"</a>
+         */
+        IGNORE_UNEXPECTED_CHANNEL_WINDOW_ADJUSTS;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));

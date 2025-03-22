@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeDoneMessagePreparator;
@@ -20,39 +17,28 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyExchangeDoneMessage> {
 
-    public RsaKeyExchangeDoneMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public RsaKeyExchangeDoneMessageHandler(SshContext context, RsaKeyExchangeDoneMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, RsaKeyExchangeDoneMessage object) {
         KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, object);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array) {
+    public RsaKeyExchangeDoneMessageParser getParser(byte[] array, SshContext context) {
         return new RsaKeyExchangeDoneMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array, int startPosition) {
+    public RsaKeyExchangeDoneMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new RsaKeyExchangeDoneMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<RsaKeyExchangeDoneMessage> getPreparator() {
-        return new RsaKeyExchangeDoneMessagePreparator(context.getChooser(), message);
-    }
+    public static final RsaKeyExchangeDoneMessagePreparator PREPARATOR =
+            new RsaKeyExchangeDoneMessagePreparator();
 
-    @Override
-    public SshMessageSerializer<RsaKeyExchangeDoneMessage> getSerializer() {
-        return new RsaKeyExchangeDoneMessageSerializer(message);
-    }
+    public static final RsaKeyExchangeDoneMessageSerializer SERIALIZER =
+            new RsaKeyExchangeDoneMessageSerializer();
 }

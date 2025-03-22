@@ -13,6 +13,8 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.workflow.action.ConnectionBoundAction;
+import de.rub.nds.sshattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -39,7 +41,7 @@ public final class WorkflowTraceNormalizer {
      * @param mode The mode the Trace is run in
      */
     public static void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
-        List<AliasedConnection> traceConnections = trace.getConnections();
+        ArrayList<AliasedConnection> traceConnections = trace.getConnections();
         InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
         OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
 
@@ -154,7 +156,7 @@ public final class WorkflowTraceNormalizer {
                     "Workflow trace not well defined. " + "Trace does not define any connections.");
         }
 
-        List<String> knownAliases = new ArrayList<>();
+        HashSet<String> knownAliases = new HashSet<>();
         for (AliasedConnection con : connections) {
             String conAlias = con.getAlias();
             if (conAlias == null || conAlias.isEmpty()) {
@@ -178,13 +180,42 @@ public final class WorkflowTraceNormalizer {
                         "Workflow trace not well defined. " + e.getLocalizedMessage());
             }
 
-            if (!new HashSet<>(knownAliases).containsAll(action.getAllAliases())) {
-                throw new ConfigurationException(
-                        "Workflow trace not well defined. "
-                                + "Trace has action with reference to unknown connection alias, action: "
-                                + action.toCompactString()
-                                + ", known aliases: "
-                                + knownAliases);
+            if (action instanceof ForwardMessagesAction) {
+                if (!knownAliases.contains(((ForwardMessagesAction) action).getForwardToAlias())) {
+                    throw new ConfigurationException(
+                            "Workflow trace not well defined. "
+                                    + "Trace has action with reference to unknown connection alias, action: "
+                                    + action.toCompactString()
+                                    + ", known aliases: "
+                                    + knownAliases);
+                }
+                if (!knownAliases.contains(
+                        ((ForwardMessagesAction) action).getReceiveFromAlias())) {
+                    throw new ConfigurationException(
+                            "Workflow trace not well defined. "
+                                    + "Trace has action with reference to unknown connection alias, action: "
+                                    + action.toCompactString()
+                                    + ", known aliases: "
+                                    + knownAliases);
+                }
+            } else if (action instanceof ConnectionBoundAction) {
+                if (!knownAliases.contains(((ConnectionBoundAction) action).getConnectionAlias())) {
+                    throw new ConfigurationException(
+                            "Workflow trace not well defined. "
+                                    + "Trace has action with reference to unknown connection alias, action: "
+                                    + action.toCompactString()
+                                    + ", known aliases: "
+                                    + knownAliases);
+                }
+            } else {
+                if (!knownAliases.containsAll(action.getAllAliases())) {
+                    throw new ConfigurationException(
+                            "Workflow trace not well defined. "
+                                    + "Trace has action with reference to unknown connection alias, action: "
+                                    + action.toCompactString()
+                                    + ", known aliases: "
+                                    + knownAliases);
+                }
             }
         }
     }

@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class IgnoreMessagePreparator extends SshMessagePreparator<IgnoreMessage> {
 
-    public IgnoreMessagePreparator(Chooser chooser, IgnoreMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_IGNORE);
+    public IgnoreMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_IGNORE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(IgnoreMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
-        getObject().setData(new byte[0], true);
+        object.setData(new byte[10], true);
     }
 }

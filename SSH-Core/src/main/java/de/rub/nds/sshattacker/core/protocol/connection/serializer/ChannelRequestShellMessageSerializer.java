@@ -10,9 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShellMessage;
 
 public class ChannelRequestShellMessageSerializer
-        extends ChannelRequestMessageSerializer<ChannelRequestShellMessage> {
-
-    public ChannelRequestShellMessageSerializer(ChannelRequestShellMessage message) {
-        super(message);
-    }
-}
+        extends ChannelRequestMessageSerializer<ChannelRequestShellMessage> {}

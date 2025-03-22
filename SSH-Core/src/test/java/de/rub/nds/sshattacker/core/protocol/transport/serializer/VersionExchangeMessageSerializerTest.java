@@ -44,8 +44,8 @@ public class VersionExchangeMessageSerializerTest {
         msg.setVersion(providedVersion);
         msg.setComment(providedComment);
         msg.setEndOfMessageSequence("\r\n");
-        VersionExchangeMessageSerializer serializer = new VersionExchangeMessageSerializer(msg);
+        VersionExchangeMessageSerializer serializer = new VersionExchangeMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

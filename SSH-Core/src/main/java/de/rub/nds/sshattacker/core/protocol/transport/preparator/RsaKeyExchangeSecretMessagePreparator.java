@@ -11,28 +11,21 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RsaKeyExchangeSecretMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
-
     private static Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeSecretMessagePreparator(
-            Chooser chooser, RsaKeyExchangeSecretMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
+    public RsaKeyExchangeSecretMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.generateSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
-        prepareEncryptedSecret();
-    }
-
-    private void prepareEncryptedSecret() {
+    protected void prepareMessageSpecificContents(
+            RsaKeyExchangeSecretMessage object, Chooser chooser) {
         byte[] encryptedSecret;
         try {
             chooser.getRsaKeyExchange().encapsulate();
@@ -42,7 +35,9 @@ public class RsaKeyExchangeSecretMessagePreparator
                     "Error while preparing RsaKeyExchangeSecretMessage - encapsulation failed", e);
             encryptedSecret = new byte[0];
         }
-        getObject().setEncryptedSecret(encryptedSecret, true);
+
+        object.setEncryptedSecret(encryptedSecret, true);
+
         chooser.getContext().getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
     }
 }

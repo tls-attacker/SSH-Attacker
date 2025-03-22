@@ -17,35 +17,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestUnknownMessageHandler
         extends SshMessageHandler<GlobalRequestUnknownMessage> {
 
-    public GlobalRequestUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestUnknownMessageHandler(
-            SshContext context, GlobalRequestUnknownMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestUnknownMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public GlobalRequestUnknownMessageParser getParser(byte[] array) {
+    public GlobalRequestUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestUnknownMessageParser(array);
     }
 
     @Override
-    public GlobalRequestUnknownMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestUnknownMessagePreparator getPreparator() {
-        return new GlobalRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestUnknownMessagePreparator PREPARATOR =
+            new GlobalRequestUnknownMessagePreparator();
 
-    @Override
-    public GlobalRequestUnknownMessageSerializer getSerializer() {
-        return new GlobalRequestUnknownMessageSerializer(message);
-    }
+    public static final GlobalRequestUnknownMessageSerializer SERIALIZER =
+            new GlobalRequestUnknownMessageSerializer();
 }

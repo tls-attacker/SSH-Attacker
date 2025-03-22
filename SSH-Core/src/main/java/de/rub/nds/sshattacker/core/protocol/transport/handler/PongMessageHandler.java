@@ -20,38 +20,24 @@ public class PongMessageHandler extends SshMessageHandler<PongMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PongMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public PongMessageHandler(SshContext context, PongMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, PongMessage object) {
         LOGGER.debug(
                 "PongMessage received from remote, responded data length: {}",
-                message.getDataLength().getValue());
+                () -> object.getDataLength().getValue());
     }
 
     @Override
-    public PongMessageParser getParser(byte[] array) {
+    public PongMessageParser getParser(byte[] array, SshContext context) {
         return new PongMessageParser(array);
     }
 
     @Override
-    public PongMessageParser getParser(byte[] array, int startPosition) {
+    public PongMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new PongMessageParser(array, startPosition);
     }
 
-    @Override
-    public PongMessagePreparator getPreparator() {
-        return new PongMessagePreparator(context.getChooser(), message);
-    }
+    public static final PongMessagePreparator PREPARATOR = new PongMessagePreparator();
 
-    @Override
-    public PongMessageSerializer getSerializer() {
-        return new PongMessageSerializer(message);
-    }
+    public static final PongMessageSerializer SERIALIZER = new PongMessageSerializer();
 }

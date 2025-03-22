@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -17,12 +16,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlElement;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,6 +60,16 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias, Arrays.asList(messages));
     }
 
+    public SendAction(SendAction other) {
+        super(other);
+        failed = other.failed;
+    }
+
+    @Override
+    public SendAction createCopy() {
+        return new SendAction(this);
+    }
+
     /**
      * Set the failure status of this action.
      *
@@ -94,15 +98,16 @@ public class SendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: {}", sending);
+            LOGGER.info("Sending messages: {}", () -> getReadableString(messages));
         } else {
-            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
+            LOGGER.info(
+                    "Sending messages ({}): {}",
+                    () -> connectionAlias,
+                    () -> getReadableString(messages));
         }
 
-        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
-        MessageActionResult result = SendMessageHelper.sendMessages(context, messages.stream());
+        MessageActionResult result = SendMessageHelper.sendMessages(context, messages, true);
 
         // Check if all actions that were expected to be sent were actually
         // sent or if some failure occurred.
@@ -124,13 +129,14 @@ public class SendAction extends MessageAction implements SendingAction {
         } else {
             sb = new StringBuilder("Send Action: (not executed)\n");
         }
-        sb.append("\tMessages:");
+        sb.append("\tMessages: ");
         if (messages != null) {
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
-            sb.append("\n");
         } else {
             sb.append("null (no messages set)");
         }
@@ -142,11 +148,13 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if (messages != null && !messages.isEmpty()) {
             sb.append(" (");
-            for (ProtocolMessage<?> message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
+            for (int i = 0; i < messages.size(); i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(messages.get(i).toCompactString());
             }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+            sb.append(")");
         } else {
             sb.append(" (no messages set)");
         }
@@ -159,42 +167,21 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void reset() {
-        List<ModifiableVariableHolder> holders = new LinkedList<>();
-        if (messages != null) {
-            for (ProtocolMessage<?> message : messages) {
-                holders.addAll(message.getAllModifiableVariableHolders());
+    public void reset(boolean resetModifiableVariables) {
+        if (resetModifiableVariables) {
+            List<ModifiableVariableHolder> holders = new LinkedList<>();
+            if (messages != null) {
+                for (ProtocolMessage<?> message : messages) {
+                    holders.addAll(message.getAllModifiableVariableHolders());
+                }
             }
-        }
-        for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-
-                ModifiableVariable<?> mv = null;
-                try {
-                    mv = (ModifiableVariable<?>) field.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                    LOGGER.debug(ex);
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            field.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
+            for (ModifiableVariableHolder holder : holders) {
+                holder.resetUsingRefelctions();
             }
         }
         setExecuted(null);
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getSendMessages() {
         return messages;

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,18 +17,17 @@ public class ChannelWindowAdjustMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelWindowAdjustMessageSerializer(ChannelWindowAdjustMessage message) {
-        super(message);
-    }
-
-    private void serializeBytesToAdd() {
-        LOGGER.debug("Bytes to add: {}", message.getBytesToAdd().getValue());
-        appendInt(message.getBytesToAdd().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeBytesToAdd(
+            ChannelWindowAdjustMessage object, SerializerStream output) {
+        Integer bytesToAdd = object.getBytesToAdd().getValue();
+        LOGGER.debug("Bytes to add: {}", bytesToAdd);
+        output.appendInt(bytesToAdd);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeBytesToAdd();
+    protected void serializeMessageSpecificContents(
+            ChannelWindowAdjustMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeBytesToAdd(object, output);
     }
 }

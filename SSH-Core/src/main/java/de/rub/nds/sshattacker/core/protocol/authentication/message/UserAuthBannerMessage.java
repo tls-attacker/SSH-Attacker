@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
@@ -21,6 +22,24 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public UserAuthBannerMessage() {
+        super();
+    }
+
+    public UserAuthBannerMessage(UserAuthBannerMessage other) {
+        super(other);
+        messageLength = other.messageLength != null ? other.messageLength.createCopy() : null;
+        message = other.message != null ? other.message.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthBannerMessage createCopy() {
+        return new UserAuthBannerMessage(this);
+    }
 
     public ModifiableInteger getMessageLength() {
         return messageLength;
@@ -102,8 +121,25 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
         }
     }
 
+    public static final UserAuthBannerMessageHandler HANDLER = new UserAuthBannerMessageHandler();
+
     @Override
-    public UserAuthBannerMessageHandler getHandler(SshContext context) {
-        return new UserAuthBannerMessageHandler(context, this);
+    public UserAuthBannerMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthBannerMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthBannerMessageHandler.SERIALIZER.serialize(this);
     }
 }

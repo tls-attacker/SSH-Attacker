@@ -36,6 +36,14 @@ public abstract class FieldElement implements Serializable {
         this.modulus = modulus;
     }
 
+    protected FieldElement(FieldElement other) {
+        super();
+        data = other.data;
+        modulus = other.modulus;
+    }
+
+    public abstract FieldElement createCopy();
+
     /**
      * Performs an addition in the field, which this is an element of.
      *

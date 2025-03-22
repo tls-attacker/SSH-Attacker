@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestSuccessMessagePreparator;
@@ -17,38 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestSuccessMessageHandler
         extends SshMessageHandler<GlobalRequestSuccessMessage> {
 
-    public GlobalRequestSuccessMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestSuccessMessageHandler(
-            SshContext context, GlobalRequestSuccessMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, GlobalRequestSuccessMessage object) {
         // TODO: Handle RequestSuccessMessage
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(byte[] array) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestSuccessMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(
-            byte[] array, int startPosition) {
+    public GlobalRequestSuccessMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestSuccessMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<GlobalRequestSuccessMessage> getPreparator() {
-        return new GlobalRequestSuccessMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestSuccessMessagePreparator PREPARATOR =
+            new GlobalRequestSuccessMessagePreparator();
 
-    @Override
-    public SshMessageSerializer<GlobalRequestSuccessMessage> getSerializer() {
-        return new GlobalRequestSuccessMessageSerializer(message);
-    }
+    public static final GlobalRequestSuccessMessageSerializer SERIALIZER =
+            new GlobalRequestSuccessMessageSerializer();
 }

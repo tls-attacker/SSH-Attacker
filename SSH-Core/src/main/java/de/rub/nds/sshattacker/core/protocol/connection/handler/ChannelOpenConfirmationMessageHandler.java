@@ -7,8 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
@@ -18,55 +20,66 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenConfirmationMessageHandler
-        extends SshMessageHandler<ChannelOpenConfirmationMessage> {
+        extends SshMessageHandler<ChannelOpenConfirmationMessage>
+        implements MessageSentHandler<ChannelOpenConfirmationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenConfirmationMessageHandler(
-            SshContext context, ChannelOpenConfirmationMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+    public void adjustContext(SshContext context, ChannelOpenConfirmationMessage object) {
+        ChannelManager channelManager = context.getChannelManager();
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
+        Integer senderChannelId = object.getSenderChannelId().getValue();
+
+        Channel channel = channelManager.getPendingChannelByLocalId(recipientChannelId);
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
-                    getClass().getSimpleName(),
-                    message.getRecipientChannelId().getValue());
-            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
-            channel.setLocalChannelId(message.getRecipientChannelId().getValue());
-            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
+                    object.getClass().getSimpleName(),
+                    recipientChannelId);
+            channel =
+                    channelManager.createNewChannelFromDefaults(
+                            recipientChannelId, senderChannelId);
+        } else {
+            channel.setRemoteChannelId(senderChannelId);
+            channelManager.confirmPendingChannel(channel);
         }
 
-        channel.setRemoteChannelId(message.getSenderChannelId());
-        channel.setRemotePacketSize(message.getPacketSize());
-        channel.setRemoteWindowSize(message.getWindowSize());
+        channel.setRemotePacketSize(object.getPacketSize());
+        channel.setRemoteWindowSize(object.getWindowSize());
         channel.setOpen(true);
     }
 
     @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
+    public void adjustContextAfterMessageSent(
+            SshContext context, ChannelOpenConfirmationMessage object) {
+        Integer localChannelId = object.getSenderChannelId().getValue();
+        Channel cahnnel = context.getChannelManager().getChannelByLocalId(localChannelId);
+        if (cahnnel != null) {
+            // Channel is already added to the ChannelManager, just need to set it to open
+            cahnnel.setOpen(true);
+        } else {
+            LOGGER.warn(
+                    "{} sent but no channel with id {} found locally, ignoring request to confirm to open the channel.",
+                    object.getClass().getSimpleName(),
+                    localChannelId);
+        }
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenConfirmationMessageParser(array);
     }
 
     @Override
-    public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenConfirmationMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenConfirmationMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenConfirmationMessagePreparator getPreparator() {
-        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenConfirmationMessagePreparator PREPARATOR =
+            new ChannelOpenConfirmationMessagePreparator();
 
-    @Override
-    public ChannelOpenConfirmationMessageSerializer getSerializer() {
-        return new ChannelOpenConfirmationMessageSerializer(message);
-    }
+    public static final ChannelOpenConfirmationMessageSerializer SERIALIZER =
+            new ChannelOpenConfirmationMessageSerializer();
 }

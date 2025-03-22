@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,29 +18,32 @@ public class DhGexKeyExchangeRequestMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeRequestMessageSerializer(DhGexKeyExchangeRequestMessage message) {
-        super(message);
+    private static void serializeMinimalGroupSize(
+            DhGexKeyExchangeRequestMessage object, SerializerStream output) {
+        Integer minimalGroupSize = object.getMinimalGroupSize().getValue();
+        LOGGER.debug("Minimal group size: {}", minimalGroupSize);
+        output.appendInt(minimalGroupSize);
     }
 
-    private void serializeMinimalGroupSize() {
-        LOGGER.debug("Minimal group size: {}", message.getMinimalGroupSize().getValue());
-        appendInt(message.getMinimalGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializePreferredGroupSize(
+            DhGexKeyExchangeRequestMessage object, SerializerStream output) {
+        Integer preferredGroupSize = object.getPreferredGroupSize().getValue();
+        LOGGER.debug("Preferred group size: {}", preferredGroupSize);
+        output.appendInt(preferredGroupSize);
     }
 
-    private void serializePreferredGroupSize() {
-        LOGGER.debug("Preferred group size: {}", message.getPreferredGroupSize().getValue());
-        appendInt(message.getPreferredGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    private void serializeMaximalGroupSize() {
-        LOGGER.debug("Maximal group size: {}", message.getMaximalGroupSize().getValue());
-        appendInt(message.getMaximalGroupSize().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeMaximalGroupSize(
+            DhGexKeyExchangeRequestMessage object, SerializerStream output) {
+        Integer maximalGroupSize = object.getMaximalGroupSize().getValue();
+        LOGGER.debug("Maximal group size: {}", maximalGroupSize);
+        output.appendInt(maximalGroupSize);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeMinimalGroupSize();
-        serializePreferredGroupSize();
-        serializeMaximalGroupSize();
+    protected void serializeMessageSpecificContents(
+            DhGexKeyExchangeRequestMessage object, SerializerStream output) {
+        serializeMinimalGroupSize(object, output);
+        serializePreferredGroupSize(object, output);
+        serializeMaximalGroupSize(object, output);
     }
 }
