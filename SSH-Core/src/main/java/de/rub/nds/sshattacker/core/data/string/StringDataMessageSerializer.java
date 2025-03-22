@@ -26,7 +26,7 @@ public class StringDataMessageSerializer extends ProtocolMessageSerializer<Strin
     }
 
     @Override
-    public final void serializeProtocolMessageContents(
+    protected void serializeProtocolMessageContents(
             StringDataMessage object, SerializerStream output) {
         serializeData(object, output);
     }

@@ -18,7 +18,7 @@ public class UnknownDataMessageSerializer extends ProtocolMessageSerializer<Unkn
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public final void serializeProtocolMessageContents(
+    protected void serializeProtocolMessageContents(
             UnknownDataMessage object, SerializerStream output) {
         byte[] payload = object.getPayload().getValue();
         LOGGER.debug("Payload: {}", () -> ArrayConverter.bytesToHexString(payload));

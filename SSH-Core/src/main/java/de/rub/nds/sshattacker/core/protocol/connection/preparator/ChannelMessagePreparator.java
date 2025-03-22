@@ -30,7 +30,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
     }
 
     @Override
-    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(T object, Chooser chooser) {
         prepareChannel(object, chooser);
         prepareChannelMessageSpecificContents(object, chooser);
     }

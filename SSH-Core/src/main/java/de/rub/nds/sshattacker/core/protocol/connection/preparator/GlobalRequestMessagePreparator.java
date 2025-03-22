@@ -31,7 +31,7 @@ public abstract class GlobalRequestMessagePreparator<T extends GlobalRequestMess
     }
 
     @Override
-    public final void prepareMessageSpecificContents(T object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(T object, Chooser chooser) {
         // Always set correct request name -> Don't use soft set
         object.setRequestName(globalRequestType, true);
         object.setWantReply(wantReply);
