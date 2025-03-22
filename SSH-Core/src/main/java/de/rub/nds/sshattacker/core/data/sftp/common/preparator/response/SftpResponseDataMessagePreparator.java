@@ -19,7 +19,8 @@ public class SftpResponseDataMessagePreparator
     }
 
     @Override
-    public void prepareResponseSpecificContents(SftpResponseDataMessage object, Chooser chooser) {
+    protected void prepareResponseSpecificContents(
+            SftpResponseDataMessage object, Chooser chooser) {
         object.setData(new byte[100], true);
     }
 }

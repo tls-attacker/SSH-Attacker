@@ -19,7 +19,7 @@ public class ChannelRequestXonXoffMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestXonXoffMessage object, Chooser chooser) {
         object.setClientFlowControl(chooser.getConfig().getClientFlowControl());
     }

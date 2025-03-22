@@ -19,7 +19,8 @@ public class SftpExtensionFileStatVfsPreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(SftpExtensionFileStatVfs object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(
+            SftpExtensionFileStatVfs object, Chooser chooser) {
         object.setVersion("2", true);
     }
 }

@@ -18,7 +18,7 @@ public class SftpV4InitMessagePreparator extends SftpMessagePreparator<SftpV4Ini
         super(SftpPacketTypeConstant.SSH_FXP_INIT);
     }
 
-    public void prepareMessageSpecificContents(SftpV4InitMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(SftpV4InitMessage object, Chooser chooser) {
         object.setVersion(chooser.getSftpClientVersion());
         object.getExtensions().clear();
     }

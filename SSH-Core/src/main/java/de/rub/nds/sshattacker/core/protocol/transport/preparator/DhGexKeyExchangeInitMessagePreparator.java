@@ -22,7 +22,7 @@ public class DhGexKeyExchangeInitMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             DhGexKeyExchangeInitMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateKeyPair();

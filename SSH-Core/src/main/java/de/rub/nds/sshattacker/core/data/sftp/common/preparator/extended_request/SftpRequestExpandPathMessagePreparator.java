@@ -19,7 +19,7 @@ public class SftpRequestExpandPathMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestExpandPathMessage object, Chooser chooser) {
         object.setPath("~/etc/passwd", true);
     }

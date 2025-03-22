@@ -19,5 +19,5 @@ public class NewKeysMessagePreparator extends SshMessagePreparator<NewKeysMessag
     }
 
     @Override
-    public void prepareMessageSpecificContents(NewKeysMessage object, Chooser chooser) {}
+    protected void prepareMessageSpecificContents(NewKeysMessage object, Chooser chooser) {}
 }

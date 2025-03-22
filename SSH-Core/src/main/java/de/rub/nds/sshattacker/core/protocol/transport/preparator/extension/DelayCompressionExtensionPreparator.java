@@ -19,7 +19,7 @@ public class DelayCompressionExtensionPreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(
+    protected void prepareExtensionSpecificContents(
             DelayCompressionExtension object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
             object.setCompressionMethodsClientToServer(

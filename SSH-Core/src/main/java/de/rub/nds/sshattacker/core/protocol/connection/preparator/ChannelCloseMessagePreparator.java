@@ -18,6 +18,6 @@ public class ChannelCloseMessagePreparator extends ChannelMessagePreparator<Chan
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(
+    protected void prepareChannelMessageSpecificContents(
             ChannelCloseMessage object, Chooser chooser) {}
 }

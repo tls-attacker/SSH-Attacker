@@ -19,6 +19,6 @@ public class ChannelSuccessMessagePreparator
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(
+    protected void prepareChannelMessageSpecificContents(
             ChannelSuccessMessage object, Chooser chooser) {}
 }

@@ -19,7 +19,8 @@ public class NoFlowControlExtensionPreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(NoFlowControlExtension object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(
+            NoFlowControlExtension object, Chooser chooser) {
         object.setChoice("p", true);
     }
 }

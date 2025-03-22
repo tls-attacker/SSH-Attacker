@@ -19,7 +19,7 @@ public class UnimplementedMessagePreparator extends SshMessagePreparator<Unimple
     }
 
     @Override
-    public void prepareMessageSpecificContents(UnimplementedMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(UnimplementedMessage object, Chooser chooser) {
         object.setSequenceNumber(Integer.MAX_VALUE);
     }
 }

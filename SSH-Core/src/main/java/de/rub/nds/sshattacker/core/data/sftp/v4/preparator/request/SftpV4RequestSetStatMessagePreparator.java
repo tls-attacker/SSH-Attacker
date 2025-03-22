@@ -20,7 +20,7 @@ public class SftpV4RequestSetStatMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(
+    protected void prepareRequestSpecificContents(
             SftpV4RequestSetStatMessage object, Chooser chooser) {
         object.setPath("/tmp/ssh-attacker", true);
 

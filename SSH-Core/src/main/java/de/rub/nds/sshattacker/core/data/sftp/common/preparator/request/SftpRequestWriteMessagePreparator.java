@@ -19,7 +19,7 @@ public class SftpRequestWriteMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestWriteMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(SftpRequestWriteMessage object, Chooser chooser) {
         object.setHandle(
                 chooser.getContext().getSftpManager().getFileHandle(object.getConfigHandleIndex()),
                 true);

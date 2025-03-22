@@ -19,7 +19,7 @@ public class SftpRequestVendorIdMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestVendorIdMessage object, Chooser chooser) {
         object.setVendorName("NDS RUB", true);
 

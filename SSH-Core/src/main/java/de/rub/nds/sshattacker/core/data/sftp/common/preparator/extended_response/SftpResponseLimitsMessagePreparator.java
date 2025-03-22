@@ -14,7 +14,8 @@ public class SftpResponseLimitsMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseLimitsMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(SftpResponseLimitsMessage object, Chooser chooser) {
+    protected void prepareResponseSpecificContents(
+            SftpResponseLimitsMessage object, Chooser chooser) {
         object.setMaximumPacketLength(100000);
 
         object.setMaximumReadLength(0);

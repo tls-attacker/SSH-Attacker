@@ -21,7 +21,7 @@ public class UserAuthPkOkMessagePreparator extends SshMessagePreparator<UserAuth
     }
 
     @Override
-    public void prepareMessageSpecificContents(UserAuthPkOkMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(UserAuthPkOkMessage object, Chooser chooser) {
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
 
         if (pk != null) {

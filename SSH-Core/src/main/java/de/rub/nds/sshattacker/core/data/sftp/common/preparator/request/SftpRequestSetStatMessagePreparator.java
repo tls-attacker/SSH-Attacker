@@ -19,7 +19,8 @@ public class SftpRequestSetStatMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestSetStatMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestSetStatMessage object, Chooser chooser) {
         object.setPath("/tmp/ssh-attacker", true);
 
         object.getAttributes().prepare(chooser);

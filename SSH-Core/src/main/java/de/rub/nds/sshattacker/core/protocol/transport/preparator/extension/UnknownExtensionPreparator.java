@@ -17,7 +17,7 @@ public class UnknownExtensionPreparator extends AbstractExtensionPreparator<Unkn
     }
 
     @Override
-    public void prepareExtensionSpecificContents(UnknownExtension object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(UnknownExtension object, Chooser chooser) {
         object.setValue(new byte[100], true);
     }
 }

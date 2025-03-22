@@ -20,7 +20,7 @@ public class ChannelExtendedDataMessagePreparator
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(
+    protected void prepareChannelMessageSpecificContents(
             ChannelExtendedDataMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
         object.setDataTypeCode(ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());

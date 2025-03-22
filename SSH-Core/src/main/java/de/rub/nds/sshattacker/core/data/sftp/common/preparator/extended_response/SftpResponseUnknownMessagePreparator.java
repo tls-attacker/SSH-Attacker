@@ -14,7 +14,7 @@ public class SftpResponseUnknownMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseUnknownMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpResponseUnknownMessage object, Chooser chooser) {
         object.setResponseSpecificData(new byte[100]);
     }

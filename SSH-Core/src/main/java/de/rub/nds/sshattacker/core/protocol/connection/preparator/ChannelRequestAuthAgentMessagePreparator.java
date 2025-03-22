@@ -19,6 +19,6 @@ public class ChannelRequestAuthAgentMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestAuthAgentMessage object, Chooser chooser) {}
 }

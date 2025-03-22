@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownDataMessagePreparator extends ProtocolMessagePreparator<UnknownDataMessage> {
 
-    public void prepareProtocolMessageContents(UnknownDataMessage object, Chooser chooser) {
+    protected void prepareProtocolMessageContents(UnknownDataMessage object, Chooser chooser) {
         object.setPayload(new byte[0]);
     }
 }

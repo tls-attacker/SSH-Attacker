@@ -17,7 +17,7 @@ public class SftpResponseUsersGroupsByIdMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseUsersGroupsByIdMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpResponseUsersGroupsByIdMessage object, Chooser chooser) {
         if (object.getUserNames().isEmpty()) {
             object.addUserName("ssh");

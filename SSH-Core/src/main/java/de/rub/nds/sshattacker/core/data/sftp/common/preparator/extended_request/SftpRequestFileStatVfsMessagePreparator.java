@@ -19,7 +19,7 @@ public class SftpRequestFileStatVfsMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestFileStatVfsMessage object, Chooser chooser) {
         object.setHandle(
                 chooser.getContext()

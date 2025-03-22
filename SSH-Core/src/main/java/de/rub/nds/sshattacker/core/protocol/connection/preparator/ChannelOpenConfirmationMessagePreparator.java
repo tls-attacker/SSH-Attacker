@@ -27,7 +27,7 @@ public class ChannelOpenConfirmationMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             ChannelOpenConfirmationMessage object, Chooser chooser) {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
         ChannelOpenConfirmationMessage toCopy = channelManager.prepareNextOpenConfirm();

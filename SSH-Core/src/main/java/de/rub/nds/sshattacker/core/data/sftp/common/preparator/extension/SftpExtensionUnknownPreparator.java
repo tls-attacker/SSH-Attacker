@@ -18,7 +18,7 @@ public class SftpExtensionUnknownPreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(SftpExtensionUnknown object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(SftpExtensionUnknown object, Chooser chooser) {
         object.setValue(new byte[100], true);
     }
 }

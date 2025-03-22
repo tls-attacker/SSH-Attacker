@@ -19,5 +19,5 @@ public class UserAuthSuccessMessagePreparator extends SshMessagePreparator<UserA
     }
 
     @Override
-    public void prepareMessageSpecificContents(UserAuthSuccessMessage object, Chooser chooser) {}
+    protected void prepareMessageSpecificContents(UserAuthSuccessMessage object, Chooser chooser) {}
 }

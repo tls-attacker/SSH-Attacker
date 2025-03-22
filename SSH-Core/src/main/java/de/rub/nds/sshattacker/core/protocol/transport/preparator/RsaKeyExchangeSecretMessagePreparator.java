@@ -24,7 +24,7 @@ public class RsaKeyExchangeSecretMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             RsaKeyExchangeSecretMessage object, Chooser chooser) {
         byte[] encryptedSecret;
         try {

@@ -19,7 +19,7 @@ public class UserAuthBannerMessagePreparator extends SshMessagePreparator<UserAu
     }
 
     @Override
-    public void prepareMessageSpecificContents(UserAuthBannerMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(UserAuthBannerMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
 
         object.setMessage("", true);

@@ -19,7 +19,7 @@ public class SftpExtensionWithVersionPreparator<T extends SftpExtensionWithVersi
     }
 
     @Override
-    public void prepareExtensionSpecificContents(T object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(T object, Chooser chooser) {
         object.setVersion("1", true);
     }
 }

@@ -19,7 +19,7 @@ public class SftpRequestSpaceAvailableMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestSpaceAvailableMessage object, Chooser chooser) {
         object.setPath("/tmp", true);
     }

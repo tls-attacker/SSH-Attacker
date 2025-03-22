@@ -28,7 +28,7 @@ public abstract class SftpRequestExtendedMessagePreparator<T extends SftpRequest
     }
 
     @Override
-    public void prepareRequestSpecificContents(T object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(T object, Chooser chooser) {
         // Always set correct extended request name -> Don't use soft set
         object.setExtendedRequestName(extendedRequestName, true);
         prepareRequestExtendedSpecificContents(object, chooser);

@@ -19,7 +19,7 @@ public class GlobalRequestCancelTcpIpForwardMessagePreparator
     }
 
     @Override
-    public void prepareGlobalRequestMessageSpecificContents(
+    protected void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestCancelTcpIpForwardMessage object, Chooser chooser) {
         object.setIpAddressToBind("127.0.0.1", true);
         object.setPortToBind(22);

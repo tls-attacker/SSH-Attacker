@@ -38,7 +38,7 @@ public class UserAuthHostbasedMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents(
+    protected void prepareUserAuthRequestSpecificContents(
             UserAuthHostbasedMessage object, Chooser chooser) {
 
         Config config = chooser.getConfig();

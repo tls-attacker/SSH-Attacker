@@ -20,7 +20,7 @@ public class SftpV4ResponseAttributesMessagePreparator
     }
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpV4ResponseAttributesMessage object, Chooser chooser) {
         object.getAttributes().prepare(chooser);
     }

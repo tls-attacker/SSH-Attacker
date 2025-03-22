@@ -20,6 +20,6 @@ public class GlobalRequestSuccessMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             GlobalRequestSuccessMessage object, Chooser chooser) {}
 }

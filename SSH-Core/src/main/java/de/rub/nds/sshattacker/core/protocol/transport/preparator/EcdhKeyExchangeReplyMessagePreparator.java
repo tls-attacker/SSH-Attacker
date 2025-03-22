@@ -23,7 +23,7 @@ public class EcdhKeyExchangeReplyMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             EcdhKeyExchangeReplyMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);

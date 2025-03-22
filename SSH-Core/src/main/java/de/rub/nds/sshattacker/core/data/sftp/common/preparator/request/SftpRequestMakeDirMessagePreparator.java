@@ -19,7 +19,8 @@ public class SftpRequestMakeDirMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestMakeDirMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestMakeDirMessage object, Chooser chooser) {
         object.setPath("/tmp/ssh-attacker/", true);
 
         object.getAttributes().prepare(chooser);

@@ -15,7 +15,7 @@ public class SftpResponseCheckFileMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseCheckFileMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpResponseCheckFileMessage object, Chooser chooser) {
         object.setUsedHashAlgorithm(HashAlgorithm.MD5, true);
 

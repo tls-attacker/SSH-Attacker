@@ -18,7 +18,7 @@ public class SftpRequestRemoveDirMessagePreparator
         super(SftpPacketTypeConstant.SSH_FXP_RMDIR);
     }
 
-    public void prepareRequestSpecificContents(
+    protected void prepareRequestSpecificContents(
             SftpRequestRemoveDirMessage object, Chooser chooser) {
         object.setPath("/tmp/ssh-attacker", true);
     }

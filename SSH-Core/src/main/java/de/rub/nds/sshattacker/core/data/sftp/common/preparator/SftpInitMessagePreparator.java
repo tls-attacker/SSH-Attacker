@@ -18,7 +18,7 @@ public class SftpInitMessagePreparator extends SftpMessagePreparator<SftpInitMes
         super(SftpPacketTypeConstant.SSH_FXP_INIT);
     }
 
-    public void prepareMessageSpecificContents(SftpInitMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(SftpInitMessage object, Chooser chooser) {
         object.setVersion(chooser.getSftpClientVersion());
         // Only Clients with protocol version 3 should send supported extensions,
         // since version 4 it is recommended to not send extensions in order

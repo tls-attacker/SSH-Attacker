@@ -20,7 +20,7 @@ public class ChannelRequestExitSignalMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestExitSignalMessage object, Chooser chooser) {
         object.setSignalName(SignalType.SIGINT, true);
         object.setCoreDump(false);

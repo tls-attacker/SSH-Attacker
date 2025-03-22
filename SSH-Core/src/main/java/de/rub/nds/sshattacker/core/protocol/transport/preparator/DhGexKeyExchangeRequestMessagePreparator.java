@@ -21,7 +21,7 @@ public class DhGexKeyExchangeRequestMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             DhGexKeyExchangeRequestMessage object, Chooser chooser) {
         Integer minimalDhGroupSize = chooser.getMinimalDhGroupSize();
         Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();

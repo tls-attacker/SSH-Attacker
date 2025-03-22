@@ -20,7 +20,7 @@ public class ChannelRequestWindowChangeMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestWindowChangeMessage object, Chooser chooser) {
         Config config = chooser.getConfig();
         object.setWidthColumns(config.getDefaultTerminalWidthColumns());

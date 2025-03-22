@@ -19,7 +19,7 @@ public class ChannelRequestEnvMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestEnvMessage object, Chooser chooser) {
         object.setVariableName(chooser.getConfig().getDefaultVariableName(), true);
         object.setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);

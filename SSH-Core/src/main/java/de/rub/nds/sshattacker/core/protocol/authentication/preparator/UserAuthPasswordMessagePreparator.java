@@ -19,7 +19,7 @@ public class UserAuthPasswordMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents(
+    protected void prepareUserAuthRequestSpecificContents(
             UserAuthPasswordMessage object, Chooser chooser) {
         object.setChangePassword(false);
 

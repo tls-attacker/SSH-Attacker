@@ -29,7 +29,7 @@ public class HybridKeyExchangeReplyMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             HybridKeyExchangeReplyMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);

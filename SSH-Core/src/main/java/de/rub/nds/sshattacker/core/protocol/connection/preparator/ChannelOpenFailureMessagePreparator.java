@@ -19,7 +19,7 @@ public class ChannelOpenFailureMessagePreparator
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(
+    protected void prepareChannelMessageSpecificContents(
             ChannelOpenFailureMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
         object.setReasonCode(Integer.MAX_VALUE);

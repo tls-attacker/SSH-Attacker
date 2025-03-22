@@ -15,7 +15,7 @@ public class SftpResponseStatVfsMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseStatVfsMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpResponseStatVfsMessage object, Chooser chooser) {
         object.setBlockSize(32);
         object.setFundamentalBlockSize(32);

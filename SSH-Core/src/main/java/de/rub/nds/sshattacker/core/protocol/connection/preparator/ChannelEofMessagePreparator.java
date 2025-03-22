@@ -18,5 +18,6 @@ public class ChannelEofMessagePreparator extends ChannelMessagePreparator<Channe
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(ChannelEofMessage object, Chooser chooser) {}
+    protected void prepareChannelMessageSpecificContents(
+            ChannelEofMessage object, Chooser chooser) {}
 }

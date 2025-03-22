@@ -15,7 +15,7 @@ public class VersionExchangeMessagePreparator
         extends ProtocolMessagePreparator<VersionExchangeMessage> {
 
     @Override
-    public void prepareProtocolMessageContents(VersionExchangeMessage object, Chooser chooser) {
+    protected void prepareProtocolMessageContents(VersionExchangeMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
             object.setVersion(chooser.getClientVersion());
             object.setComment(chooser.getClientComment());

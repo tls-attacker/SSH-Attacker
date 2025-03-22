@@ -18,7 +18,7 @@ public class SftpVersionMessagePreparator extends SftpMessagePreparator<SftpVers
         super(SftpPacketTypeConstant.SSH_FXP_VERSION);
     }
 
-    public void prepareMessageSpecificContents(SftpVersionMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(SftpVersionMessage object, Chooser chooser) {
         // Send own server version, but negotiate the version that is the lower if the two
         object.setVersion(chooser.getSftpServerVersion());
         if (object.getExtensions().isEmpty()) {

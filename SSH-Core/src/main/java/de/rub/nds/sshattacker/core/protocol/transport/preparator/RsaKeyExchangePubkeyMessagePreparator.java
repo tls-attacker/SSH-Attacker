@@ -28,7 +28,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             RsaKeyExchangePubkeyMessage object, Chooser chooser) {
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), object);
         prepareTransientPublicKey(object, chooser);

@@ -21,7 +21,8 @@ public class SftpV4RequestStatMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpV4RequestStatMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpV4RequestStatMessage object, Chooser chooser) {
         object.setPath("/etc/passwd", true);
 
         object.setFlags(SftpFileAttributeFlag.values());

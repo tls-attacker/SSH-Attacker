@@ -19,7 +19,7 @@ public class SftpExtensionNewlinePreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(SftpExtensionNewline object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(SftpExtensionNewline object, Chooser chooser) {
         object.setNewlineSeperator("\n", true);
     }
 }

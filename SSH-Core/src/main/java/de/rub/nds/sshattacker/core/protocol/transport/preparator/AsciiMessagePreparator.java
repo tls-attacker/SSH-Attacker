@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class AsciiMessagePreparator extends ProtocolMessagePreparator<AsciiMessage> {
 
     @Override
-    public void prepareProtocolMessageContents(AsciiMessage object, Chooser chooser) {
+    protected void prepareProtocolMessageContents(AsciiMessage object, Chooser chooser) {
         object.setText(""); // TODO: Add a way to set this via configuration.
         if (chooser.getContext().isClient()) {
             object.setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());

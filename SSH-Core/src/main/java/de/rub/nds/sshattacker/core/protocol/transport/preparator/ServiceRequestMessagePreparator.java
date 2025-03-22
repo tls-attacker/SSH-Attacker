@@ -19,7 +19,7 @@ public class ServiceRequestMessagePreparator extends SshMessagePreparator<Servic
     }
 
     @Override
-    public void prepareMessageSpecificContents(ServiceRequestMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(ServiceRequestMessage object, Chooser chooser) {
         object.setServiceName(chooser.getConfig().getServiceName(), true);
     }
 }

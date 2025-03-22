@@ -23,7 +23,7 @@ public class DhGexKeyExchangeGroupMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             DhGexKeyExchangeGroupMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         if (chooser.getContext().isOldGroupRequestReceived()) {

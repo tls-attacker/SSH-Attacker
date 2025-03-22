@@ -19,7 +19,8 @@ public class SftpRequestRenameMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestRenameMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestRenameMessage object, Chooser chooser) {
         object.setPath("/etc/passwd", true);
 
         object.setNewPath("/tmp/passwd-win", true);

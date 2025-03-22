@@ -19,7 +19,7 @@ public class SftpRequestSymbolicLinkMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(
+    protected void prepareRequestSpecificContents(
             SftpRequestSymbolicLinkMessage object, Chooser chooser) {
         object.setPath("/bin/sh", true);
 

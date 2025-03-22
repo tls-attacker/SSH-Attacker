@@ -19,7 +19,7 @@ public class SftpRequestPosixRenameMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestPosixRenameMessage object, Chooser chooser) {
 
         object.setPath("/etc/passwd", true);

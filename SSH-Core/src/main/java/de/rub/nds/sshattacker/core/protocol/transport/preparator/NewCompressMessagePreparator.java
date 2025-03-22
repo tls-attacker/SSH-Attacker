@@ -19,5 +19,5 @@ public class NewCompressMessagePreparator extends SshMessagePreparator<NewCompre
     }
 
     @Override
-    public void prepareMessageSpecificContents(NewCompressMessage object, Chooser chooser) {}
+    protected void prepareMessageSpecificContents(NewCompressMessage object, Chooser chooser) {}
 }

@@ -24,7 +24,8 @@ public class DhKeyExchangeReplyMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(DhKeyExchangeReplyMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(
+            DhKeyExchangeReplyMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.prepareHostKeyMessage(context, object);
         prepareEphemeralPublicKey(object, chooser);

@@ -17,7 +17,7 @@ public class BlobPacketPreparator extends AbstractPacketPreparator<BlobPacket> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void preparePacketContents(BlobPacket object, Chooser chooser) {
+    protected void preparePacketContents(BlobPacket object, Chooser chooser) {
         LOGGER.debug("Compressing blob packet");
         chooser.getContext().getPacketLayer().getCompressor().compress(object);
         LOGGER.debug("Encrypting BlobPacket");

@@ -19,7 +19,7 @@ public class ChannelRequestExitStatusMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestExitStatusMessage object, Chooser chooser) {
         object.setExitStatus(1);
     }

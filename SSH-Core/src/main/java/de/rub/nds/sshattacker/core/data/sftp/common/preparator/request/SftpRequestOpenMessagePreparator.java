@@ -20,7 +20,7 @@ public class SftpRequestOpenMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestOpenMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(SftpRequestOpenMessage object, Chooser chooser) {
         object.setPath("/etc/passwd", true);
 
         object.setOpenFlags(SftpFileOpenFlag.SSH_FXF_READ, SftpFileOpenFlag.SSH_FXF_CREAT);

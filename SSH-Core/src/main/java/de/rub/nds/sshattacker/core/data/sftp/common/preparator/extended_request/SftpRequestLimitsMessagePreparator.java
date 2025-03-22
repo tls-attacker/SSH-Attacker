@@ -19,6 +19,6 @@ public class SftpRequestLimitsMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestLimitsMessage object, Chooser chooser) {}
 }

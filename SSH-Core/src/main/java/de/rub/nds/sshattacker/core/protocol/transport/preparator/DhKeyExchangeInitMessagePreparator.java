@@ -22,7 +22,8 @@ public class DhKeyExchangeInitMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(DhKeyExchangeInitMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(
+            DhKeyExchangeInitMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateKeyPair();
         BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();

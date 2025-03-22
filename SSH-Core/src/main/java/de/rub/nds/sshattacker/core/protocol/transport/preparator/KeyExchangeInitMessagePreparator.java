@@ -19,7 +19,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
     }
 
     @Override
-    public void prepareMessageSpecificContents(KeyExchangeInitMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(KeyExchangeInitMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
             object.setCookie(chooser.getClientCookie());
             object.setKeyExchangeAlgorithms(

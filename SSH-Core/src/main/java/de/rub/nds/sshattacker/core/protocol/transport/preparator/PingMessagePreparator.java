@@ -19,7 +19,7 @@ public class PingMessagePreparator extends SshMessagePreparator<PingMessage> {
     }
 
     @Override
-    public void prepareMessageSpecificContents(PingMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(PingMessage object, Chooser chooser) {
         object.setData(new byte[0], true);
     }
 }

@@ -19,7 +19,7 @@ public class SftpRequestHomeDirectoryMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestHomeDirectoryMessage object, Chooser chooser) {
         object.setUsername("ssh-attacker", true);
     }

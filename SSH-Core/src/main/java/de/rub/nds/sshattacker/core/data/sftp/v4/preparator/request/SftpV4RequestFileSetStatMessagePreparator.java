@@ -20,7 +20,7 @@ public class SftpV4RequestFileSetStatMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(
+    protected void prepareRequestSpecificContents(
             SftpV4RequestFileSetStatMessage object, Chooser chooser) {
         object.setHandle(
                 chooser.getContext()

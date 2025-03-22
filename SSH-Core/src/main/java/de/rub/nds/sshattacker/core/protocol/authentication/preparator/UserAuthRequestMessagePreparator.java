@@ -33,5 +33,5 @@ public abstract class UserAuthRequestMessagePreparator<T extends UserAuthRequest
         prepareUserAuthRequestSpecificContents(object, chooser);
     }
 
-    public abstract void prepareUserAuthRequestSpecificContents(T object, Chooser chooser);
+    protected abstract void prepareUserAuthRequestSpecificContents(T object, Chooser chooser);
 }

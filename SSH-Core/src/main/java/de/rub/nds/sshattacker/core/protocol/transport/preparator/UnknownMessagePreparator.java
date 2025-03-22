@@ -19,7 +19,7 @@ public class UnknownMessagePreparator extends SshMessagePreparator<UnknownMessag
     }
 
     @Override
-    public void prepareMessageSpecificContents(UnknownMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(UnknownMessage object, Chooser chooser) {
         object.setPayload(new byte[0]);
     }
 }

@@ -19,7 +19,7 @@ public class ChannelRequestBreakMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestBreakMessage object, Chooser chooser) {
         object.setBreakLength(chooser.getConfig().getDefaultBreakLength());
     }

@@ -19,7 +19,7 @@ public abstract class SftpResponseMessagePreparator<T extends SftpResponseMessag
         super(packetType);
     }
 
-    public void prepareMessageSpecificContents(T object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(T object, Chooser chooser) {
         // Request identifier should be set by SftpManager in handleRequestMessage()
         object.setRequestId(chooser.getContext().getSftpManager().getNextRequestId());
         prepareResponseSpecificContents(object, chooser);

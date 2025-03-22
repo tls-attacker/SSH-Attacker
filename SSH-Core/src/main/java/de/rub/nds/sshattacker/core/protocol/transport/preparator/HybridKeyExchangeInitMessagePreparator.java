@@ -26,7 +26,7 @@ public class HybridKeyExchangeInitMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             HybridKeyExchangeInitMessage object, Chooser chooser) {
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         AbstractEcdhKeyExchange<?, ?> classical = keyExchange.getClassical();

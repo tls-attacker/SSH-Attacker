@@ -19,7 +19,8 @@ public class SftpRequestRealPathMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestRealPathMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestRealPathMessage object, Chooser chooser) {
         object.setPath("/tmp/../etc/./passwd", true);
     }
 }

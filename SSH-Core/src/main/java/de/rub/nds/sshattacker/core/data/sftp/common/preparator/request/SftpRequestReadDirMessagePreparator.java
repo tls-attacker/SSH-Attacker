@@ -19,7 +19,8 @@ public class SftpRequestReadDirMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestReadDirMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestReadDirMessage object, Chooser chooser) {
         object.setHandle(
                 chooser.getContext()
                         .getSftpManager()

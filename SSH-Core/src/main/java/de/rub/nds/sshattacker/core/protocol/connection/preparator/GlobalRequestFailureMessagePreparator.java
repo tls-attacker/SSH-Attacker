@@ -20,6 +20,6 @@ public class GlobalRequestFailureMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             GlobalRequestFailureMessage object, Chooser chooser) {}
 }

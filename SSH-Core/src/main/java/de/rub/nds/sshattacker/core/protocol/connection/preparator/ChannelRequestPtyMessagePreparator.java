@@ -20,7 +20,7 @@ public class ChannelRequestPtyMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestPtyMessage object, Chooser chooser) {
         Config config = chooser.getConfig();
         object.setTermEnvVariable(config.getDefaultTermEnvVariable(), true);

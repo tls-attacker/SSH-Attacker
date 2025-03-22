@@ -19,7 +19,8 @@ public class SftpResponseNameMessagePreparator
     }
 
     @Override
-    public void prepareResponseSpecificContents(SftpResponseNameMessage object, Chooser chooser) {
+    protected void prepareResponseSpecificContents(
+            SftpResponseNameMessage object, Chooser chooser) {
         object.setNameEntriesCount(object.getNameEntries().size());
 
         object.getNameEntries().forEach(nameEntry -> nameEntry.prepare(chooser));

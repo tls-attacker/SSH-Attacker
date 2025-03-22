@@ -19,7 +19,7 @@ public class GlobalRequestOpenSshHostKeysMessagePreparator
     }
 
     @Override
-    public void prepareGlobalRequestMessageSpecificContents(
+    protected void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestOpenSshHostKeysMessage object, Chooser chooser) {
         object.setHostKeys(chooser.getConfig().getHostKeys());
     }

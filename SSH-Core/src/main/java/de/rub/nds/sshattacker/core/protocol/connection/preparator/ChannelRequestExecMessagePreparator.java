@@ -19,7 +19,7 @@ public class ChannelRequestExecMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestExecMessage object, Chooser chooser) {
         object.setCommand(chooser.getConfig().getChannelCommand(), true);
     }

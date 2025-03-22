@@ -17,7 +17,7 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void preparePacketContents(BinaryPacket object, Chooser chooser) {
+    protected void preparePacketContents(BinaryPacket object, Chooser chooser) {
         LOGGER.debug("Preparing binary packet computations");
         object.prepareComputations();
         LOGGER.debug("Compressing binary packet");

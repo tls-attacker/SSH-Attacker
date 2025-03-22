@@ -21,7 +21,7 @@ public class SftpRequestCheckFileNameMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestCheckFileNameMessage object, Chooser chooser) {
         object.setPath("/etc/passwd", true);
 

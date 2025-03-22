@@ -20,7 +20,7 @@ public class SftpRequestUsersGroupsByIdMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestUsersGroupsByIdMessage object, Chooser chooser) {
         if (object.getUserIds().isEmpty()) {
             object.addUserId(0);

@@ -21,7 +21,8 @@ public class SftpV4RequestOpenMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpV4RequestOpenMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpV4RequestOpenMessage object, Chooser chooser) {
         object.setPath("/etc/passwd", true);
 
         object.setOpenFlags(SftpFileOpenFlag.SSH_FXF_READ, SftpFileOpenFlag.SSH_FXF_CREAT);

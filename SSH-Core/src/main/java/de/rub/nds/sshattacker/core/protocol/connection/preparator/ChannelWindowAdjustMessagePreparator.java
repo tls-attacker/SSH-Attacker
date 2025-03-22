@@ -19,7 +19,7 @@ public class ChannelWindowAdjustMessagePreparator
     }
 
     @Override
-    public void prepareChannelMessageSpecificContents(
+    protected void prepareChannelMessageSpecificContents(
             ChannelWindowAdjustMessage object, Chooser chooser) {
         object.setRecipientChannelId(channel.getRemoteChannelId().getValue());
         object.setBytesToAdd(

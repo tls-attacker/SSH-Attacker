@@ -19,7 +19,7 @@ public class ServiceAcceptMessagePreparator extends SshMessagePreparator<Service
     }
 
     @Override
-    public void prepareMessageSpecificContents(ServiceAcceptMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(ServiceAcceptMessage object, Chooser chooser) {
         // TODO: load service name from context
         object.setServiceName(chooser.getConfig().getServiceName(), true);
     }

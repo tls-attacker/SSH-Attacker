@@ -18,7 +18,7 @@ public class ChannelOpenUnknownMessagePreparator
     }
 
     @Override
-    public void prepareChannelOpenMessageSpecificContents(
+    protected void prepareChannelOpenMessageSpecificContents(
             ChannelOpenUnknownMessage object, Chooser chooser) {
         object.setTypeSpecificData(new byte[10]);
     }

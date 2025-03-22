@@ -22,7 +22,7 @@ public class UserAuthInfoResponseMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             UserAuthInfoResponseMessage object, Chooser chooser) {
         ArrayList<AuthenticationResponseEntry> nextResponses =
                 chooser.getNextPreConfiguredAuthResponses();

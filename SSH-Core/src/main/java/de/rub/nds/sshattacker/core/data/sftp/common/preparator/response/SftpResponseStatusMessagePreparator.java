@@ -20,7 +20,8 @@ public class SftpResponseStatusMessagePreparator
     }
 
     @Override
-    public void prepareResponseSpecificContents(SftpResponseStatusMessage object, Chooser chooser) {
+    protected void prepareResponseSpecificContents(
+            SftpResponseStatusMessage object, Chooser chooser) {
         object.setStatusCode(SftpStatusCode.SSH_FX_OK);
 
         object.setErrorMessage("SSH-Attacker sagt NEIN!", true);

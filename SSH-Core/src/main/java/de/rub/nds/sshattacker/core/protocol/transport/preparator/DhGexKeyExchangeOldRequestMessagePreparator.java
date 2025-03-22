@@ -20,7 +20,7 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(
+    protected void prepareMessageSpecificContents(
             DhGexKeyExchangeOldRequestMessage object, Chooser chooser) {
         Integer preferredDhGroupSize = chooser.getPreferredDhGroupSize();
 

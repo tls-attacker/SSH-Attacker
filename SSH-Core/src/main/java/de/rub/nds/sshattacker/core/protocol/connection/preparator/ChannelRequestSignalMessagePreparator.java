@@ -20,7 +20,7 @@ public class ChannelRequestSignalMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestSignalMessage object, Chooser chooser) {
         object.setSignalName(SignalType.SIGINT, true);
     }

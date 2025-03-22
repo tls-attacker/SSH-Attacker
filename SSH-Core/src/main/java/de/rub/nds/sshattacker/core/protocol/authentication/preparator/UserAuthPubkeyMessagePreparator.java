@@ -139,7 +139,7 @@ public class UserAuthPubkeyMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents(
+    protected void prepareUserAuthRequestSpecificContents(
             UserAuthPubkeyMessage object, Chooser chooser) {
         object.setUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();

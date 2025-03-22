@@ -27,5 +27,5 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
         prepareMessageSpecificContents(object, chooser);
     }
 
-    public abstract void prepareMessageSpecificContents(T object, Chooser chooser);
+    protected abstract void prepareMessageSpecificContents(T object, Chooser chooser);
 }

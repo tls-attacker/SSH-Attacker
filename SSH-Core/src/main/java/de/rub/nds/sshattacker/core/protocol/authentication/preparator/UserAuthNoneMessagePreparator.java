@@ -19,6 +19,6 @@ public class UserAuthNoneMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents(
+    protected void prepareUserAuthRequestSpecificContents(
             UserAuthNoneMessage object, Chooser chooser) {}
 }

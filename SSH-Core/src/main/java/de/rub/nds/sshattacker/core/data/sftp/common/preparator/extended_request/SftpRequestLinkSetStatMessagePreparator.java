@@ -19,7 +19,7 @@ public class SftpRequestLinkSetStatMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestLinkSetStatMessage object, Chooser chooser) {
         object.setPath("/bin/python3", true);
         object.getAttributes().prepare(chooser);

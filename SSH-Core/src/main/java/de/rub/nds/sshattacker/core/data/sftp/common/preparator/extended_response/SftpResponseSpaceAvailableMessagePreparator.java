@@ -14,7 +14,7 @@ public class SftpResponseSpaceAvailableMessagePreparator
         extends SftpResponseExtendedMessagePreparator<SftpResponseSpaceAvailableMessage> {
 
     @Override
-    public void prepareResponseSpecificContents(
+    protected void prepareResponseSpecificContents(
             SftpResponseSpaceAvailableMessage object, Chooser chooser) {
         object.setBytesOnDevice(10000000001L);
 

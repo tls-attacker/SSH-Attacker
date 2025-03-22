@@ -19,7 +19,7 @@ public class SftpRequestTextSeekMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestTextSeekMessage object, Chooser chooser) {
         object.setHandle(
                 chooser.getContext().getSftpManager().getFileHandle(object.getConfigHandleIndex()),

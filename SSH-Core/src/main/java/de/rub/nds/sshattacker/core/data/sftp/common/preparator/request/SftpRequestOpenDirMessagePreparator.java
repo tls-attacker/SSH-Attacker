@@ -19,7 +19,8 @@ public class SftpRequestOpenDirMessagePreparator
     }
 
     @Override
-    public void prepareRequestSpecificContents(SftpRequestOpenDirMessage object, Chooser chooser) {
+    protected void prepareRequestSpecificContents(
+            SftpRequestOpenDirMessage object, Chooser chooser) {
         object.setPath("/tmp/", true);
     }
 }

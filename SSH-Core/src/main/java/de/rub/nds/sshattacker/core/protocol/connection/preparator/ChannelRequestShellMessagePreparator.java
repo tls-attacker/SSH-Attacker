@@ -19,6 +19,6 @@ public class ChannelRequestShellMessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestShellMessage object, Chooser chooser) {}
 }

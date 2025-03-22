@@ -19,6 +19,6 @@ public class ChannelOpenSessionMessagePreparator
     }
 
     @Override
-    public void prepareChannelOpenMessageSpecificContents(
+    protected void prepareChannelOpenMessageSpecificContents(
             ChannelOpenSessionMessage object, Chooser chooser) {}
 }

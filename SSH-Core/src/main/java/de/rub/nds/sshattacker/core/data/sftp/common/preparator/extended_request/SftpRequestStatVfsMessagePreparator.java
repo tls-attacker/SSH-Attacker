@@ -19,7 +19,7 @@ public class SftpRequestStatVfsMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestStatVfsMessage object, Chooser chooser) {
         object.setPath("/etc/", true);
     }

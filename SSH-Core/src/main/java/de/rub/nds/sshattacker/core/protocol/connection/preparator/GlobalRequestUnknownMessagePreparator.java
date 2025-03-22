@@ -18,7 +18,7 @@ public class GlobalRequestUnknownMessagePreparator
     }
 
     @Override
-    public void prepareGlobalRequestMessageSpecificContents(
+    protected void prepareGlobalRequestMessageSpecificContents(
             GlobalRequestUnknownMessage object, Chooser chooser) {
         object.setTypeSpecificData(new byte[10]);
     }

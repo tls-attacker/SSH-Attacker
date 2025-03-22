@@ -20,7 +20,7 @@ public class SftpExtensionVendorIdPreparator
     }
 
     @Override
-    public void prepareExtensionSpecificContents(SftpExtensionVendorId object, Chooser chooser) {
+    protected void prepareExtensionSpecificContents(SftpExtensionVendorId object, Chooser chooser) {
         object.setVendorName("NDS RUB", true);
 
         object.setProductName("SSH-Attacker", true);

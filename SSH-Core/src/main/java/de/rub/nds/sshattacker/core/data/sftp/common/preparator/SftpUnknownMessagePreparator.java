@@ -18,7 +18,7 @@ public class SftpUnknownMessagePreparator extends SftpMessagePreparator<SftpUnkn
     }
 
     @Override
-    public void prepareMessageSpecificContents(SftpUnknownMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(SftpUnknownMessage object, Chooser chooser) {
         object.setPayload(new byte[0]);
     }
 }

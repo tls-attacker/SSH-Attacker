@@ -19,7 +19,7 @@ public class UserAuthFailureMessagePreparator extends SshMessagePreparator<UserA
     }
 
     @Override
-    public void prepareMessageSpecificContents(UserAuthFailureMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(UserAuthFailureMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
         object.setPossibleAuthenticationMethods("", true);
         object.setPartialSuccess(true);

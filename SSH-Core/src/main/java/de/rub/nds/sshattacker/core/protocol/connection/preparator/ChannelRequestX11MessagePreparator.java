@@ -19,7 +19,7 @@ public class ChannelRequestX11MessagePreparator
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents(
+    protected void prepareChannelRequestMessageSpecificContents(
             ChannelRequestX11Message object, Chooser chooser) {
         object.setSingleConnection(true);
 

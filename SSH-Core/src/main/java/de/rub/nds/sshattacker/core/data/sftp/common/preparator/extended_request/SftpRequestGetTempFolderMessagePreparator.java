@@ -19,6 +19,6 @@ public class SftpRequestGetTempFolderMessagePreparator
     }
 
     @Override
-    public void prepareRequestExtendedSpecificContents(
+    protected void prepareRequestExtendedSpecificContents(
             SftpRequestGetTempFolderMessage object, Chooser chooser) {}
 }

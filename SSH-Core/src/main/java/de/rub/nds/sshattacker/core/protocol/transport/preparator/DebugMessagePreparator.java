@@ -19,7 +19,7 @@ public class DebugMessagePreparator extends SshMessagePreparator<DebugMessage> {
     }
 
     @Override
-    public void prepareMessageSpecificContents(DebugMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(DebugMessage object, Chooser chooser) {
         // TODO dummy values for fuzzing
         object.setAlwaysDisplay(true);
 

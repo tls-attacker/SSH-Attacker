@@ -37,7 +37,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
     }
 
     @Override
-    public void prepareMessageSpecificContents(T object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(T object, Chooser chooser) {
         ChannelManager channelManager = chooser.getContext().getChannelManager();
 
         Integer localChannelId =

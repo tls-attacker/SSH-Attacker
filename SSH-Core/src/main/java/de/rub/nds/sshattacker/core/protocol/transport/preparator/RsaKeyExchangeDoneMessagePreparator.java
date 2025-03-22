@@ -22,7 +22,8 @@ public class RsaKeyExchangeDoneMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents(RsaKeyExchangeDoneMessage object, Chooser chooser) {
+    protected void prepareMessageSpecificContents(
+            RsaKeyExchangeDoneMessage object, Chooser chooser) {
         SshContext context = chooser.getContext();
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
