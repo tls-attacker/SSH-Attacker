@@ -27,13 +27,13 @@ public class ChannelOpenConfirmationMessageSerializer
     }
 
     private void serializeWindowSize() {
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
-        appendInt(message.getWindowSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Initial window size: {}", message.getInitialWindowSize().getValue());
+        appendInt(message.getInitialWindowSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePacketSize() {
-        LOGGER.debug("Maximum packet size: {}", message.getWindowSize().getValue());
-        appendInt(message.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
+        LOGGER.debug("Maximum packet size: {}", message.getInitialWindowSize().getValue());
+        appendInt(message.getMaximumPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

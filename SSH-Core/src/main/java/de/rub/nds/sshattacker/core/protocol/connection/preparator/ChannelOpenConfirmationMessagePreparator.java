@@ -49,7 +49,11 @@ public class ChannelOpenConfirmationMessagePreparator
             }
         }
 
-        getObject().setWindowSize(chooser.getConfig().getChannelDefaults().getLocalWindowSize());
-        getObject().setPacketSize(chooser.getConfig().getChannelDefaults().getLocalPacketSize());
+        getObject()
+                .setInitialWindowSize(
+                        chooser.getConfig().getChannelDefaults().getLocalWindowSize());
+        getObject()
+                .setMaximumPacketSize(
+                        chooser.getConfig().getChannelDefaults().getLocalPacketSize());
     }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenSessio
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSessionMessage> {
+
     @Override
     public ChannelOpenSessionMessageHandler getHandler(SshContext context) {
         return new ChannelOpenSessionMessageHandler(context, this);

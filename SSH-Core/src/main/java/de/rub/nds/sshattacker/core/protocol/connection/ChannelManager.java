@@ -52,8 +52,8 @@ public class ChannelManager {
     public void handleChannelOpenMessage(ChannelOpenMessage<?> message) {
         Channel channel = createNewChannelFromDefaults(message.getSenderChannelId().getValue());
         channel.setChannelType(ChannelType.fromName(message.getChannelType().getValue()));
-        channel.setRemoteWindowSize(message.getWindowSize());
-        channel.setRemotePacketSize(message.getPacketSize());
+        channel.setRemoteWindowSize(message.getInitialWindowSize());
+        channel.setRemotePacketSize(message.getMaximumPacketSize());
         // channel is closed until OpenConfirm is sent
         channel.setOpen(false);
 

@@ -45,8 +45,8 @@ public class ChannelOpenConfirmationMessageHandler
         }
 
         channel.setRemoteChannelId(message.getSenderChannelId());
-        channel.setRemotePacketSize(message.getPacketSize());
-        channel.setRemoteWindowSize(message.getWindowSize());
+        channel.setRemotePacketSize(message.getMaximumPacketSize());
+        channel.setRemoteWindowSize(message.getInitialWindowSize());
         channel.setOpen(true);
     }
 

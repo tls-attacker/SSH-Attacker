@@ -19,9 +19,9 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
-    private ModifiableInteger windowSize;
-    private ModifiableInteger packetSize;
     private ModifiableInteger senderChannelId;
+    private ModifiableInteger initialWindowSize;
+    private ModifiableInteger maximumPacketSize;
 
     @XmlAttribute(name = "channel")
     private Integer configSenderChannelId;
@@ -83,33 +83,35 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
         this.senderChannelId = senderChannelId;
     }
 
-    public void setSenderChannelId(int modSenderChannel) {
-        senderChannelId =
-                ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
+    public void setSenderChannelId(int senderChannelId) {
+        this.senderChannelId =
+                ModifiableVariableFactory.safelySetValue(this.senderChannelId, senderChannelId);
     }
 
-    public ModifiableInteger getWindowSize() {
-        return windowSize;
+    public ModifiableInteger getInitialWindowSize() {
+        return initialWindowSize;
     }
 
-    public void setWindowSize(ModifiableInteger windowSize) {
-        this.windowSize = windowSize;
+    public void setInitialWindowSize(ModifiableInteger initialWindowSize) {
+        this.initialWindowSize = initialWindowSize;
     }
 
-    public void setWindowSize(int windowSize) {
-        this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
+    public void setInitialWindowSize(int initialWindowSize) {
+        this.initialWindowSize =
+                ModifiableVariableFactory.safelySetValue(this.initialWindowSize, initialWindowSize);
     }
 
-    public ModifiableInteger getPacketSize() {
-        return packetSize;
+    public ModifiableInteger getMaximumPacketSize() {
+        return maximumPacketSize;
     }
 
-    public void setPacketSize(ModifiableInteger packetSize) {
-        this.packetSize = packetSize;
+    public void setMaximumPacketSize(ModifiableInteger maximumPacketSize) {
+        this.maximumPacketSize = maximumPacketSize;
     }
 
-    public void setPacketSize(int packetSize) {
-        this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+    public void setMaximumPacketSize(int maximumPacketSize) {
+        this.maximumPacketSize =
+                ModifiableVariableFactory.safelySetValue(this.maximumPacketSize, maximumPacketSize);
     }
 
     public Integer getConfigSenderChannelId() {

@@ -55,8 +55,8 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
             channelMap.put(getObject().getSenderChannelId().getValue(), channel);
         }
         getObject().setChannelType(channel.getChannelType(), true);
-        getObject().setWindowSize(channel.getLocalWindowSize());
-        getObject().setPacketSize(32768);
+        getObject().setInitialWindowSize(channel.getLocalWindowSize());
+        getObject().setMaximumPacketSize(32768);
         prepareChannelOpenMessageSpecificContents();
     }
 

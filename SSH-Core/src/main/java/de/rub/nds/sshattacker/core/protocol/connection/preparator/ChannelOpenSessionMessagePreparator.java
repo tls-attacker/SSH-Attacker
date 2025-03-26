@@ -10,9 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelOpenSessionMessagePreperator
+public class ChannelOpenSessionMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenSessionMessage> {
-    public ChannelOpenSessionMessagePreperator(Chooser chooser, ChannelOpenSessionMessage message) {
+    public ChannelOpenSessionMessagePreparator(Chooser chooser, ChannelOpenSessionMessage message) {
         super(chooser, message);
     }
 

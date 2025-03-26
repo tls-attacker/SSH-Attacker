@@ -49,8 +49,8 @@ public class ChannelOpenSessionMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         msg.setChannelType(providedChannelType.toString(), true);
         msg.setSenderChannelId(providedSenderChannelId);
-        msg.setWindowSize(providedInitialWindowSize);
-        msg.setPacketSize(providedMaximumPacketSize);
+        msg.setInitialWindowSize(providedInitialWindowSize);
+        msg.setMaximumPacketSize(providedMaximumPacketSize);
         ChannelOpenSessionMessageSerializer serializer =
                 new ChannelOpenSessionMessageSerializer(msg);
 

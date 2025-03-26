@@ -48,8 +48,8 @@ public class ChannelOpenConfirmationMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setSenderChannelId(providedSenderChannelId);
-        msg.setWindowSize(providedInitialWindowSize);
-        msg.setPacketSize(providedMaximumPacketSize);
+        msg.setInitialWindowSize(providedInitialWindowSize);
+        msg.setMaximumPacketSize(providedMaximumPacketSize);
         ChannelOpenConfirmationMessageSerializer serializer =
                 new ChannelOpenConfirmationMessageSerializer(msg);
 

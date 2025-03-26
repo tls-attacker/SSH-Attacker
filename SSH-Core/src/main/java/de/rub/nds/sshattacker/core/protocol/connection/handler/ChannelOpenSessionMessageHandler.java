@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.handler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenSessionMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenSessionMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenSessionMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenSessionMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -37,8 +37,8 @@ public class ChannelOpenSessionMessageHandler extends SshMessageHandler<ChannelO
     }
 
     @Override
-    public ChannelOpenSessionMessagePreperator getPreparator() {
-        return new ChannelOpenSessionMessagePreperator(context.getChooser(), message);
+    public ChannelOpenSessionMessagePreparator getPreparator() {
+        return new ChannelOpenSessionMessagePreparator(context.getChooser(), message);
     }
 
     @Override

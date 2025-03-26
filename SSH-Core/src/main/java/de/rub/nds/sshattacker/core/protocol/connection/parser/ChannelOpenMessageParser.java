@@ -44,21 +44,21 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
         LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
     }
 
-    public void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
+    public void parseInitialWindowSize() {
+        message.setInitialWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Initial window size: {}", message.getInitialWindowSize().getValue());
     }
 
-    public void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
+    public void parseMaximumPacketSize() {
+        message.setMaximumPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Maximum packet size: {}", message.getMaximumPacketSize().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
         parseChannelType();
         parseSenderChannel();
-        parseWindowSize();
-        parsePacketSize();
+        parseInitialWindowSize();
+        parseMaximumPacketSize();
     }
 }

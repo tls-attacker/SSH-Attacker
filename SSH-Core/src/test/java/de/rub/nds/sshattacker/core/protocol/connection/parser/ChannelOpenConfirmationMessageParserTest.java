@@ -71,7 +71,7 @@ public class ChannelOpenConfirmationMessageParserTest {
                 msg.getMessageId().getValue());
         assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
         assertEquals(expectedSenderChannel, msg.getSenderChannelId().getValue());
-        assertEquals(expectedInitialWindowSize, msg.getWindowSize().getValue());
-        assertEquals(expectedMaximumPacketSize, msg.getPacketSize().getValue());
+        assertEquals(expectedInitialWindowSize, msg.getInitialWindowSize().getValue());
+        assertEquals(expectedMaximumPacketSize, msg.getMaximumPacketSize().getValue());
     }
 }
