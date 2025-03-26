@@ -43,15 +43,24 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
             packetCipher.process(packet);
         } catch (CryptoException e) {
             // Set compressedPayload if decryption failed to do so
-            LOGGER.warn("Could not decrypt binary packet. Using {}", noneCipher, e);
+            if (context.getConfig().getFallbackToNoneCipherOnDecryptionException()) {
+                LOGGER.warn("Could not decrypt binary packet. Using {}", noneCipher, e);
+            } else {
+                LOGGER.warn(
+                        "Could not decrypt binary packet. Not defaulting to {} due to config",
+                        noneCipher,
+                        e);
+                throw new RuntimeException(e);
+            }
             try {
                 noneCipher.process(packet);
             } catch (CryptoException ex) {
                 // FIXME Need to set compressedPayload to continue?
                 LOGGER.error("Could not decrypt with {}", noneCipher, ex);
             }
+        } finally {
+            context.incrementReadSequenceNumber();
         }
-        context.incrementReadSequenceNumber();
     }
 
     @Override
@@ -61,7 +70,15 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
         try {
             packetCipher.process(packet);
         } catch (CryptoException e) {
-            LOGGER.warn("Could not decrypt blob packet. Using {}", noneCipher, e);
+            if (context.getConfig().getFallbackToNoneCipherOnDecryptionException()) {
+                LOGGER.warn("Could not decrypt blob packet. Using {}", noneCipher, e);
+            } else {
+                LOGGER.warn(
+                        "Could not decrypt blob packet. Not defaulting to {} due to config",
+                        noneCipher,
+                        e);
+                throw new RuntimeException(e);
+            }
             try {
                 noneCipher.process(packet);
             } catch (CryptoException ex) {

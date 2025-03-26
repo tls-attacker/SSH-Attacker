@@ -269,6 +269,13 @@ public class Config implements Serializable {
     private Boolean forcePacketCipherChange = false;
 
     /**
+     * If set to false, the packet processing logic will not default to a none cipher in case of a
+     * CryptoException during decryption. This can be useful if exception handling is done
+     * elsewhere.
+     */
+    private boolean fallbackToNoneCipherOnDecryptionException = true;
+
+    /**
      * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
      * when picking the algorithms
      */
@@ -1598,7 +1605,7 @@ public class Config implements Serializable {
         this.defaultRsaKeyExchangeAlgorithm = defaultRsaKeyExchangeAlgorithm;
     }
 
-    public void setEnableEncryptionOnNewKeysMessageType(
+    public void setEnableEncryptionOnNewKeysMessage(
             ConnectionDirection enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
@@ -1950,5 +1957,14 @@ public class Config implements Serializable {
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
+    }
+
+    public boolean getFallbackToNoneCipherOnDecryptionException() {
+        return fallbackToNoneCipherOnDecryptionException;
+    }
+
+    public void setFallbackToNoneCipherOnDecryptionException(
+            boolean fallbackToNoneCipherOnDecryptionException) {
+        this.fallbackToNoneCipherOnDecryptionException = fallbackToNoneCipherOnDecryptionException;
     }
 }
