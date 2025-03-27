@@ -39,19 +39,26 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // Authentication Protocol Messages
         @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
         @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
-        @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
         @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
         @XmlElement(type = UserAuthInfoResponseMessage.class, name = "UserAuthInfoResponse"),
-        @XmlElement(
-                type = UserAuthKeyboardInteractiveMessage.class,
-                name = "UserAuthKeyboardInteractive"),
-        @XmlElement(type = UserAuthNoneMessage.class, name = "UserAuthNone"),
-        @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
+        @XmlElement(type = UserAuthPasswdChangeReqMessage.class, name = "UserAuthPasswdChangeReq"),
         @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
-        @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
-        @XmlElement(type = UserAuthRequestMessage.class, name = "UserAuthRequest"),
+        @XmlElement(
+                type = UserAuthRequestHostbasedMessage.class,
+                name = "UserAuthRequestHostbased"),
+        @XmlElement(
+                type = UserAuthRequestKeyboardInteractiveMessage.class,
+                name = "UserAuthRequestKeyboardInteractive"),
+        @XmlElement(type = UserAuthRequestNoneMessage.class, name = "UserAuthRequestNone"),
+        @XmlElement(type = UserAuthRequestPasswordMessage.class, name = "UserAuthRequestPassword"),
+        @XmlElement(
+                type = UserAuthRequestPublicKeyHostboundOpenSshMessage.class,
+                name = "UserAuthRequestPublicKeyHostboundOpenSsh"),
+        @XmlElement(
+                type = UserAuthRequestPublicKeyMessage.class,
+                name = "UserAuthRequestPublicKey"),
+        @XmlElement(type = UserAuthRequestUnknownMessage.class, name = "UserAuthRequestUnknown"),
         @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
-        @XmlElement(type = UserAuthUnknownMessage.class, name = "UserAuthUnknownRequest"),
         // Connection Protocol Messages
         @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
         @XmlElement(type = ChannelDataMessage.class, name = "ChannelData"),
@@ -59,12 +66,31 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = ChannelExtendedDataMessage.class, name = "ChannelExtendedData"),
         @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailure"),
         @XmlElement(type = ChannelOpenConfirmationMessage.class, name = "ChannelOpenConfirmation"),
+        @XmlElement(
+                type = ChannelOpenDirectStreamlocalOpenSshMessage.class,
+                name = "ChannelOpenDirectStreamlocalOpenSsh"),
+        @XmlElement(type = ChannelOpenDirectTcpIpMessage.class, name = "ChannelOpenDirectTcpIp"),
         @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
+        @XmlElement(
+                type = ChannelOpenForwardedStreamlocalOpenSshMessage.class,
+                name = "ChannelOpenForwardedStreamlocalOpenSsh"),
+        @XmlElement(
+                type = ChannelOpenForwardedTcpIpMessage.class,
+                name = "ChannelOpenForwardedTcpIp"),
         @XmlElement(type = ChannelOpenSessionMessage.class, name = "ChannelOpenSession"),
+        @XmlElement(
+                type = ChannelOpenTunOpenSshMessage.class,
+                name = "ChannelOpenTunOpenSshMessage"),
         @XmlElement(type = ChannelOpenUnknownMessage.class, name = "ChannelOpenUnknown"),
-        @XmlElement(type = ChannelRequestAuthAgentMessage.class, name = "ChannelRequestAuthAgent"),
+        @XmlElement(type = ChannelOpenX11Message.class, name = "ChannelOpenX11"),
+        @XmlElement(
+                type = ChannelRequestAuthAgentReqOpenSshMessage.class,
+                name = "ChannelRequestAuthAgentReqOpenSsh"),
         @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
         @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
+        @XmlElement(
+                type = ChannelRequestEowOpenSshMessage.class,
+                name = "ChannelRequestEowOpenSsh"),
         @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
         @XmlElement(
                 type = ChannelRequestExitSignalMessage.class,
@@ -72,7 +98,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(
                 type = ChannelRequestExitStatusMessage.class,
                 name = "ChannelRequestExitStatus"),
-        @XmlElement(type = ChannelRequestPtyMessage.class, name = "ChannelRequestPty"),
+        @XmlElement(type = ChannelRequestPtyReqMessage.class, name = "ChannelRequestPtyReq"),
         @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
         @XmlElement(type = ChannelRequestSignalMessage.class, name = "ChannelRequestSignal"),
         @XmlElement(type = ChannelRequestSubsystemMessage.class, name = "ChannelRequestSubsystem"),
@@ -80,26 +106,36 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(
                 type = ChannelRequestWindowChangeMessage.class,
                 name = "ChannelRequestWindowChange"),
-        @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),
+        @XmlElement(type = ChannelRequestX11ReqMessage.class, name = "ChannelRequestX11Req"),
         @XmlElement(type = ChannelRequestXonXoffMessage.class, name = "ChannelRequestXonXoff"),
         @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
         @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
+        @XmlElement(
+                type = GlobalRequestCancelStreamlocalForwardOpenSshMessage.class,
+                name = "GlobalRequestCancelStreamlocalForwardOpenSsh"),
         @XmlElement(
                 type = GlobalRequestCancelTcpIpForwardMessage.class,
                 name = "GlobalRequestCancelTcpIpForward"),
         @XmlElement(type = GlobalRequestFailureMessage.class, name = "GlobalRequestFailure"),
         @XmlElement(
-                type = GlobalRequestNoMoreSessionsMessage.class,
-                name = "GlobalRequestNoMoreSessions"),
+                type = GlobalRequestHostKeysOpenSshMessage.class,
+                name = "GlobalRequestHostKeysOpenSsh"),
+        @XmlElement(
+                type = GlobalRequestHostKeysProveOpenSshMessage.class,
+                name = "GlobalRequestHostKeysProveOpenSsh"),
+        @XmlElement(
+                type = GlobalRequestNoMoreSessionsOpenSshMessage.class,
+                name = "GlobalRequestNoMoreSessionsOpenSsh"),
+        @XmlElement(
+                type = GlobalRequestStreamlocalForwardOpenSshMessage.class,
+                name = "GlobalRequestStreamlocalForwardOpenSsh"),
         @XmlElement(type = GlobalRequestSuccessMessage.class, name = "GlobalRequestSuccess"),
         @XmlElement(
                 type = GlobalRequestTcpIpForwardMessage.class,
                 name = "GlobalRequestTcpIpForward"),
-        @XmlElement(
-                type = GlobalRequestOpenSshHostKeysMessage.class,
-                name = "GlobalRequestOpenSshHostKeys"),
         @XmlElement(type = GlobalRequestUnknownMessage.class, name = "GlobalRequestUnknown"),
         // Transport Layer Protocol Messages
+        @XmlElement(type = AsciiMessage.class, name = "Ascii"),
         @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
         @XmlElement(type = DhGexKeyExchangeGroupMessage.class, name = "DhGexKeyExchangeGroup"),
         @XmlElement(type = DhGexKeyExchangeInitMessage.class, name = "DhGexKeyExchangeInit"),
@@ -114,12 +150,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInit"),
         @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReply"),
         @XmlElement(type = ExtensionInfoMessage.class, name = "ExtensionInfo"),
+        @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
+        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply"),
         @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
         @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
         @XmlElement(type = NewCompressMessage.class, name = "NewCompress"),
         @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
-        @XmlElement(type = PingMessage.class, name = "Ping"),
-        @XmlElement(type = PongMessage.class, name = "Pong"),
+        @XmlElement(type = PingOpenSshMessage.class, name = "PingOpenSsh"),
+        @XmlElement(type = PongOpenSshMessage.class, name = "PongOpenSsh"),
         @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
         @XmlElement(type = RsaKeyExchangePubkeyMessage.class, name = "RsaKeyExchangePubkey"),
         @XmlElement(type = RsaKeyExchangeSecretMessage.class, name = "RsaKeyExchangeSecret"),
@@ -128,9 +166,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
-        @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
-        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
     })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 

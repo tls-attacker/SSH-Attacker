@@ -16,7 +16,7 @@ public class ChannelRequestXonXoffMessagePreparator
 
     public ChannelRequestXonXoffMessagePreparator(
             Chooser chooser, ChannelRequestXonXoffMessage message) {
-        super(chooser, message, ChannelRequestType.XON_XOFF);
+        super(chooser, message, ChannelRequestType.XON_XOFF, false);
     }
 
     @Override

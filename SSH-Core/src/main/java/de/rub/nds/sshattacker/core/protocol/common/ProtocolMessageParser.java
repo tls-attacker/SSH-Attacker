@@ -106,8 +106,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_NEWKEYS -> new NewKeysMessageParser(raw).parse();
                 case SSH_MSG_EXT_INFO -> new ExtensionInfoMessageParser(raw).parse();
                 case SSH_MSG_NEWCOMPRESS -> new NewCompressMessageParser(raw).parse();
-                case SSH_MSG_PING -> new PingMessageParser(raw).parse();
-                case SSH_MSG_PONG -> new PongMessageParser(raw).parse();
+                case SSH_MSG_PING -> new PingOpenSshMessageParser(raw).parse();
+                case SSH_MSG_PONG -> new PongOpenSshMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_REQUEST -> new ServiceRequestMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_ACCEPT -> new ServiceAcceptMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN_CONFIRMATION ->
@@ -134,6 +134,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_USERAUTH_BANNER -> new UserAuthBannerMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_FAILURE -> new UserAuthFailureMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_SUCCESS -> new UserAuthSuccessMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_PK_OK -> new UserAuthPkOkMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_PASSWD_CHANGEREQ ->
+                        new UserAuthPasswdChangeReqMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_REQUEST -> handleChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST -> handleGlobalRequestMessageParsing(raw);
                 case SSH_MSG_USERAUTH_INFO_REQUEST ->
@@ -155,15 +158,19 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     }
 
     private static ProtocolMessage<?> handleUserAuthRequestMessageParsing(byte[] raw) {
-        UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
+        UserAuthRequestUnknownMessage message =
+                new UserAuthRequestUnknownMessageParser(raw).parse();
         String methodString = message.getMethodName().getValue();
         AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
         return switch (method) {
-            case NONE -> new UserAuthNoneMessageParser(raw).parse();
-            case PASSWORD -> new UserAuthPasswordMessageParser(raw).parse();
-            case PUBLICKEY -> new UserAuthPubkeyMessageParser(raw).parse();
-            case HOST_BASED -> new UserAuthHostbasedMessageParser(raw).parse();
-            case KEYBOARD_INTERACTIVE -> new UserAuthKeyboardInteractiveMessageParser(raw).parse();
+            case NONE -> new UserAuthRequestNoneMessageParser(raw).parse();
+            case PASSWORD -> new UserAuthRequestPasswordMessageParser(raw).parse();
+            case PUBLICKEY -> new UserAuthRequestPublicKeyMessageParser(raw).parse();
+            case HOST_BASED -> new UserAuthRequestHostbasedMessageParser(raw).parse();
+            case KEYBOARD_INTERACTIVE ->
+                    new UserAuthRequestKeyboardInteractiveMessageParser(raw).parse();
+            case PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM ->
+                    new UserAuthRequestPublicKeyHostboundOpenSshMessageParser(raw).parse();
             default -> {
                 LOGGER.debug(
                         "Received unimplemented user authentication method in user authentication request: {}",
@@ -178,8 +185,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         String requestTypeString = message.getRequestType().getValue();
         ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
         return switch (requestType) {
-            case PTY_REQ -> new ChannelRequestPtyMessageParser(raw).parse();
-            case X11_REQ -> new ChannelRequestX11MessageParser(raw).parse();
+            case PTY_REQ -> new ChannelRequestPtyReqMessageParser(raw).parse();
+            case X11_REQ -> new ChannelRequestX11ReqMessageParser(raw).parse();
             case ENV -> new ChannelRequestEnvMessageParser(raw).parse();
             case SHELL -> new ChannelRequestShellMessageParser(raw).parse();
             case EXEC -> new ChannelRequestExecMessageParser(raw).parse();
@@ -189,14 +196,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             case SIGNAL -> new ChannelRequestSignalMessageParser(raw).parse();
             case EXIT_STATUS -> new ChannelRequestExitStatusMessageParser(raw).parse();
             case EXIT_SIGNAL -> new ChannelRequestExitSignalMessageParser(raw).parse();
+            case BREAK -> new ChannelRequestBreakMessageParser(raw).parse();
             case AUTH_AGENT_REQ_OPENSSH_COM ->
-                    new ChannelRequestAuthAgentMessageParser(raw).parse();
-            default -> {
-                LOGGER.debug(
-                        "Received unimplemented channel request message type: {}",
-                        requestTypeString);
-                yield message;
-            }
+                    new ChannelRequestAuthAgentReqOpenSshMessageParser(raw).parse();
+            case EOW_OPENSSH_COM -> new ChannelRequestEowOpenSshMessageParser(raw).parse();
+            case null -> message;
         };
     }
 
@@ -209,15 +213,16 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             case CANCEL_TCPIP_FORWARD ->
                     new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
             case NO_MORE_SESSIONS_OPENSSH_COM ->
-                    new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
+                    new GlobalRequestNoMoreSessionsOpenSshMessageParser(raw).parse();
             case HOSTKEYS_00_OPENSSH_COM ->
-                    new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
-            default -> {
-                LOGGER.debug(
-                        "Received unimplemented global request message type: {}",
-                        requestTypeString);
-                yield message;
-            }
+                    new GlobalRequestHostKeysOpenSshMessageParser(raw).parse();
+            case HOSTKEYS_PROVE_00_OPENSSH_COM ->
+                    new GlobalRequestHostKeysProveOpenSshMessageParser(raw).parse();
+            case STREAMLOCAL_FORWARD_OPENSSH_COM ->
+                    new GlobalRequestStreamlocalForwardOpenSshMessageParser(raw).parse();
+            case CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM ->
+                    new GlobalRequestCancelStreamlocalForwardOpenSshMessageParser(raw).parse();
+            case null -> message;
         };
     }
 
@@ -225,14 +230,17 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         ChannelOpenUnknownMessage message = new ChannelOpenUnknownMessageParser(raw).parse();
         String channelTypeString = message.getChannelType().getValue();
         ChannelType channelType = ChannelType.fromName(channelTypeString);
-        //noinspection SwitchStatementWithTooFewBranches
         return switch (channelType) {
             case SESSION -> new ChannelOpenSessionMessageParser(raw).parse();
-            default -> {
-                LOGGER.debug(
-                        "Received unimplemented channel open message type: {}", channelTypeString);
-                yield message;
-            }
+            case X11 -> new ChannelOpenX11MessageParser(raw).parse();
+            case DIRECT_TCPIP -> new ChannelOpenDirectTcpIpMessageParser(raw).parse();
+            case FORWARDED_TCPIP -> new ChannelOpenForwardedTcpIpMessageParser(raw).parse();
+            case DIRECT_STREAMLOCAL_OPENSSH_COM ->
+                    new ChannelOpenDirectStreamlocalOpenSshMessageParser(raw).parse();
+            case FORWARDED_STREAMLOCAL_OPENSSH_COM ->
+                    new ChannelOpenForwardedStreamlocalOpenSshMessageParser(raw).parse();
+            case TUN_OPENSSH_COM -> new ChannelOpenTunOpenSshMessageParser(raw).parse();
+            case null -> message;
         };
     }
 }

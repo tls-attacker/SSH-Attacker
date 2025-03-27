@@ -27,6 +27,7 @@ public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRe
 
     @Override
     public void adjustContext() {
+        // TODO: Handle ChannelRequestEnvMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

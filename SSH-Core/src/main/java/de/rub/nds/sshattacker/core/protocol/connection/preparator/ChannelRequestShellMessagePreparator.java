@@ -16,7 +16,7 @@ public class ChannelRequestShellMessagePreparator
 
     public ChannelRequestShellMessagePreparator(
             Chooser chooser, ChannelRequestShellMessage message) {
-        super(chooser, message, ChannelRequestType.SHELL);
+        super(chooser, message, ChannelRequestType.SHELL, true);
     }
 
     @Override

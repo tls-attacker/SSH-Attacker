@@ -16,7 +16,7 @@ public class GlobalRequestTcpIpForwardMessagePreparator
 
     public GlobalRequestTcpIpForwardMessagePreparator(
             Chooser chooser, GlobalRequestTcpIpForwardMessage message) {
-        super(chooser, message, GlobalRequestType.TCPIP_FORWARD);
+        super(chooser, message, GlobalRequestType.TCPIP_FORWARD, true);
     }
 
     @Override

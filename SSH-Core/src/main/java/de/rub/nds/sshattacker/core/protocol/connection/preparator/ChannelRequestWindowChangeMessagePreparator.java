@@ -16,7 +16,7 @@ public class ChannelRequestWindowChangeMessagePreparator
 
     public ChannelRequestWindowChangeMessagePreparator(
             Chooser chooser, ChannelRequestWindowChangeMessage message) {
-        super(chooser, message, ChannelRequestType.WINDOW_CHANGE);
+        super(chooser, message, ChannelRequestType.WINDOW_CHANGE, false);
     }
 
     @Override

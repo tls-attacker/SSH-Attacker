@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenX11Message extends ChannelOpenMessage<ChannelOpenX11Message> {
 
@@ -38,19 +39,19 @@ public class ChannelOpenX11Message extends ChannelOpenMessage<ChannelOpenX11Mess
     }
 
     public void setOriginatorAddress(ModifiableString originatorAddress) {
-        this.originatorAddress = originatorAddress;
+        setOriginatorAddress(originatorAddress, false);
     }
 
     public void setOriginatorAddress(String originatorAddress) {
-        this.originatorAddress =
-                ModifiableVariableFactory.safelySetValue(this.originatorAddress, originatorAddress);
+        setOriginatorAddress(originatorAddress, false);
     }
 
     public void setOriginatorAddress(
             ModifiableString originatorAddress, boolean adjustLengthField) {
         this.originatorAddress = originatorAddress;
         if (adjustLengthField) {
-            setOriginatorAddressLength(this.originatorAddress.getValue().getBytes().length);
+            setOriginatorAddressLength(
+                    this.originatorAddress.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 
@@ -58,7 +59,8 @@ public class ChannelOpenX11Message extends ChannelOpenMessage<ChannelOpenX11Mess
         this.originatorAddress =
                 ModifiableVariableFactory.safelySetValue(this.originatorAddress, originatorAddress);
         if (adjustLengthField) {
-            setOriginatorAddressLength(this.originatorAddress.getValue().getBytes().length);
+            setOriginatorAddressLength(
+                    this.originatorAddress.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 

@@ -29,6 +29,7 @@ public class ChannelRequestExitSignalMessageHandler
 
     @Override
     public void adjustContext() {
+        // TODO: Handle ChannelRequestExitSignalMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

@@ -20,11 +20,11 @@ import java.nio.charset.StandardCharsets;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({
-    UserAuthNoneMessage.class,
-    UserAuthPasswordMessage.class,
-    UserAuthPubkeyMessage.class,
-    UserAuthHostbasedMessage.class,
-    UserAuthKeyboardInteractiveMessage.class
+    UserAuthRequestNoneMessage.class,
+    UserAuthRequestPasswordMessage.class,
+    UserAuthRequestPublicKeyMessage.class,
+    UserAuthRequestHostbasedMessage.class,
+    UserAuthRequestKeyboardInteractiveMessage.class
 })
 public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>>
         extends SshMessage<T> {

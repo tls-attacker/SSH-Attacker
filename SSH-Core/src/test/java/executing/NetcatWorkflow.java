@@ -7,7 +7,7 @@
  */
 package executing;
 
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
@@ -58,7 +58,8 @@ public final class NetcatWorkflow {
         trace.addSshAction(sendServiceRequest);
         trace.addSshAction(receiveServiceRequestResponse);
 
-        SendAction sendUserauthRequest = new SendAction("client", new UserAuthPasswordMessage());
+        SendAction sendUserauthRequest =
+                new SendAction("client", new UserAuthRequestPasswordMessage());
         ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("client");
         ReceiveAction receiveGlobalRequest = new ReceiveAction("client");
         trace.addSshActions(sendUserauthRequest);

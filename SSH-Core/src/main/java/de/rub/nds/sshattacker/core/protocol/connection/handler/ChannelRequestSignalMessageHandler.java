@@ -29,6 +29,7 @@ public class ChannelRequestSignalMessageHandler
 
     @Override
     public void adjustContext() {
+        // TODO: ChannelRequestSignalMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -33,29 +34,33 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         return new UserAuthPkOkMessage();
     }
 
-    private void parsePubkey() {
-        message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
-        message.setPubkey(
-                parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey: {}", backslashEscapeString(message.getPubkey().getValue()));
+    private void parsePublicKeyAlgorithmName() {
+        message.setPublicKeyAlgorithmNameLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Public key algorithm name length: {}",
+                message.getPublicKeyAlgorithmNameLength().getValue());
+        message.setPublicKeyAlgorithmName(
+                parseByteString(
+                        message.getPublicKeyAlgorithmNameLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Public key algorithm name: {}",
+                backslashEscapeString(message.getPublicKeyAlgorithmName().getValue()));
     }
 
-    private void parsePubkeyAlgName() {
-        message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+    private void parsePublicKeyBlob() {
+        message.setPublicKeyBlobLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Public key blob length: {}", message.getPublicKeyBlobLength().getValue());
+        message.setPublicKeyBlob(parseByteArrayField(message.getPublicKeyBlobLength().getValue()));
         LOGGER.debug(
-                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
-        message.setPubkeyAlgName(
-                parseByteString(
-                        message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Pubkey algorithm name: {}",
-                backslashEscapeString(message.getPubkeyAlgName().getValue()));
+                "Public key blob: {}",
+                ArrayConverter.bytesToRawHexString(message.getPublicKeyBlob().getValue()));
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parsePubkeyAlgName();
-        parsePubkey();
+        parsePublicKeyAlgorithmName();
+        parsePublicKeyBlob();
     }
 }

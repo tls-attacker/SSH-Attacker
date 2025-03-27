@@ -29,6 +29,7 @@ public class ChannelRequestUnknownMessageHandler
 
     @Override
     public void adjustContext() {
+        // TODO: Handle ChannelRequestUnknownMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

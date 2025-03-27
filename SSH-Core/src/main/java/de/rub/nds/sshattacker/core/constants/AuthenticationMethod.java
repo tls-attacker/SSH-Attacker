@@ -15,6 +15,7 @@ public enum AuthenticationMethod {
     /*
      * Sources:
      *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-10
+     *  - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
      */
     PUBLICKEY("publickey"),
     PASSWORD("password"),
@@ -24,7 +25,8 @@ public enum AuthenticationMethod {
     GSSAPI_WITH_MIC("gssapi-with-mic"),
     GSSAPI_KEYEX("gssapi-keyex"),
     GSSAPI("gssapi"),
-    EXTERNAL_KEYX("external-keyx");
+    EXTERNAL_KEYX("external-keyx"),
+    PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM("publickey-hostbound-v00@openssh.com");
 
     private final String name;
 

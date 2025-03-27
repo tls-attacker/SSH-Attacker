@@ -32,23 +32,22 @@ public class GlobalRequestSuccessMessageHandler
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(byte[] array) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array) {
         return new GlobalRequestSuccessMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<GlobalRequestSuccessMessage> getParser(
-            byte[] array, int startPosition) {
+    public GlobalRequestSuccessMessageParser getParser(byte[] array, int startPosition) {
         return new GlobalRequestSuccessMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<GlobalRequestSuccessMessage> getPreparator() {
+    public GlobalRequestSuccessMessagePreparator getPreparator() {
         return new GlobalRequestSuccessMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<GlobalRequestSuccessMessage> getSerializer() {
+    public GlobalRequestSuccessMessageSerializer getSerializer() {
         return new GlobalRequestSuccessMessageSerializer(message);
     }
 }

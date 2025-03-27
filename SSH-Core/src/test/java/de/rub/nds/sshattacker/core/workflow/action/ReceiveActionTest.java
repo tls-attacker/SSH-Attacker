@@ -9,8 +9,8 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import static de.rub.nds.sshattacker.core.workflow.action.ReceiveAction.ReceiveOption;
 
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestNoneMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestHostKeysOpenSshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
@@ -218,7 +218,7 @@ public class ReceiveActionTest {
                         new AsciiMessage(),
                         new VersionExchangeMessage(),
                         new IgnoreMessage(),
-                        new UserAuthNoneMessage(),
+                        new UserAuthRequestNoneMessage(),
                         new KeyExchangeInitMessage()));
         Assertions.assertFalse(action.executedAsPlanned());
     }
@@ -233,7 +233,7 @@ public class ReceiveActionTest {
                         new AsciiMessage(),
                         new VersionExchangeMessage(),
                         new IgnoreMessage(),
-                        new UserAuthNoneMessage(),
+                        new UserAuthRequestNoneMessage(),
                         new KeyExchangeInitMessage()));
         Assertions.assertTrue(action.executedAsPlanned());
     }
@@ -247,7 +247,7 @@ public class ReceiveActionTest {
         action.setReceivedMessages(
                 List.of(
                         new VersionExchangeMessage(),
-                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                        Optional.of(new GlobalRequestHostKeysOpenSshMessage())
                                 .map(
                                         message -> {
                                             message.setWantReply((byte) 0);
@@ -269,7 +269,7 @@ public class ReceiveActionTest {
         action.setReceivedMessages(
                 List.of(
                         new VersionExchangeMessage(),
-                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                        Optional.of(new GlobalRequestHostKeysOpenSshMessage())
                                 .map(
                                         message -> {
                                             message.setWantReply((byte) 0);
@@ -291,7 +291,7 @@ public class ReceiveActionTest {
         action.setReceivedMessages(
                 List.of(
                         new VersionExchangeMessage(),
-                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                        Optional.of(new GlobalRequestHostKeysOpenSshMessage())
                                 .map(
                                         message -> {
                                             message.setWantReply((byte) 1);

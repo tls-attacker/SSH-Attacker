@@ -27,7 +27,9 @@ public class ChannelOpenForwardedTcpIpMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle ChannelOpenForwardedTcpIpMessage
+    }
 
     @Override
     public ChannelOpenForwardedTcpIpMessageParser getParser(byte[] array) {

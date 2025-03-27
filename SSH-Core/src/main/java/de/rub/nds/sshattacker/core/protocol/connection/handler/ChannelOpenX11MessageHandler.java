@@ -25,7 +25,9 @@ public class ChannelOpenX11MessageHandler extends SshMessageHandler<ChannelOpenX
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle ChannelOpenX11Message
+    }
 
     @Override
     public ChannelOpenX11MessageParser getParser(byte[] array) {

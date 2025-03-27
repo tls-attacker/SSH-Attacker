@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenDirectTcpIpMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenDirectTcpIpMessage
         extends ChannelOpenMessage<ChannelOpenDirectTcpIpMessage> {
@@ -42,18 +43,18 @@ public class ChannelOpenDirectTcpIpMessage
     }
 
     public void setHostToConnect(ModifiableString hostToConnect) {
-        this.hostToConnect = hostToConnect;
+        setHostToConnect(hostToConnect, false);
     }
 
     public void setHostToConnect(String hostToConnect) {
-        this.hostToConnect =
-                ModifiableVariableFactory.safelySetValue(this.hostToConnect, hostToConnect);
+        setHostToConnect(hostToConnect, false);
     }
 
     public void setHostToConnect(ModifiableString hostToConnect, boolean adjustLengthField) {
         this.hostToConnect = hostToConnect;
         if (adjustLengthField) {
-            setHostToConnectLength(this.hostToConnect.getValue().getBytes().length);
+            setHostToConnectLength(
+                    this.hostToConnect.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 
@@ -61,7 +62,8 @@ public class ChannelOpenDirectTcpIpMessage
         this.hostToConnect =
                 ModifiableVariableFactory.safelySetValue(this.hostToConnect, hostToConnect);
         if (adjustLengthField) {
-            setHostToConnectLength(this.hostToConnect.getValue().getBytes().length);
+            setHostToConnectLength(
+                    this.hostToConnect.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 
@@ -97,19 +99,19 @@ public class ChannelOpenDirectTcpIpMessage
     }
 
     public void setOriginatorAddress(ModifiableString originatorAddress) {
-        this.originatorAddress = originatorAddress;
+        setOriginatorAddress(originatorAddress, false);
     }
 
     public void setOriginatorAddress(String originatorAddress) {
-        this.originatorAddress =
-                ModifiableVariableFactory.safelySetValue(this.originatorAddress, originatorAddress);
+        setOriginatorAddress(originatorAddress, false);
     }
 
     public void setOriginatorAddress(
             ModifiableString originatorAddress, boolean adjustLengthField) {
         this.originatorAddress = originatorAddress;
         if (adjustLengthField) {
-            setOriginatorAddressLength(this.originatorAddress.getValue().getBytes().length);
+            setOriginatorAddressLength(
+                    this.originatorAddress.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 
@@ -117,7 +119,8 @@ public class ChannelOpenDirectTcpIpMessage
         this.originatorAddress =
                 ModifiableVariableFactory.safelySetValue(this.originatorAddress, originatorAddress);
         if (adjustLengthField) {
-            setOriginatorAddressLength(this.originatorAddress.getValue().getBytes().length);
+            setOriginatorAddressLength(
+                    this.originatorAddress.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
     }
 

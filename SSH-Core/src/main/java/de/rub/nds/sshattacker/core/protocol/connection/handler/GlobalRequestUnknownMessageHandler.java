@@ -27,7 +27,9 @@ public class GlobalRequestUnknownMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle GlobalRequestUnknownMessage
+    }
 
     @Override
     public GlobalRequestUnknownMessageParser getParser(byte[] array) {

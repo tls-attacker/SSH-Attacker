@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
@@ -17,83 +18,96 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
-    private ModifiableInteger pubkeyAlgNameLength;
-    private ModifiableString pubkeyAlgName;
-    private ModifiableInteger pubkeyLength;
-    private ModifiableString pubkey;
+    private ModifiableInteger publicKeyAlgorithmNameLength;
+    private ModifiableString publicKeyAlgorithmName;
+    private ModifiableInteger publicKeyBlobLength;
+    private ModifiableByteArray publicKeyBlob;
 
-    public ModifiableInteger getPubkeyAlgNameLength() {
-        return pubkeyAlgNameLength;
+    public ModifiableInteger getPublicKeyAlgorithmNameLength() {
+        return publicKeyAlgorithmNameLength;
     }
 
-    public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
-        this.pubkeyAlgNameLength =
+    public void setPublicKeyAlgorithmNameLength(ModifiableInteger publicKeyAlgorithmNameLength) {
+        this.publicKeyAlgorithmNameLength = publicKeyAlgorithmNameLength;
+    }
+
+    public void setPublicKeyAlgorithmNameLength(int publicKeyAlgorithmNameLength) {
+        this.publicKeyAlgorithmNameLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.pubkeyAlgNameLength, pubkeyAlgNameLength);
+                        this.publicKeyAlgorithmNameLength, publicKeyAlgorithmNameLength);
     }
 
-    public ModifiableString getPubkeyAlgName() {
-        return pubkeyAlgName;
+    public ModifiableString getPublicKeyAlgorithmName() {
+        return publicKeyAlgorithmName;
     }
 
-    public void setPubkeyAlgName(ModifiableString pubkeyAlgName, boolean adjustLengthField) {
-        this.pubkeyAlgName = pubkeyAlgName;
+    public void setPublicKeyAlgorithmName(ModifiableString publicKeyAlgorithmName) {
+        setPublicKeyAlgorithmName(publicKeyAlgorithmName, false);
+    }
+
+    public void setPublicKeyAlgorithmName(String publicKeyAlgorithmName) {
+        setPublicKeyAlgorithmName(publicKeyAlgorithmName, false);
+    }
+
+    public void setPublicKeyAlgorithmName(
+            ModifiableString publicKeyAlgorithmName, boolean adjustLengthField) {
+        this.publicKeyAlgorithmName = publicKeyAlgorithmName;
         if (adjustLengthField) {
-            setPubkeyAlgNameLength(
-                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyAlgorithmNameLength(
+                    this.publicKeyAlgorithmName.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
     }
 
-    public void setPubkeyAlgName(String pubkeyAlgName, boolean adjustLengthField) {
-        this.pubkeyAlgName =
-                ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
+    public void setPublicKeyAlgorithmName(
+            String publicKeyAlgorithmName, boolean adjustLengthField) {
+        this.publicKeyAlgorithmName =
+                ModifiableVariableFactory.safelySetValue(
+                        this.publicKeyAlgorithmName, publicKeyAlgorithmName);
         if (adjustLengthField) {
-            setPubkeyAlgNameLength(
-                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyAlgorithmNameLength(
+                    this.publicKeyAlgorithmName.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
     }
 
-    public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
-        setPubkeyAlgName(pubkeyAlgName, false);
+    public ModifiableInteger getPublicKeyBlobLength() {
+        return publicKeyBlobLength;
     }
 
-    public void setPubkeyAlgName(String pubkeyAlgName) {
-        setPubkeyAlgName(pubkeyAlgName, false);
+    public void setPublicKeyBlobLength(ModifiableInteger publicKeyBlobLength) {
+        this.publicKeyBlobLength = publicKeyBlobLength;
     }
 
-    public ModifiableInteger getPubkeyLength() {
-        return pubkeyLength;
+    public void setPublicKeyBlobLength(int publicKeyBlobLength) {
+        this.publicKeyBlobLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.publicKeyBlobLength, publicKeyBlobLength);
     }
 
-    public void setPubkeyLength(int pubkeyLength) {
-        this.pubkeyLength =
-                ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
+    public ModifiableByteArray getPublicKeyBlob() {
+        return publicKeyBlob;
     }
 
-    public ModifiableString getPubkey() {
-        return pubkey;
+    public void setPublicKeyBlob(ModifiableByteArray publicKeyBlob) {
+        setPublicKeyBlob(publicKeyBlob, false);
     }
 
-    public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
-        this.pubkey = pubkey;
+    public void setPublicKeyBlob(byte[] publicKeyBlob) {
+        setPublicKeyBlob(publicKeyBlob, false);
+    }
+
+    public void setPublicKeyBlob(ModifiableByteArray publicKeyBlob, boolean adjustLengthField) {
+        this.publicKeyBlob = publicKeyBlob;
         if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyBlobLength(this.publicKeyBlob.getValue().length);
         }
     }
 
-    public void setPubkey(String pubkey, boolean adjustLengthField) {
-        this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
+    public void setPublicKeyBlob(byte[] publicKeyBlob, boolean adjustLengthField) {
+        this.publicKeyBlob =
+                ModifiableVariableFactory.safelySetValue(this.publicKeyBlob, publicKeyBlob);
         if (adjustLengthField) {
-            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPublicKeyBlobLength(this.publicKeyBlob.getValue().length);
         }
-    }
-
-    public void setPubkey(ModifiableString pubkey) {
-        setPubkey(pubkey, false);
-    }
-
-    public void setPubkey(String pubkey) {
-        setPubkey(pubkey, false);
     }
 
     @Override

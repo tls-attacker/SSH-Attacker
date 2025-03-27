@@ -16,10 +16,24 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
 
-    private ModifiableString variableName;
     private ModifiableInteger variableNameLength;
-    private ModifiableString variableValue;
+    private ModifiableString variableName;
     private ModifiableInteger variableValueLength;
+    private ModifiableString variableValue;
+
+    public ModifiableInteger getVariableNameLength() {
+        return variableNameLength;
+    }
+
+    public void setVariableNameLength(ModifiableInteger variableNameLength) {
+        this.variableNameLength = variableNameLength;
+    }
+
+    public void setVariableNameLength(int variableNameLength) {
+        this.variableNameLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.variableNameLength, variableNameLength);
+    }
 
     public ModifiableString getVariableName() {
         return variableName;
@@ -51,18 +65,18 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         }
     }
 
-    public ModifiableInteger getVariableNameLength() {
-        return variableNameLength;
+    public ModifiableInteger getVariableValueLength() {
+        return variableValueLength;
     }
 
-    public void setVariableNameLength(ModifiableInteger variableNameLength) {
-        this.variableNameLength = variableNameLength;
+    public void setVariableValueLength(ModifiableInteger variableValueLength) {
+        this.variableValueLength = variableValueLength;
     }
 
-    public void setVariableNameLength(int variableNameLength) {
-        this.variableNameLength =
+    public void setVariableValueLength(int variableValueLength) {
+        this.variableValueLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.variableNameLength, variableNameLength);
+                        this.variableValueLength, variableValueLength);
     }
 
     public ModifiableString getVariableValue() {
@@ -93,20 +107,6 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
             setVariableValueLength(
                     this.variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
-    }
-
-    public ModifiableInteger getVariableValueLength() {
-        return variableValueLength;
-    }
-
-    public void setVariableValueLength(ModifiableInteger variableValueLength) {
-        this.variableValueLength = variableValueLength;
-    }
-
-    public void setVariableValueLength(int variableValueLength) {
-        this.variableValueLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.variableValueLength, variableValueLength);
     }
 
     @Override

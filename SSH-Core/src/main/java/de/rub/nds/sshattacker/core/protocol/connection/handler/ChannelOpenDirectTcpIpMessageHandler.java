@@ -27,7 +27,9 @@ public class ChannelOpenDirectTcpIpMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle ChannelOpenDirectTcpIpMessage
+    }
 
     @Override
     public ChannelOpenDirectTcpIpMessageParser getParser(byte[] array) {

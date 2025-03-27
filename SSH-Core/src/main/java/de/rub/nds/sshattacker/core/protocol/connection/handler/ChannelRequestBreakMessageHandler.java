@@ -27,6 +27,14 @@ public class ChannelRequestBreakMessageHandler
     }
 
     @Override
+    public void adjustContext() {
+        // TODO: Handle ChannelRequestBreakMessage
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
+
+    @Override
     public ChannelRequestBreakMessageParser getParser(byte[] array) {
         return new ChannelRequestBreakMessageParser(array);
     }
@@ -44,12 +52,5 @@ public class ChannelRequestBreakMessageHandler
     @Override
     public ChannelRequestBreakMessageSerializer getSerializer() {
         return new ChannelRequestBreakMessageSerializer(message);
-    }
-
-    @Override
-    public void adjustContext() {
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
     }
 }

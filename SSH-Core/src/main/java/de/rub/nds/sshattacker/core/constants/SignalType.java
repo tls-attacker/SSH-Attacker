@@ -11,6 +11,7 @@ public enum SignalType {
     /*
      * Sources:
      * - https://datatracker.ietf.org/doc/html/rfc4254
+     * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
      */
     SIGABRT("ABRT"),
     SIGALRM("ALRM"),
@@ -24,7 +25,8 @@ public enum SignalType {
     SIGSEGV("SEGV"),
     SIGTERM("TERM"),
     SIGUSR1("USR1"),
-    SIGUSR2("USR2");
+    SIGUSR2("USR2"),
+    SIGINFO_OPENSSH_COM("INFO@openssh.com");
 
     private final String name;
 

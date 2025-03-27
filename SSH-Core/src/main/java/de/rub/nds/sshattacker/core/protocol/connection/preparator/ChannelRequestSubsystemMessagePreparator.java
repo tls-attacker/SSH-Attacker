@@ -16,7 +16,7 @@ public class ChannelRequestSubsystemMessagePreparator
 
     public ChannelRequestSubsystemMessagePreparator(
             Chooser chooser, ChannelRequestSubsystemMessage message) {
-        super(chooser, message, ChannelRequestType.SUBSYSTEM);
+        super(chooser, message, ChannelRequestType.SUBSYSTEM, true);
     }
 
     @Override

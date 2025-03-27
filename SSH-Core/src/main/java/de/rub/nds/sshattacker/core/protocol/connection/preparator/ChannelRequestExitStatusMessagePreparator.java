@@ -16,7 +16,7 @@ public class ChannelRequestExitStatusMessagePreparator
 
     public ChannelRequestExitStatusMessagePreparator(
             Chooser chooser, ChannelRequestExitStatusMessage message) {
-        super(chooser, message, ChannelRequestType.EXIT_STATUS);
+        super(chooser, message, ChannelRequestType.EXIT_STATUS, false);
     }
 
     @Override

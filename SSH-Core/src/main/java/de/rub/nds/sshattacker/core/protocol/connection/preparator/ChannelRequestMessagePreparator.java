@@ -16,22 +16,24 @@ public abstract class ChannelRequestMessagePreparator<T extends ChannelRequestMe
         extends ChannelMessagePreparator<T> {
 
     private final String channelRequestType;
+    private final boolean wantReply;
 
     protected ChannelRequestMessagePreparator(
-            Chooser chooser, T message, ChannelRequestType channelRequestType) {
-        this(chooser, message, channelRequestType.toString());
+            Chooser chooser, T message, ChannelRequestType channelRequestType, boolean wantReply) {
+        this(chooser, message, channelRequestType.toString(), wantReply);
     }
 
     protected ChannelRequestMessagePreparator(
-            Chooser chooser, T message, String channelRequestType) {
+            Chooser chooser, T message, String channelRequestType, boolean wantReply) {
         super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
         this.channelRequestType = channelRequestType;
+        this.wantReply = wantReply;
     }
 
     @Override
     protected final void prepareChannelMessageSpecificContents() {
         getObject().setRequestType(channelRequestType, true);
-        getObject().setWantReply(false);
+        getObject().setWantReply(wantReply);
         prepareChannelRequestMessageSpecificContents();
     }
 

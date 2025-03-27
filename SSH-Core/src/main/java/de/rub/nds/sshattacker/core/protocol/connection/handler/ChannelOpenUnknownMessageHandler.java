@@ -25,7 +25,9 @@ public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelO
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle ChannelOpenUnknownMessage
+    }
 
     @Override
     public ChannelOpenUnknownMessageParser getParser(byte[] array) {

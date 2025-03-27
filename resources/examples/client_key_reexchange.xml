@@ -34,7 +34,7 @@
     </Receive>
     <Send>
         <messages>
-            <UserAuthPassword />
+            <UserAuthRequestPassword />
         </messages>
     </Send>
     <Receive>

@@ -20,13 +20,13 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
         return typeSpecificData;
     }
 
+    public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
+        this.typeSpecificData = typeSpecificData;
+    }
+
     public void setTypeSpecificData(byte[] typeSpecificData) {
         this.typeSpecificData =
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
-    }
-
-    public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
-        this.typeSpecificData = typeSpecificData;
     }
 
     @Override

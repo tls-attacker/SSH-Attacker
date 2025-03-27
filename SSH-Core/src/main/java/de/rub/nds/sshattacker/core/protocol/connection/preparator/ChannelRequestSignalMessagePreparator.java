@@ -17,7 +17,7 @@ public class ChannelRequestSignalMessagePreparator
 
     public ChannelRequestSignalMessagePreparator(
             Chooser chooser, ChannelRequestSignalMessage message) {
-        super(chooser, message, ChannelRequestType.SIGNAL);
+        super(chooser, message, ChannelRequestType.SIGNAL, false);
     }
 
     @Override

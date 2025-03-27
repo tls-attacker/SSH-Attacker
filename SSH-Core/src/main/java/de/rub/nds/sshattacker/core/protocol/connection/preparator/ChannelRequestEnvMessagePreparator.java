@@ -15,7 +15,7 @@ public class ChannelRequestEnvMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestEnvMessage> {
 
     public ChannelRequestEnvMessagePreparator(Chooser chooser, ChannelRequestEnvMessage message) {
-        super(chooser, message, ChannelRequestType.ENV);
+        super(chooser, message, ChannelRequestType.ENV, true);
     }
 
     @Override

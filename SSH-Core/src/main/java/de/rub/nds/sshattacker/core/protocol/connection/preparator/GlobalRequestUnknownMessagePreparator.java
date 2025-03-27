@@ -15,7 +15,7 @@ public class GlobalRequestUnknownMessagePreparator
 
     public GlobalRequestUnknownMessagePreparator(
             Chooser chooser, GlobalRequestUnknownMessage message) {
-        super(chooser, message, "");
+        super(chooser, message, "", true);
     }
 
     @Override

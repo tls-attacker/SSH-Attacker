@@ -30,22 +30,22 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
     }
 
     @Override
-    public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array) {
+    public ChannelSuccessMessageParser getParser(byte[] array) {
         return new ChannelSuccessMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array, int startPosition) {
+    public ChannelSuccessMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelSuccessMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<ChannelSuccessMessage> getPreparator() {
+    public ChannelSuccessMessagePreparator getPreparator() {
         return new ChannelSuccessMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<ChannelSuccessMessage> getSerializer() {
+    public ChannelMessageSerializer<ChannelSuccessMessage> getSerializer() {
         return new ChannelMessageSerializer<>(message);
     }
 }

@@ -1,0 +1,83 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.ServiceType;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPasswordMessage;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+public class UserAuthRequestPasswordMessageSerializerTest {
+    /**
+     * Provides a stream of test vectors for the UserAuthPasswordMessageSerializer class
+     *
+     * @return A stream of test vectors to feed the testSerialize unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "320000000561646D696E0000000C7373682D75736572617574680000000870617373776F7264000000000561646D696E"),
+                        "admin",
+                        ServiceType.SSH_USERAUTH,
+                        (byte) 0x00,
+                        "admin"),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "3200000004757365720000000C7373682D75736572617574680000000870617373776F7264000000000475736572"),
+                        "user",
+                        ServiceType.SSH_USERAUTH,
+                        (byte) 0x00,
+                        "user"),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "320000000561646D696E0000000C7373682D75736572617574680000000870617373776F7264000000000475736572"),
+                        "admin",
+                        ServiceType.SSH_USERAUTH,
+                        (byte) 0x00,
+                        "user"));
+    }
+
+    /**
+     * Test of UserAuthPasswordMessageSerializer::serialize method
+     *
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedUsername Username of the user to authenticate
+     * @param providedServiceType Requested service to start after the user authentication was
+     *     successful
+     * @param providedChangePassword Value of the expectedResponse flag
+     * @param providedPassword Password of the user to authenticate
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(
+            byte[] expectedBytes,
+            String providedUsername,
+            ServiceType providedServiceType,
+            byte providedChangePassword,
+            String providedPassword) {
+        UserAuthRequestPasswordMessage msg = new UserAuthRequestPasswordMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
+        msg.setMethodName(AuthenticationMethod.PASSWORD, true);
+        msg.setUserName(providedUsername, true);
+        msg.setServiceName(providedServiceType, true);
+        msg.setChangePassword(providedChangePassword);
+        msg.setPassword(providedPassword, true);
+        UserAuthRequestPasswordMessageSerializer serializer =
+                new UserAuthRequestPasswordMessageSerializer(msg);
+
+        assertArrayEquals(expectedBytes, serializer.serialize());
+    }
+}

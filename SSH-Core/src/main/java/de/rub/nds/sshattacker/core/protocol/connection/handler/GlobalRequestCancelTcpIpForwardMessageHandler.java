@@ -27,26 +27,27 @@ public class GlobalRequestCancelTcpIpForwardMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // TODO: Handle GlobalRequestCancelTcpIpForwardMessage
+    }
 
     @Override
-    public SshMessageParser<GlobalRequestCancelTcpIpForwardMessage> getParser(byte[] array) {
+    public GlobalRequestCancelTcpIpForwardMessageParser getParser(byte[] array) {
         return new GlobalRequestCancelTcpIpForwardMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<GlobalRequestCancelTcpIpForwardMessage> getParser(
-            byte[] array, int startPosition) {
+    public GlobalRequestCancelTcpIpForwardMessageParser getParser(byte[] array, int startPosition) {
         return new GlobalRequestCancelTcpIpForwardMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<GlobalRequestCancelTcpIpForwardMessage> getPreparator() {
+    public GlobalRequestCancelTcpIpForwardlMessagePreparator getPreparator() {
         return new GlobalRequestCancelTcpIpForwardlMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<GlobalRequestCancelTcpIpForwardMessage> getSerializer() {
+    public GlobalRequestCancelTcpIpForwardlMessageSerializer getSerializer() {
         return new GlobalRequestCancelTcpIpForwardlMessageSerializer(message);
     }
 }

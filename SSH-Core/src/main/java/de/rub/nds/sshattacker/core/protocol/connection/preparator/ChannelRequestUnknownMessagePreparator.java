@@ -15,7 +15,7 @@ public class ChannelRequestUnknownMessagePreparator
 
     public ChannelRequestUnknownMessagePreparator(
             Chooser chooser, ChannelRequestUnknownMessage message) {
-        super(chooser, message, "");
+        super(chooser, message, "", true);
     }
 
     @Override

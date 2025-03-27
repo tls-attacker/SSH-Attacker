@@ -8,10 +8,12 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestHostbasedMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPublicKeyHostboundOpenSshMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthRequestHostbasedMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthRequestPublicKeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
@@ -87,29 +89,48 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     public void filterMessages(SshContext receiveFromCtx, SshContext forwardToCtx) {
         filteredMessages = receivedMessages;
         for (int i = 0; i < filteredMessages.size(); i++) {
-            if (filteredMessages.get(i).getClass() == UserAuthPubkeyMessage.class) {
-                filteredMessages.set(i, filterUserAuthPubkeyMessage(forwardToCtx));
+            if (filteredMessages.get(i).getClass() == UserAuthRequestPublicKeyMessage.class) {
+                filteredMessages.set(i, filterUserAuthRequestPublicKeyMessage(forwardToCtx));
             }
-            if (filteredMessages.get(i).getClass() == UserAuthHostbasedMessage.class) {
-                filteredMessages.set(i, filterUserAuthHostbasedMessage(forwardToCtx));
+            if (filteredMessages.get(i).getClass() == UserAuthRequestHostbasedMessage.class) {
+                filteredMessages.set(i, filterUserAuthRequestHostbasedMessage(forwardToCtx));
+            }
+            if (filteredMessages.get(i).getClass()
+                    == UserAuthRequestPublicKeyHostboundOpenSshMessage.class) {
+                filteredMessages.set(
+                        i, filterUserAuthRequestPublicKeyHostboundOpenSshMessage(forwardToCtx));
             }
         }
     }
 
-    public static UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
-        UserAuthPubkeyMessage newPubkeyMessage = new UserAuthPubkeyMessage();
-        UserAuthPubkeyMessagePreparator forwardContextPreparator =
-                new UserAuthPubkeyMessagePreparator(forwardToCtx.getChooser(), newPubkeyMessage);
+    public static UserAuthRequestPublicKeyMessage filterUserAuthRequestPublicKeyMessage(
+            SshContext forwardToCtx) {
+        UserAuthRequestPublicKeyMessage newMessage = new UserAuthRequestPublicKeyMessage();
+        UserAuthRequestPublicKeyMessagePreparator forwardContextPreparator =
+                new UserAuthRequestPublicKeyMessagePreparator(
+                        forwardToCtx.getChooser(), newMessage);
         forwardContextPreparator.prepare();
-        return newPubkeyMessage;
+        return newMessage;
     }
 
-    public static UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
-        UserAuthHostbasedMessage newHostbasedMessage = new UserAuthHostbasedMessage();
-        UserAuthHostbasedMessagePreparator forwardContextPreparator =
-                new UserAuthHostbasedMessagePreparator(
-                        forwardToCtx.getChooser(), newHostbasedMessage);
+    public static UserAuthRequestHostbasedMessage filterUserAuthRequestHostbasedMessage(
+            SshContext forwardToCtx) {
+        UserAuthRequestHostbasedMessage newMessage = new UserAuthRequestHostbasedMessage();
+        UserAuthRequestHostbasedMessagePreparator forwardContextPreparator =
+                new UserAuthRequestHostbasedMessagePreparator(
+                        forwardToCtx.getChooser(), newMessage);
         forwardContextPreparator.prepare();
-        return newHostbasedMessage;
+        return newMessage;
+    }
+
+    public static UserAuthRequestPublicKeyHostboundOpenSshMessage
+            filterUserAuthRequestPublicKeyHostboundOpenSshMessage(SshContext forwardToCtx) {
+        UserAuthRequestPublicKeyHostboundOpenSshMessage newMessage =
+                new UserAuthRequestPublicKeyHostboundOpenSshMessage();
+        UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator forwardContextPreparator =
+                new UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator(
+                        forwardToCtx.getChooser(), newMessage);
+        forwardContextPreparator.prepare();
+        return newMessage;
     }
 }

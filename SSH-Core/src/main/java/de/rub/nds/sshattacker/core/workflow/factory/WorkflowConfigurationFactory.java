@@ -376,7 +376,9 @@ public class WorkflowConfigurationFactory {
             case NONE:
                 workflow.addSshActions(
                         SshActionFactory.createMessageAction(
-                                connection, ConnectionEndType.CLIENT, new UserAuthNoneMessage()),
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthRequestNoneMessage()),
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
@@ -387,7 +389,7 @@ public class WorkflowConfigurationFactory {
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.CLIENT,
-                                new UserAuthPasswordMessage()),
+                                new UserAuthRequestPasswordMessage()),
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
@@ -396,7 +398,9 @@ public class WorkflowConfigurationFactory {
             case PUBLICKEY:
                 workflow.addSshActions(
                         SshActionFactory.createMessageAction(
-                                connection, ConnectionEndType.CLIENT, new UserAuthPubkeyMessage()),
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthRequestPublicKeyMessage()),
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
@@ -407,7 +411,7 @@ public class WorkflowConfigurationFactory {
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.CLIENT,
-                                new UserAuthKeyboardInteractiveMessage()),
+                                new UserAuthRequestKeyboardInteractiveMessage()),
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
@@ -434,7 +438,7 @@ public class WorkflowConfigurationFactory {
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.CLIENT,
-                                new UserAuthHostbasedMessage()),
+                                new UserAuthRequestHostbasedMessage()),
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
@@ -463,7 +467,7 @@ public class WorkflowConfigurationFactory {
                 SshActionFactory.createMessageAction(
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ChannelRequestPtyMessage(),
+                        new ChannelRequestPtyReqMessage(),
                         new ChannelRequestEnvMessage(),
                         new ChannelRequestEnvMessage(),
                         new ChannelRequestEnvMessage(),

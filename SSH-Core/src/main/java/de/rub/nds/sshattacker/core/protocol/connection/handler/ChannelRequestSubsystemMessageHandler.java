@@ -28,6 +28,7 @@ public class ChannelRequestSubsystemMessageHandler
 
     @Override
     public void adjustContext() {
+        // TODO: Handle ChannelRequestSubsystemMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

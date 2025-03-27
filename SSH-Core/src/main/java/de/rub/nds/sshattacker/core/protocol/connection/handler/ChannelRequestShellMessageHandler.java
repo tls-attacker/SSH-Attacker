@@ -29,6 +29,7 @@ public class ChannelRequestShellMessageHandler
 
     @Override
     public void adjustContext() {
+        // TODO: Handle ChannelRequestShellMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
