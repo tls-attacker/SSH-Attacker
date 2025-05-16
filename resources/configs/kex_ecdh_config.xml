@@ -31,6 +31,7 @@
         <clientSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160R2</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160R1</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160K1</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>KEX_STRICT_C_V00_OPENSSH_COM</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <serverSupportedKeyExchangeAlgorithms>
         <serverSupportedKeyExchangeAlgorithm>ECDH_SHA2_NISTP521</serverSupportedKeyExchangeAlgorithm>
@@ -63,5 +64,6 @@
         <serverSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160R2</serverSupportedKeyExchangeAlgorithm>
         <serverSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160R1</serverSupportedKeyExchangeAlgorithm>
         <serverSupportedKeyExchangeAlgorithm>ECDH_SHA2_SECP160K1</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>KEX_STRICT_S_V00_OPENSSH_COM</serverSupportedKeyExchangeAlgorithm>
     </serverSupportedKeyExchangeAlgorithms>
 </config>

@@ -3,9 +3,11 @@
     <clientSupportedKeyExchangeAlgorithms>
         <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>RSA1024_SHA1</clientSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>KEX_STRICT_C_V00_OPENSSH_COM</serverSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <serverSupportedKeyExchangeAlgorithms>
         <serverSupportedKeyExchangeAlgorithm>RSA2048_SHA256</serverSupportedKeyExchangeAlgorithm>
         <serverSupportedKeyExchangeAlgorithm>RSA1024_SHA1</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>KEX_STRICT_S_V00_OPENSSH_COM</serverSupportedKeyExchangeAlgorithm>
     </serverSupportedKeyExchangeAlgorithms>
 </config>
