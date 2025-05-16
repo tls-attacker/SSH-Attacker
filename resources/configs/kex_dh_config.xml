@@ -8,6 +8,7 @@
         <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA1</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP1_SHA1</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>KEX_STRICT_C_V00_OPENSSH_COM</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <serverSupportedKeyExchangeAlgorithms>
         <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP18_SHA512</serverSupportedKeyExchangeAlgorithm>
@@ -17,5 +18,6 @@
         <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</serverSupportedKeyExchangeAlgorithm>
         <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA1</serverSupportedKeyExchangeAlgorithm>
         <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP1_SHA1</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>KEX_STRICT_S_V00_OPENSSH_COM</serverSupportedKeyExchangeAlgorithm>
     </serverSupportedKeyExchangeAlgorithms>
 </config>

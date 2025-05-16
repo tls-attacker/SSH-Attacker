@@ -8,9 +8,9 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.util.Objects;
 import java.util.Set;
 

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
@@ -89,8 +89,8 @@ public class SendMangerSecretAction extends SendAction {
             LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptedSecret = rsa.doFinal(encodedSecret);
-            encryptedSecretArray.setModification(
-                    ByteArrayModificationFactory.explicitValue(encryptedSecret));
+            encryptedSecretArray.addModification(
+                    new ByteArrayExplicitValueModification(encryptedSecret));
             message.setEncryptedSecret(encryptedSecretArray, true);
             return message;
 
