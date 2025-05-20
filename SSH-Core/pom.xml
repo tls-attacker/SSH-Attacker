@@ -32,7 +32,7 @@
         <dependency>
             <groupId>de.rub.nds.tls.attacker</groupId>
             <artifactId>transport</artifactId>
-            <version>7.1.1</version>
+            <version>7.2.1</version>
         </dependency>
         <!-- scope: test -->
         <dependency>
