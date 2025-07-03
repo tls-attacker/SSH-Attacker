@@ -28,7 +28,7 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     protected static final boolean ADJUST_CONTEXT_DEFAULT = true;
 
     /** Defines whether this message is necessarily required in the workflow. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
     private ModifiableBoolean required;
 
     /**
@@ -36,14 +36,14 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
      * omit a message is sent during the handshake while it is executed to initialize specific
      * variables.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
     private ModifiableBoolean goingToBeSent;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
     private ModifiableBoolean adjustContext;
 
     /** resulting message */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.PLAINTEXT)
     protected ModifiableByteArray completeResultingMessage;
 
     public boolean isRequired() {
