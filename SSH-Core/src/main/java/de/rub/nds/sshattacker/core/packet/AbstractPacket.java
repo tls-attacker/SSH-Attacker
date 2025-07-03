@@ -25,22 +25,22 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
      * This field contains the packet bytes sent over the network. This includes packet_length,
      * padding_length, payload, padding and mac (some fields may be encrypted).
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.CIPHERTEXT)
     private ModifiableByteArray completePacketBytes;
 
     /**
      * The encrypted contents of the packet. If no encryption (NONE) is used, this field contains
      * the unencrypted payload.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.CIPHERTEXT)
     private ModifiableByteArray ciphertext;
 
     /** The compressed payload of this packet. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.PLAINTEXT)
     private ModifiableByteArray compressedPayload;
 
     /** The useful contents of the packet. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.PLAINTEXT)
     private ModifiableByteArray payload;
 
     public ModifiableByteArray getCompletePacketBytes() {

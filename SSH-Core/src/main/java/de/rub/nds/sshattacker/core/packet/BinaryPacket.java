@@ -28,26 +28,26 @@ public class BinaryPacket extends AbstractPacket {
     /**
      * The length of the packet in bytes, not including 'mac' or the 'packet_length' field itself.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableInteger length;
 
     /** The length of the padding. Must be at least 4 bytes and at most 255 bytes to be valid. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.LENGTH)
     private ModifiableByte paddingLength;
 
     /** The padding bytes of the packet. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.PADDING)
     private ModifiableByteArray padding;
 
     /** The MAC (or authentication tag if AEAD encryption is used) of the packet. */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.MAC)
     private ModifiableByteArray mac;
 
     /**
      * The implicit sequence number of this packet which is used in MAC computations as well as
      * SSH_MSG_UNIMPLEMENTED.
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.COUNT)
     private ModifiableInteger sequenceNumber;
 
     /** A holder instance for all temporary fields used during crypto computations. */
