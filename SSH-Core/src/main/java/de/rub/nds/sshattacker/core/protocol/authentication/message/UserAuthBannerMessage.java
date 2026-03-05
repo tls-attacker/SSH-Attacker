@@ -18,14 +18,22 @@ import java.util.List;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
+    public static final String MESSAGE_LENGTH = "message_length";
     public static final String MESSAGE = "message";
+    public static final String LANGUAGE_TAG_LENGTH = "language_tag_length";
     public static final String LANGUAGE_TAG = "language_tag";
 
     private static final List<SshFieldDefinition> FIELDS =
             List.of(
-                    new SshFieldDefinition(MESSAGE, SshDataType.STRING, StandardCharsets.UTF_8),
+                    new SshFieldDefinition(MESSAGE_LENGTH, SshDataType.UINT32),
                     new SshFieldDefinition(
-                            LANGUAGE_TAG, SshDataType.STRING, StandardCharsets.US_ASCII));
+                            MESSAGE, SshDataType.STRING, StandardCharsets.UTF_8, MESSAGE_LENGTH),
+                    new SshFieldDefinition(LANGUAGE_TAG_LENGTH, SshDataType.UINT32),
+                    new SshFieldDefinition(
+                            LANGUAGE_TAG,
+                            SshDataType.STRING,
+                            StandardCharsets.US_ASCII,
+                            LANGUAGE_TAG_LENGTH));
 
     public UserAuthBannerMessage() {
         super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER, FIELDS);
