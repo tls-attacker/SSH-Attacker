@@ -1,39 +1,38 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2024 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.protocol.common.SshDataType;
+import de.rub.nds.sshattacker.core.protocol.common.SshFieldDefinition;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
-    private ModifiableInteger messageLength;
-    private ModifiableString message;
-    private ModifiableInteger languageTagLength;
-    private ModifiableString languageTag;
+    public static final String MESSAGE = "message";
+    public static final String LANGUAGE_TAG = "language_tag";
+
+    private static final List<SshFieldDefinition> FIELDS =
+            List.of(
+                    new SshFieldDefinition(MESSAGE, SshDataType.STRING, StandardCharsets.UTF_8),
+                    new SshFieldDefinition(
+                            LANGUAGE_TAG, SshDataType.STRING, StandardCharsets.US_ASCII));
 
     public UserAuthBannerMessage() {
-        super();
+        super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER, FIELDS);
     }
 
     public UserAuthBannerMessage(UserAuthBannerMessage other) {
         super(other);
-        messageLength = other.messageLength != null ? other.messageLength.createCopy() : null;
-        message = other.message != null ? other.message.createCopy() : null;
-        languageTagLength =
-                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
-        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
     }
 
     @Override
@@ -41,105 +40,20 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
         return new UserAuthBannerMessage(this);
     }
 
-    public ModifiableInteger getMessageLength() {
-        return messageLength;
+    @Override
+    protected UserAuthBannerMessage createNewInstance() {
+        return new UserAuthBannerMessage();
     }
-
-    public void setMessageLength(ModifiableInteger messageLength) {
-        this.messageLength = messageLength;
-    }
-
-    public void setMessageLength(int messageLength) {
-        this.messageLength =
-                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
-    }
-
-    public ModifiableString getMessage() {
-        return message;
-    }
-
-    public void setMessage(ModifiableString message) {
-        setMessage(message, false);
-    }
-
-    public void setMessage(String message) {
-        setMessage(message, false);
-    }
-
-    public void setMessage(ModifiableString message, boolean adjustLengthField) {
-        this.message = message;
-        if (adjustLengthField) {
-            setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setMessage(String message, boolean adjustLengthField) {
-        this.message = ModifiableVariableFactory.safelySetValue(this.message, message);
-        if (adjustLengthField) {
-            setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public ModifiableInteger getLanguageTagLength() {
-        return languageTagLength;
-    }
-
-    public void setLanguageTagLength(ModifiableInteger languageTagLength) {
-        this.languageTagLength = languageTagLength;
-    }
-
-    public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength =
-                ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
-    }
-
-    public ModifiableString getLanguageTag() {
-        return languageTag;
-    }
-
-    public void setLanguageTag(ModifiableString languageTag) {
-        setLanguageTag(languageTag, false);
-    }
-
-    public void setLanguageTag(String languageTag) {
-        setLanguageTag(languageTag, false);
-    }
-
-    public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        this.languageTag = languageTag;
-        if (adjustLengthField) {
-            setLanguageTagLength(
-                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
-        if (adjustLengthField) {
-            setLanguageTagLength(
-                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
-    }
-
-    public static final UserAuthBannerMessageHandler HANDLER = new UserAuthBannerMessageHandler();
 
     @Override
-    public UserAuthBannerMessageHandler getHandler() {
-        return HANDLER;
+    protected void prepareMessageContents(Chooser chooser) {
+        // TODO dummy values for fuzzing
+        setStringField(MESSAGE, "", true);
+        setStringField(LANGUAGE_TAG, "", true);
     }
 
     @Override
     public void adjustContext(SshContext context) {
-        HANDLER.adjustContext(context, this);
-    }
-
-    @Override
-    public void prepare(Chooser chooser) {
-        UserAuthBannerMessageHandler.PREPARATOR.prepare(this, chooser);
-    }
-
-    @Override
-    public byte[] serialize() {
-        return UserAuthBannerMessageHandler.SERIALIZER.serialize(this);
+        // TODO: Handle UserAuthBannerMessage
     }
 }
