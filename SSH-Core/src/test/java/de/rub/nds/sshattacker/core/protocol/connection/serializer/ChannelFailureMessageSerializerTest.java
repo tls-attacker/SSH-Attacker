@@ -40,7 +40,7 @@ public class ChannelFailureMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_FAILURE);
         msg.setRecipientChannelId(providedRecipientChannelId);
         ChannelMessageSerializer<ChannelFailureMessage> serializer =
-                new ChannelMessageSerializer<>(msg);
-        assertArrayEquals(expectedBytes, serializer.serialize());
+                new ChannelMessageSerializer<>();
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

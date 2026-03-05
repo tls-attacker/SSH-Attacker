@@ -106,7 +106,8 @@ public class ExtensionInfoMessageParserTest {
         ExtensionInfoMessageParser parser = new ExtensionInfoMessageParser(providedBytes);
         ExtensionInfoMessage msg = parser.parse();
         List<AbstractExtension<?>> extensions = msg.getExtensions();
-        ServerSigAlgsExtension serverSigAlgsExtension = (ServerSigAlgsExtension) extensions.get(0);
+        ServerSigAlgsExtension serverSigAlgsExtension =
+                (ServerSigAlgsExtension) extensions.getFirst();
         DelayCompressionExtension delayCompressionExtension =
                 (DelayCompressionExtension) extensions.get(1);
 

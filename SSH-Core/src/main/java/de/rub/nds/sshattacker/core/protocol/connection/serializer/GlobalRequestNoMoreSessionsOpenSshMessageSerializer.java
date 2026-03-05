@@ -10,10 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestNoMoreSessionsOpenSshMessage;
 
 public class GlobalRequestNoMoreSessionsOpenSshMessageSerializer
-        extends GlobalRequestMessageSerializer<GlobalRequestNoMoreSessionsOpenSshMessage> {
-
-    public GlobalRequestNoMoreSessionsOpenSshMessageSerializer(
-            GlobalRequestNoMoreSessionsOpenSshMessage message) {
-        super(message);
-    }
-}
+        extends GlobalRequestMessageSerializer<GlobalRequestNoMoreSessionsOpenSshMessage> {}

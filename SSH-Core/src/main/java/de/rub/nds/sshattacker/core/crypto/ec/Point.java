@@ -8,11 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.ec;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -71,6 +67,17 @@ public class Point implements Serializable {
         fieldX = x;
         fieldY = y;
         atInfinity = false;
+    }
+
+    public Point(Point other) {
+        super();
+        fieldX = other.fieldX != null ? other.fieldX.createCopy() : null;
+        fieldY = other.fieldY != null ? other.fieldY.createCopy() : null;
+        atInfinity = other.atInfinity;
+    }
+
+    public Point createCopy() {
+        return new Point(this);
     }
 
     /**

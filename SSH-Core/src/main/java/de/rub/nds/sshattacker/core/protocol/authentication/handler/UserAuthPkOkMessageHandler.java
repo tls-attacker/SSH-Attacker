@@ -16,34 +16,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMessage> {
 
-    public UserAuthPkOkMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthPkOkMessageHandler(SshContext context, UserAuthPkOkMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, UserAuthPkOkMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthPkOkMessageParser getParser(byte[] array) {
+    public UserAuthPkOkMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthPkOkMessageParser(array);
     }
 
     @Override
-    public UserAuthPkOkMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthPkOkMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthPkOkMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthPkOkMessagePreparator getPreparator() {
-        return new UserAuthPkOkMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthPkOkMessagePreparator PREPARATOR =
+            new UserAuthPkOkMessagePreparator();
 
-    @Override
-    public UserAuthPkOkMessageSerializer getSerializer() {
-        return new UserAuthPkOkMessageSerializer(message);
-    }
+    public static final UserAuthPkOkMessageSerializer SERIALIZER =
+            new UserAuthPkOkMessageSerializer();
 }

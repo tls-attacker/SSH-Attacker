@@ -16,8 +16,26 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
 
     protected ModifiableInteger recipientChannelId;
 
-    @XmlAttribute(name = "channel")
-    protected Integer configSenderChannelId;
+    @XmlAttribute(name = "localChannel")
+    protected Integer configLocalChannelId;
+
+    @XmlAttribute(name = "remoteChannel")
+    protected Integer configRemoteChannelId;
+
+    protected ChannelMessage() {
+        super();
+    }
+
+    protected ChannelMessage(ChannelMessage<T> other) {
+        super(other);
+        recipientChannelId =
+                other.recipientChannelId != null ? other.recipientChannelId.createCopy() : null;
+        configLocalChannelId = other.configLocalChannelId;
+        configRemoteChannelId = other.configRemoteChannelId;
+    }
+
+    @Override
+    public abstract ChannelMessage<T> createCopy();
 
     public ModifiableInteger getRecipientChannelId() {
         return recipientChannelId;
@@ -27,16 +45,25 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
         this.recipientChannelId = recipientChannelId;
     }
 
-    public void setRecipientChannelId(int recipientChannel) {
-        recipientChannelId =
-                ModifiableVariableFactory.safelySetValue(recipientChannelId, recipientChannel);
+    public void setRecipientChannelId(int recipientChannelId) {
+        this.recipientChannelId =
+                ModifiableVariableFactory.safelySetValue(
+                        this.recipientChannelId, recipientChannelId);
     }
 
-    public Integer getConfigSenderChannelId() {
-        return configSenderChannelId;
+    public Integer getConfigLocalChannelId() {
+        return configLocalChannelId;
     }
 
-    public void setConfigSenderChannelId(int configSenderChannelId) {
-        this.configSenderChannelId = configSenderChannelId;
+    public void setConfigLocalChannelId(int configLocalChannelId) {
+        this.configLocalChannelId = configLocalChannelId;
+    }
+
+    public Integer getConfigRemoteChannelId() {
+        return configRemoteChannelId;
+    }
+
+    public void setConfigRemoteChannelId(int configRemoteChannelId) {
+        this.configRemoteChannelId = configRemoteChannelId;
     }
 }

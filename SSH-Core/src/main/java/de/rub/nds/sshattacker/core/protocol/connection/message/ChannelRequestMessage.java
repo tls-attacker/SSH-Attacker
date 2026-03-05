@@ -22,6 +22,21 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     private ModifiableString requestType;
     private ModifiableByte wantReply;
 
+    protected ChannelRequestMessage() {
+        super();
+    }
+
+    protected ChannelRequestMessage(ChannelRequestMessage<T> other) {
+        super(other);
+        requestTypeLength =
+                other.requestTypeLength != null ? other.requestTypeLength.createCopy() : null;
+        requestType = other.requestType != null ? other.requestType.createCopy() : null;
+        wantReply = other.wantReply != null ? other.wantReply.createCopy() : null;
+    }
+
+    @Override
+    public abstract ChannelRequestMessage<T> createCopy();
+
     public ModifiableInteger getRequestTypeLength() {
         return requestTypeLength;
     }

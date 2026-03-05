@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,41 +19,39 @@ public class EcdhKeyExchangeReplyMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessageSerializer(EcdhKeyExchangeReplyMessage message) {
-        super(message);
+    private static void serializeHostKeyBytes(
+            EcdhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer hostKeyBytesLength = object.getHostKeyBytesLength().getValue();
+        LOGGER.debug("Host key bytes length: {}", hostKeyBytesLength);
+        output.appendInt(hostKeyBytesLength);
+        byte[] hostKeyBytes = object.getHostKeyBytes().getValue();
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToRawHexString(hostKeyBytes));
+        output.appendBytes(hostKeyBytes);
     }
 
-    private void serializeHostKeyBytes(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: {}", msg.getHostKeyBytesLength().getValue());
-        appendBytes(msg.getHostKeyBytes().getValue());
-        LOGGER.debug(
-                "Host key bytes: {}",
-                ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
+    private static void serializeEphemeralPublicKey(
+            EcdhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer ephemeralPublicKeyLength = object.getEphemeralPublicKeyLength().getValue();
+        LOGGER.debug("Ephemeral public key (server) length: {}", ephemeralPublicKeyLength);
+        output.appendInt(ephemeralPublicKeyLength);
+        output.appendBytes(object.getEphemeralPublicKey().getValue());
+        LOGGER.debug("Ephemeral public key (server): {}", object.getEphemeralPublicKey());
     }
 
-    private void serializeEphemeralPublicKey(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(
-                msg.getEphemeralPublicKeyLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(
-                "Ephemeral public key (server) length: {}",
-                msg.getEphemeralPublicKeyLength().getValue());
-        appendBytes(msg.getEphemeralPublicKey().getValue());
-        LOGGER.debug("Ephemeral public key (server): {}", msg.getEphemeralPublicKey());
-    }
-
-    private void serializeSignature(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(msg.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: {}", msg.getSignatureLength().getValue());
-        appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: {}", msg.getSignature());
+    private static void serializeSignature(
+            EcdhKeyExchangeReplyMessage object, SerializerStream output) {
+        Integer signatureLength = object.getSignatureLength().getValue();
+        LOGGER.debug("Signature length: {}", signatureLength);
+        output.appendInt(signatureLength);
+        output.appendBytes(object.getSignature().getValue());
+        LOGGER.debug("Signature: {}", object.getSignature());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializeHostKeyBytes(message);
-        serializeEphemeralPublicKey(message);
-        serializeSignature(message);
+    protected void serializeMessageSpecificContents(
+            EcdhKeyExchangeReplyMessage object, SerializerStream output) {
+        serializeHostKeyBytes(object, output);
+        serializeEphemeralPublicKey(object, output);
+        serializeSignature(object, output);
     }
 }

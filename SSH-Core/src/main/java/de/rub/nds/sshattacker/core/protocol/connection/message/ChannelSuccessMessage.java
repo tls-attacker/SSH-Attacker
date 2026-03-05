@@ -9,11 +9,42 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage> {
 
+    public ChannelSuccessMessage() {
+        super();
+    }
+
+    public ChannelSuccessMessage(ChannelSuccessMessage other) {
+        super(other);
+    }
+
     @Override
-    public ChannelSuccessMessageHandler getHandler(SshContext context) {
-        return new ChannelSuccessMessageHandler(context, this);
+    public ChannelSuccessMessage createCopy() {
+        return new ChannelSuccessMessage(this);
+    }
+
+    public static final ChannelSuccessMessageHandler HANDLER = new ChannelSuccessMessageHandler();
+
+    @Override
+    public ChannelSuccessMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelSuccessMessageHandler.SERIALIZER.serialize(this);
     }
 }

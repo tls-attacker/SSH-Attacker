@@ -17,35 +17,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthRequestPublicKeyMessageHandler
         extends SshMessageHandler<UserAuthRequestPublicKeyMessage> {
 
-    public UserAuthRequestPublicKeyMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestPublicKeyMessageHandler(
-            SshContext context, UserAuthRequestPublicKeyMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, UserAuthRequestPublicKeyMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthRequestPublicKeyMessageParser getParser(byte[] array) {
+    public UserAuthRequestPublicKeyMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthRequestPublicKeyMessageParser(array);
     }
 
     @Override
-    public UserAuthRequestPublicKeyMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthRequestPublicKeyMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestPublicKeyMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestPublicKeyMessagePreparator getPreparator() {
-        return new UserAuthRequestPublicKeyMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthRequestPublicKeyMessagePreparator PREPARATOR =
+            new UserAuthRequestPublicKeyMessagePreparator();
 
-    @Override
-    public UserAuthRequestPublicKeyMessageSerializer getSerializer() {
-        return new UserAuthRequestPublicKeyMessageSerializer(message);
-    }
+    public static final UserAuthRequestPublicKeyMessageSerializer SERIALIZER =
+            new UserAuthRequestPublicKeyMessageSerializer();
 }

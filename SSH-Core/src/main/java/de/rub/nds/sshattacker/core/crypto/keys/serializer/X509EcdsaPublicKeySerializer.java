@@ -7,23 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomX509EcdsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERNull;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -31,15 +20,8 @@ import org.bouncycastle.asn1.x509.Extensions;
 /** Serializer class to encode an ECDSA X.509 public key (X509-SSH-ECDSA) format. */
 public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPublicKey> {
 
-    private final CustomX509EcdsaPublicKey publicKey;
-
-    public X509EcdsaPublicKeySerializer(CustomX509EcdsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomX509EcdsaPublicKey object, SerializerStream output) {
         /*
          * The X509-SSH-ECDSA format as specified:
          *   uint32    version
@@ -60,10 +42,10 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             ASN1EncodableVector topLevelVector = new ASN1EncodableVector();
 
             // Version (uint32) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(publicKey.getVersion()));
+            topLevelVector.add(new ASN1Integer(object.getVersion()));
 
             // Serial (uint64) as ASN.1 INTEGER
-            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(publicKey.getSerial())));
+            topLevelVector.add(new ASN1Integer(BigInteger.valueOf(object.getSerial())));
 
             // Signature Algorithm (OID for ECDSA with SHA256)
             AlgorithmIdentifier signatureAlgorithm =
@@ -73,16 +55,20 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             topLevelVector.add(signatureAlgorithm);
 
             // Issuer (Distinguished Name in ASN.1 format)
-            ASN1Sequence issuerSequence = getDistinguishedNameAsASN1(publicKey.getIssuer());
+            ASN1Sequence issuerSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(object.getIssuer(), false);
             topLevelVector.add(issuerSequence);
 
             // Validity Period (ASN.1 GeneralizedTime for Not Before and Not After)
             ASN1Sequence validitySequence =
-                    getValidityPeriodAsASN1(publicKey.getValidAfter(), publicKey.getValidBefore());
+                    PublicKeySerializerHelper.getValidityPeriodAsASN1(
+                            object.getValidAfter(), object.getValidBefore());
             topLevelVector.add(validitySequence);
 
             // Subject (Distinguished Name in ASN.1 format)
-            ASN1Sequence subjectSequence = getDistinguishedNameAsASN1(publicKey.getSubject());
+            ASN1Sequence subjectSequence =
+                    PublicKeySerializerHelper.getDistinguishedNameAsASN1(
+                            object.getSubject(), false);
             topLevelVector.add(subjectSequence);
 
             // Public Key Algorithm (OID for ECDSA)
@@ -93,25 +79,24 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             topLevelVector.add(publicKeyAlgorithm);
 
             // Curve Name (as ASN.1 Object Identifier for the specific curve, e.g., NIST P-256)
-            ASN1ObjectIdentifier curveOid =
-                    new ASN1ObjectIdentifier(getCurveOid(publicKey.getGroup()));
+            ASN1ObjectIdentifier curveOid = new ASN1ObjectIdentifier(object.getGroup().getOid());
             topLevelVector.add(curveOid);
 
             // Public Key (as ASN.1 SEQUENCE for ECPoint)
             ASN1EncodableVector publicKeyVector = new ASN1EncodableVector();
-            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineX()));
-            publicKeyVector.add(new ASN1Integer(publicKey.getW().getAffineY()));
+            publicKeyVector.add(new ASN1Integer(object.getW().getAffineX()));
+            publicKeyVector.add(new ASN1Integer(object.getW().getAffineY()));
             ASN1Sequence publicKeySequence = new DERSequence(publicKeyVector);
             topLevelVector.add(new DERBitString(publicKeySequence));
 
             // Extensions (ASN.1 encoded as Extensions sequence)
-            Extensions extensions = getExtensionsAsASN1(publicKey.getExtensions());
+            Extensions extensions = getExtensionsAsASN1(object.getExtensions());
             if (extensions != null) {
                 topLevelVector.add(extensions);
             }
 
             // Signature (string) as ASN.1 OctetString
-            byte[] signature = publicKey.getSignature();
+            byte[] signature = object.getSignature();
             if (signature == null) {
                 throw new IllegalStateException("Signature is not set in the publicKey");
             }
@@ -120,49 +105,15 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             // Serialize the entire ASN.1 structure
             ASN1Sequence topLevelSequence = new DERSequence(topLevelVector);
             byte[] asn1Encoded = topLevelSequence.getEncoded();
-            appendBytes(asn1Encoded);
+            output.appendBytes(asn1Encoded);
 
         } catch (Exception e) {
             throw new RuntimeException("Error serializing X509 ECDSA Public Key", e);
         }
     }
 
-    /** Utility method to serialize Distinguished Names (DN) in ASN.1 format using BouncyCastle. */
-    private ASN1Sequence getDistinguishedNameAsASN1(String dn) {
-        if (dn != null && !dn.isEmpty()) {
-            try {
-                X500Name x500Name = new X500Name(dn);
-                return (ASN1Sequence) x500Name.toASN1Primitive();
-            } catch (Exception e) {
-                throw new RuntimeException("Error encoding Distinguished Name", e);
-            }
-        } else {
-            throw new IllegalArgumentException("Distinguished Name cannot be null or empty");
-        }
-    }
-
-    /** Utility method to serialize validity period as ASN.1 GeneralizedTime. */
-    private ASN1Sequence getValidityPeriodAsASN1(long validAfter, long validBefore) {
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss'Z'");
-            String validAfterStr = dateFormat.format(new Date(validAfter * 1000));
-            String validBeforeStr = dateFormat.format(new Date(validBefore * 1000));
-
-            ASN1GeneralizedTime notBefore = new ASN1GeneralizedTime(validAfterStr);
-            ASN1GeneralizedTime notAfter = new ASN1GeneralizedTime(validBeforeStr);
-
-            ASN1EncodableVector validityVector = new ASN1EncodableVector();
-            validityVector.add(notBefore);
-            validityVector.add(notAfter);
-
-            return new DERSequence(validityVector);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encoding Validity Period", e);
-        }
-    }
-
     /** Utility method to serialize extensions as ASN.1 Extensions. */
-    private Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
+    private static Extensions getExtensionsAsASN1(Map<String, String> extensionsMap) {
         if (extensionsMap != null && !extensionsMap.isEmpty()) {
             try {
                 ASN1EncodableVector extensionsVector = new ASN1EncodableVector();
@@ -173,11 +124,15 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
                             switch (key) {
                                 case "SubjectKeyIdentifier" -> {
                                     oid = Extension.subjectKeyIdentifier;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 case "AuthorityKeyIdentifier" -> {
                                     oid = Extension.authorityKeyIdentifier;
-                                    yield new DEROctetString(parseExtensionValue(entry.getValue()));
+                                    yield new DEROctetString(
+                                            PublicKeySerializerHelper.parseExtensionValue(
+                                                    entry.getValue()));
                                 }
                                 default ->
                                         throw new IllegalArgumentException(
@@ -193,49 +148,5 @@ public class X509EcdsaPublicKeySerializer extends Serializer<CustomX509EcdsaPubl
             }
         }
         return null;
-    }
-
-    /** Utility method to parse the extension value which could be a hex string or a raw string. */
-    private byte[] parseExtensionValue(String value) {
-        if (value.startsWith("[")) {
-            // Assuming value is in byte array format [4, 22, ...]
-            value = value.replaceAll("[\\[\\]\\s]", "");
-            String[] byteValues = value.split(",");
-            byte[] data = new byte[byteValues.length];
-            for (int i = 0; i < byteValues.length; i++) {
-                data[i] = Byte.parseByte(byteValues[i]);
-            }
-            return data;
-        } else {
-            // Assuming value is a hex string
-            return hexStringToByteArray(value);
-        }
-    }
-
-    /** Utility method to convert hex string to byte array. */
-    private byte[] hexStringToByteArray(String s) {
-        if (s.length() % 2 != 0) {
-            throw new IllegalArgumentException("Hex string must have an even length");
-        }
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] =
-                    (byte)
-                            ((Character.digit(s.charAt(i), 16) << 4)
-                                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
-    /** Utility method to map curve names to their corresponding OIDs. */
-    private String getCurveOid(NamedEcGroup curve) {
-        return switch (curve) {
-            case SECP256R1 -> "1.2.840.10045.3.1.7";
-            case SECP384R1 -> "1.3.132.0.34";
-            case SECP521R1 -> "1.3.132.0.35";
-            // Additional curves from RFC 5656
-            default -> curve.getIdentifier();
-        };
     }
 }

@@ -7,6 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertRsaPublicKey;
@@ -20,8 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,10 +46,10 @@ public class CertRsaPublicKeyParser
         CustomCertRsaPublicKey publicKey = new CustomCertRsaPublicKey();
 
         // Format (string "ssh-rsa-cert-v01@openssh.com")
-        int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int formatLength = parseIntField();
         LOGGER.debug("Parsed formatLength: {}", formatLength);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed format: {}", format);
+        LOGGER.debug("Parsed format: {}", () -> backslashEscapeString(format));
         publicKey.setCertFormat(format);
 
         if (!format.equals(PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM.getName())) {
@@ -56,20 +59,20 @@ public class CertRsaPublicKeyParser
         }
 
         // Nonce (string nonce)
-        int nonceLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int nonceLength = parseIntField();
         LOGGER.debug("Parsed nonceLength: {}", nonceLength);
         byte[] nonce = parseByteArrayField(nonceLength);
-        LOGGER.debug("Parsed nonce: {}", Arrays.toString(nonce));
+        LOGGER.debug("Parsed nonce: {}", () -> ArrayConverter.bytesToRawHexString(nonce));
         publicKey.setNonce(nonce);
 
         // Public Exponent (mpint e)
-        int publicExponentLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int publicExponentLength = parseIntField();
         LOGGER.debug("Parsed publicExponentLength: {}", publicExponentLength);
         publicKey.setPublicExponent(parseBigIntField(publicExponentLength));
         LOGGER.debug("Parsed publicExponent: {}", publicKey.getPublicExponent());
 
         // Modulus (mpint n)
-        int modulusLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int modulusLength = parseIntField();
         LOGGER.debug("Parsed modulusLength: {}", modulusLength);
         publicKey.setModulus(parseBigIntField(modulusLength));
         LOGGER.debug("Parsed modulus: {}", publicKey.getModulus());
@@ -80,34 +83,34 @@ public class CertRsaPublicKeyParser
         publicKey.setSerial(serial); // Setze Serial
 
         // Type (uint32 type)
-        int certType = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int certType = parseIntField();
         LOGGER.debug("Parsed certType: {}", certType);
         publicKey.setCertType(String.valueOf(certType));
 
         // Key ID (string key id)
-        int keyIdLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int keyIdLength = parseIntField();
         LOGGER.debug("Parsed keyIdLength: {}", keyIdLength);
         String keyId = parseByteString(keyIdLength, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed keyId: {}", keyId);
+        LOGGER.debug("Parsed keyId: {}", () -> backslashEscapeString(keyId));
         publicKey.setKeyId(keyId); // Setze Key ID
 
         // Principals (string valid principals)
-        int totalPrincipalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int totalPrincipalLength = parseIntField();
         LOGGER.debug("Parsed total principal length: {}", totalPrincipalLength);
 
-        String[] validPrincipals = new String[totalPrincipalLength];
+        LinkedList<String> validPrincipals = new LinkedList<>();
         int bytesProcessed = 0;
-        int principalIndex = 0;
         while (bytesProcessed < totalPrincipalLength) {
-            int principalLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+            int principalLength = parseIntField();
             if (principalLength > 0) {
                 String principal = parseByteString(principalLength, StandardCharsets.US_ASCII);
-                validPrincipals[principalIndex++] = principal;
+                validPrincipals.add(principal);
             }
             bytesProcessed += principalLength + DataFormatConstants.UINT32_SIZE;
         }
-        String[] parsedPrincipals = Arrays.copyOf(validPrincipals, principalIndex);
-        LOGGER.debug("Parsed principals: {}", Arrays.toString(parsedPrincipals));
+
+        String[] parsedPrincipals = validPrincipals.toArray(new String[0]);
+        LOGGER.debug("Parsed principals: {}", () -> Arrays.toString(parsedPrincipals));
         publicKey.setValidPrincipals(parsedPrincipals);
 
         // Validity period (uint64 valid after)
@@ -123,39 +126,37 @@ public class CertRsaPublicKeyParser
         publicKey.setValidBefore(validTo);
 
         // Critical Options (parsing critical options as a map of key-value pairs)
-        int criticalOptionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int criticalOptionsLength = parseIntField();
         LOGGER.debug("Parsed criticalOptionsLength: {}", criticalOptionsLength);
 
-        Map<String, String> criticalOptionsMap = new HashMap<>();
+        HashMap<String, String> criticalOptionsMap = new HashMap<>();
         if (criticalOptionsLength > 0) {
             int bytesParsed = 0;
             while (bytesParsed < criticalOptionsLength) {
-                int optionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                int optionNameLength = parseIntField();
                 String optionName = parseByteString(optionNameLength, StandardCharsets.US_ASCII);
-                int optionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                int optionValueLength = parseIntField();
                 String optionValue = parseByteString(optionValueLength, StandardCharsets.US_ASCII);
                 criticalOptionsMap.put(optionName, optionValue);
                 LOGGER.debug("Parsed critical option: {}   {}", optionName, optionValue);
                 bytesParsed +=
-                        optionNameLength
-                                + optionValueLength
-                                + (2 * DataFormatConstants.UINT32_SIZE);
+                        optionNameLength + optionValueLength + 2 * DataFormatConstants.UINT32_SIZE;
             }
         }
         publicKey.setCriticalOptions(criticalOptionsMap); // Setze Critical Options
 
         // Extensions (parsing extensions as a map of key-value pairs)
-        int extensionsLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int extensionsLength = parseIntField();
         LOGGER.debug("Parsed extensionsLength: {}", extensionsLength);
 
-        Map<String, String> extensionsMap = new HashMap<>();
+        HashMap<String, String> extensionsMap = new HashMap<>();
         if (extensionsLength > 0) {
             int bytesParsed = 0;
             while (bytesParsed < extensionsLength) {
-                int extensionNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                int extensionNameLength = parseIntField();
                 String extensionName =
                         parseByteString(extensionNameLength, StandardCharsets.US_ASCII);
-                int extensionValueLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+                int extensionValueLength = parseIntField();
                 String extensionValue =
                         parseByteString(extensionValueLength, StandardCharsets.US_ASCII);
                 extensionsMap.put(extensionName, extensionValue);
@@ -163,30 +164,31 @@ public class CertRsaPublicKeyParser
                 bytesParsed +=
                         extensionNameLength
                                 + extensionValueLength
-                                + (2 * DataFormatConstants.UINT32_SIZE);
+                                + 2 * DataFormatConstants.UINT32_SIZE;
             }
         }
         publicKey.setExtensions(extensionsMap); // Setze Extensions
 
         // Reserved (string reserved)
-        int reservedLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int reservedLength = parseIntField();
         byte[] reservedBytes = parseByteArrayField(reservedLength);
         String reserved = new String(reservedBytes, StandardCharsets.US_ASCII);
-        LOGGER.debug("Parsed reserved: {}", reserved);
+        LOGGER.debug("Parsed reserved: {}", () -> backslashEscapeString(reserved));
         publicKey.setReserved(reserved);
 
         // Signature Key (string signature key)
-        int signatureKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int signatureKeyLength = parseIntField();
         LOGGER.debug("Parsed signatureKeyLength: {}", signatureKeyLength);
         byte[] signatureKey = parseByteArrayField(signatureKeyLength);
-        LOGGER.debug("Parsed signatureKey: {}", Arrays.toString(signatureKey));
+        LOGGER.debug(
+                "Parsed signatureKey: {}", () -> ArrayConverter.bytesToRawHexString(signatureKey));
         publicKey.setSignatureKey(signatureKey);
 
         // Signature (string signature)
-        int signatureLength = parseIntField(DataFormatConstants.UINT32_SIZE);
+        int signatureLength = parseIntField();
         LOGGER.debug("Parsed signatureLength: {}", signatureLength);
         byte[] signature = parseByteArrayField(signatureLength);
-        LOGGER.debug("Parsed signature: {}", Arrays.toString(signature));
+        LOGGER.debug("Parsed signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
         publicKey.setSignature(signature);
 
         LOGGER.debug("Successfully parsed the RSA Certificate Public Key.");

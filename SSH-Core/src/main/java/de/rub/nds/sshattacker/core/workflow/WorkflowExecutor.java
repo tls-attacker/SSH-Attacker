@@ -91,16 +91,14 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    protected void executeAction(SshAction action, State state) throws SkipActionException {
+    protected static void executeAction(SshAction action, State state) throws SkipActionException {
         try {
             action.execute(state);
         } catch (WorkflowExecutionException ex) {
             LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
             state.setExecutionException(ex);
             throw ex;
-        } catch (UnsupportedOperationException
-                | PreparationException
-                | ActionExecutionException ex) {
+        } catch (UnsupportedOperationException ex) {
             state.setExecutionException(ex);
             LOGGER.error(
                     "Not fatal error during action execution, skipping action: {}", action, ex);

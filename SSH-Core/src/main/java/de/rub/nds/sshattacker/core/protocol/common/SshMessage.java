@@ -10,16 +10,24 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.state.SshContext;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlType;
 
 @XmlType(namespace = "ssh-attacker")
-@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessage<T> {
 
     protected ModifiableByte messageId;
+
+    protected SshMessage() {
+        super();
+    }
+
+    protected SshMessage(SshMessage<T> other) {
+        super(other);
+        messageId = other.messageId != null ? other.messageId.createCopy() : null;
+    }
+
+    @Override
+    public abstract SshMessage<T> createCopy();
 
     public ModifiableByte getMessageId() {
         return messageId;
@@ -36,9 +44,6 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     public void setMessageId(MessageIdConstant messageId) {
         setMessageId(messageId.getId());
     }
-
-    @Override
-    public abstract SshMessageHandler<T> getHandler(SshContext context);
 
     @Override
     public String toCompactString() {

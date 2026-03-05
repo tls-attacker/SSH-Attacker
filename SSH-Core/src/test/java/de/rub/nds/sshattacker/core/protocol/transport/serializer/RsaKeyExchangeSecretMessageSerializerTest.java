@@ -53,8 +53,8 @@ public class RsaKeyExchangeSecretMessageSerializerTest {
         msg.setEncryptedSecretLength(providedEncryptedSecretLength);
         msg.setEncryptedSecret(providedEncryptedSecret);
         RsaKeyExchangeSecretMessageSerializer serializer =
-                new RsaKeyExchangeSecretMessageSerializer(msg);
+                new RsaKeyExchangeSecretMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

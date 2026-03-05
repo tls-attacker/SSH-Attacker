@@ -39,9 +39,8 @@ public class ChannelEofMessageSerializerTest {
         ChannelEofMessage msg = new ChannelEofMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_EOF);
         msg.setRecipientChannelId(providedRecipientChannelId);
-        ChannelMessageSerializer<ChannelEofMessage> serializer =
-                new ChannelMessageSerializer<>(msg);
+        ChannelMessageSerializer<ChannelEofMessage> serializer = new ChannelMessageSerializer<>();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

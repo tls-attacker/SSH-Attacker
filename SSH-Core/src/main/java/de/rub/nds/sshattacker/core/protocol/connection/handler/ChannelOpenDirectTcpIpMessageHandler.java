@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelOpenDirectTcpIpMessageHandler
         extends SshMessageHandler<ChannelOpenDirectTcpIpMessage> {
 
-    public ChannelOpenDirectTcpIpMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenDirectTcpIpMessageHandler(
-            SshContext context, ChannelOpenDirectTcpIpMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelOpenDirectTcpIpMessage object) {
         // TODO: Handle ChannelOpenDirectTcpIpMessage
     }
 
     @Override
-    public ChannelOpenDirectTcpIpMessageParser getParser(byte[] array) {
+    public ChannelOpenDirectTcpIpMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenDirectTcpIpMessageParser(array);
     }
 
     @Override
-    public ChannelOpenDirectTcpIpMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenDirectTcpIpMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenDirectTcpIpMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenDirectTcpIpMessagePreparator getPreparator() {
-        return new ChannelOpenDirectTcpIpMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenDirectTcpIpMessagePreparator PREPARATOR =
+            new ChannelOpenDirectTcpIpMessagePreparator();
 
-    @Override
-    public ChannelOpenDirectTcpIpMessageSerializer getSerializer() {
-        return new ChannelOpenDirectTcpIpMessageSerializer(message);
-    }
+    public static final ChannelOpenDirectTcpIpMessageSerializer SERIALIZER =
+            new ChannelOpenDirectTcpIpMessageSerializer();
 }

@@ -15,14 +15,14 @@ public class GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator
         extends GlobalRequestMessagePreparator<
                 GlobalRequestCancelStreamlocalForwardOpenSshMessage> {
 
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator(
-            Chooser chooser, GlobalRequestCancelStreamlocalForwardOpenSshMessage message) {
-        super(chooser, message, GlobalRequestType.CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM, false);
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator() {
+        super(GlobalRequestType.CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM, false);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestCancelStreamlocalForwardOpenSshMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setSocketPath("/var/run/sshattacker.sock", true);
+        object.setSocketPath("/var/run/sshattacker.sock", true);
     }
 }

@@ -40,6 +40,17 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         this.targetAlgorithm = targetAlgorithm;
     }
 
+    public ChangeCompressionAction(ChangeCompressionAction other) {
+        super(other);
+        previousAlgorithm = other.previousAlgorithm;
+        targetAlgorithm = other.targetAlgorithm;
+    }
+
+    @Override
+    public ChangeCompressionAction createCopy() {
+        return new ChangeCompressionAction(this);
+    }
+
     public void setTargetAlgorithm(CompressionAlgorithm targetAlgorithm) {
         this.targetAlgorithm = targetAlgorithm;
     }
@@ -66,7 +77,7 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {
+    public void reset(boolean resetModifiableVariables) {
         previousAlgorithm = null;
         setExecuted(null);
     }
@@ -74,5 +85,24 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    @Override
+    public String toString() {
+        if (isExecuted()) {
+            return "ChangeCompressionAction{"
+                    + "previousAlgorithm="
+                    + previousAlgorithm
+                    + ", targetAlgorithm="
+                    + targetAlgorithm
+                    + "}";
+        } else {
+            return "ChangeCompressionAction{"
+                    + "previousAlgorithm="
+                    + previousAlgorithm
+                    + ", targetAlgorithm="
+                    + targetAlgorithm
+                    + "} (not executed)";
+        }
     }
 }

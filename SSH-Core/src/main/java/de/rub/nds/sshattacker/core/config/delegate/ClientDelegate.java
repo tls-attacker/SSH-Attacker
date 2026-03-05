@@ -21,7 +21,7 @@ public class ClientDelegate extends Delegate {
     private static final int DEFAULT_SSH_PORT = 22;
 
     @Parameter(
-            names = "-connect",
+            names = {"-to", "--connect"},
             required = true,
             description = "Who to connect to. Syntax: localhost:22")
     private String host;

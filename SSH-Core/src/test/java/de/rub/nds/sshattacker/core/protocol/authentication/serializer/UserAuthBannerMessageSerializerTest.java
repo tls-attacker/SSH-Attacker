@@ -42,8 +42,8 @@ public class UserAuthBannerMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
         msg.setMessage(providedMessage, true);
         msg.setLanguageTag(providedLanguageTag, true);
-        UserAuthBannerMessageSerializer serializer = new UserAuthBannerMessageSerializer(msg);
+        UserAuthBannerMessageSerializer serializer = new UserAuthBannerMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

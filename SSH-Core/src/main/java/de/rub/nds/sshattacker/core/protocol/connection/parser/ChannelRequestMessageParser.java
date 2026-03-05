@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
@@ -28,18 +27,18 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
     }
 
     private void parseRequestType() {
-        message.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request type length: {}", message.getRequestTypeLength().getValue());
-        message.setRequestType(
-                parseByteString(
-                        message.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Request type: {}", message.getRequestType().getValue());
+        int requestTypeLength = parseIntField();
+        message.setRequestTypeLength(requestTypeLength);
+        LOGGER.debug("Request type length: {}", requestTypeLength);
+        String requestType = parseByteString(requestTypeLength, StandardCharsets.US_ASCII);
+        message.setRequestType(requestType);
+        LOGGER.debug("Request type: {}", requestType);
     }
 
     private void parseWantReply() {
-        message.setWantReply(parseByteField(1));
-        LOGGER.debug(
-                "Reply wanted: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
+        byte wantReply = parseByteField();
+        message.setWantReply(wantReply);
+        LOGGER.debug("Reply wanted: {}", Converter.byteToBoolean(wantReply));
     }
 
     @Override

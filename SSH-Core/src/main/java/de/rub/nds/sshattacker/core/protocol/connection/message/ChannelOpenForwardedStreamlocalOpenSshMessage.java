@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenForwardedStreamlocalOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenForwardedStreamlocalOpenSshMessage
@@ -101,8 +102,45 @@ public class ChannelOpenForwardedStreamlocalOpenSshMessage
         }
     }
 
+    public ChannelOpenForwardedStreamlocalOpenSshMessage() {
+        super();
+    }
+
+    public ChannelOpenForwardedStreamlocalOpenSshMessage(
+            ChannelOpenForwardedStreamlocalOpenSshMessage other) {
+        super(other);
+        socketPathLength =
+                other.socketPathLength != null ? other.socketPathLength.createCopy() : null;
+        socketPath = other.socketPath != null ? other.socketPath.createCopy() : null;
+        reservedLength = other.reservedLength != null ? other.reservedLength.createCopy() : null;
+        reserved = other.reserved != null ? other.reserved.createCopy() : null;
+    }
+
     @Override
-    public ChannelOpenForwardedStreamlocalOpenSshMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenForwardedStreamlocalOpenSshMessageHandler(context, this);
+    public ChannelOpenForwardedStreamlocalOpenSshMessage createCopy() {
+        return new ChannelOpenForwardedStreamlocalOpenSshMessage(this);
+    }
+
+    public static final ChannelOpenForwardedStreamlocalOpenSshMessageHandler HANDLER =
+            new ChannelOpenForwardedStreamlocalOpenSshMessageHandler();
+
+    @Override
+    public ChannelOpenForwardedStreamlocalOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenForwardedStreamlocalOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenForwardedStreamlocalOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

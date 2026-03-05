@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestHostKeysProveOpenSshMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestHostKeysProveOpenSshMessage> {
 
-    public GlobalRequestHostKeysProveOpenSshMessagePreparator(
-            Chooser chooser, GlobalRequestHostKeysProveOpenSshMessage message) {
-        super(chooser, message, GlobalRequestType.HOSTKEYS_PROVE_00_OPENSSH_COM, false);
+    public GlobalRequestHostKeysProveOpenSshMessagePreparator() {
+        super(GlobalRequestType.HOSTKEYS_PROVE_00_OPENSSH_COM, false);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestHostKeysProveOpenSshMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setHostKeys(chooser.getContext().getHostKey().stream().toList());
+        object.setHostKeys(chooser.getContext().getHostKey().stream().toList());
     }
 }

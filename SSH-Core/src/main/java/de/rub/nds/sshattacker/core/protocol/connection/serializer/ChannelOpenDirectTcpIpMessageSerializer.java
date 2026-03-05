@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenDirectTcpIpMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,45 +18,42 @@ public class ChannelOpenDirectTcpIpMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenDirectTcpIpMessageSerializer(ChannelOpenDirectTcpIpMessage message) {
-        super(message);
+    private static void serializeHostToConnect(
+            ChannelOpenDirectTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Host to connect length: {}", object.getHostToConnectLength().getValue());
+        output.appendInt(object.getHostToConnectLength().getValue());
+        LOGGER.debug("Host to connect: {}", object.getHostToConnect().getValue());
+        output.appendString(object.getHostToConnect().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeHostToConnect() {
-        LOGGER.debug("Host to connect length: {}", message.getHostToConnectLength().getValue());
-        appendInt(
-                message.getHostToConnectLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host to connect: {}", message.getHostToConnect().getValue());
-        appendString(message.getHostToConnect().getValue(), StandardCharsets.US_ASCII);
+    private static void serializePortToConnect(
+            ChannelOpenDirectTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Port to connect: {}", object.getPortToConnect().getValue());
+        output.appendInt(object.getPortToConnect().getValue());
     }
 
-    private void serializePortToConnect() {
-        LOGGER.debug("Port to connect: {}", message.getPortToConnect().getValue());
-        appendInt(message.getPortToConnect().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    private void serializeOriginatorAddress() {
+    private static void serializeOriginatorAddress(
+            ChannelOpenDirectTcpIpMessage object, SerializerStream output) {
         LOGGER.debug(
-                "Originator address length: {}", message.getOriginatorAddressLength().getValue());
-        appendInt(
-                message.getOriginatorAddressLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Originator address: {}", message.getOriginatorAddress().getValue());
-        appendString(message.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
+                "Originator address length: {}", object.getOriginatorAddressLength().getValue());
+        output.appendInt(object.getOriginatorAddressLength().getValue());
+        LOGGER.debug("Originator address: {}", object.getOriginatorAddress().getValue());
+        output.appendString(object.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeOriginatorPort() {
-        LOGGER.debug("Originator port: {}", message.getOriginatorPort().getValue());
-        appendInt(message.getOriginatorPort().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeOriginatorPort(
+            ChannelOpenDirectTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Originator port: {}", object.getOriginatorPort().getValue());
+        output.appendInt(object.getOriginatorPort().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeHostToConnect();
-        serializePortToConnect();
-        serializeOriginatorAddress();
-        serializeOriginatorPort();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenDirectTcpIpMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeHostToConnect(object, output);
+        serializePortToConnect(object, output);
+        serializeOriginatorAddress(object, output);
+        serializeOriginatorPort(object, output);
     }
 }

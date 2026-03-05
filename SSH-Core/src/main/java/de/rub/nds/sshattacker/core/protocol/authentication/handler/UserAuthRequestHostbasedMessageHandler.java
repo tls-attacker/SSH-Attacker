@@ -10,7 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.crypto.signature.*;
+import de.rub.nds.sshattacker.core.crypto.signature.RawSignature;
+import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
+import de.rub.nds.sshattacker.core.crypto.signature.SignatureParser;
+import de.rub.nds.sshattacker.core.crypto.signature.VerifyingSignature;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestHostbasedMessage;
@@ -21,39 +24,34 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthRequestHostbasedMessageHandler
         extends SshMessageHandler<UserAuthRequestHostbasedMessage> {
 
-    public UserAuthRequestHostbasedMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestHostbasedMessageHandler(
-            SshContext context, UserAuthRequestHostbasedMessage message) {
-        super(context, message);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void adjustContext() {
-        checkSignature();
+    public void adjustContext(SshContext context, UserAuthRequestHostbasedMessage object) {
+        checkSignature(context, object);
     }
 
-    public void checkSignature() {
-        if (message.getHostKeyBytes() != null && message.getHostKeyBytes().getValue() != null) {
+    public static void checkSignature(SshContext context, UserAuthRequestHostbasedMessage object) {
+        if (object.getHostKeyBytes() != null && object.getHostKeyBytes().getValue() != null) {
             PublicKeyAlgorithm hostKeyAlgorithm =
-                    PublicKeyAlgorithm.fromName(message.getPubKeyAlgorithm().getValue());
+                    PublicKeyAlgorithm.fromName(object.getPubKeyAlgorithm().getValue());
             SshPublicKey<?, ?> hostKey =
                     PublicKeyHelper.parse(
-                            hostKeyAlgorithm.getKeyFormat(), message.getHostKeyBytes().getValue());
+                            hostKeyAlgorithm.getKeyFormat(), object.getHostKeyBytes().getValue());
 
             RawSignature signature =
-                    new SignatureParser(message.getSignature().getValue(), 0).parse();
+                    new SignatureParser(object.getSignature().getValue(), 0).parse();
             try {
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey);
                 if (verifyingSignature.verify(
-                        prepareSignatureInput(), signature.getSignatureBytes())) {
+                        prepareSignatureInput(context, object), signature.getSignatureBytes())) {
                     LOGGER.info("Signature verification successful: Signature is valid.");
                 } else {
                     LOGGER.warn(
@@ -69,39 +67,37 @@ public class UserAuthRequestHostbasedMessageHandler
         }
     }
 
-    public byte[] prepareSignatureInput() {
+    public static byte[] prepareSignatureInput(
+            SshContext context, UserAuthRequestHostbasedMessage object) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         context.getSessionID().orElse(new byte[] {})),
-                new byte[] {message.getMessageId().getValue()},
-                Converter.stringToLengthPrefixedBinaryString(message.getUserName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getServiceName().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getMethodName().getValue()),
+                new byte[] {object.getMessageId().getValue()},
+                Converter.stringToLengthPrefixedBinaryString(object.getUserName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getServiceName().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getMethodName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(
-                        message.getPubKeyAlgorithm().getValue()),
-                Converter.bytesToLengthPrefixedBinaryString(message.getHostKeyBytes().getValue()),
-                Converter.stringToLengthPrefixedBinaryString(message.getHostName().getValue()),
+                        object.getPubKeyAlgorithm().getValue()),
+                Converter.bytesToLengthPrefixedBinaryString(object.getHostKeyBytes().getValue()),
+                Converter.stringToLengthPrefixedBinaryString(object.getHostName().getValue()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        message.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
+                        object.getClientUserName().getValue().getBytes(StandardCharsets.UTF_8)));
     }
 
     @Override
-    public UserAuthRequestHostbasedMessageParser getParser(byte[] array) {
+    public UserAuthRequestHostbasedMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthRequestHostbasedMessageParser(array);
     }
 
     @Override
-    public UserAuthRequestHostbasedMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthRequestHostbasedMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestHostbasedMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestHostbasedMessagePreparator getPreparator() {
-        return new UserAuthRequestHostbasedMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthRequestHostbasedMessagePreparator PREPARATOR =
+            new UserAuthRequestHostbasedMessagePreparator();
 
-    @Override
-    public UserAuthRequestHostbasedMessageSerializer getSerializer() {
-        return new UserAuthRequestHostbasedMessageSerializer(message);
-    }
+    public static final UserAuthRequestHostbasedMessageSerializer SERIALIZER =
+            new UserAuthRequestHostbasedMessageSerializer();
 }

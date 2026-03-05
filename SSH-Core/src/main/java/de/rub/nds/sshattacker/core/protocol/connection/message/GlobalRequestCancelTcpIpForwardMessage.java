@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestCancelTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestCancelTcpIpForwardMessage
@@ -20,6 +21,25 @@ public class GlobalRequestCancelTcpIpForwardMessage
     private ModifiableInteger ipAddressToBindLength;
     private ModifiableString ipAddressToBind;
     private ModifiableInteger portToBind;
+
+    public GlobalRequestCancelTcpIpForwardMessage() {
+        super();
+    }
+
+    public GlobalRequestCancelTcpIpForwardMessage(GlobalRequestCancelTcpIpForwardMessage other) {
+        super(other);
+        ipAddressToBindLength =
+                other.ipAddressToBindLength != null
+                        ? other.ipAddressToBindLength.createCopy()
+                        : null;
+        ipAddressToBind = other.ipAddressToBind != null ? other.ipAddressToBind.createCopy() : null;
+        portToBind = other.portToBind != null ? other.portToBind.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestCancelTcpIpForwardMessage createCopy() {
+        return new GlobalRequestCancelTcpIpForwardMessage(this);
+    }
 
     public ModifiableString getIpAddressToBind() {
         return ipAddressToBind;
@@ -73,12 +93,30 @@ public class GlobalRequestCancelTcpIpForwardMessage
         this.portToBind = portToBind;
     }
 
-    public void setPortToBind(Integer portToBind) {
+    public void setPortToBind(int portToBind) {
         this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
     }
 
+    public static final GlobalRequestCancelTcpIpForwardMessageHandler HANDLER =
+            new GlobalRequestCancelTcpIpForwardMessageHandler();
+
     @Override
-    public GlobalRequestCancelTcpIpForwardMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestCancelTcpIpForwardMessageHandler(context, this);
+    public GlobalRequestCancelTcpIpForwardMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestCancelTcpIpForwardMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestCancelTcpIpForwardMessageHandler.SERIALIZER.serialize(this);
     }
 }

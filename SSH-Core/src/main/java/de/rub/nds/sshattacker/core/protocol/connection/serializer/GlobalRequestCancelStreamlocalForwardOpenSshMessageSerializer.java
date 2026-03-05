@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelStreamlocalForwardOpenSshMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -19,21 +21,20 @@ public class GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer(
-            GlobalRequestCancelStreamlocalForwardOpenSshMessage message) {
-        super(message);
-    }
-
-    private void serializeSocketPath() {
-        LOGGER.debug("Socket path length: {}", message.getSocketPathLength().getValue());
-        appendInt(message.getSocketPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Socket path: {}", message.getSocketPath().getValue());
-        appendString(message.getSocketPath().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeSocketPath(
+            GlobalRequestCancelStreamlocalForwardOpenSshMessage object, SerializerStream output) {
+        Integer socketPathLength = object.getSocketPathLength().getValue();
+        LOGGER.debug("Socket path length: {}", socketPathLength);
+        output.appendInt(socketPathLength);
+        String socketPath = object.getSocketPath().getValue();
+        LOGGER.debug("Socket path: {}", () -> backslashEscapeString(socketPath));
+        output.appendString(socketPath, StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSocketPath();
+    protected void serializeMessageSpecificContents(
+            GlobalRequestCancelStreamlocalForwardOpenSshMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSocketPath(object, output);
     }
 }

@@ -7,15 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 
 /** A serializable RSA public key used in RSA encryption and signatures. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
 
     protected BigInteger modulus;
@@ -35,6 +33,17 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
         super();
         this.modulus = modulus;
         this.publicExponent = publicExponent;
+    }
+
+    public CustomRsaPublicKey(CustomRsaPublicKey other) {
+        super(other);
+        modulus = other.modulus;
+        publicExponent = other.publicExponent;
+    }
+
+    @Override
+    public CustomRsaPublicKey createCopy() {
+        return new CustomRsaPublicKey(this);
     }
 
     @Override
@@ -59,5 +68,12 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "RSA";
+    }
+
+    public static final RsaPublicKeySerializer SERIALIZER = new RsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

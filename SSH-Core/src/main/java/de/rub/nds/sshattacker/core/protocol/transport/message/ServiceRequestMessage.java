@@ -14,12 +14,29 @@ import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
 
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
+
+    public ServiceRequestMessage() {
+        super();
+    }
+
+    public ServiceRequestMessage(ServiceRequestMessage other) {
+        super(other);
+        serviceNameLength =
+                other.serviceNameLength != null ? other.serviceNameLength.createCopy() : null;
+        serviceName = other.serviceName != null ? other.serviceName.createCopy() : null;
+    }
+
+    @Override
+    public ServiceRequestMessage createCopy() {
+        return new ServiceRequestMessage(this);
+    }
 
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;
@@ -70,8 +87,25 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public static final ServiceRequestMessageHandler HANDLER = new ServiceRequestMessageHandler();
+
     @Override
-    public ServiceRequestMessageHandler getHandler(SshContext context) {
-        return new ServiceRequestMessageHandler(context, this);
+    public ServiceRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ServiceRequestMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ServiceRequestMessageHandler.SERIALIZER.serialize(this);
     }
 }

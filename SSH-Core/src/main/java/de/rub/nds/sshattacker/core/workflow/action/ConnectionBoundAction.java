@@ -9,11 +9,7 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -22,18 +18,23 @@ import java.util.Set;
  * SSH Action bound to a single connection/SSH context. This should be the default abstract base
  * class for most actions. Provides automatic fallback to default context alias.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends SshAction {
 
     @XmlAttribute(name = "onConnection")
     protected String connectionAlias;
 
-    @XmlTransient private final Set<String> aliases = new HashSet<>();
-
     protected ConnectionBoundAction(String connectionAlias) {
         super();
         this.connectionAlias = connectionAlias;
     }
+
+    protected ConnectionBoundAction(ConnectionBoundAction other) {
+        super(other);
+        connectionAlias = other.connectionAlias;
+    }
+
+    @Override
+    public abstract ConnectionBoundAction createCopy();
 
     public String getConnectionAlias() {
         return connectionAlias;
@@ -55,20 +56,9 @@ public abstract class ConnectionBoundAction extends SshAction {
 
     @Override
     public Set<String> getAllAliases() {
-        if (aliases.isEmpty() && connectionAlias != null && !connectionAlias.isEmpty()) {
-            aliases.add(connectionAlias);
-        }
+        HashSet<String> aliases = new HashSet<>(1);
+        aliases.add(connectionAlias);
         return aliases;
-    }
-
-    @Override
-    public boolean containsAllAliases(Collection<String> aliases) {
-        return getAllAliases().containsAll(aliases);
-    }
-
-    @Override
-    public boolean containsAlias(String alias) {
-        return getAllAliases().contains(alias);
     }
 
     @Override

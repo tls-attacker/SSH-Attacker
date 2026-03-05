@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,14 +30,13 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
         return new DhKeyExchangeInitMessage();
     }
 
-    public void parseEphemeralPublicKey() {
-        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug(
-                "Ephemeral public key (client) length: {}", message.getEphemeralPublicKeyLength());
-        message.setEphemeralPublicKey(
-                parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
-        LOGGER.debug(
-                "Ephemeral public key (client): {}", message.getEphemeralPublicKey().getValue());
+    private void parseEphemeralPublicKey() {
+        int ephemeralPublicKeyLength = parseIntField();
+        message.setEphemeralPublicKeyLength(ephemeralPublicKeyLength);
+        LOGGER.debug("Ephemeral public key (client) length: {}", ephemeralPublicKeyLength);
+        BigInteger ephemeralPublicKey = parseBigIntField(ephemeralPublicKeyLength);
+        message.setEphemeralPublicKey(ephemeralPublicKey);
+        LOGGER.debug("Ephemeral public key (client): {}", ephemeralPublicKey);
     }
 
     @Override

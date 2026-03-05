@@ -46,8 +46,8 @@ public class UserAuthFailureMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
         msg.setPossibleAuthenticationMethods(providedAuthenticationMethods, true);
         msg.setPartialSuccess(providedPartialSuccess);
-        UserAuthFailureMessageSerializer serializer = new UserAuthFailureMessageSerializer(msg);
+        UserAuthFailureMessageSerializer serializer = new UserAuthFailureMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

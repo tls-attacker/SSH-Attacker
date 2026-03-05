@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthRequestPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthRequestPasswordMessage
@@ -24,6 +25,25 @@ public class UserAuthRequestPasswordMessage
     private ModifiableString password;
     private ModifiableInteger newPasswordLength;
     private ModifiableString newPassword;
+
+    public UserAuthRequestPasswordMessage() {
+        super();
+    }
+
+    public UserAuthRequestPasswordMessage(UserAuthRequestPasswordMessage other) {
+        super(other);
+        changePassword = other.changePassword != null ? other.changePassword.createCopy() : null;
+        passwordLength = other.passwordLength != null ? other.passwordLength.createCopy() : null;
+        password = other.password != null ? other.password.createCopy() : null;
+        newPasswordLength =
+                other.newPasswordLength != null ? other.newPasswordLength.createCopy() : null;
+        newPassword = other.newPassword != null ? other.newPassword.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthRequestPasswordMessage createCopy() {
+        return new UserAuthRequestPasswordMessage(this);
+    }
 
     public ModifiableByte getChangePassword() {
         return changePassword;
@@ -122,8 +142,26 @@ public class UserAuthRequestPasswordMessage
         }
     }
 
+    public static final UserAuthRequestPasswordMessageHandler HANDLER =
+            new UserAuthRequestPasswordMessageHandler();
+
     @Override
-    public UserAuthRequestPasswordMessageHandler getHandler(SshContext context) {
-        return new UserAuthRequestPasswordMessageHandler(context, this);
+    public UserAuthRequestPasswordMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthRequestPasswordMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthRequestPasswordMessageHandler.SERIALIZER.serialize(this);
     }
 }

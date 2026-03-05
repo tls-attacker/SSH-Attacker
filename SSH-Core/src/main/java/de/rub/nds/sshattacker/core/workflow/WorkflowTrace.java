@@ -67,14 +67,16 @@ public class WorkflowTrace implements Serializable {
         return copy;
     }
 
+    @XmlElementWrapper
     @XmlElements({
         @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
         @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
         @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")
     })
-    private List<AliasedConnection> connections = new ArrayList<>();
+    private ArrayList<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
+    @XmlElementWrapper
     @XmlElements({
         @XmlElement(type = SendAction.class, name = "Send"),
         @XmlElement(type = ReceiveAction.class, name = "Receive"),
@@ -93,24 +95,51 @@ public class WorkflowTrace implements Serializable {
                 type = DynamicDelayCompressionAction.class,
                 name = "DynamicDelayCompressionAction")
     })
-    private List<SshAction> sshActions = new ArrayList<>();
+    private ArrayList<SshAction> sshActions = new ArrayList<>();
 
     private String name;
     private String description;
 
     public WorkflowTrace() {
         super();
-        sshActions = new LinkedList<>();
+        sshActions = new ArrayList<>();
     }
 
     public WorkflowTrace(List<AliasedConnection> cons) {
         super();
+        connections = new ArrayList<>(cons);
+    }
+
+    public WorkflowTrace(ArrayList<AliasedConnection> cons) {
+        super();
         connections = cons;
     }
 
-    public void reset() {
+    public WorkflowTrace(WorkflowTrace other) {
+        super();
+        if (other.connections != null) {
+            connections = new ArrayList<>(other.connections.size());
+            for (AliasedConnection item : other.connections) {
+                connections.add(item != null ? item.createCopy() : null);
+            }
+        }
+        if (other.sshActions != null) {
+            sshActions = new ArrayList<>(other.sshActions.size());
+            for (SshAction item : other.sshActions) {
+                sshActions.add(item != null ? item.createCopy() : null);
+            }
+        }
+        name = other.name;
+        description = other.description;
+    }
+
+    public WorkflowTrace createCopy() {
+        return new WorkflowTrace(this);
+    }
+
+    public void reset(boolean resetModifiableVariables) {
         for (SshAction action : sshActions) {
-            action.reset();
+            action.reset(resetModifiableVariables);
         }
     }
 
@@ -135,8 +164,18 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addSshActions(List<SshAction> actions) {
-        for (SshAction action : actions) {
-            addSshAction(action);
+        sshActions.addAll(actions);
+    }
+
+    public void addSshAction(int position, SshAction[] action) {
+        for (int i = 0; i < action.length; i++) {
+            sshActions.add(position + i, action[i]);
+        }
+    }
+
+    public void addSshAction(int position, List<SshAction> action) {
+        for (int i = 0; i < action.size(); i++) {
+            sshActions.add(position + i, action.get(i));
         }
     }
 
@@ -149,15 +188,19 @@ public class WorkflowTrace implements Serializable {
         return sshActions.remove(index);
     }
 
-    public void setSshActions(List<SshAction> sshActions) {
+    public void setSshActions(ArrayList<SshAction> sshActions) {
         this.sshActions = sshActions;
     }
 
-    public void setSshActions(SshAction... sshActions) {
-        this.sshActions = new ArrayList<>(Arrays.asList(sshActions));
+    public void setSshActions(List<SshAction> sshActions) {
+        this.sshActions = new ArrayList<>(sshActions);
     }
 
-    public List<AliasedConnection> getConnections() {
+    public void setSshActions(SshAction... sshActions) {
+        setSshActions(Arrays.asList(sshActions));
+    }
+
+    public ArrayList<AliasedConnection> getConnections() {
         return connections;
     }
 
@@ -166,9 +209,14 @@ public class WorkflowTrace implements Serializable {
      * are manually configuring workflow traces (say for MiTM or unit tests), there shouldn't be any
      * need to call this method.
      *
-     * @param connections new connection to use with this workflow trace
+     * <p>Not that this method converts the connections list to an ArrayList. If you want to
+     * maintain a valid reference to the inner list. Then use the method with an ArrayList.
      */
     public void setConnections(List<AliasedConnection> connections) {
+        this.connections = new ArrayList<>(connections);
+    }
+
+    public void setConnections(ArrayList<AliasedConnection> connections) {
         this.connections = connections;
     }
 
@@ -283,6 +331,7 @@ public class WorkflowTrace implements Serializable {
         for (SshAction action : sshActions) {
             sb.append("\n");
             sb.append(action.toString());
+            sb.append("\n");
         }
         return sb.toString();
     }
@@ -305,10 +354,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (SshAction action : sshActions) {
             if (!action.executedAsPlanned()) {
-                LOGGER.debug("Action {} did not execute as planned", action.toCompactString());
+                LOGGER.debug("Action {} did not execute as planned", action::toCompactString);
                 return false;
             } else {
-                LOGGER.debug("Action {} executed as planned", action.toCompactString());
+                LOGGER.debug("Action {} executed as planned", action::toCompactString);
             }
         }
         return true;

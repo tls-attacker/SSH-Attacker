@@ -7,8 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertDsaPublicKeySerializer;
 import java.math.BigInteger;
 import java.security.interfaces.DSAPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable DSA public key used in DSA certificates (SSH-DSA-CERT). */
@@ -31,8 +33,9 @@ public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> criticalOptions; // Map to hold critical options as key-value pairs
-    private Map<String, String> extensions; // Map to hold extensions as key-value pairs
+    private HashMap<String, String>
+            criticalOptions; // Map to hold critical options as key-value pairs
+    private HashMap<String, String> extensions; // Map to hold extensions as key-value pairs
 
     public CustomCertDsaPublicKey() {
         super();
@@ -44,6 +47,29 @@ public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
 
     public CustomCertDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y) {
         super(p, q, g, y);
+    }
+
+    public CustomCertDsaPublicKey(CustomCertDsaPublicKey other) {
+        super(other);
+        serial = other.serial;
+        signature = other.signature != null ? other.signature.clone() : null;
+        signatureKey = other.signatureKey != null ? other.signatureKey.clone() : null;
+        certType = other.certType;
+        certformat = other.certformat;
+        keyId = other.keyId;
+        reserved = other.reserved;
+        validPrincipals = other.validPrincipals != null ? other.validPrincipals.clone() : null;
+        nonce = other.nonce != null ? other.nonce.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        criticalOptions =
+                other.criticalOptions != null ? new HashMap<>(other.criticalOptions) : null;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomCertDsaPublicKey createCopy() {
+        return new CustomCertDsaPublicKey(this);
     }
 
     public long getSerial() {
@@ -131,7 +157,7 @@ public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
         return criticalOptions;
     }
 
-    public void setCriticalOptions(Map<String, String> criticalOptions) {
+    public void setCriticalOptions(HashMap<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
     }
 
@@ -148,7 +174,14 @@ public class CustomCertDsaPublicKey extends CustomDsaPublicKey {
         this.reserved = reserved;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
+    }
+
+    public static final CertDsaPublicKeySerializer SERIALIZER = new CertDsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

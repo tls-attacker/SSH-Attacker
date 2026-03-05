@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthRequestPublicKeyHostboundOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthRequestPublicKeyHostboundOpenSshMessage
@@ -29,6 +30,41 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessage
     private ModifiableByteArray serverHostKeyBlob;
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public UserAuthRequestPublicKeyHostboundOpenSshMessage() {
+        super();
+    }
+
+    public UserAuthRequestPublicKeyHostboundOpenSshMessage(
+            UserAuthRequestPublicKeyHostboundOpenSshMessage other) {
+        super(other);
+        includesSignature =
+                other.includesSignature != null ? other.includesSignature.createCopy() : null;
+        publicKeyAlgorithmNameLength =
+                other.publicKeyAlgorithmNameLength != null
+                        ? other.publicKeyAlgorithmNameLength.createCopy()
+                        : null;
+        publicKeyAlgorithmName =
+                other.publicKeyAlgorithmName != null
+                        ? other.publicKeyAlgorithmName.createCopy()
+                        : null;
+        publicKeyBlobLength =
+                other.publicKeyBlobLength != null ? other.publicKeyBlobLength.createCopy() : null;
+        publicKeyBlob = other.publicKeyBlob != null ? other.publicKeyBlob.createCopy() : null;
+        serverHostKeyBlobLength =
+                other.serverHostKeyBlobLength != null
+                        ? other.serverHostKeyBlobLength.createCopy()
+                        : null;
+        serverHostKeyBlob =
+                other.serverHostKeyBlob != null ? other.serverHostKeyBlob.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthRequestPublicKeyHostboundOpenSshMessage createCopy() {
+        return new UserAuthRequestPublicKeyHostboundOpenSshMessage(this);
+    }
 
     public ModifiableByte getIncludesSignature() {
         return includesSignature;
@@ -215,8 +251,26 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessage
         return signature;
     }
 
+    public static final UserAuthRequestPublicKeyHostboundOpenSshMessageHandler HANDLER =
+            new UserAuthRequestPublicKeyHostboundOpenSshMessageHandler();
+
     @Override
-    public UserAuthRequestPublicKeyHostboundOpenSshMessageHandler getHandler(SshContext context) {
-        return new UserAuthRequestPublicKeyHostboundOpenSshMessageHandler(context, this);
+    public UserAuthRequestPublicKeyHostboundOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthRequestPublicKeyHostboundOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthRequestPublicKeyHostboundOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

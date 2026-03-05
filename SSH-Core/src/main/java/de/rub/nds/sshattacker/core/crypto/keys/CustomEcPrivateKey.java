@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
@@ -25,7 +23,6 @@ import java.security.spec.InvalidParameterSpecException;
  * ECDSA.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey {
 
     private NamedEcGroup group;
@@ -43,6 +40,17 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
         }
         this.group = group;
         this.privateKey = privateKey;
+    }
+
+    public CustomEcPrivateKey(CustomEcPrivateKey other) {
+        super(other);
+        group = other.group;
+        privateKey = other.privateKey;
+    }
+
+    @Override
+    public CustomEcPrivateKey createCopy() {
+        return new CustomEcPrivateKey(this);
     }
 
     public NamedEcGroup getGroup() {

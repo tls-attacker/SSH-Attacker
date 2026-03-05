@@ -17,39 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestHostKeysProveOpenSshMessageHandler
         extends SshMessageHandler<GlobalRequestHostKeysProveOpenSshMessage> {
 
-    public GlobalRequestHostKeysProveOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestHostKeysProveOpenSshMessageHandler(
-            SshContext context, GlobalRequestHostKeysProveOpenSshMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(
+            SshContext context, GlobalRequestHostKeysProveOpenSshMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle GlobalRequestHostKeysProveOpenSshMessage
-    }
-
-    @Override
-    public GlobalRequestHostKeysProveOpenSshMessageParser getParser(byte[] array) {
+    public GlobalRequestHostKeysProveOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new GlobalRequestHostKeysProveOpenSshMessageParser(array);
     }
 
     @Override
     public GlobalRequestHostKeysProveOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestHostKeysProveOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestHostKeysProveOpenSshMessagePreparator getPreparator() {
-        return new GlobalRequestHostKeysProveOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final GlobalRequestHostKeysProveOpenSshMessagePreparator PREPARATOR =
+            new GlobalRequestHostKeysProveOpenSshMessagePreparator();
 
-    @Override
-    public GlobalRequestHostKeysProveOpenSshMessageSerializer getSerializer() {
-        return new GlobalRequestHostKeysProveOpenSshMessageSerializer(message);
-    }
+    public static final GlobalRequestHostKeysProveOpenSshMessageSerializer SERIALIZER =
+            new GlobalRequestHostKeysProveOpenSshMessageSerializer();
 }

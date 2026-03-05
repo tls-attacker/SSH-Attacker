@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -22,58 +22,56 @@ public class UserAuthRequestPublicKeyMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthRequestPublicKeyMessageSerializer(UserAuthRequestPublicKeyMessage message) {
-        super(message);
-    }
-
-    private void serializeIncludesSignature() {
+    private static void serializeIncludesSignature(
+            UserAuthRequestPublicKeyMessage object, SerializerStream output) {
         LOGGER.debug(
                 "Includes signature: {}",
-                Converter.byteToBoolean(message.getIncludesSignature().getValue()));
-        appendByte(message.getIncludesSignature().getValue());
+                Converter.byteToBoolean(object.getIncludesSignature().getValue()));
+        output.appendByte(object.getIncludesSignature().getValue());
     }
 
-    private void serializePublicKeyAlgorithmName() {
+    private static void serializePublicKeyAlgorithmName(
+            UserAuthRequestPublicKeyMessage object, SerializerStream output) {
         LOGGER.debug(
                 "Public key algorithm name length: {}",
-                message.getPublicKeyAlgorithmNameLength().getValue());
-        appendInt(
-                message.getPublicKeyAlgorithmNameLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+                object.getPublicKeyAlgorithmNameLength().getValue());
+        output.appendInt(object.getPublicKeyAlgorithmNameLength().getValue());
         LOGGER.debug(
                 "Public key algorithm name: {}",
-                backslashEscapeString(message.getPublicKeyAlgorithmName().getValue()));
-        appendString(message.getPublicKeyAlgorithmName().getValue(), StandardCharsets.US_ASCII);
+                () -> backslashEscapeString(object.getPublicKeyAlgorithmName().getValue()));
+        output.appendString(
+                object.getPublicKeyAlgorithmName().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializePublicKeyBlob() {
-        LOGGER.debug("Public key blob length: {}", message.getPublicKeyBlobLength().getValue());
-        appendInt(
-                message.getPublicKeyBlobLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializePublicKeyBlob(
+            UserAuthRequestPublicKeyMessage object, SerializerStream output) {
+        LOGGER.debug("Public key blob length: {}", object.getPublicKeyBlobLength().getValue());
+        output.appendInt(object.getPublicKeyBlobLength().getValue());
         LOGGER.debug(
                 "Public key blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getPublicKeyBlob().getValue()));
-        appendBytes(message.getPublicKeyBlob().getValue());
+                () -> ArrayConverter.bytesToRawHexString(object.getPublicKeyBlob().getValue()));
+        output.appendBytes(object.getPublicKeyBlob().getValue());
     }
 
-    private void serializeSignature() {
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeSignature(
+            UserAuthRequestPublicKeyMessage object, SerializerStream output) {
+        LOGGER.debug("Signature length: {}", object.getSignatureLength().getValue());
+        output.appendInt(object.getSignatureLength().getValue());
         LOGGER.debug(
                 "Signature: {}",
-                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
-        appendBytes(message.getSignature().getValue());
+                () -> ArrayConverter.bytesToRawHexString(object.getSignature().getValue()));
+        output.appendBytes(object.getSignature().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeIncludesSignature();
-        serializePublicKeyAlgorithmName();
-        serializePublicKeyBlob();
-        if (Converter.byteToBoolean(message.getIncludesSignature().getValue())) {
-            serializeSignature();
+    protected void serializeMessageSpecificContents(
+            UserAuthRequestPublicKeyMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeIncludesSignature(object, output);
+        serializePublicKeyAlgorithmName(object, output);
+        serializePublicKeyBlob(object, output);
+        if (Converter.byteToBoolean(object.getIncludesSignature().getValue())) {
+            serializeSignature(object, output);
         }
     }
 }

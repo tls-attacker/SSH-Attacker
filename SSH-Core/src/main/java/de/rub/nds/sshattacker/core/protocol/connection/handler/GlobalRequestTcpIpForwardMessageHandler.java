@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestTcpIpForwardMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestTcpIpForwardMessagePreparator;
@@ -17,37 +17,23 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestTcpIpForwardMessageHandler
         extends SshMessageHandler<GlobalRequestTcpIpForwardMessage> {
 
-    public GlobalRequestTcpIpForwardMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestTcpIpForwardMessageHandler(
-            SshContext context, GlobalRequestTcpIpForwardMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, GlobalRequestTcpIpForwardMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle GlobalRequestTcpIpForwardMessage
-    }
-
-    @Override
-    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array) {
+    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestTcpIpForwardMessageParser(array);
     }
 
     @Override
-    public GlobalRequestTcpIpForwardMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestTcpIpForwardMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestTcpIpForwardMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestTcpIpForwardMessagePreparator getPreparator() {
-        return new GlobalRequestTcpIpForwardMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestTcpIpForwardMessagePreparator PREPARATOR =
+            new GlobalRequestTcpIpForwardMessagePreparator();
 
-    @Override
-    public GlobalRequestTcpIpForwardMessageSerializer getSerializer() {
-        return new GlobalRequestTcpIpForwardMessageSerializer(message);
-    }
+    public static final GlobalRequestTcpIpForwardMessageSerializer SERIALIZER =
+            new GlobalRequestTcpIpForwardMessageSerializer();
 }

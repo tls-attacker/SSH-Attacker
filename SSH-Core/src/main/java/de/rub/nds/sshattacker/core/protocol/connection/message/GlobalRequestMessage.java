@@ -23,6 +23,21 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     private ModifiableString requestName;
     private ModifiableByte wantReply;
 
+    protected GlobalRequestMessage() {
+        super();
+    }
+
+    protected GlobalRequestMessage(GlobalRequestMessage<T> other) {
+        super(other);
+        requestNameLength =
+                other.requestNameLength != null ? other.requestNameLength.createCopy() : null;
+        requestName = other.requestName != null ? other.requestName.createCopy() : null;
+        wantReply = other.wantReply != null ? other.wantReply.createCopy() : null;
+    }
+
+    @Override
+    public abstract GlobalRequestMessage<T> createCopy();
+
     public ModifiableInteger getRequestNameLength() {
         return requestNameLength;
     }

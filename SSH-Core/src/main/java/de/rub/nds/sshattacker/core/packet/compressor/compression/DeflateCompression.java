@@ -11,8 +11,9 @@ import com.jcraft.jzlib.Deflater;
 import com.jcraft.jzlib.Inflater;
 import com.jcraft.jzlib.JZlib;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.CompressionException;
+import de.rub.nds.sshattacker.core.exceptions.DecompressionException;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class DeflateCompression extends Compression {
 
@@ -32,7 +33,7 @@ public class DeflateCompression extends Compression {
         inflater.init();
     }
 
-    public byte[] compress(byte[] data) {
+    public byte[] compress(byte[] data) throws CompressionException {
         ByteArrayOutputStream compressedOutputStream = new ByteArrayOutputStream();
         deflater.setInput(data);
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -40,24 +41,17 @@ public class DeflateCompression extends Compression {
             deflater.setOutput(buffer, 0, BUFFER_SIZE);
             int status = deflater.deflate(JZlib.Z_PARTIAL_FLUSH);
             if (status != JZlib.Z_OK) {
-                LOGGER.error(
-                        "Unable to compress the provided data, deflate status is not equal to Z_OK: {}",
-                        status);
-                return null;
+                throw new CompressionException(
+                        "Unable to compress the provided data, deflate status is not equal to Z_OK: "
+                                + status);
             }
             compressedOutputStream.write(buffer, 0, BUFFER_SIZE - deflater.getAvailOut());
         } while (deflater.getAvailOut() == 0);
 
-        try {
-            compressedOutputStream.close();
-            return compressedOutputStream.toByteArray();
-        } catch (IOException e) {
-            LOGGER.error("Unable to close compressed output stream after payload compression", e);
-            return null;
-        }
+        return compressedOutputStream.toByteArray();
     }
 
-    public byte[] decompress(byte[] data) {
+    public byte[] decompress(byte[] data) throws DecompressionException {
         ByteArrayOutputStream uncompressedOutputStream = new ByteArrayOutputStream();
         inflater.setInput(data);
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -65,21 +59,13 @@ public class DeflateCompression extends Compression {
             inflater.setOutput(buffer, 0, BUFFER_SIZE);
             int status = inflater.inflate(JZlib.Z_PARTIAL_FLUSH);
             if (status != JZlib.Z_OK) {
-                LOGGER.error(
-                        "Unable to decompress the provided data, inflate status is not equal to Z_OK: {}",
-                        status);
-                return null;
+                throw new DecompressionException(
+                        "Unable to decompress the provided data, inflate status is not equal to Z_OK: "
+                                + status);
             }
             uncompressedOutputStream.write(buffer, 0, BUFFER_SIZE - inflater.getAvailOut());
         } while (inflater.getAvailOut() == 0);
 
-        try {
-            uncompressedOutputStream.close();
-            return uncompressedOutputStream.toByteArray();
-        } catch (IOException e) {
-            LOGGER.error(
-                    "Unable to close decompressed output stream after payload decompression", e);
-            return null;
-        }
+        return uncompressedOutputStream.toByteArray();
     }
 }

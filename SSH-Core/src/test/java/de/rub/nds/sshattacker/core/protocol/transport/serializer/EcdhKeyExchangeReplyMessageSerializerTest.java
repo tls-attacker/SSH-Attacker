@@ -57,8 +57,8 @@ public class EcdhKeyExchangeReplyMessageSerializerTest {
         msg.setSignatureLength(providedSignatureLength);
         msg.setSignature(providedSignature);
         EcdhKeyExchangeReplyMessageSerializer serializer =
-                new EcdhKeyExchangeReplyMessageSerializer(msg);
+                new EcdhKeyExchangeReplyMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

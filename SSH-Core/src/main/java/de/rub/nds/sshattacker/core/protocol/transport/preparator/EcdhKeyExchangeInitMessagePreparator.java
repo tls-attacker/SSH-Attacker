@@ -16,18 +16,19 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class EcdhKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<EcdhKeyExchangeInitMessage> {
 
-    public EcdhKeyExchangeInitMessagePreparator(
-            Chooser chooser, EcdhKeyExchangeInitMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_ECDH_INIT);
+    public EcdhKeyExchangeInitMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_ECDH_INIT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(
+            EcdhKeyExchangeInitMessage object, Chooser chooser) {
         AbstractEcdhKeyExchange<?, ?> keyExchange = chooser.getEcdhKeyExchange();
         keyExchange.generateKeyPair();
-        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
-        chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(encodedPublicKey);
+        byte[] pubKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
 
-        getObject().setEphemeralPublicKey(encodedPublicKey, true);
+        object.setEphemeralPublicKey(pubKey, true);
+
+        chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(pubKey);
     }
 }

@@ -14,10 +14,10 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthSuccessMessagePreparator extends SshMessagePreparator<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessagePreparator(Chooser chooser, UserAuthSuccessMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS);
+    public UserAuthSuccessMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    protected void prepareMessageSpecificContents(UserAuthSuccessMessage object, Chooser chooser) {}
 }

@@ -7,39 +7,26 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.nio.charset.StandardCharsets;
 
 /** Serializer class to encode an RSA public key to the ssh-rsa format. */
 public class RsaPublicKeySerializer extends Serializer<CustomRsaPublicKey> {
 
-    private final CustomRsaPublicKey publicKey;
-
-    public RsaPublicKeySerializer(CustomRsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomRsaPublicKey object, SerializerStream output) {
         /*
          * The ssh-rsa format as specified in RFC4253 Section 6.6:
          *   string    "ssh-rsa"
          *   mpint     e
          *   mpint     n
          */
-        appendInt(
-                PublicKeyFormat.SSH_RSA.toString().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(PublicKeyFormat.SSH_RSA.toString(), StandardCharsets.US_ASCII);
-        byte[] encodedExponent = publicKey.getPublicExponent().toByteArray();
-        appendInt(encodedExponent.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        appendBytes(encodedExponent);
-        byte[] encodedModulus = publicKey.getModulus().toByteArray();
-        appendInt(encodedModulus.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        appendBytes(encodedModulus);
+        output.appendLengthPrefixedString(
+                PublicKeyFormat.SSH_RSA.toString(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedBigInteger(object.getPublicExponent());
+        output.appendLengthPrefixedBigInteger(object.getModulus());
     }
 }

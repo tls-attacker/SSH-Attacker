@@ -14,12 +14,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ServiceRequestMessagePreparator extends SshMessagePreparator<ServiceRequestMessage> {
 
-    public ServiceRequestMessagePreparator(Chooser chooser, ServiceRequestMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_SERVICE_REQUEST);
+    public ServiceRequestMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_SERVICE_REQUEST);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setServiceName(chooser.getConfig().getServiceName(), true);
+    protected void prepareMessageSpecificContents(ServiceRequestMessage object, Chooser chooser) {
+        object.setServiceName(chooser.getConfig().getServiceName(), true);
     }
 }

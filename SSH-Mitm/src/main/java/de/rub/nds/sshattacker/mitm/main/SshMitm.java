@@ -123,6 +123,7 @@ public class SshMitm implements Runnable {
                 }
             }
             state.storeTrace();
+            config.storeConfig();
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
                     "The SSH protocol flow was not executed completely. {} - See debug messages for more details.",
@@ -136,10 +137,6 @@ public class SshMitm implements Runnable {
                     ce.getLocalizedMessage());
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
-        } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
-            LOGGER.info("Try -help");
-            throw pe;
         } catch (Exception E) {
             LOGGER.error(E);
         }

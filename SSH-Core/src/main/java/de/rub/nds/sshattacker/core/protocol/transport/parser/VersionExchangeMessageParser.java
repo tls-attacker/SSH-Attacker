@@ -44,10 +44,10 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
 
         String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
         message.setVersion(parts[0]);
-        LOGGER.debug("Version: {}", backslashEscapeString(parts[0]));
+        LOGGER.debug("Version: {}", () -> backslashEscapeString(parts[0]));
         if (parts.length == 2) {
             message.setComment(parts[1]);
-            LOGGER.debug("Comment: {}", backslashEscapeString(parts[1]));
+            LOGGER.debug("Comment: {}", () -> backslashEscapeString(parts[1]));
         } else {
             message.setComment("");
             LOGGER.debug("Comment: [none]");
@@ -55,7 +55,7 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
     }
 
     @Override
-    public void parseProtocolMessageContents() {
+    protected void parseProtocolMessageContents() {
         parseVersion();
     }
 }

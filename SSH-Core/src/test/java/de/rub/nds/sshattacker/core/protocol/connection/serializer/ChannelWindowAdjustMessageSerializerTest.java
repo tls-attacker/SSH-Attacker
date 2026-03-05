@@ -43,8 +43,8 @@ public class ChannelWindowAdjustMessageSerializerTest {
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setBytesToAdd(providedBytesToAdd);
         ChannelWindowAdjustMessageSerializer serializer =
-                new ChannelWindowAdjustMessageSerializer(msg);
+                new ChannelWindowAdjustMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,8 +44,8 @@ public class DefaultFilter extends Filter {
     public void applyFilter(WorkflowTrace trace) {
         WorkflowTraceNormalizer.assertNormalizedWorkflowTrace(trace);
 
-        List<AliasedConnection> traceConnections = trace.getConnections();
-        List<AliasedConnection> strippedTraceConnections = new ArrayList<>();
+        ArrayList<AliasedConnection> traceConnections = trace.getConnections();
+        ArrayList<AliasedConnection> strippedTraceConnections = new ArrayList<>();
         InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
         OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
 

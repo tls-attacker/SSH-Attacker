@@ -28,12 +28,14 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator(
-            Chooser chooser, UserAuthRequestPublicKeyHostboundOpenSshMessage message) {
-        super(chooser, message, AuthenticationMethod.PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM);
+    public UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator() {
+        super(AuthenticationMethod.PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM);
     }
 
-    private byte[] getSignatureBlob(SshPublicKey<?, ?> publicKey) {
+    private byte[] getSignatureBlob(
+            UserAuthRequestPublicKeyHostboundOpenSshMessage object,
+            Chooser chooser,
+            SshPublicKey<?, ?> publicKey) {
         try {
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
             signatureOutput.write(
@@ -41,19 +43,18 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator
                             chooser.getContext().getSessionID().orElse(new byte[0]).length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(chooser.getContext().getSessionID().orElse(new byte[0]));
-            signatureOutput.write(getObject().getMessageId().getValue());
+            signatureOutput.write(object.getMessageId().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getUserNameLength().getValue(),
+                            object.getUserNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(
-                    getObject().getUserName().getValue().getBytes(StandardCharsets.UTF_8));
+            signatureOutput.write(object.getUserName().getValue().getBytes(StandardCharsets.UTF_8));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getServiceNameLength().getValue(),
+                            object.getServiceNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(
-                    getObject().getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
+                    object.getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             AuthenticationMethod.PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM
@@ -65,26 +66,25 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator
                     AuthenticationMethod.PUBLICKEY_HOSTBOUND_V00_OPENSSH_COM
                             .getName()
                             .getBytes(StandardCharsets.US_ASCII));
-            signatureOutput.write(getObject().getIncludesSignature().getValue());
+            signatureOutput.write(object.getIncludesSignature().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getPublicKeyAlgorithmNameLength().getValue(),
+                            object.getPublicKeyAlgorithmNameLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(
-                    getObject()
-                            .getPublicKeyAlgorithmName()
+                    object.getPublicKeyAlgorithmName()
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getPublicKeyBlobLength().getValue(),
+                            object.getPublicKeyBlobLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getPublicKeyBlob().getValue());
+            signatureOutput.write(object.getPublicKeyBlob().getValue());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getServerHostKeyBlobLength().getValue(),
+                            object.getServerHostKeyBlobLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getServerHostKeyBlob().getValue());
+            signatureOutput.write(object.getServerHostKeyBlob().getValue());
             return SignatureFactory.getSigningSignature(
                             PublicKeyAlgorithm.fromName(publicKey.getPublicKeyFormat().getName()),
                             publicKey)
@@ -104,21 +104,22 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator
         }
     }
 
-    private byte[] getEncodedSignature(SshPublicKey<?, ?> publicKey) {
+    private byte[] getEncodedSignature(
+            UserAuthRequestPublicKeyHostboundOpenSshMessage object,
+            Chooser chooser,
+            SshPublicKey<?, ?> publicKey) {
         try {
-            byte[] signatureBlob = getSignatureBlob(publicKey);
+            byte[] signatureBlob = getSignatureBlob(object, chooser, publicKey);
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject()
-                                    .getPublicKeyAlgorithmName()
+                            object.getPublicKeyAlgorithmName()
                                     .getValue()
                                     .getBytes(StandardCharsets.US_ASCII)
                                     .length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
             encodedSignatureOutput.write(
-                    getObject()
-                            .getPublicKeyAlgorithmName()
+                    object.getPublicKeyAlgorithmName()
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII));
             encodedSignatureOutput.write(
@@ -136,20 +137,21 @@ public class UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {
-        getObject().setIncludesSignature(true);
+    protected void prepareUserAuthRequestSpecificContents(
+            UserAuthRequestPublicKeyHostboundOpenSshMessage object, Chooser chooser) {
+        object.setIncludesSignature(true);
         SshPublicKey<?, ?> publicKey = chooser.getSelectedPublicKeyForAuthentication();
         SshPublicKey<?, ?> hostKey = chooser.getContext().getHostKey().orElse(null);
         if (publicKey != null && hostKey != null) {
-            getObject().setPublicKeyAlgorithmName(publicKey.getPublicKeyFormat().getName(), true);
-            getObject().setPublicKeyBlob(PublicKeyHelper.encode(publicKey), true);
-            getObject().setServerHostKeyBlob(PublicKeyHelper.encode(hostKey), true);
-            getObject().setSignature(getEncodedSignature(publicKey), true);
+            object.setPublicKeyAlgorithmName(publicKey.getPublicKeyFormat().getName(), true);
+            object.setPublicKeyBlob(PublicKeyHelper.encode(publicKey), true);
+            object.setServerHostKeyBlob(PublicKeyHelper.encode(hostKey), true);
+            object.setSignature(getEncodedSignature(object, chooser, publicKey), true);
         } else {
-            getObject().setPublicKeyAlgorithmName("", true);
-            getObject().setPublicKeyBlob(new byte[0], true);
-            getObject().setServerHostKeyBlob(new byte[0], true);
-            getObject().setSignature(new byte[0], true);
+            object.setPublicKeyAlgorithmName("", true);
+            object.setPublicKeyBlob(new byte[0], true);
+            object.setServerHostKeyBlob(new byte[0], true);
+            object.setSignature(new byte[0], true);
         }
     }
 }

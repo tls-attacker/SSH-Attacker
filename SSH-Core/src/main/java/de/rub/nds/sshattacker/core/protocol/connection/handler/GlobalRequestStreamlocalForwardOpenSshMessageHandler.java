@@ -17,39 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestStreamlocalForwardOpenSshMessageHandler
         extends SshMessageHandler<GlobalRequestStreamlocalForwardOpenSshMessage> {
 
-    public GlobalRequestStreamlocalForwardOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestStreamlocalForwardOpenSshMessageHandler(
-            SshContext context, GlobalRequestStreamlocalForwardOpenSshMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(
+            SshContext context, GlobalRequestStreamlocalForwardOpenSshMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle GlobalRequestStreamlocalForwardOpenSshMessage
-    }
-
-    @Override
-    public GlobalRequestStreamlocalForwardOpenSshMessageParser getParser(byte[] array) {
+    public GlobalRequestStreamlocalForwardOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new GlobalRequestStreamlocalForwardOpenSshMessageParser(array);
     }
 
     @Override
     public GlobalRequestStreamlocalForwardOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestStreamlocalForwardOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestStreamlocalForwardOpenSshMessagePreparator getPreparator() {
-        return new GlobalRequestStreamlocalForwardOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final GlobalRequestStreamlocalForwardOpenSshMessagePreparator PREPARATOR =
+            new GlobalRequestStreamlocalForwardOpenSshMessagePreparator();
 
-    @Override
-    public GlobalRequestStreamlocalForwardOpenSshMessageSerializer getSerializer() {
-        return new GlobalRequestStreamlocalForwardOpenSshMessageSerializer(message);
-    }
+    public static final GlobalRequestStreamlocalForwardOpenSshMessageSerializer SERIALIZER =
+            new GlobalRequestStreamlocalForwardOpenSshMessageSerializer();
 }

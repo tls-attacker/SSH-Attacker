@@ -14,104 +14,135 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
-    private ModifiableInteger publicKeyAlgorithmNameLength;
-    private ModifiableString publicKeyAlgorithmName;
-    private ModifiableInteger publicKeyBlobLength;
-    private ModifiableByteArray publicKeyBlob;
+    private ModifiableInteger pubkeyAlgNameLength;
+    private ModifiableString pubkeyAlgName;
+    private ModifiableInteger pubkeyLength;
+    private ModifiableByteArray pubkey;
 
-    public ModifiableInteger getPublicKeyAlgorithmNameLength() {
-        return publicKeyAlgorithmNameLength;
+    public UserAuthPkOkMessage() {
+        super();
     }
 
-    public void setPublicKeyAlgorithmNameLength(ModifiableInteger publicKeyAlgorithmNameLength) {
-        this.publicKeyAlgorithmNameLength = publicKeyAlgorithmNameLength;
-    }
-
-    public void setPublicKeyAlgorithmNameLength(int publicKeyAlgorithmNameLength) {
-        this.publicKeyAlgorithmNameLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.publicKeyAlgorithmNameLength, publicKeyAlgorithmNameLength);
-    }
-
-    public ModifiableString getPublicKeyAlgorithmName() {
-        return publicKeyAlgorithmName;
-    }
-
-    public void setPublicKeyAlgorithmName(ModifiableString publicKeyAlgorithmName) {
-        setPublicKeyAlgorithmName(publicKeyAlgorithmName, false);
-    }
-
-    public void setPublicKeyAlgorithmName(String publicKeyAlgorithmName) {
-        setPublicKeyAlgorithmName(publicKeyAlgorithmName, false);
-    }
-
-    public void setPublicKeyAlgorithmName(
-            ModifiableString publicKeyAlgorithmName, boolean adjustLengthField) {
-        this.publicKeyAlgorithmName = publicKeyAlgorithmName;
-        if (adjustLengthField) {
-            setPublicKeyAlgorithmNameLength(
-                    this.publicKeyAlgorithmName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public void setPublicKeyAlgorithmName(
-            String publicKeyAlgorithmName, boolean adjustLengthField) {
-        this.publicKeyAlgorithmName =
-                ModifiableVariableFactory.safelySetValue(
-                        this.publicKeyAlgorithmName, publicKeyAlgorithmName);
-        if (adjustLengthField) {
-            setPublicKeyAlgorithmNameLength(
-                    this.publicKeyAlgorithmName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
-    }
-
-    public ModifiableInteger getPublicKeyBlobLength() {
-        return publicKeyBlobLength;
-    }
-
-    public void setPublicKeyBlobLength(ModifiableInteger publicKeyBlobLength) {
-        this.publicKeyBlobLength = publicKeyBlobLength;
-    }
-
-    public void setPublicKeyBlobLength(int publicKeyBlobLength) {
-        this.publicKeyBlobLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.publicKeyBlobLength, publicKeyBlobLength);
-    }
-
-    public ModifiableByteArray getPublicKeyBlob() {
-        return publicKeyBlob;
-    }
-
-    public void setPublicKeyBlob(ModifiableByteArray publicKeyBlob) {
-        setPublicKeyBlob(publicKeyBlob, false);
-    }
-
-    public void setPublicKeyBlob(byte[] publicKeyBlob) {
-        setPublicKeyBlob(publicKeyBlob, false);
-    }
-
-    public void setPublicKeyBlob(ModifiableByteArray publicKeyBlob, boolean adjustLengthField) {
-        this.publicKeyBlob = publicKeyBlob;
-        if (adjustLengthField) {
-            setPublicKeyBlobLength(this.publicKeyBlob.getValue().length);
-        }
-    }
-
-    public void setPublicKeyBlob(byte[] publicKeyBlob, boolean adjustLengthField) {
-        this.publicKeyBlob =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyBlob, publicKeyBlob);
-        if (adjustLengthField) {
-            setPublicKeyBlobLength(this.publicKeyBlob.getValue().length);
-        }
+    public UserAuthPkOkMessage(UserAuthPkOkMessage other) {
+        super(other);
+        pubkeyAlgNameLength =
+                other.pubkeyAlgNameLength != null ? other.pubkeyAlgNameLength.createCopy() : null;
+        pubkeyAlgName = other.pubkeyAlgName != null ? other.pubkeyAlgName.createCopy() : null;
+        pubkeyLength = other.pubkeyLength != null ? other.pubkeyLength.createCopy() : null;
+        pubkey = other.pubkey != null ? other.pubkey.createCopy() : null;
     }
 
     @Override
-    public UserAuthPkOkMessageHandler getHandler(SshContext context) {
-        return new UserAuthPkOkMessageHandler(context, this);
+    public UserAuthPkOkMessage createCopy() {
+        return new UserAuthPkOkMessage(this);
+    }
+
+    public ModifiableInteger getPubkeyAlgNameLength() {
+        return pubkeyAlgNameLength;
+    }
+
+    public void setPubkeyAlgNameLength(ModifiableInteger pubkeyAlgNameLength) {
+        this.pubkeyAlgNameLength = pubkeyAlgNameLength;
+    }
+
+    public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
+        this.pubkeyAlgNameLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.pubkeyAlgNameLength, pubkeyAlgNameLength);
+    }
+
+    public ModifiableString getPubkeyAlgName() {
+        return pubkeyAlgName;
+    }
+
+    public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
+        setPubkeyAlgName(pubkeyAlgName, false);
+    }
+
+    public void setPubkeyAlgName(String pubkeyAlgName) {
+        setPubkeyAlgName(pubkeyAlgName, false);
+    }
+
+    public void setPubkeyAlgName(ModifiableString pubkeyAlgName, boolean adjustLengthField) {
+        this.pubkeyAlgName = pubkeyAlgName;
+        if (adjustLengthField) {
+            setPubkeyAlgNameLength(
+                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public void setPubkeyAlgName(String pubkeyAlgName, boolean adjustLengthField) {
+        this.pubkeyAlgName =
+                ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
+        if (adjustLengthField) {
+            setPubkeyAlgNameLength(
+                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+    }
+
+    public ModifiableInteger getPubkeyLength() {
+        return pubkeyLength;
+    }
+
+    public void setPubkeyLength(ModifiableInteger pubkeyLength) {
+        this.pubkeyLength = pubkeyLength;
+    }
+
+    public void setPubkeyLength(int pubkeyLength) {
+        this.pubkeyLength =
+                ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
+    }
+
+    public ModifiableByteArray getPubkey() {
+        return pubkey;
+    }
+
+    public void setPubkey(ModifiableByteArray pubkey) {
+        setPubkey(pubkey, false);
+    }
+
+    public void setPubkey(byte[] pubkey) {
+        setPubkey(pubkey, false);
+    }
+
+    public void setPubkey(ModifiableByteArray pubkey, boolean adjustLengthField) {
+        this.pubkey = pubkey;
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().length);
+        }
+    }
+
+    public void setPubkey(byte[] pubkey, boolean adjustLengthField) {
+        this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().length);
+        }
+    }
+
+    public static final UserAuthPkOkMessageHandler HANDLER = new UserAuthPkOkMessageHandler();
+
+    @Override
+    public UserAuthPkOkMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPkOkMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPkOkMessageHandler.SERIALIZER.serialize(this);
     }
 }

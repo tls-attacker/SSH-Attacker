@@ -7,26 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class Preparator<T> {
 
-    private final T object;
-    protected final Chooser chooser;
-
-    protected Preparator(Chooser chooser, T message) {
+    protected Preparator() {
         super();
-        object = message;
-        this.chooser = chooser;
-        if (object == null) {
-            throw new PreparationException("Cannot prepare NULL");
-        }
     }
 
-    public abstract void prepare();
-
-    public T getObject() {
-        return object;
-    }
+    public abstract void prepare(T object, Chooser chooser);
 }

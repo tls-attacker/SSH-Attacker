@@ -20,7 +20,7 @@ public abstract class SshTask implements Task, Callable<Task> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private boolean hasError = false;
+    private boolean hasError;
 
     private final int reexecutions;
 

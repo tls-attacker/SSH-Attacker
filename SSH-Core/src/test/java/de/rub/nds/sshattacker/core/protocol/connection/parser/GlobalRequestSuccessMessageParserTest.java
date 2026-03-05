@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,7 +25,11 @@ public class GlobalRequestSuccessMessageParserTest {
      * @return A stream of test vectors to feed the testParse unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("51"), new byte[0]));
+        return Stream.of(
+                Arguments.of(ArrayConverter.hexStringToByteArray("51"), new byte[0]),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("5100008321"),
+                        ArrayConverter.hexStringToByteArray("00008321")));
     }
 
     /**
@@ -34,12 +39,13 @@ public class GlobalRequestSuccessMessageParserTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes) {
+    public void testParse(byte[] providedBytes, byte[] expectedResponseSpecificData) {
         GlobalRequestSuccessMessageParser parser =
                 new GlobalRequestSuccessMessageParser(providedBytes);
         GlobalRequestSuccessMessage msg = parser.parse();
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_REQUEST_SUCCESS.getId(), msg.getMessageId().getValue());
+        assertArrayEquals(expectedResponseSpecificData, msg.getResponseSpecificData().getValue());
     }
 }

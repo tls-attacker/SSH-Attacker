@@ -11,9 +11,8 @@ import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
@@ -30,7 +29,6 @@ import java.util.Objects;
  * A serializable elliptic curve public key used in various EC-based algorithms like ECDH and ECDSA.
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     protected Point publicKey; // Public key as Point
@@ -66,10 +64,21 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
                                                 v.getJavaName(),
                                                 publicKey.getParams().getCurve().toString()))
                         .findFirst()
-                        .orElseThrow(CryptoException::new);
+                        .orElseThrow(() -> new CryptoException("Named EC Group not found"));
         this.publicKey =
                 Point.createPoint(
                         publicKey.getW().getAffineX(), publicKey.getW().getAffineY(), group);
+    }
+
+    public CustomEcPublicKey(CustomEcPublicKey other) {
+        super(other);
+        publicKey = other.publicKey != null ? other.publicKey.createCopy() : null;
+        group = other.group;
+    }
+
+    @Override
+    public CustomEcPublicKey createCopy() {
+        return new CustomEcPublicKey(this);
     }
 
     public NamedEcGroup getGroup() {
@@ -123,5 +132,12 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     public static CustomEcPublicKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
+    }
+
+    public static final EcPublicKeySerializer SERIALIZER = new EcPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

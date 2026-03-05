@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestNoMoreSessionsOpenSshMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestNoMoreSessionsOpenSshMessage> {
 
-    public GlobalRequestNoMoreSessionsOpenSshMessagePreparator(
-            Chooser chooser, GlobalRequestNoMoreSessionsOpenSshMessage message) {
-        super(chooser, message, GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
+    public GlobalRequestNoMoreSessionsOpenSshMessagePreparator() {
+        super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {}
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestNoMoreSessionsOpenSshMessage object, Chooser chooser) {}
 }

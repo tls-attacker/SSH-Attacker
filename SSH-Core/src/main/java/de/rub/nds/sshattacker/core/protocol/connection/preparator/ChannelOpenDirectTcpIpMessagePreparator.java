@@ -7,23 +7,24 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenDirectTcpIpMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenDirectTcpIpMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenDirectTcpIpMessage> {
 
-    public ChannelOpenDirectTcpIpMessagePreparator(
-            Chooser chooser, ChannelOpenDirectTcpIpMessage message) {
-        super(chooser, message);
+    public ChannelOpenDirectTcpIpMessagePreparator() {
+        super(ChannelType.DIRECT_TCPIP);
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {
+    protected void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenDirectTcpIpMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setHostToConnect("192.168.7.38", true);
-        getObject().setPortToConnect(2200);
-        getObject().setOriginatorAddress("192.168.7.39", true);
-        getObject().setOriginatorPort(2201);
+        object.setHostToConnect("192.168.7.38", true);
+        object.setPortToConnect(2200);
+        object.setOriginatorAddress("192.168.7.39", true);
+        object.setOriginatorPort(2201);
     }
 }

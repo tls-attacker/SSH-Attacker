@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.security.PublicKey;
 
 /**
@@ -14,7 +16,19 @@ import java.security.PublicKey;
  * overrides the getFormat() and getEncoded() methods of the PrivateKey interface to return null (no
  * encoding support).
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPublicKey implements PublicKey {
+
+    protected CustomPublicKey() {
+        super();
+    }
+
+    protected CustomPublicKey(CustomPublicKey other) {
+        super();
+    }
+
+    public abstract CustomPublicKey createCopy();
+
     @Override
     public String getFormat() {
         return null;
@@ -24,4 +38,6 @@ public abstract class CustomPublicKey implements PublicKey {
     public byte[] getEncoded() {
         return null;
     }
+
+    public abstract byte[] serialize();
 }

@@ -10,8 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
@@ -21,50 +19,40 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeGroupMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeGroupMessage> {
 
-    public DhGexKeyExchangeGroupMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DhGexKeyExchangeGroupMessageHandler(
-            SshContext context, DhGexKeyExchangeGroupMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        setGroupParametersFromMessage(message);
-        updateExchangeHashWithGroupParameters(message);
+    public void adjustContext(SshContext context, DhGexKeyExchangeGroupMessage object) {
+        setGroupParametersFromMessage(context, object);
+        updateExchangeHashWithGroupParameters(context, object);
     }
 
-    private void setGroupParametersFromMessage(DhGexKeyExchangeGroupMessage msg) {
+    private static void setGroupParametersFromMessage(
+            SshContext context, DhGexKeyExchangeGroupMessage msg) {
         DhKeyExchange keyExchange = context.getChooser().getDhGexKeyExchange();
         keyExchange.setModulus(msg.getGroupModulus().getValue());
         keyExchange.setGenerator(msg.getGroupGenerator().getValue());
     }
 
-    private void updateExchangeHashWithGroupParameters(DhGexKeyExchangeGroupMessage msg) {
+    private static void updateExchangeHashWithGroupParameters(
+            SshContext context, DhGexKeyExchangeGroupMessage msg) {
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
         inputHolder.setDhGexGroupModulus(msg.getGroupModulus().getValue());
         inputHolder.setDhGexGroupGenerator(msg.getGroupGenerator().getValue());
     }
 
     @Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array) {
+    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, SshContext context) {
         return new DhGexKeyExchangeGroupMessageParser(array);
     }
 
     @Override
-    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, int startPosition) {
+    public DhGexKeyExchangeGroupMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
     }
 
-    @Override
-    public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator() {
-        return new DhGexKeyExchangeGroupMessagePreparator(context.getChooser(), message);
-    }
+    public static final DhGexKeyExchangeGroupMessagePreparator PREPARATOR =
+            new DhGexKeyExchangeGroupMessagePreparator();
 
-    @Override
-    public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer() {
-        return new DhGexKeyExchangeGroupMessageSerializer(message);
-    }
+    public static final DhGexKeyExchangeGroupMessageSerializer SERIALIZER =
+            new DhGexKeyExchangeGroupMessageSerializer();
 }

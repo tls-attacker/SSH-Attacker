@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswdChangeReqMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswdChangeReqMessage extends SshMessage<UserAuthPasswdChangeReqMessage> {
@@ -21,6 +22,24 @@ public class UserAuthPasswdChangeReqMessage extends SshMessage<UserAuthPasswdCha
     private ModifiableString prompt;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public UserAuthPasswdChangeReqMessage() {
+        super();
+    }
+
+    public UserAuthPasswdChangeReqMessage(UserAuthPasswdChangeReqMessage other) {
+        super(other);
+        promptLength = other.promptLength != null ? other.promptLength.createCopy() : null;
+        prompt = other.prompt != null ? other.prompt.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthPasswdChangeReqMessage createCopy() {
+        return new UserAuthPasswdChangeReqMessage(this);
+    }
 
     public ModifiableInteger getPromptLength() {
         return promptLength;
@@ -100,8 +119,26 @@ public class UserAuthPasswdChangeReqMessage extends SshMessage<UserAuthPasswdCha
         }
     }
 
+    public static final UserAuthPasswdChangeReqMessageHandler HANDLER =
+            new UserAuthPasswdChangeReqMessageHandler();
+
     @Override
-    public UserAuthPasswdChangeReqMessageHandler getHandler(SshContext context) {
-        return new UserAuthPasswdChangeReqMessageHandler(context, this);
+    public UserAuthPasswdChangeReqMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthPasswdChangeReqMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthPasswdChangeReqMessageHandler.SERIALIZER.serialize(this);
     }
 }

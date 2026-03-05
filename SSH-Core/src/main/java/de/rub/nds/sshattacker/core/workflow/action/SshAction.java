@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.connection.Aliasable;
-import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -16,8 +15,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SshAction implements Serializable, Aliasable {
@@ -28,9 +25,20 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
+    // Mark it transient to keep the default xml clean
     @XmlTransient private Boolean singleConnectionWorkflow = true;
 
-    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
+    protected SshAction() {
+        super();
+    }
+
+    protected SshAction(SshAction other) {
+        super();
+        executed = other.executed;
+        singleConnectionWorkflow = other.singleConnectionWorkflow;
+    }
+
+    public abstract SshAction createCopy();
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -53,7 +61,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     public abstract void execute(State state) throws WorkflowExecutionException;
 
-    public abstract void reset();
+    public abstract void reset(boolean resetModifiableVariables);
 
     /** Add default values and initialize empty fields. */
     @SuppressWarnings("NoopMethodInAbstractClass")
@@ -98,16 +106,6 @@ public abstract class SshAction implements Serializable, Aliasable {
         return getAllAliases().contains(alias);
     }
 
-    @SuppressWarnings("NoopMethodInAbstractClass")
-    @Override
-    public void assertAliasesSetProperly() throws ConfigurationException {}
-
-    @SuppressWarnings("SuspiciousGetterSetter")
-    @Override
-    public Set<String> getAllAliases() {
-        return aliases;
-    }
-
     /**
      * Check that the Action got executed as planned.
      *
@@ -121,12 +119,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     @Override
     public String aliasesToString() {
-        StringBuilder sb = new StringBuilder();
-        for (String alias : getAllAliases()) {
-            sb.append(alias).append(",");
-        }
-        sb.deleteCharAt(sb.lastIndexOf(","));
-        return sb.toString();
+        return String.join(",", getAllAliases());
     }
 
     public String toCompactString() {

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,25 +30,28 @@ public class ChannelOpenConfirmationMessageParser
     }
 
     private void parseSenderChannel() {
-        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
+        int senderChannelId = parseIntField();
+        message.setSenderChannelId(senderChannelId);
+        LOGGER.debug("Sender channel id: {}", senderChannelId);
     }
 
-    private void parseInitialWindowSize() {
-        message.setInitialWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: {}", message.getInitialWindowSize().getValue());
+    private void parseWindowSize() {
+        int windowSize = parseIntField();
+        message.setInitialWindowSize(windowSize);
+        LOGGER.debug("Initial window size: {}", windowSize);
     }
 
-    private void parseMaximumPacketSize() {
-        message.setMaximumPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: {}", message.getMaximumPacketSize().getValue());
+    private void parsePacketSize() {
+        int packetSize = parseIntField();
+        message.setMaximumPacketSize(packetSize);
+        LOGGER.debug("Maximum packet size: {}", packetSize);
     }
 
     @Override
     protected void parseMessageSpecificContents() {
         super.parseMessageSpecificContents();
         parseSenderChannel();
-        parseInitialWindowSize();
-        parseMaximumPacketSize();
+        parseWindowSize();
+        parsePacketSize();
     }
 }

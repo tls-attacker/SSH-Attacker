@@ -9,9 +9,11 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.CertEcdsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.interfaces.ECPublicKey;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A serializable ECDSA public key used in ECDSA certificates (SSH-ECDSA-CERT). */
@@ -34,8 +36,9 @@ public class CustomCertEcdsaPublicKey extends CustomEcPublicKey {
     private long validAfter;
     private long validBefore;
 
-    private Map<String, String> criticalOptions; // Map to hold critical options as key-value pairs
-    private Map<String, String> extensions; // Map to hold extensions as key-value pairs
+    private HashMap<String, String>
+            criticalOptions; // Map to hold critical options as key-value pairs
+    private HashMap<String, String> extensions; // Map to hold extensions as key-value pairs
 
     public CustomCertEcdsaPublicKey() {
         super();
@@ -51,6 +54,29 @@ public class CustomCertEcdsaPublicKey extends CustomEcPublicKey {
 
     public CustomCertEcdsaPublicKey(BigInteger x, BigInteger y, NamedEcGroup group) {
         super(x, y, group);
+    }
+
+    public CustomCertEcdsaPublicKey(CustomCertEcdsaPublicKey other) {
+        super(other);
+        serial = other.serial;
+        signature = other.signature != null ? other.signature.clone() : null;
+        signatureKey = other.signatureKey != null ? other.signatureKey.clone() : null;
+        certType = other.certType;
+        certformat = other.certformat;
+        keyId = other.keyId;
+        reserved = other.reserved;
+        validPrincipals = other.validPrincipals != null ? other.validPrincipals.clone() : null;
+        nonce = other.nonce != null ? other.nonce.clone() : null;
+        validAfter = other.validAfter;
+        validBefore = other.validBefore;
+        criticalOptions =
+                other.criticalOptions != null ? new HashMap<>(other.criticalOptions) : null;
+        extensions = other.extensions != null ? new HashMap<>(other.extensions) : null;
+    }
+
+    @Override
+    public CustomCertEcdsaPublicKey createCopy() {
+        return new CustomCertEcdsaPublicKey(this);
     }
 
     public void setCertFormat(String certformat) {
@@ -154,7 +180,7 @@ public class CustomCertEcdsaPublicKey extends CustomEcPublicKey {
         return criticalOptions;
     }
 
-    public void setCriticalOptions(Map<String, String> criticalOptions) {
+    public void setCriticalOptions(HashMap<String, String> criticalOptions) {
         this.criticalOptions = criticalOptions;
     }
 
@@ -163,7 +189,15 @@ public class CustomCertEcdsaPublicKey extends CustomEcPublicKey {
         return extensions;
     }
 
-    public void setExtensions(Map<String, String> extensions) {
+    public void setExtensions(HashMap<String, String> extensions) {
         this.extensions = extensions;
+    }
+
+    public static final CertEcdsaPublicKeySerializer SERIALIZER =
+            new CertEcdsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

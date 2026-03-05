@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenTunOpenSshMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,24 +17,23 @@ public class ChannelOpenTunOpenSshMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenTunOpenSshMessageSerializer(ChannelOpenTunOpenSshMessage message) {
-        super(message);
+    private static void serializeTunnelMode(
+            ChannelOpenTunOpenSshMessage object, SerializerStream output) {
+        LOGGER.debug("Tunnel mode: {}", object.getTunnelMode().getValue());
+        output.appendInt(object.getTunnelMode().getValue());
     }
 
-    private void serializeTunnelMode() {
-        LOGGER.debug("Tunnel mode: {}", message.getTunnelMode());
-        appendInt(message.getTunnelMode().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    private void serializeRemoteUnitNumber() {
-        LOGGER.debug("Remote unit number: {}", message.getRemoteUnitNumber());
-        appendInt(message.getRemoteUnitNumber().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeRemoteUnitNumber(
+            ChannelOpenTunOpenSshMessage object, SerializerStream output) {
+        LOGGER.debug("Remote unit number: {}", object.getRemoteUnitNumber().getValue());
+        output.appendInt(object.getRemoteUnitNumber().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeTunnelMode();
-        serializeRemoteUnitNumber();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenTunOpenSshMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeTunnelMode(object, output);
+        serializeRemoteUnitNumber(object, output);
     }
 }

@@ -40,8 +40,8 @@ public class ServiceAcceptMessageSerializerTest {
         ServiceAcceptMessage msg = new ServiceAcceptMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_SERVICE_ACCEPT);
         msg.setServiceName(providedServiceType.toString(), true);
-        ServiceAcceptMessageSerializer serializer = new ServiceAcceptMessageSerializer(msg);
+        ServiceAcceptMessageSerializer serializer = new ServiceAcceptMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

@@ -23,8 +23,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -116,11 +116,11 @@ public class PacketMacedCipher extends PacketCipher {
                             packet.getPadding().getValue()));
             encryptInner(packet);
             computations.setEncryptedPacketFields(
-                    Stream.of(
+                    new HashSet<>(
+                            Set.of(
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
-                                    BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                                    BinaryPacketField.PADDING)));
 
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
@@ -139,12 +139,12 @@ public class PacketMacedCipher extends PacketCipher {
                             packet.getPadding().getValue()));
             encryptInner(packet);
             computations.setEncryptedPacketFields(
-                    Stream.of(
+                    new HashSet<>(
+                            Set.of(
                                     BinaryPacketField.PACKET_LENGTH,
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
-                                    BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                                    BinaryPacketField.PADDING)));
 
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
@@ -213,7 +213,7 @@ public class PacketMacedCipher extends PacketCipher {
                 new DecryptionParser(
                         computations.getPlainPacketBytes().getValue(),
                         isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
-        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
@@ -223,11 +223,11 @@ public class PacketMacedCipher extends PacketCipher {
 
         if (isEncryptThenMac()) {
             computations.setEncryptedPacketFields(
-                    Stream.of(
+                    new HashSet<>(
+                            Set.of(
                                     BinaryPacketField.PADDING_LENGTH,
                                     BinaryPacketField.PAYLOAD,
-                                    BinaryPacketField.PADDING)
-                            .collect(Collectors.toSet()));
+                                    BinaryPacketField.PADDING)));
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
@@ -236,12 +236,12 @@ public class PacketMacedCipher extends PacketCipher {
                             packet.getCiphertext().getValue()));
         } else {
             computations.setEncryptedPacketFields(
-                    Stream.of(
+                    new HashSet<>(
+                            Set.of(
                                     BinaryPacketField.PACKET_LENGTH,
                                     BinaryPacketField.PADDING,
                                     BinaryPacketField.PAYLOAD,
-                                    BinaryPacketField.PADDING_LENGTH)
-                            .collect(Collectors.toSet()));
+                                    BinaryPacketField.PADDING_LENGTH)));
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(

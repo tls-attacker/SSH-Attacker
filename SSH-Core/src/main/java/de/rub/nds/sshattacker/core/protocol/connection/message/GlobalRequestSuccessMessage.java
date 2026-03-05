@@ -7,13 +7,66 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class GlobalRequestSuccessMessage extends ChannelMessage<GlobalRequestSuccessMessage> {
+public class GlobalRequestSuccessMessage extends SshMessage<GlobalRequestSuccessMessage> {
+
+    private ModifiableByteArray responseSpecificData;
+
+    public GlobalRequestSuccessMessage() {
+        super();
+    }
+
+    public GlobalRequestSuccessMessage(GlobalRequestSuccessMessage other) {
+        super(other);
+        responseSpecificData =
+                other.responseSpecificData != null ? other.responseSpecificData.createCopy() : null;
+    }
 
     @Override
-    public GlobalRequestSuccessMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestSuccessMessageHandler(context, this);
+    public GlobalRequestSuccessMessage createCopy() {
+        return new GlobalRequestSuccessMessage(this);
+    }
+
+    public ModifiableByteArray getResponseSpecificData() {
+        return responseSpecificData;
+    }
+
+    public void setResponseSpecificData(ModifiableByteArray responseSpecificData) {
+        this.responseSpecificData = responseSpecificData;
+    }
+
+    public void setResponseSpecificData(byte[] responseSpecificData) {
+        this.responseSpecificData =
+                ModifiableVariableFactory.safelySetValue(
+                        this.responseSpecificData, responseSpecificData);
+    }
+
+    public static final GlobalRequestSuccessMessageHandler HANDLER =
+            new GlobalRequestSuccessMessageHandler();
+
+    @Override
+    public GlobalRequestSuccessMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestSuccessMessageHandler.SERIALIZER.serialize(this);
     }
 }

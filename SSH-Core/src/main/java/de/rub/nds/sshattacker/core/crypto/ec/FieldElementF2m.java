@@ -29,6 +29,15 @@ public class FieldElementF2m extends FieldElement {
         super(data, modulus);
     }
 
+    public FieldElementF2m(FieldElementF2m other) {
+        super(other);
+    }
+
+    @Override
+    public FieldElementF2m createCopy() {
+        return new FieldElementF2m(this);
+    }
+
     @Override
     public FieldElement add(FieldElement element) {
         // Coefficients are added mod 2.

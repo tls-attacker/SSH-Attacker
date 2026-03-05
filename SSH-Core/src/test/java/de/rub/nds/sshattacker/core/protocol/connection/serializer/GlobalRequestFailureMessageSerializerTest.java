@@ -20,6 +20,6 @@ public class GlobalRequestFailureMessageSerializerTest {
         GlobalRequestFailureMessage msg = new GlobalRequestFailureMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_REQUEST_FAILURE);
         assertArrayEquals(
-                new byte[] {82}, new GlobalRequestFailureMessageSerializer(msg).serialize());
+                new byte[] {82}, new GlobalRequestFailureMessageSerializer().serialize(msg));
     }
 }

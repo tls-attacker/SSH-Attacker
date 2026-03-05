@@ -9,15 +9,35 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeRequestMessage> {
 
     private ModifiableInteger minimalGroupSize;
     private ModifiableInteger preferredGroupSize;
     private ModifiableInteger maximalGroupSize;
+
+    public DhGexKeyExchangeRequestMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeRequestMessage(DhGexKeyExchangeRequestMessage other) {
+        super(other);
+        minimalGroupSize =
+                other.minimalGroupSize != null ? other.minimalGroupSize.createCopy() : null;
+        preferredGroupSize =
+                other.preferredGroupSize != null ? other.preferredGroupSize.createCopy() : null;
+        maximalGroupSize =
+                other.maximalGroupSize != null ? other.maximalGroupSize.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeRequestMessage createCopy() {
+        return new DhGexKeyExchangeRequestMessage(this);
+    }
 
     public ModifiableInteger getMinimalGroupSize() {
         return minimalGroupSize;
@@ -59,8 +79,26 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
                 ModifiableVariableFactory.safelySetValue(this.maximalGroupSize, maximalGroupSize);
     }
 
+    public static final DhGexKeyExchangeRequestMessageHandler HANDLER =
+            new DhGexKeyExchangeRequestMessageHandler();
+
     @Override
-    public DhGexKeyExchangeRequestMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeRequestMessageHandler(context, this);
+    public DhGexKeyExchangeRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhGexKeyExchangeRequestMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DhGexKeyExchangeRequestMessageHandler.SERIALIZER.serialize(this);
     }
 }

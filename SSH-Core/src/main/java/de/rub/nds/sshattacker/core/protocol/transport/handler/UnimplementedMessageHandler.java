@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnimplementedMessagePreparator;
@@ -16,36 +16,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnimplementedMessageHandler extends SshMessageHandler<UnimplementedMessage> {
 
-    public UnimplementedMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UnimplementedMessageHandler(SshContext context, UnimplementedMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UnimplementedMessage object) {
         // TODO: Handle UnimplementedMessage
     }
 
     @Override
-    public UnimplementedMessageParser getParser(byte[] array) {
+    public UnimplementedMessageParser getParser(byte[] array, SshContext context) {
         return new UnimplementedMessageParser(array);
     }
 
     @Override
-    public UnimplementedMessageParser getParser(byte[] array, int startPosition) {
+    public UnimplementedMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UnimplementedMessageParser(array, startPosition);
     }
 
-    @Override
-    public UnimplementedMessagePreparator getPreparator() {
-        return new UnimplementedMessagePreparator(context.getChooser(), message);
-    }
+    public static final UnimplementedMessagePreparator PREPARATOR =
+            new UnimplementedMessagePreparator();
 
-    @Override
-    public UnimplementedMessageSerializer getSerializer() {
-        return new UnimplementedMessageSerializer(message);
-    }
+    public static final UnimplementedMessageSerializer SERIALIZER =
+            new UnimplementedMessageSerializer();
 }

@@ -12,10 +12,25 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnimplementedMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
     private ModifiableInteger sequenceNumber;
+
+    public UnimplementedMessage() {
+        super();
+    }
+
+    public UnimplementedMessage(UnimplementedMessage other) {
+        super(other);
+        sequenceNumber = other.sequenceNumber != null ? other.sequenceNumber.createCopy() : null;
+    }
+
+    @Override
+    public UnimplementedMessage createCopy() {
+        return new UnimplementedMessage(this);
+    }
 
     public ModifiableInteger getSequenceNumber() {
         return sequenceNumber;
@@ -30,8 +45,25 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
+    public static final UnimplementedMessageHandler HANDLER = new UnimplementedMessageHandler();
+
     @Override
-    public UnimplementedMessageHandler getHandler(SshContext context) {
-        return new UnimplementedMessageHandler(context, this);
+    public UnimplementedMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnimplementedMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UnimplementedMessageHandler.SERIALIZER.serialize(this);
     }
 }

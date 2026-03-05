@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,32 +26,39 @@ public class HybridKeyExchangeReplyMessageParser
     }
 
     private void parseHostKeyBytes() {
-        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key byte length{}", message.getHostKeyBytesLength());
-        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug(
-                "Host key bytes: {}",
-                ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+        int hostKeyBytesLength = parseIntField();
+        message.setHostKeyBytesLength(hostKeyBytesLength);
+        LOGGER.debug("Host key byte length {}", hostKeyBytesLength);
+        byte[] hostKeyBytes = parseByteArrayField(hostKeyBytesLength);
+        message.setHostKeyBytes(hostKeyBytes);
+        LOGGER.debug("Host key bytes: {}", () -> ArrayConverter.bytesToHexString(hostKeyBytes));
     }
 
-    private void parsePublicValues() {
-        message.setPublicValuesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Public values length: {}", message.getPublicValuesLength().getValue());
-        message.setPublicValues(parseByteArrayField(message.getPublicValuesLength().getValue()));
-        LOGGER.debug("Public values: {}", message.getPublicValues());
+    private void parseHybridKey() {
+        int length = parseIntField();
+        LOGGER.debug("ConcatenatedHybridKeys Length: {}", length);
+        message.setConcatenatedHybridKeysLength(length);
+
+        byte[] concatenatedHybridKeys = parseByteArrayField(length);
+        LOGGER.debug(
+                "ConcatenatedHybridKeys: {}",
+                () -> ArrayConverter.bytesToRawHexString(concatenatedHybridKeys));
+        message.setConcatenatedHybridKeys(concatenatedHybridKeys);
     }
 
     private void parseSignature() {
-        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: {}", message.getSignature());
+        int signatureLength = parseIntField();
+        message.setSignatureLength(signatureLength);
+        LOGGER.debug("Signature length: {}", signatureLength);
+        byte[] signature = parseByteArrayField(signatureLength);
+        message.setSignature(signature);
+        LOGGER.debug("Signature: {}", () -> ArrayConverter.bytesToRawHexString(signature));
     }
 
     @Override
     protected void parseMessageSpecificContents() {
         parseHostKeyBytes();
-        parsePublicValues();
+        parseHybridKey();
         parseSignature();
     }
 

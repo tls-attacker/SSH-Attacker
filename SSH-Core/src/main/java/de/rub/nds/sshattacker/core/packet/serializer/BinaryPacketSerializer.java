@@ -8,9 +8,9 @@
 package de.rub.nds.sshattacker.core.packet.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,46 +19,35 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final BinaryPacket binaryPacket;
-
-    public BinaryPacketSerializer(BinaryPacket binaryPacket) {
-        super();
-        this.binaryPacket = binaryPacket;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(BinaryPacket object, SerializerStream output) {
         LOGGER.debug("Serializing BinaryPacket to bytes:");
 
         Set<BinaryPacketField> encryptedFields =
-                binaryPacket.getComputations().getEncryptedPacketFields();
+                object.getComputations().getEncryptedPacketFields();
         if (!encryptedFields.contains(BinaryPacketField.PACKET_LENGTH)) {
-            appendInt(
-                    binaryPacket.getLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-            LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
+            Integer length = object.getLength().getValue();
+            LOGGER.debug("Packet length: {}", length);
+            output.appendInt(length);
         }
         if (!encryptedFields.contains(BinaryPacketField.PADDING_LENGTH)) {
-            appendByte(binaryPacket.getPaddingLength().getValue());
-            LOGGER.debug("Padding length: {}", binaryPacket.getPaddingLength().getValue());
+            Byte paddingLength = object.getPaddingLength().getValue();
+            LOGGER.debug("Padding length: {}", paddingLength);
+            output.appendByte(paddingLength);
         }
-        appendBytes(binaryPacket.getCiphertext().getValue());
-        LOGGER.debug(
-                "Ciphertext: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
-        if (!encryptedFields.contains(BinaryPacketField.PADDING)) {
-            appendBytes(binaryPacket.getPadding().getValue());
-            LOGGER.debug(
-                    "Padding: {}",
-                    ArrayConverter.bytesToHexString(binaryPacket.getPadding().getValue()));
-        }
-        appendBytes(binaryPacket.getMac().getValue());
-        LOGGER.debug(
-                "MAC / Authentication tag: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getMac().getValue()));
-
-        binaryPacket.setCompletePacketBytes(getAlreadySerialized());
+        byte[] ciphertext = object.getCiphertext().getValue();
         LOGGER.trace(
-                "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
+                "Complete payload bytes: {}",
+                () -> ArrayConverter.bytesToHexString(object.getPayload().getValue()));
+        LOGGER.debug("Ciphertext: {}", () -> ArrayConverter.bytesToHexString(ciphertext));
+        output.appendBytes(ciphertext);
+        if (!encryptedFields.contains(BinaryPacketField.PADDING)) {
+            byte[] padding = object.getPadding().getValue();
+            LOGGER.debug("Padding: {}", () -> ArrayConverter.bytesToHexString(padding));
+            output.appendBytes(padding);
+        }
+        byte[] mac = object.getMac().getValue();
+        LOGGER.debug("MAC / Authentication tag: {}", () -> ArrayConverter.bytesToHexString(mac));
+        output.appendBytes(mac);
     }
 }

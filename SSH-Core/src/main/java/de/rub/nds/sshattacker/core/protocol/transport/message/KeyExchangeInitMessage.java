@@ -17,9 +17,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
@@ -46,6 +46,105 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     private ModifiableString languagesServerToClient;
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
+
+    public KeyExchangeInitMessage() {
+        super();
+    }
+
+    public KeyExchangeInitMessage(KeyExchangeInitMessage other) {
+        super(other);
+        cookie = other.cookie != null ? other.cookie.createCopy() : null;
+        keyExchangeAlgorithmsLength =
+                other.keyExchangeAlgorithmsLength != null
+                        ? other.keyExchangeAlgorithmsLength.createCopy()
+                        : null;
+        keyExchangeAlgorithms =
+                other.keyExchangeAlgorithms != null
+                        ? other.keyExchangeAlgorithms.createCopy()
+                        : null;
+        serverHostKeyAlgorithmsLength =
+                other.serverHostKeyAlgorithmsLength != null
+                        ? other.serverHostKeyAlgorithmsLength.createCopy()
+                        : null;
+        serverHostKeyAlgorithms =
+                other.serverHostKeyAlgorithms != null
+                        ? other.serverHostKeyAlgorithms.createCopy()
+                        : null;
+        encryptionAlgorithmsClientToServerLength =
+                other.encryptionAlgorithmsClientToServerLength != null
+                        ? other.encryptionAlgorithmsClientToServerLength.createCopy()
+                        : null;
+        encryptionAlgorithmsClientToServer =
+                other.encryptionAlgorithmsClientToServer != null
+                        ? other.encryptionAlgorithmsClientToServer.createCopy()
+                        : null;
+        encryptionAlgorithmsServerToClientLength =
+                other.encryptionAlgorithmsServerToClientLength != null
+                        ? other.encryptionAlgorithmsServerToClientLength.createCopy()
+                        : null;
+        encryptionAlgorithmsServerToClient =
+                other.encryptionAlgorithmsServerToClient != null
+                        ? other.encryptionAlgorithmsServerToClient.createCopy()
+                        : null;
+        macAlgorithmsClientToServerLength =
+                other.macAlgorithmsClientToServerLength != null
+                        ? other.macAlgorithmsClientToServerLength.createCopy()
+                        : null;
+        macAlgorithmsClientToServer =
+                other.macAlgorithmsClientToServer != null
+                        ? other.macAlgorithmsClientToServer.createCopy()
+                        : null;
+        macAlgorithmsServerToClientLength =
+                other.macAlgorithmsServerToClientLength != null
+                        ? other.macAlgorithmsServerToClientLength.createCopy()
+                        : null;
+        macAlgorithmsServerToClient =
+                other.macAlgorithmsServerToClient != null
+                        ? other.macAlgorithmsServerToClient.createCopy()
+                        : null;
+        compressionMethodsClientToServerLength =
+                other.compressionMethodsClientToServerLength != null
+                        ? other.compressionMethodsClientToServerLength.createCopy()
+                        : null;
+        compressionMethodsClientToServer =
+                other.compressionMethodsClientToServer != null
+                        ? other.compressionMethodsClientToServer.createCopy()
+                        : null;
+        compressionMethodsServerToClientLength =
+                other.compressionMethodsServerToClientLength != null
+                        ? other.compressionMethodsServerToClientLength.createCopy()
+                        : null;
+        compressionMethodsServerToClient =
+                other.compressionMethodsServerToClient != null
+                        ? other.compressionMethodsServerToClient.createCopy()
+                        : null;
+        languagesClientToServerLength =
+                other.languagesClientToServerLength != null
+                        ? other.languagesClientToServerLength.createCopy()
+                        : null;
+        languagesClientToServer =
+                other.languagesClientToServer != null
+                        ? other.languagesClientToServer.createCopy()
+                        : null;
+        languagesServerToClientLength =
+                other.languagesServerToClientLength != null
+                        ? other.languagesServerToClientLength.createCopy()
+                        : null;
+        languagesServerToClient =
+                other.languagesServerToClient != null
+                        ? other.languagesServerToClient.createCopy()
+                        : null;
+        firstKeyExchangePacketFollows =
+                other.firstKeyExchangePacketFollows != null
+                        ? other.firstKeyExchangePacketFollows.createCopy()
+                        : null;
+        reserved = other.reserved != null ? other.reserved.createCopy() : null;
+    }
+
+    @Override
+    public KeyExchangeInitMessage createCopy() {
+        return new KeyExchangeInitMessage(this);
+    }
 
     public ModifiableByteArray getCookie() {
         return cookie;
@@ -120,18 +219,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setKeyExchangeAlgorithms(
             String[] keyExchangeAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, keyExchangeAlgorithms);
-        setKeyExchangeAlgorithms(nameList, adjustLengthField);
+        setKeyExchangeAlgorithms(
+                Converter.listOfNamesToString(keyExchangeAlgorithms), adjustLengthField);
     }
 
     public void setKeyExchangeAlgorithms(
             List<KeyExchangeAlgorithm> keyExchangeAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                keyExchangeAlgorithms.stream()
-                        .map(KeyExchangeAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setKeyExchangeAlgorithms(nameList, adjustLengthField);
+        setKeyExchangeAlgorithms(
+                Converter.listOfNamesToString(keyExchangeAlgorithms), adjustLengthField);
     }
 
     public ModifiableInteger getServerHostKeyAlgorithmsLength() {
@@ -196,18 +291,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setServerHostKeyAlgorithms(
             String[] serverHostKeyAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, serverHostKeyAlgorithms);
-        setServerHostKeyAlgorithms(nameList, adjustLengthField);
+        setServerHostKeyAlgorithms(
+                Converter.listOfNamesToString(serverHostKeyAlgorithms), adjustLengthField);
     }
 
     public void setServerHostKeyAlgorithms(
             List<PublicKeyAlgorithm> serverHostKeyAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                serverHostKeyAlgorithms.stream()
-                        .map(PublicKeyAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setServerHostKeyAlgorithms(nameList, adjustLengthField);
+        setServerHostKeyAlgorithms(
+                Converter.listOfNamesToString(serverHostKeyAlgorithms), adjustLengthField);
     }
 
     public ModifiableInteger getEncryptionAlgorithmsClientToServerLength() {
@@ -278,20 +369,17 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setEncryptionAlgorithmsClientToServer(
             String[] encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsClientToServer);
-        setEncryptionAlgorithmsClientToServer(nameList, adjustLengthField);
+        setEncryptionAlgorithmsClientToServer(
+                Converter.listOfNamesToString(encryptionAlgorithmsClientToServer),
+                adjustLengthField);
     }
 
     public void setEncryptionAlgorithmsClientToServer(
             List<EncryptionAlgorithm> encryptionAlgorithmsClientToServer,
             boolean adjustLengthField) {
-        String nameList =
-                encryptionAlgorithmsClientToServer.stream()
-                        .map(EncryptionAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setEncryptionAlgorithmsClientToServer(nameList, adjustLengthField);
+        setEncryptionAlgorithmsClientToServer(
+                Converter.listOfNamesToString(encryptionAlgorithmsClientToServer),
+                adjustLengthField);
     }
 
     public ModifiableInteger getEncryptionAlgorithmsServerToClientLength() {
@@ -362,20 +450,17 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setEncryptionAlgorithmsServerToClient(
             String[] encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsServerToClient);
-        setEncryptionAlgorithmsServerToClient(nameList, adjustLengthField);
+        setEncryptionAlgorithmsServerToClient(
+                Converter.listOfNamesToString(encryptionAlgorithmsServerToClient),
+                adjustLengthField);
     }
 
     public void setEncryptionAlgorithmsServerToClient(
             List<EncryptionAlgorithm> encryptionAlgorithmsServerToClient,
             boolean adjustLengthField) {
-        String nameList =
-                encryptionAlgorithmsServerToClient.stream()
-                        .map(EncryptionAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setEncryptionAlgorithmsServerToClient(nameList, adjustLengthField);
+        setEncryptionAlgorithmsServerToClient(
+                Converter.listOfNamesToString(encryptionAlgorithmsServerToClient),
+                adjustLengthField);
     }
 
     public ModifiableInteger getMacAlgorithmsClientToServerLength() {
@@ -441,18 +526,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setMacAlgorithmsClientToServer(
             String[] macAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsClientToServer);
-        setMacAlgorithmsClientToServer(nameList, adjustLengthField);
+        setMacAlgorithmsClientToServer(
+                Converter.listOfNamesToString(macAlgorithmsClientToServer), adjustLengthField);
     }
 
     public void setMacAlgorithmsClientToServer(
             List<MacAlgorithm> macAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                macAlgorithmsClientToServer.stream()
-                        .map(MacAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setMacAlgorithmsClientToServer(nameList, adjustLengthField);
+        setMacAlgorithmsClientToServer(
+                Converter.listOfNamesToString(macAlgorithmsClientToServer), adjustLengthField);
     }
 
     public ModifiableInteger getMacAlgorithmsServerToClientLength() {
@@ -518,18 +599,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setMacAlgorithmsServerToClient(
             String[] macAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsServerToClient);
-        setMacAlgorithmsServerToClient(nameList, adjustLengthField);
+        setMacAlgorithmsServerToClient(
+                Converter.listOfNamesToString(macAlgorithmsServerToClient), adjustLengthField);
     }
 
     public void setMacAlgorithmsServerToClient(
             List<MacAlgorithm> macAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                macAlgorithmsServerToClient.stream()
-                        .map(MacAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setMacAlgorithmsServerToClient(nameList, adjustLengthField);
+        setMacAlgorithmsServerToClient(
+                Converter.listOfNamesToString(macAlgorithmsServerToClient), adjustLengthField);
     }
 
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
@@ -599,19 +676,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setCompressionMethodsClientToServer(
             String[] compressionMethodsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsClientToServer);
-        setCompressionMethodsClientToServer(nameList, adjustLengthField);
+        setCompressionMethodsClientToServer(
+                Converter.listOfNamesToString(compressionMethodsClientToServer), adjustLengthField);
     }
 
     public void setCompressionMethodsClientToServer(
             List<CompressionMethod> compressionMethodsClientToServer, boolean adjustLengthField) {
-        String nameList =
-                compressionMethodsClientToServer.stream()
-                        .map(CompressionMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionMethodsClientToServer(nameList, adjustLengthField);
+        setCompressionMethodsClientToServer(
+                Converter.listOfNamesToString(compressionMethodsClientToServer), adjustLengthField);
     }
 
     public ModifiableInteger getCompressionMethodsServerToClientLength() {
@@ -681,19 +753,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setCompressionMethodsServerToClient(
             String[] compressionMethodsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsServerToClient);
-        setCompressionMethodsServerToClient(nameList, adjustLengthField);
+        setCompressionMethodsServerToClient(
+                Converter.listOfNamesToString(compressionMethodsServerToClient), adjustLengthField);
     }
 
     public void setCompressionMethodsServerToClient(
             List<CompressionMethod> compressionMethodsServerToClient, boolean adjustLengthField) {
-        String nameList =
-                compressionMethodsServerToClient.stream()
-                        .map(CompressionMethod::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionMethodsServerToClient(nameList, adjustLengthField);
+        setCompressionMethodsServerToClient(
+                Converter.listOfNamesToString(compressionMethodsServerToClient), adjustLengthField);
     }
 
     public ModifiableInteger getLanguagesClientToServerLength() {
@@ -726,6 +793,10 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setLanguagesClientToServer(languagesClientToServer, false);
     }
 
+    public void setLanguagesClientToServer(List<LanguageTag> languagesClientToServer) {
+        setLanguagesClientToServer(languagesClientToServer, false);
+    }
+
     public void setLanguagesClientToServer(
             ModifiableString languagesClientToServer, boolean adjustLengthField) {
         this.languagesClientToServer = languagesClientToServer;
@@ -754,9 +825,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setLanguagesClientToServer(
             String[] languagesClientToServer, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesClientToServer);
-        setLanguagesClientToServer(nameList, adjustLengthField);
+        setLanguagesClientToServer(
+                Converter.listOfNamesToString(languagesClientToServer), adjustLengthField);
+    }
+
+    public void setLanguagesClientToServer(
+            List<LanguageTag> languagesClientToServer, boolean adjustLengthField) {
+        setLanguagesClientToServer(
+                Converter.listOfNamesToString(languagesClientToServer), adjustLengthField);
     }
 
     public ModifiableInteger getLanguagesServerToClientLength() {
@@ -789,6 +865,10 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setLanguagesServerToClient(languagesServerToClient, false);
     }
 
+    public void setLanguagesServerToClient(List<LanguageTag> languagesServerToClient) {
+        setLanguagesServerToClient(languagesServerToClient, false);
+    }
+
     public void setLanguagesServerToClient(
             ModifiableString languagesServerToClient, boolean adjustLengthField) {
         this.languagesServerToClient = languagesServerToClient;
@@ -817,9 +897,14 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setLanguagesServerToClient(
             String[] languagesServerToClient, boolean adjustLengthField) {
-        String nameList =
-                String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesServerToClient);
-        setLanguagesServerToClient(nameList, adjustLengthField);
+        setLanguagesServerToClient(
+                Converter.listOfNamesToString(languagesServerToClient), adjustLengthField);
+    }
+
+    public void setLanguagesServerToClient(
+            List<LanguageTag> languagesServerToClient, boolean adjustLengthField) {
+        setLanguagesServerToClient(
+                Converter.listOfNamesToString(languagesServerToClient), adjustLengthField);
     }
 
     public ModifiableByte getFirstKeyExchangePacketFollows() {
@@ -855,8 +940,25 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         this.reserved = ModifiableVariableFactory.safelySetValue(this.reserved, reserved);
     }
 
+    public static final KeyExchangeInitMessageHandler HANDLER = new KeyExchangeInitMessageHandler();
+
     @Override
-    public KeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new KeyExchangeInitMessageHandler(context, this);
+    public KeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        KeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return KeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
     }
 }

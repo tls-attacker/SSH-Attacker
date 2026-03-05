@@ -31,10 +31,9 @@ public class GlobalRequestHostKeysOpenSshMessageParser
     }
 
     private void parseHostKeys() {
-        message.setHostKeys(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "Host keys blob: {}",
-                ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
+        byte[] hostKeys = parseByteArrayField(getBytesLeft());
+        message.setHostKeys(hostKeys);
+        LOGGER.debug("HostKeys blob: {}", () -> ArrayConverter.bytesToRawHexString(hostKeys));
     }
 
     @Override

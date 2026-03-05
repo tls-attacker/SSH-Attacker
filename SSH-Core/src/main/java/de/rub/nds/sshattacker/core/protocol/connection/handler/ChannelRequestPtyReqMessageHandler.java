@@ -7,51 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyReqMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestPtyReqMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestPtyReqMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestPtyReqMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestPtyReqMessageHandler
-        extends SshMessageHandler<ChannelRequestPtyReqMessage> {
-
-    public ChannelRequestPtyReqMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestPtyReqMessageHandler(
-            SshContext context, ChannelRequestPtyReqMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestPtyReqMessage> {
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelRequestPtyReqMessage
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestPtyReqMessageParser getParser(byte[] array) {
+    public ChannelRequestPtyReqMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelRequestPtyReqMessageParser(array);
     }
 
     @Override
-    public ChannelRequestPtyReqMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelRequestPtyReqMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestPtyReqMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestPtyReqMessagePreparator getPreparator() {
-        return new ChannelRequestPtyReqMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelRequestPtyReqMessagePreparator PREPARATOR =
+            new ChannelRequestPtyReqMessagePreparator();
 
-    @Override
-    public ChannelRequestPtyReqMessageSerializer getSerializer() {
-        return new ChannelRequestPtyReqMessageSerializer(message);
-    }
+    public static final ChannelRequestPtyReqMessageSerializer SERIALIZER =
+            new ChannelRequestPtyReqMessageSerializer();
 }

@@ -10,9 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEowOpenSshMessage;
 
 public class ChannelRequestEowOpenSshMessageSerializer
-        extends ChannelRequestMessageSerializer<ChannelRequestEowOpenSshMessage> {
-
-    public ChannelRequestEowOpenSshMessageSerializer(ChannelRequestEowOpenSshMessage message) {
-        super(message);
-    }
-}
+        extends ChannelRequestMessageSerializer<ChannelRequestEowOpenSshMessage> {}

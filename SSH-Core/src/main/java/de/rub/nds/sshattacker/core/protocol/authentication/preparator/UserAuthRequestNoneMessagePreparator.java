@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthRequestNoneMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthRequestNoneMessage> {
 
-    public UserAuthRequestNoneMessagePreparator(
-            Chooser chooser, UserAuthRequestNoneMessage message) {
-        super(chooser, message, AuthenticationMethod.NONE);
+    public UserAuthRequestNoneMessagePreparator() {
+        super(AuthenticationMethod.NONE);
     }
 
     @Override
-    public void prepareUserAuthRequestSpecificContents() {}
+    protected void prepareUserAuthRequestSpecificContents(
+            UserAuthRequestNoneMessage object, Chooser chooser) {}
 }

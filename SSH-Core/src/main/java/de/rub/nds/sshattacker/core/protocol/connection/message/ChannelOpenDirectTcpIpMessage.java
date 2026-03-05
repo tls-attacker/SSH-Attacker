@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenDirectTcpIpMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenDirectTcpIpMessage
@@ -137,8 +138,50 @@ public class ChannelOpenDirectTcpIpMessage
                 ModifiableVariableFactory.safelySetValue(this.originatorPort, originatorPort);
     }
 
+    public ChannelOpenDirectTcpIpMessage() {
+        super();
+    }
+
+    public ChannelOpenDirectTcpIpMessage(ChannelOpenDirectTcpIpMessage other) {
+        super(other);
+        hostToConnectLength =
+                other.hostToConnectLength != null ? other.hostToConnectLength.createCopy() : null;
+        hostToConnect = other.hostToConnect != null ? other.hostToConnect.createCopy() : null;
+        portToConnect = other.portToConnect != null ? other.portToConnect.createCopy() : null;
+        originatorAddressLength =
+                other.originatorAddressLength != null
+                        ? other.originatorAddressLength.createCopy()
+                        : null;
+        originatorAddress =
+                other.originatorAddress != null ? other.originatorAddress.createCopy() : null;
+        originatorPort = other.originatorPort != null ? other.originatorPort.createCopy() : null;
+    }
+
     @Override
-    public ChannelOpenDirectTcpIpMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenDirectTcpIpMessageHandler(context, this);
+    public ChannelOpenDirectTcpIpMessage createCopy() {
+        return new ChannelOpenDirectTcpIpMessage(this);
+    }
+
+    public static final ChannelOpenDirectTcpIpMessageHandler HANDLER =
+            new ChannelOpenDirectTcpIpMessageHandler();
+
+    @Override
+    public ChannelOpenDirectTcpIpMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenDirectTcpIpMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenDirectTcpIpMessageHandler.SERIALIZER.serialize(this);
     }
 }

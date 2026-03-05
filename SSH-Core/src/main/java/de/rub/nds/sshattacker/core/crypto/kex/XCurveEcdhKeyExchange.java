@@ -10,7 +10,9 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -118,6 +120,6 @@ public class XCurveEcdhKeyExchange
                 encodeSharedBytes ? new BigInteger(1, sharedBytes).toByteArray() : sharedBytes;
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 }

@@ -8,27 +8,28 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class DhGexKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeInitMessage> {
 
-    public DhGexKeyExchangeInitMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeInitMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
+    public DhGexKeyExchangeInitMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(
+            DhGexKeyExchangeInitMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateKeyPair();
-        getObject()
-                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
-        ExchangeHashInputHolder exchangeHash = chooser.getContext().getExchangeHashInputHolder();
-        exchangeHash.setDhGexClientPublicKey(getObject().getEphemeralPublicKey().getValue());
+        BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
+
+        object.setEphemeralPublicKey(pubKey, true);
+
+        chooser.getContext().getExchangeHashInputHolder().setDhGexClientPublicKey(pubKey);
     }
 }

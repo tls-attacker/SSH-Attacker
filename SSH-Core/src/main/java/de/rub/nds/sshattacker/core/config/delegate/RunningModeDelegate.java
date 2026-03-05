@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 public class RunningModeDelegate extends Delegate {
 
     @Parameter(
-            names = "-running_mode",
+            names = "--running-mode",
             description = "The mode for which the workflow trace should be prepared",
             converter = RunningModeConverter.class)
     private RunningModeType runningMode = RunningModeType.CLIENT;

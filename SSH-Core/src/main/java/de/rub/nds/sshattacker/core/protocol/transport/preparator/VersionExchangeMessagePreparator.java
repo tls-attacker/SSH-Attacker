@@ -14,22 +14,18 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class VersionExchangeMessagePreparator
         extends ProtocolMessagePreparator<VersionExchangeMessage> {
 
-    public VersionExchangeMessagePreparator(Chooser chooser, VersionExchangeMessage message) {
-        super(chooser, message);
-    }
-
     @Override
-    public void prepareProtocolMessageContents() {
+    protected void prepareProtocolMessageContents(VersionExchangeMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
-            getObject().setVersion(chooser.getClientVersion());
-            getObject().setComment(chooser.getClientComment());
-            getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInputHolder().setClientVersion(getObject());
+            object.setVersion(chooser.getClientVersion());
+            object.setComment(chooser.getClientComment());
+            object.setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
+            chooser.getContext().getExchangeHashInputHolder().setClientVersion(object);
         } else {
-            getObject().setVersion(chooser.getServerVersion());
-            getObject().setComment(chooser.getServerComment());
-            getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInputHolder().setServerVersion(getObject());
+            object.setVersion(chooser.getServerVersion());
+            object.setComment(chooser.getServerComment());
+            object.setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
+            chooser.getContext().getExchangeHashInputHolder().setServerVersion(object);
         }
     }
 }

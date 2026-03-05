@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestFailureMessagePreparator;
@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestFailureMessageHandler
         extends SshMessageHandler<GlobalRequestFailureMessage> {
 
-    public GlobalRequestFailureMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestFailureMessageHandler(
-            SshContext context, GlobalRequestFailureMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, GlobalRequestFailureMessage object) {
         // TODO: Handle RequestFailureMessage
     }
 
     @Override
-    public GlobalRequestFailureMessageParser getParser(byte[] array) {
+    public GlobalRequestFailureMessageParser getParser(byte[] array, SshContext context) {
         return new GlobalRequestFailureMessageParser(array);
     }
 
     @Override
-    public GlobalRequestFailureMessageParser getParser(byte[] array, int startPosition) {
+    public GlobalRequestFailureMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestFailureMessagePreparator getPreparator() {
-        return new GlobalRequestFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final GlobalRequestFailureMessagePreparator PREPARATOR =
+            new GlobalRequestFailureMessagePreparator();
 
-    @Override
-    public GlobalRequestFailureMessageSerializer getSerializer() {
-        return new GlobalRequestFailureMessageSerializer(message);
-    }
+    public static final GlobalRequestFailureMessageSerializer SERIALIZER =
+            new GlobalRequestFailureMessageSerializer();
 }

@@ -16,12 +16,12 @@ import org.apache.logging.log4j.Level;
 public class LogLevelConverter implements IStringConverter<Level> {
 
     @Override
-    public Level convert(String s) {
-        Level level = Level.toLevel(s);
+    public Level convert(String value) {
+        Level level = Level.toLevel(value, null);
         if (level == null) {
             throw new ParameterException(
                     "Value "
-                            + s
+                            + value
                             + " cannot be converted to a log4j level. "
                             + "Available values are: "
                             + Arrays.toString(Level.values()));

@@ -11,44 +11,31 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthReque
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthRequestPasswordMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthRequestPasswordMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthRequestPasswordMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthRequestPasswordMessageHandler
         extends SshMessageHandler<UserAuthRequestPasswordMessage> {
 
-    public UserAuthRequestPasswordMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestPasswordMessageHandler(
-            SshContext context, UserAuthRequestPasswordMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, UserAuthRequestPasswordMessage object) {
+        // TODO: Handle UserAuthRequestPasswordMessage
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle UserAuthPasswordMessage
-    }
-
-    @Override
-    public SshMessageParser<UserAuthRequestPasswordMessage> getParser(byte[] array) {
+    public UserAuthRequestPasswordMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthRequestPasswordMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<UserAuthRequestPasswordMessage> getParser(
-            byte[] array, int startPosition) {
+    public UserAuthRequestPasswordMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestPasswordMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestPasswordMessagePreparator getPreparator() {
-        return new UserAuthRequestPasswordMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthRequestPasswordMessagePreparator PREPARATOR =
+            new UserAuthRequestPasswordMessagePreparator();
 
-    @Override
-    public UserAuthRequestPasswordMessageSerializer getSerializer() {
-        return new UserAuthRequestPasswordMessageSerializer(message);
-    }
+    public static final UserAuthRequestPasswordMessageSerializer SERIALIZER =
+            new UserAuthRequestPasswordMessageSerializer();
 }

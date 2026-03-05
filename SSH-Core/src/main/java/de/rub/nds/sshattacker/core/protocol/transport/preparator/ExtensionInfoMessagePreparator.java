@@ -7,34 +7,25 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ExtensionInfoMessagePreparator extends SshMessagePreparator<ExtensionInfoMessage> {
 
-    public ExtensionInfoMessagePreparator(Chooser chooser, ExtensionInfoMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_EXT_INFO);
+    public ExtensionInfoMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_EXT_INFO);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(ExtensionInfoMessage object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
-            getObject().setExtensionCount(chooser.getClientSupportedExtensions().size());
-            getObject().setExtensions(chooser.getClientSupportedExtensions());
+            object.setExtensions(chooser.getClientSupportedExtensions(), true);
         } else {
-            getObject().setExtensionCount(chooser.getServerSupportedExtensions().size());
-            getObject().setExtensions(chooser.getServerSupportedExtensions());
+            object.setExtensions(chooser.getServerSupportedExtensions(), true);
         }
 
-        getObject()
-                .getExtensions()
-                .forEach(
-                        extension ->
-                                extension
-                                        .getHandler(chooser.getContext())
-                                        .getPreparator()
-                                        .prepare());
+        object.getExtensions().forEach(extension -> extension.prepare(chooser));
     }
 }

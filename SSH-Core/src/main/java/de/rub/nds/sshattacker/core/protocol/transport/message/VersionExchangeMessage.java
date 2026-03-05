@@ -13,12 +13,30 @@ import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
 
     private ModifiableString version;
     private ModifiableString comment;
     private ModifiableString endOfMessageSequence;
+
+    public VersionExchangeMessage() {
+        super();
+    }
+
+    public VersionExchangeMessage(VersionExchangeMessage other) {
+        super(other);
+        version = other.version != null ? other.version.createCopy() : null;
+        comment = other.comment != null ? other.comment.createCopy() : null;
+        endOfMessageSequence =
+                other.endOfMessageSequence != null ? other.endOfMessageSequence.createCopy() : null;
+    }
+
+    @Override
+    public VersionExchangeMessage createCopy() {
+        return new VersionExchangeMessage(this);
+    }
 
     public ModifiableString getVersion() {
         return version;
@@ -63,9 +81,26 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
                         this.endOfMessageSequence, endOfMessageSequence);
     }
 
+    public static final VersionExchangeMessageHandler HANDLER = new VersionExchangeMessageHandler();
+
     @Override
-    public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context, this);
+    public VersionExchangeMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        VersionExchangeMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return VersionExchangeMessageHandler.SERIALIZER.serialize(this);
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,30 +59,31 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 LOGGER.debug("Packet structure: Encrypt-and-MAC");
                 parseEAMPacket(binaryPacket);
             }
-            binaryPacket.setCompletePacketBytes(getAlreadyParsed());
 
-            LOGGER.trace(
-                    "Complete packet bytes: {}",
-                    ArrayConverter.bytesToHexString(
-                            binaryPacket.getCompletePacketBytes().getValue()));
-            LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
+            LOGGER.debug("Packet length: {}", () -> binaryPacket.getLength().getValue());
             if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
                 LOGGER.debug(
                         "Packet bytes: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        binaryPacket.getCiphertext().getValue()));
             } else {
                 LOGGER.debug(
                         "Encrypted packet bytes: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        binaryPacket.getCiphertext().getValue()));
             }
 
             if (activeDecryptCipher.getEncryptionAlgorithm().getMode() == EncryptionMode.GCM) {
                 LOGGER.debug(
                         "Authentication tag: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+                        () -> ArrayConverter.bytesToHexString(binaryPacket.getMac()));
             } else {
                 if (binaryPacket.getMac().getValue().length > 0) {
-                    LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+                    LOGGER.debug(
+                            "MAC: {}",
+                            () -> ArrayConverter.bytesToHexString(binaryPacket.getMac()));
                 } else {
                     LOGGER.debug("MAC: [empty]");
                 }
@@ -100,7 +102,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = packet_length
          *  byte[m] auth_tag        ; m = length of authentication tag
          */
-        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        binaryPacket.setLength(parseIntField());
         binaryPacket.setCiphertext(parseByteArrayField(binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getEncryptionAlgorithm().getAuthTagSize()));
@@ -140,7 +142,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = packet_length
          *  byte[m] mac             ; m = length of mac output
          */
-        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        binaryPacket.setLength(parseIntField());
         binaryPacket.setCiphertext(parseByteArrayField(binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
@@ -179,7 +181,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
-                ArrayConverter.bytesToInt(
+                Converter.fourBytesToInt(
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(

@@ -50,9 +50,8 @@ public class ChannelOpenFailureMessageSerializerTest {
         msg.setReasonCode(providedReasonCode);
         msg.setReason(providedReason, true);
         msg.setLanguageTag(providedLanguageTag, true);
-        ChannelOpenFailureMessageSerializer serializer =
-                new ChannelOpenFailureMessageSerializer(msg);
+        ChannelOpenFailureMessageSerializer serializer = new ChannelOpenFailureMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

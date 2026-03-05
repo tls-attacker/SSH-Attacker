@@ -40,7 +40,7 @@ public class MessageLayer {
         } else {
             packet = new BinaryPacket();
         }
-        packet.setPayload(message.getHandler(context).getSerializer().serialize());
+        packet.setPayload(message.serialize());
         return packet;
     }
 

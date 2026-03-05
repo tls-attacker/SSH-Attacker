@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -34,26 +33,26 @@ public class ChannelOpenFailureMessageParser
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
+        message.setReasonCode(parseIntField());
         LOGGER.debug("Reason code: {}", message.getReasonCode());
     }
 
     private void parseReason() {
-        message.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Reason length: {}", message.getReasonLength());
-        message.setReason(
-                parseByteString(message.getReasonLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
+        int reasonLength = parseIntField();
+        message.setReasonLength(reasonLength);
+        LOGGER.debug("Reason length: {}", reasonLength);
+        String reason = parseByteString(reasonLength, StandardCharsets.UTF_8);
+        message.setReason(reason);
+        LOGGER.debug("Reason: {}", () -> backslashEscapeString(reason));
     }
 
     private void parseLanguageTag() {
-        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        message.setLanguageTag(
-                parseByteString(
-                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
+        int languageTagLength = parseIntField();
+        message.setLanguageTagLength(languageTagLength);
+        LOGGER.debug("Language tag length: {}", languageTagLength);
+        String languageTag = parseByteString(languageTagLength, StandardCharsets.US_ASCII);
+        message.setLanguageTag(languageTag);
+        LOGGER.debug("Language tag: {}", () -> backslashEscapeString(languageTag));
     }
 
     @Override

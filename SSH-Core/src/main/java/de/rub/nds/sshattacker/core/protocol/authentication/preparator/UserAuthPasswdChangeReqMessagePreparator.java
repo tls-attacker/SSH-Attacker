@@ -15,15 +15,15 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthPasswdChangeReqMessagePreparator
         extends SshMessagePreparator<UserAuthPasswdChangeReqMessage> {
 
-    public UserAuthPasswdChangeReqMessagePreparator(
-            Chooser chooser, UserAuthPasswdChangeReqMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_PASSWD_CHANGEREQ);
+    public UserAuthPasswdChangeReqMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_PASSWD_CHANGEREQ);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareMessageSpecificContents(
+            UserAuthPasswdChangeReqMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setPrompt("Please change your password", true);
-        getObject().setLanguageTag("en", true);
+        object.setPrompt("Please change your password", true);
+        object.setLanguageTag("en", true);
     }
 }

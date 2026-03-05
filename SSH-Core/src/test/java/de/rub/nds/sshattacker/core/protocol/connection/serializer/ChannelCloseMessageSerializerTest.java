@@ -39,9 +39,8 @@ public class ChannelCloseMessageSerializerTest {
         ChannelCloseMessage msg = new ChannelCloseMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_CLOSE);
         msg.setRecipientChannelId(providedRecipientChannelId);
-        ChannelMessageSerializer<ChannelCloseMessage> serializer =
-                new ChannelMessageSerializer<>(msg);
+        ChannelMessageSerializer<ChannelCloseMessage> serializer = new ChannelMessageSerializer<>();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

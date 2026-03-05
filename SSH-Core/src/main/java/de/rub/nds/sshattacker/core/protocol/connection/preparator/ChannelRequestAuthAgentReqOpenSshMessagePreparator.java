@@ -14,11 +14,11 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelRequestAuthAgentReqOpenSshMessagePreparator
         extends ChannelRequestMessagePreparator<ChannelRequestAuthAgentReqOpenSshMessage> {
 
-    public ChannelRequestAuthAgentReqOpenSshMessagePreparator(
-            Chooser chooser, ChannelRequestAuthAgentReqOpenSshMessage message) {
-        super(chooser, message, ChannelRequestType.AUTH_AGENT_REQ_OPENSSH_COM, true);
+    public ChannelRequestAuthAgentReqOpenSshMessagePreparator() {
+        super(ChannelRequestType.AUTH_AGENT_REQ_OPENSSH_COM, true);
     }
 
     @Override
-    public void prepareChannelRequestMessageSpecificContents() {}
+    protected void prepareChannelRequestMessageSpecificContents(
+            ChannelRequestAuthAgentReqOpenSshMessage object, Chooser chooser) {}
 }

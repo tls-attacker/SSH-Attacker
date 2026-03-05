@@ -14,31 +14,25 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class DelayCompressionExtensionPreparator
         extends AbstractExtensionPreparator<DelayCompressionExtension> {
 
-    public DelayCompressionExtensionPreparator(
-            Chooser chooser, DelayCompressionExtension extension) {
-        super(chooser, extension);
+    public DelayCompressionExtensionPreparator() {
+        super(Extension.DELAY_COMPRESSION);
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    protected void prepareExtensionSpecificContents(
+            DelayCompressionExtension object, Chooser chooser) {
         if (chooser.getContext().isClient()) {
-            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
-            getObject()
-                    .setCompressionMethodsClientToServer(
-                            chooser.getClientSupportedDelayCompressionMethods(), true);
-            getObject()
-                    .setCompressionMethodsServerToClient(
-                            chooser.getClientSupportedDelayCompressionMethods(), true);
-            chooser.getContext().setDelayCompressionExtensionSent(true);
+            object.setCompressionMethodsClientToServer(
+                    chooser.getClientSupportedDelayCompressionMethods(), true);
+            object.setCompressionMethodsServerToClient(
+                    chooser.getClientSupportedDelayCompressionMethods(), true);
+
         } else {
-            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
-            getObject()
-                    .setCompressionMethodsClientToServer(
-                            chooser.getServerSupportedDelayCompressionMethods(), true);
-            getObject()
-                    .setCompressionMethodsServerToClient(
-                            chooser.getServerSupportedDelayCompressionMethods(), true);
-            chooser.getContext().setDelayCompressionExtensionSent(true);
+            object.setCompressionMethodsClientToServer(
+                    chooser.getServerSupportedDelayCompressionMethods(), true);
+            object.setCompressionMethodsServerToClient(
+                    chooser.getServerSupportedDelayCompressionMethods(), true);
         }
+        object.setCompressionMethodsLength(object.computeCompressionMethodsLength());
     }
 }

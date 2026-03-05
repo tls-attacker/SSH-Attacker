@@ -17,39 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler
         extends SshMessageHandler<GlobalRequestCancelStreamlocalForwardOpenSshMessage> {
 
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler(
-            SshContext context, GlobalRequestCancelStreamlocalForwardOpenSshMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(
+            SshContext context, GlobalRequestCancelStreamlocalForwardOpenSshMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle GlobalRequestCancelStreamlocalForwardOpenSshMessage
-    }
-
-    @Override
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageParser getParser(byte[] array) {
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new GlobalRequestCancelStreamlocalForwardOpenSshMessageParser(array);
     }
 
     @Override
     public GlobalRequestCancelStreamlocalForwardOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestCancelStreamlocalForwardOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator getPreparator() {
-        return new GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator PREPARATOR =
+            new GlobalRequestCancelStreamlocalForwardOpenSshMessagePreparator();
 
-    @Override
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer getSerializer() {
-        return new GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer(message);
-    }
+    public static final GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer SERIALIZER =
+            new GlobalRequestCancelStreamlocalForwardOpenSshMessageSerializer();
 }

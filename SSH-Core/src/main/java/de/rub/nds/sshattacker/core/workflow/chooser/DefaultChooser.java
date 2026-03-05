@@ -14,10 +14,15 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.data.sftp.common.message.extension.SftpAbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationPromptEntry;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.holder.AuthenticationResponseEntry;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -380,7 +385,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for client to server communication supported by the client
      */
     @Override
-    public List<String> getClientSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getClientSupportedLanguagesClientToServer() {
         return context.getClientSupportedLanguagesClientToServer()
                 .orElse(config.getClientSupportedLanguagesClientToServer());
     }
@@ -394,7 +399,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for server to client communication supported by the client
      */
     @Override
-    public List<String> getClientSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getClientSupportedLanguagesServerToClient() {
         return context.getClientSupportedLanguagesServerToClient()
                 .orElse(config.getClientSupportedLanguagesServerToClient());
     }
@@ -408,7 +413,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for server to client communication supported by the server
      */
     @Override
-    public List<String> getServerSupportedLanguagesServerToClient() {
+    public List<LanguageTag> getServerSupportedLanguagesServerToClient() {
         return context.getServerSupportedLanguagesServerToClient()
                 .orElse(config.getServerSupportedLanguagesServerToClient());
     }
@@ -422,7 +427,7 @@ public class DefaultChooser extends Chooser {
      * @return A list of languages for client to server communication supported by the server
      */
     @Override
-    public List<String> getServerSupportedLanguagesClientToServer() {
+    public List<LanguageTag> getServerSupportedLanguagesClientToServer() {
         return context.getServerSupportedLanguagesClientToServer()
                 .orElse(config.getServerSupportedLanguagesClientToServer());
     }
@@ -491,7 +496,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of client supported extensions
      */
-    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getClientSupportedExtensions() {
         return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
     }
 
@@ -502,7 +507,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of server supported extensions
      */
-    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+    public ArrayList<AbstractExtension<?>> getServerSupportedExtensions() {
         return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
     }
 
@@ -627,9 +632,9 @@ public class DefaultChooser extends Chooser {
                                                             : getServerSupportedKeyExchangeAlgorithms()
                                                                     .getFirst());
                             // TODO: Determine whether updating the context here can be
-                            // considered
-                            // useful or disadvantageous (same for all negotiated algorithm
-                            // methods)
+                            //  considered
+                            //  useful or disadvantageous (same for all negotiated algorithm
+                            //  methods)
                             context.setKeyExchangeAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
@@ -1008,6 +1013,7 @@ public class DefaultChooser extends Chooser {
 
     // endregion
 
+    // region Authentication
     /**
      * Retrieves the primary authentication method from config. A context field for authentication
      * method does not yet exist as the authentication protocol is only implemented for SSH-Attacker
@@ -1018,5 +1024,100 @@ public class DefaultChooser extends Chooser {
     @Override
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
+    }
+
+    /**
+     * @return The next pre-configured authentication responses
+     */
+    @Override
+    public ArrayList<AuthenticationResponseEntry> getNextPreConfiguredAuthResponses() {
+        int nextIndex = context.getNextPreConfiguredAuthResponsesIndex();
+        if (nextIndex < config.getPreConfiguredAuthResponses().size()) {
+            ArrayList<AuthenticationResponseEntry> result =
+                    config.getPreConfiguredAuthResponses().get(nextIndex).getResponseEntries();
+            context.setNextPreConfiguredAuthResponsesIndex(nextIndex + 1);
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * @return The next pre-configured authentication prompt
+     */
+    @Override
+    public ArrayList<AuthenticationPromptEntry> getNextPreConfiguredAuthPrompts() {
+        int nextIndex = context.getNextPreConfiguredAuthPromptsIndex();
+        if (nextIndex < config.getPreConfiguredAuthPrompts().size()) {
+            ArrayList<AuthenticationPromptEntry> result =
+                    config.getPreConfiguredAuthPrompts().get(nextIndex).getPromptEntries();
+            context.setNextPreConfiguredAuthPromptsIndex(nextIndex + 1);
+            return result;
+        }
+        return null;
+    }
+
+    // endregion
+
+    // region SFTP
+    /**
+     * Retrieves the SFTP client version from context. If no version was received (i.e. out-of-order
+     * workflow or SSH-Attacker is running in client mode), the SFTP client version from config will
+     * be returned.
+     *
+     * @return The SFTP protocol version of the client
+     */
+    @Override
+    public Integer getSftpClientVersion() {
+        return context.getSftpClientVersion().orElse(config.getSftpClientVersion());
+    }
+
+    /**
+     * Retrieves the SFTP server version from context. If no version was received (i.e. out-of-order
+     * workflow or SSH-Attacker is running in server mode), the SFTP server version from config will
+     * be returned.
+     *
+     * @return The SFTP protocol version of the server
+     */
+    @Override
+    public Integer getSftpServerVersion() {
+        return context.getSftpServerVersion().orElse(config.getSftpServerVersion());
+    }
+
+    /**
+     * Retrieves the SFTP negotiated version from context. If no version was received (i.e.
+     * out-of-order workflow), the SFTP negotiated version from config will be returned.
+     *
+     * @return The SFTP negotiated protocol version
+     */
+    @Override
+    public Integer getSftpNegotiatedVersion() {
+        return context.getSftpNegotiatedVersion().orElse(config.getSftpNegotiatedVersion());
+    }
+
+    // endregion
+
+    // region SFTP Extensions
+    /**
+     * Retrieves the list of client supported SFTP extensions included in the clients SSH_FXP_INIT
+     * packet from context. If no SSH_FXP_INIT packet was received yet or SSH-Attacker is running in
+     * client mode, the extensions from config will be returned instead.
+     *
+     * @return List of client supported SFTP extensions
+     */
+    public ArrayList<SftpAbstractExtension<?>> getSftpClientSupportedExtensions() {
+        return context.getSftpClientSupportedExtensions()
+                .orElse(config.getSftpClientSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported SFTP extensions included in the servers
+     * SSH_FXP_VERSION packet from context. If no SSH_FXP_VERSION packet was received yet or
+     * SSH-Attacker is running in server mode, the extensions from config will be returned instead.
+     *
+     * @return List of server supported SFTP extensions
+     */
+    public ArrayList<SftpAbstractExtension<?>> getSftpServerSupportedExtensions() {
+        return context.getSftpServerSupportedExtensions()
+                .orElse(config.getSftpServerSupportedExtensions());
     }
 }

@@ -232,6 +232,6 @@ public class DhKeyExchange extends KeyAgreement<CustomDhPrivateKey, CustomDhPubl
                         .toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: {}",
-                ArrayConverter.bytesToRawHexString(sharedSecret));
+                () -> ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 }

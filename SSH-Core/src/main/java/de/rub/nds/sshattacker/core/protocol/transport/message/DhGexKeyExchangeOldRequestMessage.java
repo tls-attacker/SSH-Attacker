@@ -9,14 +9,30 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DhGexKeyExchangeOldRequestMessage
         extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
 
     private ModifiableInteger preferredGroupSize;
+
+    public DhGexKeyExchangeOldRequestMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeOldRequestMessage(DhGexKeyExchangeOldRequestMessage other) {
+        super(other);
+        preferredGroupSize =
+                other.preferredGroupSize != null ? other.preferredGroupSize.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeOldRequestMessage createCopy() {
+        return new DhGexKeyExchangeOldRequestMessage(this);
+    }
 
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;
@@ -32,8 +48,26 @@ public class DhGexKeyExchangeOldRequestMessage
                         this.preferredGroupSize, preferredGroupSize);
     }
 
+    public static final DhGexKeyExchangeOldRequestMessageHandler HANDLER =
+            new DhGexKeyExchangeOldRequestMessageHandler();
+
     @Override
-    public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeOldRequestMessageHandler(context, this);
+    public DhGexKeyExchangeOldRequestMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhGexKeyExchangeOldRequestMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DhGexKeyExchangeOldRequestMessageHandler.SERIALIZER.serialize(this);
     }
 }

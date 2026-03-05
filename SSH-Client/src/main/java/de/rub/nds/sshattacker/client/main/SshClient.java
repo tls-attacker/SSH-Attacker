@@ -40,6 +40,7 @@ public final class SshClient {
             try {
                 Config sshConfig = config.createConfig();
                 startSshClient(sshConfig);
+                sshConfig.storeConfig();
             } catch (Exception E) {
                 LOGGER.error(
                         "Encountered an uncaught Exception aborting. See debug for more info.", E);
@@ -57,6 +58,7 @@ public final class SshClient {
 
         try {
             workflowExecutor.executeWorkflow();
+            state.storeTrace();
         } catch (WorkflowExecutionException ex) {
             LOGGER.warn(
                     "The SSH protocol flow was not executed completely, follow the debug messages for more information.");

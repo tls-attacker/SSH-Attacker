@@ -15,12 +15,28 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestHostKeysProveOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 
 public class GlobalRequestHostKeysProveOpenSshMessage
         extends GlobalRequestMessage<GlobalRequestHostKeysProveOpenSshMessage> {
 
     private ModifiableByteArray hostKeys;
+
+    public GlobalRequestHostKeysProveOpenSshMessage() {
+        super();
+    }
+
+    public GlobalRequestHostKeysProveOpenSshMessage(
+            GlobalRequestHostKeysProveOpenSshMessage other) {
+        super(other);
+        hostKeys = other.hostKeys != null ? other.hostKeys.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestHostKeysProveOpenSshMessage createCopy() {
+        return new GlobalRequestHostKeysProveOpenSshMessage(this);
+    }
 
     public ModifiableByteArray getHostKeys() {
         return hostKeys;
@@ -39,9 +55,27 @@ public class GlobalRequestHostKeysProveOpenSshMessage
                 ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
     }
 
+    public static final GlobalRequestHostKeysProveOpenSshMessageHandler HANDLER =
+            new GlobalRequestHostKeysProveOpenSshMessageHandler();
+
     @Override
-    public GlobalRequestHostKeysProveOpenSshMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestHostKeysProveOpenSshMessageHandler(context, this);
+    public GlobalRequestHostKeysProveOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestHostKeysProveOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestHostKeysProveOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 
     /**

@@ -7,45 +7,54 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailureMessage> {
 
-    public ChannelFailureMessageHandler(SshContext context) {
-        super(context);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelFailureMessageHandler(SshContext context, ChannelFailureMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, ChannelFailureMessage object) {
+        Integer recipientChannelId = object.getRecipientChannelId().getValue();
+        Channel channel = context.getChannelManager().getChannelByLocalId(recipientChannelId);
+        if (channel != null) {
+            // Remove the failed request from the queue
+            if (channel.removeFirstSentRequestThatWantReply() == null) {
+                LOGGER.warn(
+                        "{} received but no channel request was send before on channel with id {}.",
+                        object.getClass().getSimpleName(),
+                        object.getRecipientChannelId().getValue());
+            }
+        } else {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, ignoring it.",
+                    object.getClass().getSimpleName(),
+                    object.getRecipientChannelId().getValue());
+        }
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelFailureMessage
-    }
-
-    @Override
-    public ChannelFailureMessageParser getParser(byte[] array) {
+    public ChannelFailureMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelFailureMessageParser(array);
     }
 
     @Override
-    public ChannelFailureMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelFailureMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelFailureMessagePreparator getPreparator() {
-        return new ChannelFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelFailureMessagePreparator PREPARATOR =
+            new ChannelFailureMessagePreparator();
 
-    @Override
-    public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(message);
-    }
+    public static final ChannelMessageSerializer<ChannelFailureMessage> SERIALIZER =
+            new ChannelMessageSerializer<>();
 }

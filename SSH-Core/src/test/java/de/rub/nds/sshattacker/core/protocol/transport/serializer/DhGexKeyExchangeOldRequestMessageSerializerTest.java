@@ -44,8 +44,8 @@ public class DhGexKeyExchangeOldRequestMessageSerializerTest {
         msg.setMessageId(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
         msg.setPreferredGroupSize(providedPreferredGroupSize);
         DhGexKeyExchangeOldRequestMessageSerializer serializer =
-                new DhGexKeyExchangeOldRequestMessageSerializer(msg);
+                new DhGexKeyExchangeOldRequestMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestTcpIpForwardMessage
@@ -20,6 +21,25 @@ public class GlobalRequestTcpIpForwardMessage
     private ModifiableInteger ipAddressToBindLength;
     private ModifiableString ipAddressToBind;
     private ModifiableInteger portToBind;
+
+    public GlobalRequestTcpIpForwardMessage() {
+        super();
+    }
+
+    public GlobalRequestTcpIpForwardMessage(GlobalRequestTcpIpForwardMessage other) {
+        super(other);
+        ipAddressToBindLength =
+                other.ipAddressToBindLength != null
+                        ? other.ipAddressToBindLength.createCopy()
+                        : null;
+        ipAddressToBind = other.ipAddressToBind != null ? other.ipAddressToBind.createCopy() : null;
+        portToBind = other.portToBind != null ? other.portToBind.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestTcpIpForwardMessage createCopy() {
+        return new GlobalRequestTcpIpForwardMessage(this);
+    }
 
     public ModifiableString getIpAddressToBind() {
         return ipAddressToBind;
@@ -73,12 +93,30 @@ public class GlobalRequestTcpIpForwardMessage
         this.portToBind = portToBind;
     }
 
-    public void setPortToBind(Integer portToBind) {
+    public void setPortToBind(int portToBind) {
         this.portToBind = ModifiableVariableFactory.safelySetValue(this.portToBind, portToBind);
     }
 
+    public static final GlobalRequestTcpIpForwardMessageHandler HANDLER =
+            new GlobalRequestTcpIpForwardMessageHandler();
+
     @Override
-    public GlobalRequestTcpIpForwardMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestTcpIpForwardMessageHandler(context, this);
+    public GlobalRequestTcpIpForwardMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestTcpIpForwardMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestTcpIpForwardMessageHandler.SERIALIZER.serialize(this);
     }
 }

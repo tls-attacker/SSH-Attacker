@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenDirectStreamlocalOpenSshMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -19,39 +19,36 @@ public class ChannelOpenDirectStreamlocalOpenSshMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenDirectStreamlocalOpenSshMessageSerializer(
-            ChannelOpenDirectStreamlocalOpenSshMessage message) {
-        super(message);
+    private static void serializeSocketPath(
+            ChannelOpenDirectStreamlocalOpenSshMessage object, SerializerStream output) {
+        LOGGER.debug("Socket path length: {}", object.getSocketPathLength().getValue());
+        output.appendInt(object.getSocketPathLength().getValue());
+        LOGGER.debug("Socket path: {}", object.getSocketPath().getValue());
+        output.appendString(object.getSocketPath().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeSocketPath() {
-        LOGGER.debug("Socket path length: {}", message.getSocketPathLength().getValue());
-        appendInt(message.getSocketPathLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Socket path: {}", message.getSocketPath().getValue());
-        appendString(message.getSocketPath().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeReservedString() {
-        LOGGER.debug("Reserved string length: {}", message.getReservedStringLength().getValue());
-        appendInt(
-                message.getReservedStringLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+    private static void serializeReservedString(
+            ChannelOpenDirectStreamlocalOpenSshMessage object, SerializerStream output) {
+        LOGGER.debug("Reserved string length: {}", object.getReservedStringLength().getValue());
+        output.appendInt(object.getReservedStringLength().getValue());
         LOGGER.debug(
                 "Reserved string: {}",
-                ArrayConverter.bytesToRawHexString(message.getReservedString().getValue()));
-        appendBytes(message.getReservedString().getValue());
+                () -> ArrayConverter.bytesToRawHexString(object.getReservedString().getValue()));
+        output.appendBytes(object.getReservedString().getValue());
     }
 
-    private void serializeReservedUint32() {
-        LOGGER.debug("Reserved uint32: {}", message.getReservedUint32().getValue());
-        appendInt(message.getReservedUint32().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeReservedUint32(
+            ChannelOpenDirectStreamlocalOpenSshMessage object, SerializerStream output) {
+        LOGGER.debug("Reserved uint32: {}", object.getReservedUint32().getValue());
+        output.appendInt(object.getReservedUint32().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeSocketPath();
-        serializeReservedString();
-        serializeReservedUint32();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenDirectStreamlocalOpenSshMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeSocketPath(object, output);
+        serializeReservedString(object, output);
+        serializeReservedUint32(object, output);
     }
 }

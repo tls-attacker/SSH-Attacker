@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenDirectStreamlocalOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenDirectStreamlocalOpenSshMessage
@@ -117,8 +118,47 @@ public class ChannelOpenDirectStreamlocalOpenSshMessage
                 ModifiableVariableFactory.safelySetValue(this.reservedUint32, reservedUint32);
     }
 
+    public ChannelOpenDirectStreamlocalOpenSshMessage() {
+        super();
+    }
+
+    public ChannelOpenDirectStreamlocalOpenSshMessage(
+            ChannelOpenDirectStreamlocalOpenSshMessage other) {
+        super(other);
+        socketPathLength =
+                other.socketPathLength != null ? other.socketPathLength.createCopy() : null;
+        socketPath = other.socketPath != null ? other.socketPath.createCopy() : null;
+        reservedStringLength =
+                other.reservedStringLength != null ? other.reservedStringLength.createCopy() : null;
+        reservedString = other.reservedString != null ? other.reservedString.createCopy() : null;
+        reservedUint32 = other.reservedUint32 != null ? other.reservedUint32.createCopy() : null;
+    }
+
     @Override
-    public ChannelOpenDirectStreamlocalOpenSshMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenDirectStreamlocalOpenSshMessageHandler(context, this);
+    public ChannelOpenDirectStreamlocalOpenSshMessage createCopy() {
+        return new ChannelOpenDirectStreamlocalOpenSshMessage(this);
+    }
+
+    public static final ChannelOpenDirectStreamlocalOpenSshMessageHandler HANDLER =
+            new ChannelOpenDirectStreamlocalOpenSshMessageHandler();
+
+    @Override
+    public ChannelOpenDirectStreamlocalOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenDirectStreamlocalOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenDirectStreamlocalOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelDataMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelDataMessagePreparator;
@@ -16,36 +16,22 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMessage> {
 
-    public ChannelDataMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelDataMessageHandler(SshContext context, ChannelDataMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(SshContext context, ChannelDataMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelDataMessage
-    }
-
-    @Override
-    public ChannelDataMessageParser getParser(byte[] array) {
+    public ChannelDataMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelDataMessageParser(array);
     }
 
     @Override
-    public ChannelDataMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelDataMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new ChannelDataMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelDataMessagePreparator getPreparator() {
-        return new ChannelDataMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelDataMessagePreparator PREPARATOR =
+            new ChannelDataMessagePreparator();
 
-    @Override
-    public ChannelDataMessageSerializer getSerializer() {
-        return new ChannelDataMessageSerializer(message);
-    }
+    public static final ChannelDataMessageSerializer SERIALIZER =
+            new ChannelDataMessageSerializer();
 }

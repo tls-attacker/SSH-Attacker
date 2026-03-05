@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -20,20 +20,20 @@ public class ChannelRequestExecMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExecMessageSerializer(ChannelRequestExecMessage message) {
-        super(message);
-    }
-
-    private void serializeCommand() {
-        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
-        appendInt(message.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Command: {}", backslashEscapeString(message.getCommand().getValue()));
-        appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);
+    private static void serializeCommand(
+            ChannelRequestExecMessage object, SerializerStream output) {
+        Integer commandLength = object.getCommandLength().getValue();
+        LOGGER.debug("Command length: {}", commandLength);
+        output.appendInt(commandLength);
+        String command = object.getCommand().getValue();
+        LOGGER.debug("Command: {}", () -> backslashEscapeString(command));
+        output.appendString(command, StandardCharsets.UTF_8);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeCommand();
+    protected void serializeMessageSpecificContents(
+            ChannelRequestExecMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeCommand(object, output);
     }
 }

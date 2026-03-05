@@ -12,35 +12,38 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 
 public class DhGexKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeReplyMessage> {
 
-    public DhGexKeyExchangeReplyMessagePreparator(
-            Chooser chooser, DhGexKeyExchangeReplyMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_DH_GEX_REPLY);
+    public DhGexKeyExchangeReplyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REPLY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
-        prepareEphemeralPublicKey();
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getDhGexKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+    protected void prepareMessageSpecificContents(
+            DhGexKeyExchangeReplyMessage object, Chooser chooser) {
+        SshContext context = chooser.getContext();
+        KeyExchangeUtil.prepareHostKeyMessage(context, object);
+        prepareEphemeralPublicKey(object, chooser);
+        KeyExchangeUtil.computeSharedSecret(context, chooser.getDhGexKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(context);
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(context, object);
+        KeyExchangeUtil.setSessionId(context);
+        KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void prepareEphemeralPublicKey() {
+    private static void prepareEphemeralPublicKey(
+            DhGexKeyExchangeReplyMessage object, Chooser chooser) {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateKeyPair();
-        getObject()
-                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
-        // Update exchange hash with local public key
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
+        BigInteger pubKey = keyExchange.getLocalKeyPair().getPublicKey().getY();
+
+        object.setEphemeralPublicKey(pubKey, true);
+
+        chooser.getContext().getExchangeHashInputHolder().setDhGexServerPublicKey(pubKey);
     }
 }

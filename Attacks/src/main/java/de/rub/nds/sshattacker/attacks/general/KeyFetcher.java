@@ -67,9 +67,7 @@ public final class KeyFetcher {
         } catch (IOException e) {
             if (attempt < maxAttempts) {
                 LOGGER.debug(
-                        String.format(
-                                "Encountered IOException on socket in attempt %d, retrying...",
-                                attempt));
+                        "Encountered IOException on socket in attempt {}, retrying...", attempt);
                 return fetchRsaTransientKey(config, attempt + 1, maxAttempts);
             } else {
                 LOGGER.warn("Could not fetch server's RSA host key, encountered IOException");
@@ -87,10 +85,7 @@ public final class KeyFetcher {
                     .getPublicKey();
         } else {
             if (attempt < maxAttempts) {
-                LOGGER.debug(
-                        String.format(
-                                "Did not receive PubkeyMessage in attempt %d, retrying...",
-                                attempt));
+                LOGGER.debug("Did not receive PubkeyMessage in attempt {}, retrying...", attempt);
                 return fetchRsaTransientKey(config, attempt + 1, maxAttempts);
             } else {
                 LOGGER.warn(

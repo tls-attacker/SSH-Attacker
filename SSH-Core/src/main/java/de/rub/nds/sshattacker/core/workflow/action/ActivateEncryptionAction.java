@@ -33,6 +33,15 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public ActivateEncryptionAction(ActivateEncryptionAction other) {
+        super(other);
+    }
+
+    @Override
+    public ActivateEncryptionAction createCopy() {
+        return new ActivateEncryptionAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
@@ -63,13 +72,25 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
             context.setReadSequenceNumber(0);
             context.setWriteSequenceNumber(0);
         }
+        setExecuted(true);
     }
 
     @Override
-    public void reset() {}
+    public void reset(boolean resetModifiableVariables) {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    @Override
+    public String toString() {
+        if (isExecuted()) {
+            return "ActivateEncryptionAction";
+        } else {
+            return "ActivateEncryptionAction (not executed)";
+        }
     }
 }

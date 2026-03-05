@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
@@ -105,7 +104,7 @@ public class RsaKeyExchange extends KeyEncapsulation<CustomRsaPublicKey> {
         AbstractCipher cipher = CipherFactory.getOaepCipher(hashFunction, privateKey);
         byte[] decryptedSharedSecret = cipher.decrypt(encapsulation);
         int sharedSecretLength =
-                ArrayConverter.bytesToInt(
+                Converter.fourBytesToInt(
                         Arrays.copyOfRange(
                                 decryptedSharedSecret, 0, DataFormatConstants.MPINT_SIZE_LENGTH));
         sharedSecret =

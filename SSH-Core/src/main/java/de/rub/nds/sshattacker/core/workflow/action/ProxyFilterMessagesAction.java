@@ -20,7 +20,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlTransient;
-import java.util.List;
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,11 +30,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
     // because sendMessages will contain filteredMessages, when storing the workflow trace, so it
     // would just make reading the trace more complicated
-    @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
-
-    public ProxyFilterMessagesAction() {
-        super();
-    }
+    @XmlTransient protected ArrayList<ProtocolMessage<?>> filteredMessages;
 
     /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
@@ -42,13 +38,30 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     }
 
     public ProxyFilterMessagesAction(
-            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
+            String receiveFromAlias,
+            String forwardToAlias,
+            ArrayList<ProtocolMessage<?>> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
     }
 
     public ProxyFilterMessagesAction(
             String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
+    }
+
+    public ProxyFilterMessagesAction(ProxyFilterMessagesAction other) {
+        super(other);
+        if (other.filteredMessages != null) {
+            filteredMessages = new ArrayList<>(other.filteredMessages.size());
+            for (ProtocolMessage<?> item : other.filteredMessages) {
+                filteredMessages.add(item != null ? item.createCopy() : null);
+            }
+        }
+    }
+
+    @Override
+    public ProxyFilterMessagesAction createCopy() {
+        return new ProxyFilterMessagesAction(this);
     }
 
     @Override
@@ -76,8 +89,10 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
                 "Forwarding messages ({}): {}",
                 forwardToAlias,
                 getReadableString(receivedMessages));
+        // TODO: Handle Data Messages correctly (e.g. prepare Channel Data Messages here, by
+        //  serialization of the received inner data message; or send only outer Data Message)
         MessageActionResult result =
-                SendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
+                SendMessageHelper.sendMessages(forwardToCtx, filteredMessages, false);
         sendMessages = result.getMessageList();
 
         if (executedAsPlanned) {
@@ -105,22 +120,20 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
     public static UserAuthRequestPublicKeyMessage filterUserAuthRequestPublicKeyMessage(
             SshContext forwardToCtx) {
-        UserAuthRequestPublicKeyMessage newMessage = new UserAuthRequestPublicKeyMessage();
+        UserAuthRequestPublicKeyMessage newPubkeyMessage = new UserAuthRequestPublicKeyMessage();
         UserAuthRequestPublicKeyMessagePreparator forwardContextPreparator =
-                new UserAuthRequestPublicKeyMessagePreparator(
-                        forwardToCtx.getChooser(), newMessage);
-        forwardContextPreparator.prepare();
-        return newMessage;
+                new UserAuthRequestPublicKeyMessagePreparator();
+        forwardContextPreparator.prepare(newPubkeyMessage, forwardToCtx.getChooser());
+        return newPubkeyMessage;
     }
 
     public static UserAuthRequestHostbasedMessage filterUserAuthRequestHostbasedMessage(
             SshContext forwardToCtx) {
-        UserAuthRequestHostbasedMessage newMessage = new UserAuthRequestHostbasedMessage();
+        UserAuthRequestHostbasedMessage newHostbasedMessage = new UserAuthRequestHostbasedMessage();
         UserAuthRequestHostbasedMessagePreparator forwardContextPreparator =
-                new UserAuthRequestHostbasedMessagePreparator(
-                        forwardToCtx.getChooser(), newMessage);
-        forwardContextPreparator.prepare();
-        return newMessage;
+                new UserAuthRequestHostbasedMessagePreparator();
+        forwardContextPreparator.prepare(newHostbasedMessage, forwardToCtx.getChooser());
+        return newHostbasedMessage;
     }
 
     public static UserAuthRequestPublicKeyHostboundOpenSshMessage
@@ -128,9 +141,8 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         UserAuthRequestPublicKeyHostboundOpenSshMessage newMessage =
                 new UserAuthRequestPublicKeyHostboundOpenSshMessage();
         UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator forwardContextPreparator =
-                new UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator(
-                        forwardToCtx.getChooser(), newMessage);
-        forwardContextPreparator.prepare();
+                new UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator();
+        forwardContextPreparator.prepare(newMessage, forwardToCtx.getChooser());
         return newMessage;
     }
 }

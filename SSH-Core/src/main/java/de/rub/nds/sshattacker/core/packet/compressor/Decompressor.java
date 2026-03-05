@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.compressor;
 
+import de.rub.nds.sshattacker.core.exceptions.DecompressionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,5 +15,5 @@ public abstract class Decompressor<T> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public abstract void decompress(T object);
+    public abstract void decompress(T object) throws DecompressionException;
 }

@@ -45,8 +45,8 @@ public class EcdhKeyExchangeInitMessageSerializerTest {
         msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
         msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         EcdhKeyExchangeInitMessageSerializer serializer =
-                new EcdhKeyExchangeInitMessageSerializer(msg);
+                new EcdhKeyExchangeInitMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

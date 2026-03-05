@@ -22,42 +22,31 @@ public class ServerSigAlgsExtensionHandler
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerSigAlgsExtensionHandler(SshContext context) {
-        super(context);
-    }
-
-    public ServerSigAlgsExtensionHandler(SshContext context, ServerSigAlgsExtension extension) {
-        super(context, extension);
-    }
-
     @Override
-    public ServerSigAlgsExtensionParser getParser(byte[] array) {
+    public ServerSigAlgsExtensionParser getParser(byte[] array, SshContext context) {
         return new ServerSigAlgsExtensionParser(array);
     }
 
     @Override
-    public ServerSigAlgsExtensionParser getParser(byte[] array, int startPosition) {
+    public ServerSigAlgsExtensionParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ServerSigAlgsExtensionParser(array, startPosition);
     }
 
-    @Override
-    public ServerSigAlgsExtensionPreparator getPreparator() {
-        return new ServerSigAlgsExtensionPreparator(context.getChooser(), extension);
-    }
+    public static final ServerSigAlgsExtensionPreparator PREPARATOR =
+            new ServerSigAlgsExtensionPreparator();
+
+    public static final ServerSigAlgsExtensionSerializer SERIALIZER =
+            new ServerSigAlgsExtensionSerializer();
 
     @Override
-    public ServerSigAlgsExtensionSerializer getSerializer() {
-        return new ServerSigAlgsExtensionSerializer(extension);
-    }
-
-    @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ServerSigAlgsExtension object) {
         // receiving "server-sig-algs" extension as a client -> context has to be updated
         if (context.isHandleAsClient()) {
             context.setServerSigAlgsExtensionReceivedFromServer(true);
             context.setServerSupportedPublicKeyAlgorithmsForAuthentication(
                     Converter.nameListToEnumValues(
-                            extension.getAcceptedPublicKeyAlgorithms().getValue(),
+                            object.getAcceptedPublicKeyAlgorithms().getValue(),
                             PublicKeyAlgorithm.class));
         }
         // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"

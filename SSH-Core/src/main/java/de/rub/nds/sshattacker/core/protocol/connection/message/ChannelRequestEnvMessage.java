@@ -10,11 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestEnvMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
+public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage>
+        implements HasSentHandler {
 
     private ModifiableInteger variableNameLength;
     private ModifiableString variableName;
@@ -33,6 +36,25 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         this.variableNameLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.variableNameLength, variableNameLength);
+    }
+
+    public ChannelRequestEnvMessage() {
+        super();
+    }
+
+    public ChannelRequestEnvMessage(ChannelRequestEnvMessage other) {
+        super(other);
+        variableName = other.variableName != null ? other.variableName.createCopy() : null;
+        variableNameLength =
+                other.variableNameLength != null ? other.variableNameLength.createCopy() : null;
+        variableValue = other.variableValue != null ? other.variableValue.createCopy() : null;
+        variableValueLength =
+                other.variableValueLength != null ? other.variableValueLength.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestEnvMessage createCopy() {
+        return new ChannelRequestEnvMessage(this);
     }
 
     public ModifiableString getVariableName() {
@@ -109,8 +131,31 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         }
     }
 
+    public static final ChannelRequestEnvMessageHandler HANDLER =
+            new ChannelRequestEnvMessageHandler();
+
     @Override
-    public ChannelRequestEnvMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestEnvMessageHandler(context, this);
+    public ChannelRequestEnvMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestEnvMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestEnvMessageHandler.SERIALIZER.serialize(this);
     }
 }

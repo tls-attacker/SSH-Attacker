@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthRequestPublicKeyHostboundOpenSshMessageHandler
         extends SshMessageHandler<UserAuthRequestPublicKeyHostboundOpenSshMessage> {
 
-    public UserAuthRequestPublicKeyHostboundOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestPublicKeyHostboundOpenSshMessageHandler(
-            SshContext context, UserAuthRequestPublicKeyHostboundOpenSshMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(
+            SshContext context, UserAuthRequestPublicKeyHostboundOpenSshMessage object) {}
 
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthRequestPublicKeyHostboundOpenSshMessageParser getParser(byte[] array) {
+    public UserAuthRequestPublicKeyHostboundOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new UserAuthRequestPublicKeyHostboundOpenSshMessageParser(array);
     }
 
     @Override
     public UserAuthRequestPublicKeyHostboundOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestPublicKeyHostboundOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator getPreparator() {
-        return new UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator PREPARATOR =
+            new UserAuthRequestPublicKeyHostboundOpenSshMessagePreparator();
 
-    @Override
-    public UserAuthRequestPublicKeyHostboundOpenSshMessageSerializer getSerializer() {
-        return new UserAuthRequestPublicKeyHostboundOpenSshMessageSerializer(message);
-    }
+    public static final UserAuthRequestPublicKeyHostboundOpenSshMessageSerializer SERIALIZER =
+            new UserAuthRequestPublicKeyHostboundOpenSshMessageSerializer();
 }

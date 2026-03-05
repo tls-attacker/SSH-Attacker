@@ -27,6 +27,15 @@ public class FieldElementFp extends FieldElement {
         super(null, null);
     }
 
+    public FieldElementFp(FieldElementFp other) {
+        super(other);
+    }
+
+    @Override
+    public FieldElementFp createCopy() {
+        return new FieldElementFp(this);
+    }
+
     @Override
     public FieldElement add(FieldElement element) {
         BigInteger tmp = getData().add(element.getData());

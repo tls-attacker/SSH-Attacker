@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomCertEcdsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -27,23 +28,17 @@ import org.apache.logging.log4j.Logger;
  */
 public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPublicKey> {
 
-    private final CustomCertEcdsaPublicKey publicKey;
     private static final Logger LOGGER = LogManager.getLogger(CertEcdsaPublicKeySerializer.class);
 
-    public CertEcdsaPublicKeySerializer(CustomCertEcdsaPublicKey publicKey) {
-        super();
-        this.publicKey = publicKey;
-    }
-
     @Override
-    protected void serializeBytes() {
+    protected void serializeBytes(CustomCertEcdsaPublicKey object, SerializerStream output) {
         // Add debugging information before serialization
         LOGGER.debug("Starting serialization of CertEcdsaPublicKey.");
-        LOGGER.debug("Curve Name: {}", publicKey.getGroup().getJavaName());
-        LOGGER.debug("Public Key: {}", publicKey.getWAsPoint());
-        LOGGER.debug("Nonce: {}", publicKey.getNonce());
-        LOGGER.debug("Signature Key: {}", publicKey.getSignatureKey());
-        LOGGER.debug("Signature: {}", publicKey.getSignature());
+        LOGGER.debug("Curve Name: {}", object.getGroup().getJavaName());
+        LOGGER.debug("Public Key: {}", object.getWAsPoint());
+        LOGGER.debug("Nonce: {}", object.getNonce());
+        LOGGER.debug("Signature Key: {}", object.getSignatureKey());
+        LOGGER.debug("Signature: {}", object.getSignature());
 
         /*
          * The ecdsa-sha2-nistp*-cert-v01@openssh.com format as specified in the SSH protocol:
@@ -65,38 +60,35 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
          */
 
         // Format identifier (ecdsa-sha2-nistp*-cert-v01@openssh.com)
-        NamedEcGroup curve = publicKey.getGroup();
+        NamedEcGroup curve = object.getGroup();
         switch (curve) {
             case SECP256R1:
-                appendInt(
+                output.appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
-                appendString(
+                                .length);
+                output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
                 break;
             case SECP384R1:
-                appendInt(
+                output.appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
-                appendString(
+                                .length);
+                output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
                 break;
             case SECP521R1:
-                appendInt(
+                output.appendInt(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM
                                 .toString()
                                 .getBytes(StandardCharsets.US_ASCII)
-                                .length,
-                        DataFormatConstants.STRING_SIZE_LENGTH);
-                appendString(
+                                .length);
+                output.appendString(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM.toString(),
                         StandardCharsets.US_ASCII);
                 break;
@@ -104,40 +96,30 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
                 throw new IllegalArgumentException("Unsupported curve: " + curve);
         }
         // Nonce
-        byte[] nonce = publicKey.getNonce();
-        appendInt(nonce.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendBytes(nonce);
+        output.appendLengthPrefixedBytes(object.getNonce());
 
         // Curve name
         // String curveName = publicKey.getCurveName();
-        appendInt(
-                curve.getIdentifier().getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(curve.getIdentifier(), StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedString(curve.getIdentifier(), StandardCharsets.US_ASCII);
 
         // Public Key (Q)
-        byte[] encodedQ =
+        output.appendLengthPrefixedBytes(
                 PointFormatter.formatToByteArray(
-                        publicKey.getGroup(), publicKey.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
-        appendInt(encodedQ.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendBytes(encodedQ);
+                        object.getGroup(), object.getWAsPoint(), EcPointFormat.UNCOMPRESSED));
 
         // Serial (uint64)
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getSerial()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getSerial()), DataFormatConstants.UINT64_SIZE);
 
         // Certificate type (uint32)
-        appendInt(Integer.parseInt(publicKey.getCertType()), DataFormatConstants.UINT32_SIZE);
+        output.appendInt(Integer.parseInt(object.getCertType()));
 
         // Key ID (string)
-        String keyId = publicKey.getKeyId();
-        appendInt(
-                keyId.getBytes(StandardCharsets.US_ASCII).length,
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(keyId, StandardCharsets.US_ASCII);
+        String keyId = object.getKeyId();
+        output.appendLengthPrefixedString(keyId, StandardCharsets.US_ASCII);
 
         // Valid Principals (string list)
-        String[] validPrincipals = publicKey.getValidPrincipals();
+        String[] validPrincipals = object.getValidPrincipals();
         if (validPrincipals != null && validPrincipals.length > 0) {
             // Append each principal as separate SSH strings, according to SSH format expectations
             ByteBuffer principalsBuffer =
@@ -152,82 +134,48 @@ public class CertEcdsaPublicKeySerializer extends Serializer<CustomCertEcdsaPubl
             principalsBuffer.flip();
             principalsBuffer.get(principalsSerialized);
 
-            appendInt(principalsSerialized.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(principalsSerialized);
+            output.appendLengthPrefixedBytes(principalsSerialized);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH); // Empty principals list
+            output.appendInt(0); // Empty principals list
         }
 
         // Valid After (uint64)
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getValidAfter()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getValidAfter()), DataFormatConstants.UINT64_SIZE);
 
         // Valid Before (uint64)
-        appendBigInteger(
-                BigInteger.valueOf(publicKey.getValidBefore()), DataFormatConstants.UINT64_SIZE);
+        output.appendBigInteger(
+                BigInteger.valueOf(object.getValidBefore()), DataFormatConstants.UINT64_SIZE);
 
         // Critical Options
-        Map<String, String> criticalOptions = publicKey.getCriticalOptions();
-        appendStringMap(criticalOptions);
+        Map<String, String> criticalOptions = object.getCriticalOptions();
+        PublicKeySerializerHelper.appendStringMap(criticalOptions, output);
 
         // Extensions
-        Map<String, String> extensions = publicKey.getExtensions();
-        appendStringMap(extensions);
+        Map<String, String> extensions = object.getExtensions();
+        PublicKeySerializerHelper.appendStringMap(extensions, output);
 
         // Reserved
-        String reserved = publicKey.getReserved();
+        String reserved = object.getReserved();
         if (reserved != null) {
             byte[] reservedBytes = reserved.getBytes(StandardCharsets.US_ASCII);
-            appendInt(reservedBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(reservedBytes);
+            output.appendLengthPrefixedBytes(reservedBytes);
         } else {
-            appendInt(0, DataFormatConstants.STRING_SIZE_LENGTH);
+            output.appendInt(0);
         }
 
         // Signature Key
-        byte[] signatureKey = publicKey.getSignatureKey();
+        byte[] signatureKey = object.getSignatureKey();
         if (signatureKey == null) {
             throw new IllegalStateException("Signature Key is not set in the publicKey");
         }
-        appendInt(signatureKey.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendBytes(signatureKey);
+        output.appendLengthPrefixedBytes(signatureKey);
 
         // Signature
-        byte[] signature = publicKey.getSignature();
+        byte[] signature = object.getSignature();
         if (signature == null) {
             throw new IllegalStateException("Signature is not set in the publicKey");
         }
-        appendInt(signature.length, DataFormatConstants.STRING_SIZE_LENGTH);
-        appendBytes(signature);
-    }
-
-    private void appendStringMap(Map<String, String> stringMap) {
-        if (stringMap != null && !stringMap.isEmpty()) {
-            StringBuilder optionsBuilder = new StringBuilder();
-            for (Map.Entry<String, String> entry : stringMap.entrySet()) {
-                optionsBuilder.append(serializeString(entry.getKey()));
-                optionsBuilder.append(serializeString(entry.getValue()));
-            }
-            byte[] optionsBytes = optionsBuilder.toString().getBytes(StandardCharsets.US_ASCII);
-            appendInt(optionsBytes.length, DataFormatConstants.STRING_SIZE_LENGTH);
-            appendBytes(optionsBytes);
-        } else {
-            appendInt(
-                    0,
-                    DataFormatConstants.STRING_SIZE_LENGTH); // Leeres Feld, wenn die Map leer ist
-        }
-    }
-
-    private static String serializeString(String value) {
-        byte[] valueBytes = value.getBytes(StandardCharsets.US_ASCII);
-        return buildStringWithLength(valueBytes);
-    }
-
-    private static String buildStringWithLength(byte[] valueBytes) {
-        return new String(
-                        ByteBuffer.allocate(DataFormatConstants.STRING_SIZE_LENGTH)
-                                .putInt(valueBytes.length)
-                                .array())
-                + new String(valueBytes, StandardCharsets.US_ASCII);
+        output.appendLengthPrefixedBytes(signature);
     }
 }

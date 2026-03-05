@@ -13,11 +13,27 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PingOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PingOpenSshMessage extends SshMessage<PingOpenSshMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public PingOpenSshMessage() {
+        super();
+    }
+
+    public PingOpenSshMessage(PingOpenSshMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PingOpenSshMessage createCopy() {
+        return new PingOpenSshMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -51,14 +67,31 @@ public class PingOpenSshMessage extends SshMessage<PingOpenSshMessage> {
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public static final PingOpenSshMessageHandler HANDLER = new PingOpenSshMessageHandler();
+
+    @Override
+    public PingOpenSshMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public PingOpenSshMessageHandler getHandler(SshContext context) {
-        return new PingOpenSshMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PingOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PingOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

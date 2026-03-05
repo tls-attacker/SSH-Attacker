@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends SshMessage<DebugMessage> {
@@ -24,6 +25,25 @@ public class DebugMessage extends SshMessage<DebugMessage> {
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public DebugMessage() {
+        super();
+    }
+
+    public DebugMessage(DebugMessage other) {
+        super(other);
+        alwaysDisplay = other.alwaysDisplay != null ? other.alwaysDisplay.createCopy() : null;
+        messageLength = other.messageLength != null ? other.messageLength.createCopy() : null;
+        message = other.message != null ? other.message.createCopy() : null;
+        languageTagLength =
+                other.languageTagLength != null ? other.languageTagLength.createCopy() : null;
+        languageTag = other.languageTag != null ? other.languageTag.createCopy() : null;
+    }
+
+    @Override
+    public DebugMessage createCopy() {
+        return new DebugMessage(this);
+    }
 
     public ModifiableByte getAlwaysDisplay() {
         return alwaysDisplay;
@@ -122,8 +142,25 @@ public class DebugMessage extends SshMessage<DebugMessage> {
         }
     }
 
+    public static final DebugMessageHandler HANDLER = new DebugMessageHandler();
+
     @Override
-    public DebugMessageHandler getHandler(SshContext context) {
-        return new DebugMessageHandler(context, this);
+    public DebugMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DebugMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DebugMessageHandler.SERIALIZER.serialize(this);
     }
 }

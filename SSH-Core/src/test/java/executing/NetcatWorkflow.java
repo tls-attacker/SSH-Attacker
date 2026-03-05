@@ -7,6 +7,7 @@
  */
 package executing;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
@@ -32,7 +33,6 @@ public final class NetcatWorkflow {
     // integration test
     public static void main(String[] args) throws Exception {
 
-        State state = new State();
         WorkflowTrace trace = new WorkflowTrace();
 
         SendAction sendClientInit = new SendAction("client", new VersionExchangeMessage());
@@ -76,7 +76,8 @@ public final class NetcatWorkflow {
         trace.addSshAction(sendChannelRequest);
         trace.addSshAction(receiveChannelResponse);
 
-        state.setWorkflowTrace(trace);
+        Config config = new Config();
+        State state = new State(config, trace);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();

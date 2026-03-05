@@ -17,39 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class GlobalRequestNoMoreSessionsOpenSshMessageHandler
         extends SshMessageHandler<GlobalRequestNoMoreSessionsOpenSshMessage> {
 
-    public GlobalRequestNoMoreSessionsOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public GlobalRequestNoMoreSessionsOpenSshMessageHandler(
-            SshContext context, GlobalRequestNoMoreSessionsOpenSshMessage message) {
-        super(context, message);
-    }
+    @Override
+    public void adjustContext(
+            SshContext context, GlobalRequestNoMoreSessionsOpenSshMessage object) {}
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle GlobalRequestNoMoreSessionsOpenSshMessage
-    }
-
-    @Override
-    public GlobalRequestNoMoreSessionsOpenSshMessageParser getParser(byte[] array) {
+    public GlobalRequestNoMoreSessionsOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new GlobalRequestNoMoreSessionsOpenSshMessageParser(array);
     }
 
     @Override
     public GlobalRequestNoMoreSessionsOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new GlobalRequestNoMoreSessionsOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public GlobalRequestNoMoreSessionsOpenSshMessagePreparator getPreparator() {
-        return new GlobalRequestNoMoreSessionsOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final GlobalRequestNoMoreSessionsOpenSshMessagePreparator PREPARATOR =
+            new GlobalRequestNoMoreSessionsOpenSshMessagePreparator();
 
-    @Override
-    public GlobalRequestNoMoreSessionsOpenSshMessageSerializer getSerializer() {
-        return new GlobalRequestNoMoreSessionsOpenSshMessageSerializer(message);
-    }
+    public static final GlobalRequestNoMoreSessionsOpenSshMessageSerializer SERIALIZER =
+            new GlobalRequestNoMoreSessionsOpenSshMessageSerializer();
 }

@@ -14,13 +14,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.ArrayList;
-import java.util.List;
 
-public class DynamicDelayCompressionAction extends SendAction {
-
-    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
-    private List<SshAction> sshActions = new ArrayList<>();
+public class DynamicDelayCompressionAction extends DynamicMessageAction {
 
     public DynamicDelayCompressionAction() {
         super();
@@ -28,6 +23,15 @@ public class DynamicDelayCompressionAction extends SendAction {
 
     public DynamicDelayCompressionAction(String connectionAlias) {
         super(connectionAlias);
+    }
+
+    public DynamicDelayCompressionAction(DynamicDelayCompressionAction other) {
+        super(other);
+    }
+
+    @Override
+    public DynamicDelayCompressionAction createCopy() {
+        return new DynamicDelayCompressionAction(this);
     }
 
     @Override
@@ -68,5 +72,6 @@ public class DynamicDelayCompressionAction extends SendAction {
                             new NewCompressMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
         }
+        setExecuted(true);
     }
 }

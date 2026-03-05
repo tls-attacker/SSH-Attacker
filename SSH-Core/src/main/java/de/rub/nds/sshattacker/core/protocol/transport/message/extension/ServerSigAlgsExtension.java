@@ -10,13 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Class for "server-sig-algs"-extension sent by server structure: extension-name string
@@ -30,6 +30,27 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
 
     private ModifiableInteger acceptedPublicKeyAlgorithmsLength;
     private ModifiableString acceptedPublicKeyAlgorithms;
+
+    public ServerSigAlgsExtension() {
+        super();
+    }
+
+    public ServerSigAlgsExtension(ServerSigAlgsExtension other) {
+        super(other);
+        acceptedPublicKeyAlgorithmsLength =
+                other.acceptedPublicKeyAlgorithmsLength != null
+                        ? other.acceptedPublicKeyAlgorithmsLength.createCopy()
+                        : null;
+        acceptedPublicKeyAlgorithms =
+                other.acceptedPublicKeyAlgorithms != null
+                        ? other.acceptedPublicKeyAlgorithms.createCopy()
+                        : null;
+    }
+
+    @Override
+    public ServerSigAlgsExtension createCopy() {
+        return new ServerSigAlgsExtension(this);
+    }
 
     public ModifiableInteger getAcceptedPublicKeyAlgorithmsLength() {
         return acceptedPublicKeyAlgorithmsLength;
@@ -50,61 +71,81 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
         return acceptedPublicKeyAlgorithms;
     }
 
-    public void setAcceptedPublicKeyAlgorithms(ModifiableString publicKeyAlgorithms) {
-        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    public void setAcceptedPublicKeyAlgorithms(ModifiableString acceptedPublicKeyAlgorithms) {
+        setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms, false);
     }
 
-    public void setAcceptedPublicKeyAlgorithms(String publicKeyAlgorithms) {
-        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    public void setAcceptedPublicKeyAlgorithms(String acceptedPublicKeyAlgorithms) {
+        setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms, false);
     }
 
-    public void setAcceptedPublicKeyAlgorithms(String[] publicKeyAlgorithms) {
-        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
-    }
-
-    public void setAcceptedPublicKeyAlgorithms(List<PublicKeyAlgorithm> publicKeyAlgorithms) {
-        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    public void setAcceptedPublicKeyAlgorithms(String[] acceptedPublicKeyAlgorithms) {
+        setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            ModifiableString publicKeyAlgorithms, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setAcceptedPublicKeyAlgorithmsLength(
-                    publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength.getValue());
-        }
-        acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
+            List<PublicKeyAlgorithm> acceptedPublicKeyAlgorithms) {
+        setAcceptedPublicKeyAlgorithms(acceptedPublicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            String publicKeyAlgorithms, boolean adjustLengthField) {
+            ModifiableString acceptedPublicKeyAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
             setAcceptedPublicKeyAlgorithmsLength(
-                    publicKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
+                    acceptedPublicKeyAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
             setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength.getValue());
         }
-        acceptedPublicKeyAlgorithms =
+        this.acceptedPublicKeyAlgorithms = acceptedPublicKeyAlgorithms;
+    }
+
+    public void setAcceptedPublicKeyAlgorithms(
+            String acceptedPublicKeyAlgorithms, boolean adjustLengthField) {
+        this.acceptedPublicKeyAlgorithms =
                 ModifiableVariableFactory.safelySetValue(
-                        acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
+                        this.acceptedPublicKeyAlgorithms, acceptedPublicKeyAlgorithms);
+        if (adjustLengthField) {
+            setAcceptedPublicKeyAlgorithmsLength(
+                    this.acceptedPublicKeyAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            String[] publicKeyAlgorithms, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, publicKeyAlgorithms);
-        setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
+            String[] acceptedPublicKeyAlgorithms, boolean adjustLengthField) {
+        setAcceptedPublicKeyAlgorithms(
+                Converter.listOfNamesToString(acceptedPublicKeyAlgorithms), adjustLengthField);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
-        String nameList =
-                publicKeyAlgorithms.stream()
-                        .map(PublicKeyAlgorithm::toString)
-                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
+            List<PublicKeyAlgorithm> acceptedPublicKeyAlgorithms, boolean adjustLengthField) {
+        setAcceptedPublicKeyAlgorithms(
+                Converter.listOfNamesToString(acceptedPublicKeyAlgorithms), adjustLengthField);
+    }
+
+    public static final ServerSigAlgsExtensionHandler HANDLER = new ServerSigAlgsExtensionHandler();
+
+    @Override
+    public ServerSigAlgsExtensionHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public ServerSigAlgsExtensionHandler getHandler(SshContext context) {
-        return new ServerSigAlgsExtensionHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ServerSigAlgsExtensionHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ServerSigAlgsExtensionHandler.SERIALIZER.serialize(this);
     }
 }

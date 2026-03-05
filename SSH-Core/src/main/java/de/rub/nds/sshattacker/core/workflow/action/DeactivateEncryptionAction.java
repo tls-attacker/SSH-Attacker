@@ -24,6 +24,15 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public DeactivateEncryptionAction(DeactivateEncryptionAction other) {
+        super(other);
+    }
+
+    @Override
+    public DeactivateEncryptionAction createCopy() {
+        return new DeactivateEncryptionAction(this);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
@@ -33,13 +42,25 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
         context.getPacketLayer()
                 .updateDecryptionCipher(
                         PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT));
+        setExecuted(true);
     }
 
     @Override
-    public void reset() {}
+    public void reset(boolean resetModifiableVariables) {
+        setExecuted(null);
+    }
 
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
+    }
+
+    @Override
+    public String toString() {
+        if (isExecuted()) {
+            return "DeactivateEncryptionAction";
+        } else {
+            return "DeactivateEncryptionAction (not executed)";
+        }
     }
 }

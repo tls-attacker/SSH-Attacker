@@ -7,12 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailureMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthFailureMessageParser(byte[] array) {
         super(array);
@@ -28,17 +32,21 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
     }
 
     private void parsePossibleAuthenticationMethods() {
-        message.setPossibleAuthenticationMethodsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        message.setPossibleAuthenticationMethods(
-                parseByteString(
-                        message.getPossibleAuthenticationMethodsLength().getValue(),
-                        StandardCharsets.US_ASCII),
-                false);
+        int possibleAuthenticationMethodsLength = parseIntField();
+        message.setPossibleAuthenticationMethodsLength(possibleAuthenticationMethodsLength);
+        LOGGER.debug(
+                "Possible Authentication Methods length: {}", possibleAuthenticationMethodsLength);
+        String possibleAuthenticationMethods = parseByteString(possibleAuthenticationMethodsLength);
+        message.setPossibleAuthenticationMethods(possibleAuthenticationMethods);
+        LOGGER.debug(
+                "Possible Authentication Methods: {}",
+                () -> backslashEscapeString(possibleAuthenticationMethods));
     }
 
     private void parsePartialSuccess() {
-        message.setPartialSuccess(parseByteField(1));
+        byte partialSuccess = parseByteField();
+        message.setPartialSuccess(partialSuccess);
+        LOGGER.debug("Partial Success: {}", partialSuccess);
     }
 
     @Override

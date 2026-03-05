@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class UserAuthRequestPasswordMessageSerializerTest {
     /**
-     * Provides a stream of test vectors for the UserAuthPasswordMessageSerializer class
+     * Provides a stream of test vectors for the UserAuthRequestPasswordMessageSerializer class
      *
      * @return A stream of test vectors to feed the testSerialize unit test
      */
@@ -51,7 +51,7 @@ public class UserAuthRequestPasswordMessageSerializerTest {
     }
 
     /**
-     * Test of UserAuthPasswordMessageSerializer::serialize method
+     * Test of UserAuthRequestPasswordMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
      * @param providedUsername Username of the user to authenticate
@@ -76,8 +76,8 @@ public class UserAuthRequestPasswordMessageSerializerTest {
         msg.setChangePassword(providedChangePassword);
         msg.setPassword(providedPassword, true);
         UserAuthRequestPasswordMessageSerializer serializer =
-                new UserAuthRequestPasswordMessageSerializer(msg);
+                new UserAuthRequestPasswordMessageSerializer();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

@@ -9,6 +9,8 @@ package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.DecompressionException;
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
@@ -19,8 +21,6 @@ import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
-import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +31,13 @@ public abstract class AbstractPacketLayer {
 
     protected final SshContext context;
 
-    private final AbstractPacketDecryptor decryptor;
     private final AbstractPacketEncryptor encryptor;
+    private final AbstractPacketDecryptor decryptor;
+    private final AbstractPacketDecryptor fallbackDecryptor;
 
     private final PacketCompressor compressor;
     private final PacketDecompressor decompressor;
+    private final PacketDecompressor fallbackDecompressor;
 
     private int writeEpoch;
     private int readEpoch;
@@ -49,8 +51,12 @@ public abstract class AbstractPacketLayer {
         decryptor =
                 new PacketDecryptor(
                         PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT), context);
+        fallbackDecryptor =
+                new PacketDecryptor(
+                        PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT), context);
         compressor = new PacketCompressor();
         decompressor = new PacketDecompressor();
+        fallbackDecompressor = new PacketDecompressor();
     }
 
     /**
@@ -79,22 +85,34 @@ public abstract class AbstractPacketLayer {
      */
     public abstract PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition);
 
-    protected void decryptPacket(AbstractPacket packet) {
+    protected void decryptPacket(AbstractPacket packet) throws DecryptionException {
         packet.prepareComputations();
-        decryptor.decrypt(packet);
+        try {
+            decryptor.decrypt(packet);
+        } catch (DecryptionException ex) {
+            if (!context.getConfig().getFallbackToNoDecryptionOnError()) {
+                throw ex;
+            }
+            LOGGER.debug("Fallback to no decryption due to:", ex);
+            fallbackDecryptor.decrypt(packet);
+        }
     }
 
-    protected void decompressPacket(AbstractPacket packet) {
-        decompressor.decompress(packet);
+    protected void decompressPacket(AbstractPacket packet) throws DecompressionException {
+        try {
+            decompressor.decompress(packet);
+        } catch (DecompressionException ex) {
+            if (!context.getConfig().getFallbackToNoDecompressionOnError()) {
+                throw ex;
+            }
+            LOGGER.debug("Fallback to no decompression due to:", ex);
+            fallbackDecompressor.decompress(packet);
+        }
     }
 
     public byte[] preparePacket(AbstractPacket packet) {
-        AbstractPacketPreparator<? extends AbstractPacket> preparator =
-                packet.getPacketPreparator(context.getChooser(), encryptor, compressor);
-        preparator.prepare();
-        AbstractPacketSerializer<? extends AbstractPacket> serializer =
-                packet.getPacketSerializer();
-        return serializer.serialize();
+        packet.prepare(context.getChooser());
+        return packet.serialize();
     }
 
     public void updateCompressionAlgorithm(CompressionAlgorithm algorithm) {

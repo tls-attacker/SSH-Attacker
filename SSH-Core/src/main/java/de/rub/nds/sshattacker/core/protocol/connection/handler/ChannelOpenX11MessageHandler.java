@@ -16,36 +16,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenX11MessageHandler extends SshMessageHandler<ChannelOpenX11Message> {
 
-    public ChannelOpenX11MessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenX11MessageHandler(SshContext context, ChannelOpenX11Message message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelOpenX11Message object) {
         // TODO: Handle ChannelOpenX11Message
     }
 
     @Override
-    public ChannelOpenX11MessageParser getParser(byte[] array) {
+    public ChannelOpenX11MessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenX11MessageParser(array);
     }
 
     @Override
-    public ChannelOpenX11MessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenX11MessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenX11MessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenX11MessagePreparator getPreparator() {
-        return new ChannelOpenX11MessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenX11MessagePreparator PREPARATOR =
+            new ChannelOpenX11MessagePreparator();
 
-    @Override
-    public ChannelOpenX11MessageSerializer getSerializer() {
-        return new ChannelOpenX11MessageSerializer(message);
-    }
+    public static final ChannelOpenX11MessageSerializer SERIALIZER =
+            new ChannelOpenX11MessageSerializer();
 }

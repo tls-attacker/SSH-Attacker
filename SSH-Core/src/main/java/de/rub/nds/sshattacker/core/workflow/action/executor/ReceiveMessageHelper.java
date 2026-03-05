@@ -8,13 +8,19 @@
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,6 +59,7 @@ public final class ReceiveMessageHelper {
     public static MessageActionResult receiveMessages(
             SshContext context, List<ProtocolMessage<?>> expectedMessages) {
         MessageActionResult result = new MessageActionResult();
+        Config config = context.getConfig();
         try {
             byte[] receivedBytes;
             int receivedBytesLength = 0;
@@ -62,12 +69,18 @@ public final class ReceiveMessageHelper {
                 receivedBytesLength += receivedBytes.length;
                 MessageActionResult tempResult = handleReceivedBytes(context, receivedBytes);
                 result = result.merge(tempResult);
-                if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
+                if (config.isQuickReceive() && !expectedMessages.isEmpty()) {
                     shouldContinue =
                             testShouldContinueReceiving(
                                     context, expectedMessages, tempResult.getMessageList());
                 }
-                if (receivedBytesLength >= context.getConfig().getReceiveMaximumBytes()) {
+                if (result.countMessages() > 0
+                        && (config.isEndReceivingEarly() && expectedMessages.isEmpty()
+                                || context.isReceiveAsciiModeEnabled())) {
+                    // In ascii mode if we got one message it makes no sense to continue reading
+                    shouldContinue = false;
+                }
+                if (receivedBytesLength >= config.getReceiveMaximumBytes()) {
                     shouldContinue = false;
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
@@ -77,6 +90,24 @@ public final class ReceiveMessageHelper {
                     e.getLocalizedMessage());
             LOGGER.debug(e);
             context.setReceivedTransportHandlerException(true);
+        }
+        if (result.countMessages() == 0) {
+            // Timeout exceptions and IO exceptions are caught in the fetchData method of the
+            // transport handler. So we can not be sure what happened. We have to check the socket
+            // state.
+            if (context.getTransportHandler() instanceof TcpTransportHandler transportHandler) {
+                SocketState socketState = transportHandler.getSocketState();
+                if (socketState == SocketState.SOCKET_EXCEPTION
+                        || socketState == SocketState.IO_EXCEPTION
+                        || socketState == SocketState.UNAVAILABLE
+                        || socketState == SocketState.CLOSED) {
+                    LOGGER.warn("Received no message. Socket Exception happened");
+                    context.setReceivedTransportHandlerException(true);
+                } else if (config.getHandleTimeoutOnReceiveAsIOException()) {
+                    LOGGER.warn("Received no message. Socket timed out!");
+                    context.setReceivedTransportHandlerException(true);
+                }
+            }
         }
         return result;
     }
@@ -90,13 +121,14 @@ public final class ReceiveMessageHelper {
      */
     public static byte[] receiveBytes(SshContext context) throws IOException {
         if (context.isReceiveAsciiModeEnabled()) {
-            byte[] receiveBuffer = new byte[0];
             byte[] readByte;
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            TransportHandler transportHandler = context.getTransportHandler();
             do {
-                readByte = context.getTransportHandler().fetchData(1);
-                receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
+                readByte = transportHandler.fetchData(1);
+                outputStream.write(readByte);
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
-            return receiveBuffer;
+            return outputStream.toByteArray();
         } else {
             return context.getTransportHandler().fetchData();
         }
@@ -120,7 +152,10 @@ public final class ReceiveMessageHelper {
     }
 
     /**
-     * Handles received bytes by parsing them into packets and consecutively messages.
+     * Handles received bytes by parsing them into packets and consecutively messages. If parsing
+     * fails, the method will try to receive additional bytes from the underlying transport handler.
+     * If no additional bytes are available or an IOException occurs, bytes will be parsed softly by
+     * the packet layer.
      *
      * @param context The SSH context
      * @param receivedBytes Received bytes to handle
@@ -133,54 +168,55 @@ public final class ReceiveMessageHelper {
         }
 
         int dataPointer = 0;
-        List<AbstractPacket> retrievedPackets = new LinkedList<>();
-        List<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
+        LinkedList<AbstractPacket> retrievedPackets = new LinkedList<>();
+        LinkedList<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
         do {
-            PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
+            PacketLayerParseResult parseResult;
+
+            try {
+                parseResult = context.getPacketLayer().parsePacket(receivedBytes, dataPointer);
+            } catch (ParserException e) {
+                LOGGER.debug(
+                        "Could not parse the provided bytes into packets. Waiting for more data to become available",
+                        e);
+                byte[] extraBytes = receiveAdditionalBytes(context);
+                if (extraBytes != null && extraBytes.length > 0) {
+                    receivedBytes = ArrayConverter.concatenate(receivedBytes, extraBytes);
+                    continue;
+                } else {
+                    LOGGER.debug("Did not receive more bytes. Parsing records softly");
+                    parseResult =
+                            context.getPacketLayer().parsePacketSoftly(receivedBytes, dataPointer);
+                }
+            }
+
             Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
             if (parsedPacket.isPresent()) {
-                ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
-                message.getHandler(context).adjustContext();
+                AbstractPacket parsedPresentPacket = parsedPacket.get();
+                LOGGER.trace(
+                        "Complete packet payload bytes: {}",
+                        () ->
+                                ArrayConverter.bytesToHexString(
+                                        parsedPresentPacket.getPayload().getValue()));
+
+                ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPresentPacket);
+                message.adjustContext(context);
                 retrievedPackets.add(parsedPacket.get());
-                parsedMessages.add(message);
+
+                if (message instanceof ChannelDataMessage) {
+                    // Parse ChannelDataMessage
+                    ProtocolMessage<?> innerMessage =
+                            context.getDataMessageLayer().parse((ChannelDataMessage) message);
+                    innerMessage.adjustContext(context);
+                    parsedMessages.add(innerMessage);
+                } else {
+                    parsedMessages.add(message);
+                }
             }
             dataPointer += parseResult.getParsedByteCount();
         } while (dataPointer < receivedBytes.length);
-        return new MessageActionResult(retrievedPackets, parsedMessages);
-    }
-
-    /**
-     * Parses the given bytes into AbstractPackets. If parsing fails, the method will try to receive
-     * additional bytes from the underlying transport handler. If no additional bytes are available
-     * or an IOException occurs, bytes will be parsed softly (most likely to BlobPackets) by the
-     * packet layer.
-     *
-     * @param context The SSH context
-     * @param packetBytes Raw packet bytes to parse
-     * @param startPosition Start position for parsing
-     * @return The parse result from the underlying packet layer containing the total number of
-     *     bytes parsed as well as the parsed packet itself
-     */
-    private static PacketLayerParseResult parsePacket(
-            SshContext context, byte[] packetBytes, int startPosition) {
-        try {
-            return context.getPacketLayer().parsePacket(packetBytes, startPosition);
-        } catch (ParserException e) {
-            LOGGER.debug(e);
-            if (context.getTransportHandler() != null) {
-                LOGGER.debug(
-                        "Could not parse the provided bytes into packets. Waiting for more data to become available");
-                byte[] extraBytes = receiveAdditionalBytes(context);
-                if (extraBytes != null && extraBytes.length > 0) {
-                    return parsePacket(
-                            context,
-                            ArrayConverter.concatenate(packetBytes, extraBytes),
-                            startPosition);
-                }
-            }
-            LOGGER.debug("Did not receive more bytes. Parsing records softly");
-            return context.getPacketLayer().parsePacketSoftly(packetBytes, startPosition);
-        }
+        return new MessageActionResult(
+                new ArrayList<>(retrievedPackets), new ArrayList<>(parsedMessages));
     }
 
     /**

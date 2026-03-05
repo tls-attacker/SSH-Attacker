@@ -8,9 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
@@ -24,36 +23,41 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangePubkeyMessagePreparator(
-            Chooser chooser, RsaKeyExchangePubkeyMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
+    public RsaKeyExchangePubkeyMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
-        prepareTransientPublicKey();
+    protected void prepareMessageSpecificContents(
+            RsaKeyExchangePubkeyMessage object, Chooser chooser) {
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), object);
+        prepareTransientPublicKey(object, chooser);
     }
 
-    private void prepareTransientPublicKey() {
+    private static void prepareTransientPublicKey(
+            RsaKeyExchangePubkeyMessage object, Chooser chooser) {
+
         try {
             RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
             keyExchange.generateKeyPair();
-            getObject()
-                    .setTransientPublicKeyBytes(
-                            PublicKeyHelper.encode(
-                                    PublicKeyFormat.SSH_RSA, keyExchange.getPublicKey()),
-                            true);
+            CustomRsaPublicKey transientKey = (CustomRsaPublicKey) keyExchange.getPublicKey();
+
+            object.setTransientPublicKeyBytes(transientKey.serialize(), true);
+
             chooser.getContext()
                     .getExchangeHashInputHolder()
-                    .setRsaTransientKey(getObject().getTransientPublicKey());
+                    .setRsaTransientKey(object.getTransientPublicKey());
         } catch (CryptoException e) {
             // This branch should never be reached as this would indicate an RSA key generation
             // failure
             LOGGER.warn(
                     "Transient public key preparation failed - workflow will continue but transient public key will be left empty");
             LOGGER.debug(e);
-            getObject().setTransientPublicKeyBytes(new byte[0], true);
+            object.setTransientPublicKeyBytes(new byte[0], true);
+            // Using fallback transient key for ExchangeHashInputHolder
+            chooser.getContext()
+                    .getExchangeHashInputHolder()
+                    .setRsaTransientKey(chooser.getConfig().getFallbackRsaTransientPublicKey());
         }
     }
 }

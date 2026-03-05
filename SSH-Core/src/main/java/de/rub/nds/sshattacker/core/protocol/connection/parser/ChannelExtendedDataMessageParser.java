@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import org.apache.logging.log4j.LogManager;
@@ -33,18 +32,21 @@ public class ChannelExtendedDataMessageParser
     }
 
     private void parseDataTypeCode() {
-        message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Data type code: {}", message.getDataTypeCode().getValue());
+        int dataTypeCode = parseIntField();
+        message.setDataTypeCode(dataTypeCode);
+        LOGGER.debug("Data type code: {}", dataTypeCode);
         LOGGER.debug(
                 "Data type: {}",
                 ExtendedChannelDataType.fromDataTypeCode(message.getDataTypeCode().getValue()));
     }
 
     private void parseData() {
-        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        message.setData(parseByteArrayField(message.getDataLength().getValue()));
-        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        int dataLength = parseIntField();
+        message.setDataLength(dataLength);
+        LOGGER.debug("Data length: {}", dataLength);
+        byte[] data = parseByteArrayField(dataLength);
+        message.setData(data);
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
     }
 
     @Override

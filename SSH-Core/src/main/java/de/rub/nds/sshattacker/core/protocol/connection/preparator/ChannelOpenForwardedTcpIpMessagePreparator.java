@@ -7,23 +7,24 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenForwardedTcpIpMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenForwardedTcpIpMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenForwardedTcpIpMessage> {
 
-    public ChannelOpenForwardedTcpIpMessagePreparator(
-            Chooser chooser, ChannelOpenForwardedTcpIpMessage message) {
-        super(chooser, message);
+    public ChannelOpenForwardedTcpIpMessagePreparator() {
+        super(ChannelType.FORWARDED_TCPIP);
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {
+    protected void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenForwardedTcpIpMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setConnectedAddress("192.168.7.38", true);
-        getObject().setConnectedPort(2200);
-        getObject().setOriginatorAddress("192.168.7.39", true);
-        getObject().setOriginatorPort(2201);
+        object.setConnectedAddress("192.168.7.38", true);
+        object.setConnectedPort(2200);
+        object.setOriginatorAddress("192.168.7.39", true);
+        object.setOriginatorPort(2201);
     }
 }

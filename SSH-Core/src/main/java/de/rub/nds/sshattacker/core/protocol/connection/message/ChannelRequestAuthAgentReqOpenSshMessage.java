@@ -7,14 +7,54 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestAuthAgentReqOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestAuthAgentReqOpenSshMessage
-        extends ChannelRequestMessage<ChannelRequestAuthAgentReqOpenSshMessage> {
+        extends ChannelRequestMessage<ChannelRequestAuthAgentReqOpenSshMessage>
+        implements HasSentHandler {
+
+    public ChannelRequestAuthAgentReqOpenSshMessage() {
+        super();
+    }
+
+    public ChannelRequestAuthAgentReqOpenSshMessage(
+            ChannelRequestAuthAgentReqOpenSshMessage other) {
+        super(other);
+    }
 
     @Override
-    public ChannelRequestAuthAgentReqOpenSshMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestAuthAgentReqOpenSshMessageHandler(context, this);
+    public ChannelRequestAuthAgentReqOpenSshMessage createCopy() {
+        return new ChannelRequestAuthAgentReqOpenSshMessage(this);
+    }
+
+    public static final ChannelRequestAuthAgentReqOpenSshMessageHandler HANDLER =
+            new ChannelRequestAuthAgentReqOpenSshMessageHandler();
+
+    @Override
+    public ChannelRequestAuthAgentReqOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestAuthAgentReqOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestAuthAgentReqOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

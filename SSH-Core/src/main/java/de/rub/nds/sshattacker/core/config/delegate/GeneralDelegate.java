@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.config.converter.LogLevelConverter;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
@@ -23,16 +24,22 @@ public class GeneralDelegate extends Delegate {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Parameter(
-            names = {"-h", "-help"},
+            names = {"-h", "--help"},
             help = true,
             description = "Prints usage for all the existing commands.")
     private boolean help;
 
-    @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
+    @Parameter(names = "--debug", description = "Show extra debug output (sets logLevel to DEBUG)")
     private boolean debug;
 
-    @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
+    @Parameter(names = "-quiet", description = "No output (sets logLevel to OFF)")
     private boolean quiet;
+
+    @Parameter(
+            names = {"-ll", "--log-level"},
+            description = "Sets explicit log level.",
+            converter = LogLevelConverter.class)
+    private Level loglevel;
 
     public boolean isHelp() {
         return help;
@@ -58,6 +65,14 @@ public class GeneralDelegate extends Delegate {
         this.quiet = quiet;
     }
 
+    public Level getLogLevel() {
+        return loglevel;
+    }
+
+    public void setLogLevel(Level loglevel) {
+        this.loglevel = loglevel;
+    }
+
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
@@ -66,6 +81,9 @@ public class GeneralDelegate extends Delegate {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);
+        }
+        if (loglevel != null) {
+            Configurator.setAllLevels("de.rub.nds.sshattacker", loglevel);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

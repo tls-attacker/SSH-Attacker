@@ -8,13 +8,51 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthSuccessMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
+public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage>
+        implements HasSentHandler {
+
+    public UserAuthSuccessMessage() {
+        super();
+    }
+
+    public UserAuthSuccessMessage(UserAuthSuccessMessage other) {
+        super(other);
+    }
 
     @Override
-    public UserAuthSuccessMessageHandler getHandler(SshContext context) {
-        return new UserAuthSuccessMessageHandler(context, this);
+    public UserAuthSuccessMessage createCopy() {
+        return new UserAuthSuccessMessage(this);
+    }
+
+    public static final UserAuthSuccessMessageHandler HANDLER = new UserAuthSuccessMessageHandler();
+
+    @Override
+    public UserAuthSuccessMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthSuccessMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthSuccessMessageHandler.SERIALIZER.serialize(this);
     }
 }

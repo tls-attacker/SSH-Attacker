@@ -41,9 +41,11 @@ public enum NamedEcGroup {
     SECP224K1("1.3.132.0.32", "1.3.132.0.32", "secp224k1", 224),
     SECP224R1("1.3.132.0.33", "1.3.132.0.33", "secp224r1", 224),
     SECP256K1("1.3.132.0.10", "1.3.132.0.10", "secp256k1", 256),
+    // Required Curves (RFC 5656, Section 10.1)
     SECP256R1("nistp256", "1.2.840.10045.3.1.7", "secp256r1", 256),
     SECP384R1("nistp384", "1.3.132.0.34", "secp384r1", 384),
     SECP521R1("nistp521", "1.3.132.0.35", "secp521r1", 521),
+    // ---
     BRAINPOOLP256R1("1.3.36.3.3.2.8.1.1.7", "1.3.36.3.3.2.8.1.1.7", "brainpoolp256r1", 256),
     BRAINPOOLP384R1("1.3.36.3.3.2.8.1.1.11", "1.3.36.3.3.2.8.1.1.11", "brainpoolp384r1", 384),
     BRAINPOOLP512R1("1.3.36.3.3.2.8.1.1.13", "1.3.36.3.3.2.8.1.1.13", "brainpoolp512r1", 512),
@@ -56,16 +58,24 @@ public enum NamedEcGroup {
 
     private final int coordinateSizeInBit;
 
-    public static final Map<String, NamedEcGroup> map;
+    public static final Map<String, NamedEcGroup> identifierMap;
+    public static final Map<String, NamedEcGroup> oidMap;
+    public static final Map<String, NamedEcGroup> javaNameMap;
 
     static {
-        Map<String, NamedEcGroup> mutableMap = new TreeMap<>();
+        Map<String, NamedEcGroup> mutableIdentifierMap = new TreeMap<>();
+        Map<String, NamedEcGroup> mutableOidMap = new TreeMap<>();
+        Map<String, NamedEcGroup> mutableJavaNameMap = new TreeMap<>();
         for (NamedEcGroup group : values()) {
             if (group.identifier != null) {
-                mutableMap.put(group.identifier, group);
+                mutableIdentifierMap.put(group.identifier, group);
+                mutableOidMap.put(group.oid, group);
+                mutableJavaNameMap.put(group.javaName, group);
             }
         }
-        map = Collections.unmodifiableMap(mutableMap);
+        identifierMap = Collections.unmodifiableMap(mutableIdentifierMap);
+        oidMap = Collections.unmodifiableMap(mutableOidMap);
+        javaNameMap = Collections.unmodifiableMap(mutableJavaNameMap);
     }
 
     NamedEcGroup(String identifier, String oid, String javaName, int coordinateSizeInBit) {
@@ -76,7 +86,15 @@ public enum NamedEcGroup {
     }
 
     public static NamedEcGroup fromIdentifier(String identifier) {
-        return map.get(identifier);
+        return identifierMap.get(identifier);
+    }
+
+    public static NamedEcGroup fromOid(String oid) {
+        return oidMap.get(oid);
+    }
+
+    public static NamedEcGroup fromJavaName(String javaName) {
+        return javaNameMap.get(javaName);
     }
 
     public String getIdentifier() {

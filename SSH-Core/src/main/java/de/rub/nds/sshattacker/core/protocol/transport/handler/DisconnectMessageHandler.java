@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
@@ -20,37 +20,23 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public DisconnectMessageHandler(SshContext context, DisconnectMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        LOGGER.info("Received DisconnectMessage");
+    public void adjustContext(SshContext context, DisconnectMessage object) {
+        LOGGER.warn("Received DisconnectMessage");
         context.setDisconnectMessageReceived(true);
     }
 
     @Override
-    public DisconnectMessageParser getParser(byte[] array) {
+    public DisconnectMessageParser getParser(byte[] array, SshContext context) {
         return new DisconnectMessageParser(array);
     }
 
     @Override
-    public DisconnectMessageParser getParser(byte[] array, int startPosition) {
+    public DisconnectMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new DisconnectMessageParser(array, startPosition);
     }
 
-    @Override
-    public DisconnectMessagePreparator getPreparator() {
-        return new DisconnectMessagePreparator(context.getChooser(), message);
-    }
+    public static final DisconnectMessagePreparator PREPARATOR = new DisconnectMessagePreparator();
 
-    @Override
-    public DisconnectMessageSerializer getSerializer() {
-        return new DisconnectMessageSerializer(message);
-    }
+    public static final DisconnectMessageSerializer SERIALIZER = new DisconnectMessageSerializer();
 }

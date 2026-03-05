@@ -8,6 +8,7 @@
 package executing;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.state.State;
@@ -29,12 +30,12 @@ public final class NetcatWorkflowFactory {
     // integration test
     public static void main(String[] args) throws Exception {
 
-        State state = new State();
+        Config config = new Config();
+        config.setDefaultRunningMode(RunningModeType.SERVER);
         WorkflowTrace trace =
-                new WorkflowConfigurationFactory(state.getConfig())
+                new WorkflowConfigurationFactory(config)
                         .createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.SERVER);
-
-        state.setWorkflowTrace(trace);
+        State state = new State(config, trace);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
@@ -49,7 +50,7 @@ public final class NetcatWorkflowFactory {
             ChannelDataMessage dataMessage = new ChannelDataMessage();
             dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
-            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
+            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage, false);
         }
     }
 }

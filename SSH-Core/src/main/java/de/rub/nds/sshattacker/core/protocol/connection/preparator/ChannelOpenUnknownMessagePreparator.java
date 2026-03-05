@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ChannelOpenUnknownMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenUnknownMessage> {
 
-    public ChannelOpenUnknownMessagePreparator(Chooser chooser, ChannelOpenUnknownMessage message) {
-        super(chooser, message);
+    public ChannelOpenUnknownMessagePreparator() {
+        super("hello-from@ssh-attacker");
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {
-        getObject().setTypeSpecificData(new byte[0]);
+    protected void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenUnknownMessage object, Chooser chooser) {
+        object.setTypeSpecificData(new byte[10]);
     }
 }

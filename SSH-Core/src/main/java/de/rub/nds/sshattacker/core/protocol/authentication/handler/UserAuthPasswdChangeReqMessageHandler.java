@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthPasswdChangeReqMessageHandler
         extends SshMessageHandler<UserAuthPasswdChangeReqMessage> {
 
-    public UserAuthPasswdChangeReqMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthPasswdChangeReqMessageHandler(
-            SshContext context, UserAuthPasswdChangeReqMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, UserAuthPasswdChangeReqMessage object) {
         // TODO: Handle UserAuthPasswdChangeReqMessage
     }
 
     @Override
-    public UserAuthPasswdChangeReqMessageParser getParser(byte[] array) {
+    public UserAuthPasswdChangeReqMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthPasswdChangeReqMessageParser(array);
     }
 
     @Override
-    public UserAuthPasswdChangeReqMessageParser getParser(byte[] array, int startPosition) {
+    public UserAuthPasswdChangeReqMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthPasswdChangeReqMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthPasswdChangeReqMessagePreparator getPreparator() {
-        return new UserAuthPasswdChangeReqMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthPasswdChangeReqMessagePreparator PREPARATOR =
+            new UserAuthPasswdChangeReqMessagePreparator();
 
-    @Override
-    public UserAuthPasswdChangeReqMessageSerializer getSerializer() {
-        return new UserAuthPasswdChangeReqMessageSerializer(message);
-    }
+    public static final UserAuthPasswdChangeReqMessageSerializer SERIALIZER =
+            new UserAuthPasswdChangeReqMessageSerializer();
 }

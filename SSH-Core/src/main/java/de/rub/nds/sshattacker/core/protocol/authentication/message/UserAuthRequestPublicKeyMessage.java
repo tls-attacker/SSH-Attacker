@@ -15,10 +15,39 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthRequestPublicKeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthRequestPublicKeyMessage
         extends UserAuthRequestMessage<UserAuthRequestPublicKeyMessage> {
+
+    public UserAuthRequestPublicKeyMessage() {
+        super();
+    }
+
+    public UserAuthRequestPublicKeyMessage(UserAuthRequestPublicKeyMessage other) {
+        super(other);
+        includesSignature =
+                other.includesSignature != null ? other.includesSignature.createCopy() : null;
+        publicKeyAlgorithmNameLength =
+                other.publicKeyAlgorithmNameLength != null
+                        ? other.publicKeyAlgorithmNameLength.createCopy()
+                        : null;
+        publicKeyAlgorithmName =
+                other.publicKeyAlgorithmName != null
+                        ? other.publicKeyAlgorithmName.createCopy()
+                        : null;
+        publicKeyBlobLength =
+                other.publicKeyBlobLength != null ? other.publicKeyBlobLength.createCopy() : null;
+        publicKeyBlob = other.publicKeyBlob != null ? other.publicKeyBlob.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public UserAuthRequestPublicKeyMessage createCopy() {
+        return new UserAuthRequestPublicKeyMessage(this);
+    }
 
     private ModifiableByte includesSignature;
     private ModifiableInteger publicKeyAlgorithmNameLength;
@@ -171,8 +200,26 @@ public class UserAuthRequestPublicKeyMessage
         return signature;
     }
 
+    public static final UserAuthRequestPublicKeyMessageHandler HANDLER =
+            new UserAuthRequestPublicKeyMessageHandler();
+
     @Override
-    public UserAuthRequestPublicKeyMessageHandler getHandler(SshContext context) {
-        return new UserAuthRequestPublicKeyMessageHandler(context, this);
+    public UserAuthRequestPublicKeyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UserAuthRequestPublicKeyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UserAuthRequestPublicKeyMessageHandler.SERIALIZER.serialize(this);
     }
 }

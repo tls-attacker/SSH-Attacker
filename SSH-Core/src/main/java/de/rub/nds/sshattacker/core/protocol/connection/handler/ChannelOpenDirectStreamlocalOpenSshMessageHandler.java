@@ -17,39 +17,27 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelOpenDirectStreamlocalOpenSshMessageHandler
         extends SshMessageHandler<ChannelOpenDirectStreamlocalOpenSshMessage> {
 
-    public ChannelOpenDirectStreamlocalOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenDirectStreamlocalOpenSshMessageHandler(
-            SshContext context, ChannelOpenDirectStreamlocalOpenSshMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(
+            SshContext context, ChannelOpenDirectStreamlocalOpenSshMessage object) {
         // TODO: Handle ChannelOpenDirectStreamlocalOpenSshMessage
     }
 
     @Override
-    public ChannelOpenDirectStreamlocalOpenSshMessageParser getParser(byte[] array) {
+    public ChannelOpenDirectStreamlocalOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new ChannelOpenDirectStreamlocalOpenSshMessageParser(array);
     }
 
     @Override
     public ChannelOpenDirectStreamlocalOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenDirectStreamlocalOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenDirectStreamlocalOpenSshMessagePreparator getPreparator() {
-        return new ChannelOpenDirectStreamlocalOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final ChannelOpenDirectStreamlocalOpenSshMessagePreparator PREPARATOR =
+            new ChannelOpenDirectStreamlocalOpenSshMessagePreparator();
 
-    @Override
-    public ChannelOpenDirectStreamlocalOpenSshMessageSerializer getSerializer() {
-        return new ChannelOpenDirectStreamlocalOpenSshMessageSerializer(message);
-    }
+    public static final ChannelOpenDirectStreamlocalOpenSshMessageSerializer SERIALIZER =
+            new ChannelOpenDirectStreamlocalOpenSshMessageSerializer();
 }

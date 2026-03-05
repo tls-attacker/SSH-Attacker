@@ -8,7 +8,10 @@
 package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
+import de.rub.nds.sshattacker.core.constants.CipherMode;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -19,8 +22,8 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashSet;
+import java.util.Set;
 import javax.crypto.AEADBadTagException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +61,7 @@ public class PacketGCMCipher extends PacketCipher {
                         0,
                         4);
         ivCtr =
-                Converter.byteArrayToLong(
+                Converter.eigthBytesToLong(
                         Arrays.copyOfRange(
                                 mode == CipherMode.ENCRYPT
                                         ? keySet.getWriteIv(getLocalConnectionEndType())
@@ -87,8 +90,7 @@ public class PacketGCMCipher extends PacketCipher {
                         new byte[] {packet.getPaddingLength().getValue()},
                         packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
-        computations.setIv(
-                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
+        computations.setIv(ArrayConverter.concatenate(ivFixed, Converter.longToEightBytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         byte[] authenticatedCiphertext =
@@ -109,11 +111,11 @@ public class PacketGCMCipher extends PacketCipher {
         packet.setCiphertext(ciphertext);
         packet.setMac(authTag);
         computations.setEncryptedPacketFields(
-                Stream.of(
+                new HashSet<>(
+                        Set.of(
                                 BinaryPacketField.PADDING_LENGTH,
                                 BinaryPacketField.PAYLOAD,
-                                BinaryPacketField.PADDING)
-                        .collect(Collectors.toSet()));
+                                BinaryPacketField.PADDING)));
 
         computations.setPaddingValid(true);
         computations.setMacValid(true);
@@ -122,7 +124,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, Converter.longToEightBytes(ivCtr));
         packet.setCiphertext(
                 cipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
         ivCtr++;
@@ -138,8 +140,7 @@ public class PacketGCMCipher extends PacketCipher {
 
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
 
-        computations.setIv(
-                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
+        computations.setIv(ArrayConverter.concatenate(ivFixed, Converter.longToEightBytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         try {
@@ -158,15 +159,15 @@ public class PacketGCMCipher extends PacketCipher {
             return;
         }
         computations.setEncryptedPacketFields(
-                Stream.of(
+                new HashSet<>(
+                        Set.of(
                                 BinaryPacketField.PADDING_LENGTH,
                                 BinaryPacketField.PAYLOAD,
-                                BinaryPacketField.PADDING)
-                        .collect(Collectors.toSet()));
+                                BinaryPacketField.PADDING)));
 
         DecryptionParser parser =
                 new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
-        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
@@ -182,7 +183,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, Converter.longToEightBytes(ivCtr));
         try {
             packet.setCompressedPayload(
                     cipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));

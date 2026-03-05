@@ -14,10 +14,10 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class NewKeysMessagePreparator extends SshMessagePreparator<NewKeysMessage> {
 
-    public NewKeysMessagePreparator(Chooser chooser, NewKeysMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_NEWKEYS);
+    public NewKeysMessagePreparator() {
+        super(MessageIdConstant.SSH_MSG_NEWKEYS);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    protected void prepareMessageSpecificContents(NewKeysMessage object, Chooser chooser) {}
 }

@@ -10,10 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestAuthAgentReqOpenSshMessage;
 
 public class ChannelRequestAuthAgentReqOpenSshMessageSerializer
-        extends ChannelRequestMessageSerializer<ChannelRequestAuthAgentReqOpenSshMessage> {
-
-    public ChannelRequestAuthAgentReqOpenSshMessageSerializer(
-            ChannelRequestAuthAgentReqOpenSshMessage message) {
-        super(message);
-    }
-}
+        extends ChannelRequestMessageSerializer<ChannelRequestAuthAgentReqOpenSshMessage> {}

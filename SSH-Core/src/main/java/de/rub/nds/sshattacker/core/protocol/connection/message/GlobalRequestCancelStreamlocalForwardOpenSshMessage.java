@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestCancelStreamlocalForwardOpenSshMessage
@@ -19,6 +20,23 @@ public class GlobalRequestCancelStreamlocalForwardOpenSshMessage
 
     private ModifiableInteger socketPathLength;
     private ModifiableString socketPath;
+
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessage() {
+        super();
+    }
+
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessage(
+            GlobalRequestCancelStreamlocalForwardOpenSshMessage other) {
+        super(other);
+        socketPathLength =
+                other.socketPathLength != null ? other.socketPathLength.createCopy() : null;
+        socketPath = other.socketPath != null ? other.socketPath.createCopy() : null;
+    }
+
+    @Override
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessage createCopy() {
+        return new GlobalRequestCancelStreamlocalForwardOpenSshMessage(this);
+    }
 
     public ModifiableInteger getSocketPathLength() {
         return socketPathLength;
@@ -59,9 +77,28 @@ public class GlobalRequestCancelStreamlocalForwardOpenSshMessage
         }
     }
 
+    public static final GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler HANDLER =
+            new GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler();
+
     @Override
-    public GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler getHandler(
-            SshContext context) {
-        return new GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler(context, this);
+    public GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler.PREPARATOR.prepare(
+                this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return GlobalRequestCancelStreamlocalForwardOpenSshMessageHandler.SERIALIZER.serialize(
+                this);
     }
 }

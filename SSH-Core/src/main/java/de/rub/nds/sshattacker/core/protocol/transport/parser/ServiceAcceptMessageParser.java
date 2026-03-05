@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +26,7 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
     }
 
     private void parseServiceType() {
-        message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        message.setServiceNameLength(parseIntField());
         LOGGER.debug("Service name length: {}", message.getServiceNameLength());
         message.setServiceName(
                 parseByteString(

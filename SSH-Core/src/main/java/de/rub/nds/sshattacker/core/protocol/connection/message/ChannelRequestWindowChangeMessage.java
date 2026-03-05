@@ -9,16 +9,35 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestWindowChangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelRequestWindowChangeMessage
-        extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> {
+        extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> implements HasSentHandler {
 
     private ModifiableInteger widthColumns;
     private ModifiableInteger heightRows;
     private ModifiableInteger widthPixels;
     private ModifiableInteger heightPixels;
+
+    public ChannelRequestWindowChangeMessage() {
+        super();
+    }
+
+    public ChannelRequestWindowChangeMessage(ChannelRequestWindowChangeMessage other) {
+        super(other);
+        widthColumns = other.widthColumns != null ? other.widthColumns.createCopy() : null;
+        heightRows = other.heightRows != null ? other.heightRows.createCopy() : null;
+        widthPixels = other.widthPixels != null ? other.widthPixels.createCopy() : null;
+        heightPixels = other.heightPixels != null ? other.heightPixels.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestWindowChangeMessage createCopy() {
+        return new ChannelRequestWindowChangeMessage(this);
+    }
 
     public ModifiableInteger getWidthColumns() {
         return widthColumns;
@@ -70,8 +89,31 @@ public class ChannelRequestWindowChangeMessage
                 ModifiableVariableFactory.safelySetValue(this.heightPixels, heightPixels);
     }
 
+    public static final ChannelRequestWindowChangeMessageHandler HANDLER =
+            new ChannelRequestWindowChangeMessageHandler();
+
     @Override
-    public ChannelRequestWindowChangeMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestWindowChangeMessageHandler(context, this);
+    public ChannelRequestWindowChangeMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestWindowChangeMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestWindowChangeMessageHandler.SERIALIZER.serialize(this);
     }
 }

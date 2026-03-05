@@ -7,53 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestAuthAgentReqOpenSshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestAuthAgentReqOpenSshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestAuthAgentReqOpenSshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestAuthAgentReqOpenSshMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestAuthAgentReqOpenSshMessageHandler
-        extends SshMessageHandler<ChannelRequestAuthAgentReqOpenSshMessage> {
-
-    public ChannelRequestAuthAgentReqOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelRequestAuthAgentReqOpenSshMessageHandler(
-            SshContext context, ChannelRequestAuthAgentReqOpenSshMessage message) {
-        super(context, message);
-    }
+        extends ChannelRequestMessageHandler<ChannelRequestAuthAgentReqOpenSshMessage> {
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle ChannelRequestAuthAgentReqOpenSshMessage
-        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
-        }
-    }
-
-    @Override
-    public ChannelRequestAuthAgentReqOpenSshMessageParser getParser(byte[] array) {
+    public ChannelRequestAuthAgentReqOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new ChannelRequestAuthAgentReqOpenSshMessageParser(array);
     }
 
     @Override
     public ChannelRequestAuthAgentReqOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelRequestAuthAgentReqOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelRequestAuthAgentReqOpenSshMessagePreparator getPreparator() {
-        return new ChannelRequestAuthAgentReqOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final ChannelRequestAuthAgentReqOpenSshMessagePreparator PREPARATOR =
+            new ChannelRequestAuthAgentReqOpenSshMessagePreparator();
 
-    @Override
-    public ChannelRequestAuthAgentReqOpenSshMessageSerializer getSerializer() {
-        return new ChannelRequestAuthAgentReqOpenSshMessageSerializer(message);
-    }
+    public static final ChannelRequestAuthAgentReqOpenSshMessageSerializer SERIALIZER =
+            new ChannelRequestAuthAgentReqOpenSshMessageSerializer();
 }

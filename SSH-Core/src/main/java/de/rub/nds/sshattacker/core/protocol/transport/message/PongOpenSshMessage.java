@@ -13,11 +13,27 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PongOpenSshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class PongOpenSshMessage extends SshMessage<PongOpenSshMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public PongOpenSshMessage() {
+        super();
+    }
+
+    public PongOpenSshMessage(PongOpenSshMessage other) {
+        super(other);
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public PongOpenSshMessage createCopy() {
+        return new PongOpenSshMessage(this);
+    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;
@@ -40,10 +56,10 @@ public class PongOpenSshMessage extends SshMessage<PongOpenSshMessage> {
     }
 
     public void setData(ModifiableByteArray data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.getValue().length);
-        }
         this.data = data;
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     public void setData(byte[] data) {
@@ -51,14 +67,31 @@ public class PongOpenSshMessage extends SshMessage<PongOpenSshMessage> {
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
+    }
+
+    public static final PongOpenSshMessageHandler HANDLER = new PongOpenSshMessageHandler();
+
+    @Override
+    public PongOpenSshMessageHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public PongOpenSshMessageHandler getHandler(SshContext context) {
-        return new PongOpenSshMessageHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        PongOpenSshMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return PongOpenSshMessageHandler.SERIALIZER.serialize(this);
     }
 }

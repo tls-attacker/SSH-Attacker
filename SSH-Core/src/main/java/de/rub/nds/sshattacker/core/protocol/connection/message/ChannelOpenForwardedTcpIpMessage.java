@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenForwardedTcpIpMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenForwardedTcpIpMessage
@@ -137,8 +138,53 @@ public class ChannelOpenForwardedTcpIpMessage
                 ModifiableVariableFactory.safelySetValue(this.originatorPort, originatorPort);
     }
 
+    public ChannelOpenForwardedTcpIpMessage() {
+        super();
+    }
+
+    public ChannelOpenForwardedTcpIpMessage(ChannelOpenForwardedTcpIpMessage other) {
+        super(other);
+        connectedAddressLength =
+                other.connectedAddressLength != null
+                        ? other.connectedAddressLength.createCopy()
+                        : null;
+        connectedAddress =
+                other.connectedAddress != null ? other.connectedAddress.createCopy() : null;
+        connectedPort = other.connectedPort != null ? other.connectedPort.createCopy() : null;
+        originatorAddressLength =
+                other.originatorAddressLength != null
+                        ? other.originatorAddressLength.createCopy()
+                        : null;
+        originatorAddress =
+                other.originatorAddress != null ? other.originatorAddress.createCopy() : null;
+        originatorPort = other.originatorPort != null ? other.originatorPort.createCopy() : null;
+    }
+
     @Override
-    public ChannelOpenForwardedTcpIpMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenForwardedTcpIpMessageHandler(context, this);
+    public ChannelOpenForwardedTcpIpMessage createCopy() {
+        return new ChannelOpenForwardedTcpIpMessage(this);
+    }
+
+    public static final ChannelOpenForwardedTcpIpMessageHandler HANDLER =
+            new ChannelOpenForwardedTcpIpMessageHandler();
+
+    @Override
+    public ChannelOpenForwardedTcpIpMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelOpenForwardedTcpIpMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelOpenForwardedTcpIpMessageHandler.SERIALIZER.serialize(this);
     }
 }

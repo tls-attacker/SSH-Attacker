@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.exceptions;
 
-public class DecryptionException extends RuntimeException {
+public class DecryptionException extends Exception {
     public DecryptionException() {
         super();
     }

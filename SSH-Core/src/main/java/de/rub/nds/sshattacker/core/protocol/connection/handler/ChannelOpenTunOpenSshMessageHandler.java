@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelOpenTunOpenSshMessageHandler
         extends SshMessageHandler<ChannelOpenTunOpenSshMessage> {
 
-    public ChannelOpenTunOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenTunOpenSshMessageHandler(
-            SshContext context, ChannelOpenTunOpenSshMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelOpenTunOpenSshMessage object) {
         // TODO: Handle ChannelOpenTunOpenSshMessage
     }
 
     @Override
-    public ChannelOpenTunOpenSshMessageParser getParser(byte[] array) {
+    public ChannelOpenTunOpenSshMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenTunOpenSshMessageParser(array);
     }
 
     @Override
-    public ChannelOpenTunOpenSshMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenTunOpenSshMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenTunOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenTunOpenSshMessagePreparator getPreparator() {
-        return new ChannelOpenTunOpenSshMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenTunOpenSshMessagePreparator PREPARATOR =
+            new ChannelOpenTunOpenSshMessagePreparator();
 
-    @Override
-    public ChannelOpenTunOpenSshMessageSerializer getSerializer() {
-        return new ChannelOpenTunOpenSshMessageSerializer(message);
-    }
+    public static final ChannelOpenTunOpenSshMessageSerializer SERIALIZER =
+            new ChannelOpenTunOpenSshMessageSerializer();
 }

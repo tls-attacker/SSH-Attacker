@@ -29,11 +29,11 @@ public class GlobalRequestUnknownMessageParser
         return new GlobalRequestUnknownMessage();
     }
 
-    public void parseTypeSpecificData() {
-        message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
+    private void parseTypeSpecificData() {
+        byte[] typeSpecificData = parseByteArrayField(getBytesLeft());
+        message.setTypeSpecificData(typeSpecificData);
         LOGGER.debug(
-                "Type specific data: {}",
-                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
+                "TypeSpecificData: {}", () -> ArrayConverter.bytesToHexString(typeSpecificData));
     }
 
     @Override

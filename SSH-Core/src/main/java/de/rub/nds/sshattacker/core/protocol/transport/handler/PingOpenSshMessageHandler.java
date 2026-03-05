@@ -20,38 +20,26 @@ public class PingOpenSshMessageHandler extends SshMessageHandler<PingOpenSshMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public PingOpenSshMessageHandler(SshContext context, PingOpenSshMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, PingOpenSshMessage object) {
         LOGGER.debug(
-                "PingMessage received from remote, data to respond length: {}",
-                message.getDataLength().getValue());
+                "PingOpenSshMessage received from remote, data to respond length: {}",
+                () -> object.getDataLength().getValue());
     }
 
     @Override
-    public PingOpenSshMessageParser getParser(byte[] array) {
+    public PingOpenSshMessageParser getParser(byte[] array, SshContext context) {
         return new PingOpenSshMessageParser(array);
     }
 
     @Override
-    public PingOpenSshMessageParser getParser(byte[] array, int startPosition) {
+    public PingOpenSshMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new PingOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public PingOpenSshMessagePreparator getPreparator() {
-        return new PingOpenSshMessagePreparator(context.getChooser(), message);
-    }
+    public static final PingOpenSshMessagePreparator PREPARATOR =
+            new PingOpenSshMessagePreparator();
 
-    @Override
-    public PingOpenSshMessageSerializer getSerializer() {
-        return new PingOpenSshMessageSerializer(message);
-    }
+    public static final PingOpenSshMessageSerializer SERIALIZER =
+            new PingOpenSshMessageSerializer();
 }

@@ -47,6 +47,21 @@ public class ChannelDefaults implements Serializable {
         this.remotePacketSize = remotePacketSize;
     }
 
+    public ChannelDefaults(ChannelDefaults other) {
+        super();
+        channelType = other.channelType;
+        localChannelId = other.localChannelId;
+        localWindowSize = other.localWindowSize;
+        localPacketSize = other.localPacketSize;
+        remoteChannelId = other.remoteChannelId;
+        remoteWindowSize = other.remoteWindowSize;
+        remotePacketSize = other.remotePacketSize;
+    }
+
+    public ChannelDefaults createCopy() {
+        return new ChannelDefaults(this);
+    }
+
     public ChannelType getChannelType() {
         return channelType;
     }

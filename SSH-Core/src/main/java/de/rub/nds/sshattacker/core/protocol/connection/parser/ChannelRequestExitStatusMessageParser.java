@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,12 +29,14 @@ public class ChannelRequestExitStatusMessageParser
         return new ChannelRequestExitStatusMessage();
     }
 
-    public void parseExitStatus() {
-        message.setExitStatus(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Exit status: {}", message.getExitStatus().getValue());
+    private void parseExitStatus() {
+        int exitStatus = parseIntField();
+        message.setExitStatus(exitStatus);
+        LOGGER.debug("Exit status: {}", exitStatus);
     }
 
-    public void parseMessageSpecificContents() {
+    @Override
+    protected void parseMessageSpecificContents() {
         super.parseMessageSpecificContents();
         parseExitStatus();
     }

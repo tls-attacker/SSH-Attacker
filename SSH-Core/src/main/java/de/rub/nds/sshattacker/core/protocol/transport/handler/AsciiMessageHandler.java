@@ -9,46 +9,37 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
-    public AsciiMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public AsciiMessageHandler(SshContext context, AsciiMessage message) {
-        super(context, message);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, AsciiMessage object) {
         LOGGER.debug(
-                "Received text message: {}", backslashEscapeString(message.getText().getValue()));
+                "Received text message: {}",
+                () -> backslashEscapeString(object.getText().getValue()));
     }
 
     @Override
-    public AsciiMessageParser getParser(byte[] array) {
+    public AsciiMessageParser getParser(byte[] array, SshContext context) {
         return new AsciiMessageParser(array);
     }
 
     @Override
-    public AsciiMessageParser getParser(byte[] array, int startPosition) {
+    public AsciiMessageParser getParser(byte[] array, int startPosition, SshContext context) {
         return new AsciiMessageParser(array, startPosition);
     }
 
-    @Override
-    public ProtocolMessagePreparator<AsciiMessage> getPreparator() {
-        return new AsciiMessagePreparator(context.getChooser(), message);
-    }
+    public static final AsciiMessagePreparator PREPARATOR = new AsciiMessagePreparator();
 
-    @Override
-    public AsciiMessageSerializer getSerializer() {
-        return new AsciiMessageSerializer(message);
-    }
+    public static final AsciiMessageSerializer SERIALIZER = new AsciiMessageSerializer();
 }

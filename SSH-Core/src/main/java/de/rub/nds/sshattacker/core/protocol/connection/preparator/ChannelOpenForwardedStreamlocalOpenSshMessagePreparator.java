@@ -7,21 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenForwardedStreamlocalOpenSshMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenForwardedStreamlocalOpenSshMessagePreparator
         extends ChannelOpenMessagePreparator<ChannelOpenForwardedStreamlocalOpenSshMessage> {
 
-    public ChannelOpenForwardedStreamlocalOpenSshMessagePreparator(
-            Chooser chooser, ChannelOpenForwardedStreamlocalOpenSshMessage message) {
-        super(chooser, message);
+    public ChannelOpenForwardedStreamlocalOpenSshMessagePreparator() {
+        super(ChannelType.FORWARDED_STREAMLOCAL_OPENSSH_COM);
     }
 
     @Override
-    protected void prepareChannelOpenMessageSpecificContents() {
+    protected void prepareChannelOpenMessageSpecificContents(
+            ChannelOpenForwardedStreamlocalOpenSshMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setSocketPath("/var/run/sshattacker.sock", true);
-        getObject().setReserved(new byte[0], true);
+        object.setSocketPath("/var/run/sshattacker.sock", true);
+        object.setReserved(new byte[0], true);
     }
 }

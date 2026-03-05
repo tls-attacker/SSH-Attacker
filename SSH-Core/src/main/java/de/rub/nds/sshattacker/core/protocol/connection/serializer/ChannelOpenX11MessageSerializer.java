@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenX11Message;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,29 +18,26 @@ public class ChannelOpenX11MessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenX11MessageSerializer(ChannelOpenX11Message message) {
-        super(message);
-    }
-
-    private void serializeOriginatorAddress() {
+    private static void serializeOriginatorAddress(
+            ChannelOpenX11Message object, SerializerStream output) {
         LOGGER.debug(
-                "Originator address length: {}", message.getOriginatorAddressLength().getValue());
-        appendInt(
-                message.getOriginatorAddressLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Originator address: {}", message.getOriginatorAddress().getValue());
-        appendString(message.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
+                "Originator address length: {}", object.getOriginatorAddressLength().getValue());
+        output.appendInt(object.getOriginatorAddressLength().getValue());
+        LOGGER.debug("Originator address: {}", object.getOriginatorAddress().getValue());
+        output.appendString(object.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeOriginatorPort() {
-        LOGGER.debug("Originator port: {}", message.getOriginatorPort().getValue());
-        appendInt(message.getOriginatorPort().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeOriginatorPort(
+            ChannelOpenX11Message object, SerializerStream output) {
+        LOGGER.debug("Originator port: {}", object.getOriginatorPort().getValue());
+        output.appendInt(object.getOriginatorPort().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeOriginatorAddress();
-        serializeOriginatorPort();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenX11Message object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeOriginatorAddress(object, output);
+        serializeOriginatorPort(object, output);
     }
 }

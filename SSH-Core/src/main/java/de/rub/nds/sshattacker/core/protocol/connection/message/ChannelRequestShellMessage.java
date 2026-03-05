@@ -7,13 +7,52 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestShellMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelRequestShellMessage> {
+public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelRequestShellMessage>
+        implements HasSentHandler {
+
+    public ChannelRequestShellMessage() {
+        super();
+    }
+
+    public ChannelRequestShellMessage(ChannelRequestShellMessage other) {
+        super(other);
+    }
 
     @Override
-    public ChannelRequestShellMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestShellMessageHandler(context, this);
+    public ChannelRequestShellMessage createCopy() {
+        return new ChannelRequestShellMessage(this);
+    }
+
+    public static final ChannelRequestShellMessageHandler HANDLER =
+            new ChannelRequestShellMessageHandler();
+
+    @Override
+    public ChannelRequestShellMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestShellMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestShellMessageHandler.SERIALIZER.serialize(this);
     }
 }

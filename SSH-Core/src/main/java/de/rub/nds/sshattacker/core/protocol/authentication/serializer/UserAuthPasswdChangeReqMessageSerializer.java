@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswdChangeReqMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -19,28 +19,26 @@ public class UserAuthPasswdChangeReqMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPasswdChangeReqMessageSerializer(UserAuthPasswdChangeReqMessage message) {
-        super(message);
+    private static void serializePrompt(
+            UserAuthPasswdChangeReqMessage object, SerializerStream output) {
+        LOGGER.debug("Prompt length: {}", object.getPromptLength().getValue());
+        output.appendInt(object.getPromptLength().getValue());
+        LOGGER.debug("Prompt: {}", object.getPrompt().getValue());
+        output.appendString(object.getPrompt().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializePrompt() {
-        LOGGER.debug("Prompt length: {}", message.getPromptLength().getValue());
-        appendInt(message.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Prompt: {}", message.getPrompt().getValue());
-        appendString(message.getPrompt().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
-        appendInt(
-                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: {}", message.getLanguageTag().getValue());
-        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+    private static void serializeLanguageTag(
+            UserAuthPasswdChangeReqMessage object, SerializerStream output) {
+        LOGGER.debug("Language tag length: {}", object.getLanguageTagLength().getValue());
+        output.appendInt(object.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag: {}", object.getLanguageTag().getValue());
+        output.appendString(object.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        serializePrompt();
-        serializeLanguageTag();
+    protected void serializeMessageSpecificContents(
+            UserAuthPasswdChangeReqMessage object, SerializerStream output) {
+        serializePrompt(object, output);
+        serializeLanguageTag(object, output);
     }
 }

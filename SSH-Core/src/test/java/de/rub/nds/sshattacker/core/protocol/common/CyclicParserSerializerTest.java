@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -46,9 +45,11 @@ public class CyclicParserSerializerTest {
 
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
-        return new Reflections("de.rub.nds.sshattacker.core.protocol")
+        // Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
+        return new Reflections("de.rub.nds.sshattacker.core")
                 .getSubTypesOf(ProtocolMessage.class).stream()
                         .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
+                        // .filter(messageClass -> !excludedClasses.contains(messageClass))
                         .map(
                                 messageClass ->
                                         DynamicTest.dynamicTest(
@@ -111,20 +112,12 @@ public class CyclicParserSerializerTest {
                     || ChannelOpenMessage.class.isAssignableFrom(messageClass)) {
                 Channel defaultChannel =
                         context.getConfig().getChannelDefaults().newChannelFromDefaults();
-                context.getChannelManager()
-                        .getChannels()
-                        .put(defaultChannel.getRemoteChannelId().getValue(), defaultChannel);
+                context.getChannelManager().addChannel(defaultChannel);
                 defaultChannel.setOpen(true);
             }
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare();
-            } catch (PreparationException e) {
-                LOGGER.fatal(e);
-                fail(
-                        "Caught a PreparationException while preparing message of class '"
-                                + messageClassName
-                                + "'");
+                message.prepare(context.getChooser());
             } catch (NotImplementedException e) {
                 LOGGER.error(e);
                 throw new TestAbortedException(
@@ -137,7 +130,7 @@ public class CyclicParserSerializerTest {
             // Serialize message into a byte array
             byte[] serializedMessage = null;
             try {
-                serializedMessage = message.getHandler(context).getSerializer().serialize();
+                serializedMessage = message.serialize();
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -156,7 +149,7 @@ public class CyclicParserSerializerTest {
             // Parse the serialized message back into a new instance
             ProtocolMessage<?> parsedMessage = null;
             try {
-                parsedMessage = message.getHandler(context).getParser(serializedMessage).parse();
+                parsedMessage = message.getHandler().getParser(serializedMessage, context).parse();
             } catch (ParserException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -176,9 +169,7 @@ public class CyclicParserSerializerTest {
             // serializedMessage
             // This validates the order parse -> serialize
             try {
-                assertArrayEquals(
-                        serializedMessage,
-                        parsedMessage.getHandler(context).getSerializer().serialize());
+                assertArrayEquals(serializedMessage, parsedMessage.serialize());
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(

@@ -12,24 +12,49 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeReplyMessage>
-        implements HostKeyMessage, ExchangeHashSignatureMessage {
+        implements HostKeyMessage, ExchangeHashSignatureMessage, HasSentHandler {
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
-    private ModifiableInteger publicValuesLength;
-    private ModifiableByteArray publicValues;
-
-    private ModifiableByteArray classicalPublicKey;
-    private ModifiableByteArray postQuantumKeyEncapsulation;
+    private ModifiableInteger concatenatedHybridKeysLength;
+    private ModifiableByteArray concatenatedHybridKeys;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public HybridKeyExchangeReplyMessage() {
+        super();
+    }
+
+    public HybridKeyExchangeReplyMessage(HybridKeyExchangeReplyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        concatenatedHybridKeysLength =
+                other.concatenatedHybridKeysLength != null
+                        ? other.concatenatedHybridKeysLength.createCopy()
+                        : null;
+        concatenatedHybridKeys =
+                other.concatenatedHybridKeys != null
+                        ? other.concatenatedHybridKeys.createCopy()
+                        : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public HybridKeyExchangeReplyMessage createCopy() {
+        return new HybridKeyExchangeReplyMessage(this);
+    }
 
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
@@ -85,73 +110,44 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
-    public ModifiableInteger getPublicValuesLength() {
-        return publicValuesLength;
+    public ModifiableInteger getConcatenatedHybridKeysLength() {
+        return concatenatedHybridKeysLength;
     }
 
-    public void setPublicValuesLength(ModifiableInteger publicValuesLength) {
-        this.publicValuesLength = publicValuesLength;
+    public void setConcatenatedHybridKeysLength(ModifiableInteger concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength = concatenatedHybridKeysLength;
     }
 
-    public void setPublicValuesLength(int publicValuesLength) {
-        this.publicValuesLength =
+    public void setConcatenatedHybridKeysLength(int concatenatedHybridKeysLength) {
+        this.concatenatedHybridKeysLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.publicValuesLength, publicValuesLength);
+                        this.concatenatedHybridKeysLength, concatenatedHybridKeysLength);
     }
 
-    public ModifiableByteArray getPublicValues() {
-        return publicValues;
+    public ModifiableByteArray getConcatenatedHybridKeys() {
+        return concatenatedHybridKeys;
     }
 
-    public void setPublicValues(ModifiableByteArray publicValues) {
-        setPublicValues(publicValues, false);
+    public void setConcatenatedHybridKeys(byte[] concatenatedHybridKeys) {
+        setConcatenatedHybridKeys(concatenatedHybridKeys, false);
     }
 
-    public void setPublicValues(byte[] publicValues) {
-        setPublicValues(publicValues, false);
-    }
-
-    public void setPublicValues(ModifiableByteArray publicValues, boolean adjustLengthField) {
-        this.publicValues = publicValues;
+    public void setConcatenatedHybridKeys(
+            ModifiableByteArray concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys = concatenatedHybridKeys;
         if (adjustLengthField) {
-            setPublicValuesLength(this.publicValues.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
     }
 
-    public void setPublicValues(byte[] publicValues, boolean adjustLengthField) {
-        this.publicValues =
-                ModifiableVariableFactory.safelySetValue(this.publicValues, publicValues);
+    public void setConcatenatedHybridKeys(
+            byte[] concatenatedHybridKeys, boolean adjustLengthField) {
+        this.concatenatedHybridKeys =
+                ModifiableVariableFactory.safelySetValue(
+                        this.concatenatedHybridKeys, concatenatedHybridKeys);
         if (adjustLengthField) {
-            setPublicValuesLength(this.publicValues.getValue().length);
+            setConcatenatedHybridKeysLength(this.concatenatedHybridKeys.getValue().length);
         }
-    }
-
-    public ModifiableByteArray getClassicalPublicKey() {
-        return classicalPublicKey;
-    }
-
-    public void setClassicalPublicKey(ModifiableByteArray classicalPublicKey) {
-        this.classicalPublicKey = classicalPublicKey;
-    }
-
-    public void setClassicalPublicKey(byte[] classicalPublicKey) {
-        this.classicalPublicKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.classicalPublicKey, classicalPublicKey);
-    }
-
-    public ModifiableByteArray getPostQuantumKeyEncapsulation() {
-        return postQuantumKeyEncapsulation;
-    }
-
-    public void setPostQuantumKeyEncapsulation(ModifiableByteArray postQuantumKeyEncapsulation) {
-        this.postQuantumKeyEncapsulation = postQuantumKeyEncapsulation;
-    }
-
-    public void setPostQuantumKeyEncapsulation(byte[] postQuantumKeyEncapsulation) {
-        this.postQuantumKeyEncapsulation =
-                ModifiableVariableFactory.safelySetValue(
-                        this.postQuantumKeyEncapsulation, postQuantumKeyEncapsulation);
     }
 
     @Override
@@ -201,8 +197,31 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
         }
     }
 
+    public static final HybridKeyExchangeReplyMessageHandler HANDLER =
+            new HybridKeyExchangeReplyMessageHandler();
+
     @Override
-    public HybridKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new HybridKeyExchangeReplyMessageHandler(context, this);
+    public HybridKeyExchangeReplyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        HybridKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return HybridKeyExchangeReplyMessageHandler.SERIALIZER.serialize(this);
     }
 }

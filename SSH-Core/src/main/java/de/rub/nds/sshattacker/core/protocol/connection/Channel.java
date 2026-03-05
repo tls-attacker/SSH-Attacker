@@ -10,12 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.connection;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.ChannelDataType;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Channel implements Serializable {
 
     private ChannelType channelType;
+    private ChannelDataType expectedDataType;
     private ModifiableInteger localChannelId;
     private ModifiableInteger localWindowSize;
     private ModifiableInteger localPacketSize;
@@ -27,6 +32,9 @@ public class Channel implements Serializable {
     private ModifiableBoolean open;
     private ModifiableBoolean closeMessageReceived;
     private ModifiableBoolean closeMessageSent;
+
+    private final List<ChannelRequestMessage<?>> receivedRequestsThatWantReply = new LinkedList<>();
+    private final List<ChannelRequestMessage<?>> sentRequestsThatWantReply = new LinkedList<>();
 
     public Channel() {
         super();
@@ -40,6 +48,7 @@ public class Channel implements Serializable {
             boolean open) {
         super();
         this.channelType = channelType;
+        expectedDataType = ChannelDataType.UNSET;
         setLocalChannelId(localChannelId);
         setLocalWindowSize(localWindowSize);
         setLocalPacketSize(localPacketSize);
@@ -56,6 +65,7 @@ public class Channel implements Serializable {
             Boolean open) {
         super();
         this.channelType = channelType;
+        expectedDataType = ChannelDataType.UNSET;
         this.localChannelId = localChannelId;
         this.localWindowSize = localWindowSize;
         this.localPacketSize = localPacketSize;
@@ -75,6 +85,31 @@ public class Channel implements Serializable {
             Boolean open) {
         super();
         this.channelType = channelType;
+        expectedDataType = ChannelDataType.UNSET;
+        setLocalChannelId(localChannelId);
+        setLocalWindowSize(localWindowSize);
+        setLocalPacketSize(localPacketSize);
+        setRemoteChannelId(remoteChannelId);
+        setRemoteWindowSize(remoteWindowSize);
+        setRemotePacketSize(remotePacketSize);
+        setCloseMessageSent(false);
+        setCloseMessageReceived(false);
+        setOpen(open);
+    }
+
+    public Channel(
+            ChannelType channelType,
+            ChannelDataType expectedDataType,
+            Integer localChannelId,
+            Integer localWindowSize,
+            Integer localPacketSize,
+            Integer remoteChannelId,
+            Integer remoteWindowSize,
+            Integer remotePacketSize,
+            Boolean open) {
+        super();
+        this.channelType = channelType;
+        this.expectedDataType = expectedDataType;
         setLocalChannelId(localChannelId);
         setLocalWindowSize(localWindowSize);
         setLocalPacketSize(localPacketSize);
@@ -92,6 +127,14 @@ public class Channel implements Serializable {
 
     public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
+    }
+
+    public ChannelDataType getExpectedDataType() {
+        return expectedDataType;
+    }
+
+    public void setExpectedDataType(ChannelDataType expectedDataType) {
+        this.expectedDataType = expectedDataType;
     }
 
     public ModifiableInteger getLocalPacketSize() {
@@ -224,6 +267,28 @@ public class Channel implements Serializable {
                 ModifiableVariableFactory.safelySetValue(this.remoteWindowSize, remoteWindowSize);
     }
 
+    public void addReceivedRequestThatWantsReply(ChannelRequestMessage<?> message) {
+        receivedRequestsThatWantReply.add(message);
+    }
+
+    public void addSentRequestsThatWantsReply(ChannelRequestMessage<?> message) {
+        sentRequestsThatWantReply.add(message);
+    }
+
+    public ChannelRequestMessage<?> removeFirstReceivedRequestThatWantReply() {
+        if (!receivedRequestsThatWantReply.isEmpty()) {
+            return receivedRequestsThatWantReply.removeFirst();
+        }
+        return null;
+    }
+
+    public ChannelRequestMessage<?> removeFirstSentRequestThatWantReply() {
+        if (!sentRequestsThatWantReply.isEmpty()) {
+            return sentRequestsThatWantReply.removeFirst();
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "\n"
@@ -231,6 +296,9 @@ public class Channel implements Serializable {
                 + "\n"
                 + " channelType: "
                 + channelType.toString()
+                + "\n"
+                + " channelDataType: "
+                + expectedDataType.toString()
                 + "\n"
                 + " localChannelId: "
                 + localChannelId.getValue()

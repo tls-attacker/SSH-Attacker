@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenForwardedTcpIpMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -18,46 +18,42 @@ public class ChannelOpenForwardedTcpIpMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenForwardedTcpIpMessageSerializer(ChannelOpenForwardedTcpIpMessage message) {
-        super(message);
+    private static void serializeConnectedAddress(
+            ChannelOpenForwardedTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Connected address length: {}", object.getConnectedAddressLength().getValue());
+        output.appendInt(object.getConnectedAddressLength().getValue());
+        LOGGER.debug("Connected address: {}", object.getConnectedAddress().getValue());
+        output.appendString(object.getConnectedAddress().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeConnectedAddress() {
+    private static void serializeConnectedPort(
+            ChannelOpenForwardedTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Connected port: {}", object.getConnectedPort().getValue());
+        output.appendInt(object.getConnectedPort().getValue());
+    }
+
+    private static void serializeOriginatorAddress(
+            ChannelOpenForwardedTcpIpMessage object, SerializerStream output) {
         LOGGER.debug(
-                "Connected address length: {}", message.getConnectedAddressLength().getValue());
-        appendInt(
-                message.getConnectedAddressLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Connected address: {}", message.getConnectedAddress().getValue());
-        appendString(message.getConnectedAddress().getValue(), StandardCharsets.US_ASCII);
+                "Originator address length: {}", object.getOriginatorAddressLength().getValue());
+        output.appendInt(object.getOriginatorAddressLength().getValue());
+        LOGGER.debug("Originator address: {}", object.getOriginatorAddress().getValue());
+        output.appendString(object.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeConnectedPort() {
-        LOGGER.debug("Connected port: {}", message.getConnectedPort().getValue());
-        appendInt(message.getConnectedPort().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    private void serializeOriginatorAddress() {
-        LOGGER.debug(
-                "Originator address length: {}", message.getOriginatorAddressLength().getValue());
-        appendInt(
-                message.getOriginatorAddressLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Originator address: {}", message.getOriginatorAddress().getValue());
-        appendString(message.getOriginatorAddress().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeOriginatorPort() {
-        LOGGER.debug("Originator port: {}", message.getOriginatorPort().getValue());
-        appendInt(message.getOriginatorPort().getValue(), DataFormatConstants.UINT32_SIZE);
+    private static void serializeOriginatorPort(
+            ChannelOpenForwardedTcpIpMessage object, SerializerStream output) {
+        LOGGER.debug("Originator port: {}", object.getOriginatorPort().getValue());
+        output.appendInt(object.getOriginatorPort().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeConnectedAddress();
-        serializeConnectedPort();
-        serializeOriginatorAddress();
-        serializeOriginatorPort();
+    protected void serializeMessageSpecificContents(
+            ChannelOpenForwardedTcpIpMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeConnectedAddress(object, output);
+        serializeConnectedPort(object, output);
+        serializeOriginatorAddress(object, output);
+        serializeOriginatorPort(object, output);
     }
 }

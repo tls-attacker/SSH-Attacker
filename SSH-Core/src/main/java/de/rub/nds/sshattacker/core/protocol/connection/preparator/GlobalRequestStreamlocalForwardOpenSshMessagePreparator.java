@@ -14,14 +14,14 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class GlobalRequestStreamlocalForwardOpenSshMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestStreamlocalForwardOpenSshMessage> {
 
-    public GlobalRequestStreamlocalForwardOpenSshMessagePreparator(
-            Chooser chooser, GlobalRequestStreamlocalForwardOpenSshMessage message) {
-        super(chooser, message, GlobalRequestType.STREAMLOCAL_FORWARD_OPENSSH_COM, true);
+    public GlobalRequestStreamlocalForwardOpenSshMessagePreparator() {
+        super(GlobalRequestType.STREAMLOCAL_FORWARD_OPENSSH_COM, true);
     }
 
     @Override
-    protected void prepareGlobalRequestMessageSpecificContents() {
+    protected void prepareGlobalRequestMessageSpecificContents(
+            GlobalRequestStreamlocalForwardOpenSshMessage object, Chooser chooser) {
         // TODO: Replace dummy values
-        getObject().setSocketPath("/var/run/sshattacker.sock", true);
+        object.setSocketPath("/var/run/sshattacker.sock", true);
     }
 }

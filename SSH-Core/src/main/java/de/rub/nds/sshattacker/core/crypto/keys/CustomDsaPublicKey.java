@@ -7,8 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.DsaPublicKeySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
@@ -17,7 +16,6 @@ import java.security.spec.DSAParameterSpec;
 
 /** A serializable DSA public key used in the DSA signature algorithm. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
 
     // Group parameters
@@ -46,6 +44,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         this.q = q;
         this.g = g;
         this.y = y;
+    }
+
+    public CustomDsaPublicKey(CustomDsaPublicKey other) {
+        super(other);
+        p = other.p;
+        q = other.q;
+        g = other.g;
+        y = other.y;
+    }
+
+    @Override
+    public CustomDsaPublicKey createCopy() {
+        return new CustomDsaPublicKey(this);
     }
 
     public BigInteger getP() {
@@ -90,5 +101,12 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "DSA";
+    }
+
+    public static final DsaPublicKeySerializer SERIALIZER = new DsaPublicKeySerializer();
+
+    @Override
+    public byte[] serialize() {
+        return SERIALIZER.serialize(this);
     }
 }

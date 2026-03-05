@@ -13,10 +13,25 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownMessage extends SshMessage<UnknownMessage> {
 
     private ModifiableByteArray payload;
+
+    public UnknownMessage() {
+        super();
+    }
+
+    public UnknownMessage(UnknownMessage other) {
+        super(other);
+        payload = other.payload != null ? other.payload.createCopy() : null;
+    }
+
+    @Override
+    public UnknownMessage createCopy() {
+        return new UnknownMessage(this);
+    }
 
     public ModifiableByteArray getPayload() {
         return payload;
@@ -38,8 +53,25 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
         return "UnknownMessage (no id set)";
     }
 
+    public static final UnknownMessageHandler HANDLER = new UnknownMessageHandler();
+
     @Override
-    public UnknownMessageHandler getHandler(SshContext context) {
-        return new UnknownMessageHandler(context, this);
+    public UnknownMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnknownMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UnknownMessageHandler.SERIALIZER.serialize(this);
     }
 }

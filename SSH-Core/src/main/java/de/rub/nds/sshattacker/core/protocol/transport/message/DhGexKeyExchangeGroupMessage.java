@@ -10,9 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGroupMessage> {
@@ -21,6 +22,25 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
     private ModifiableBigInteger groupModulus;
     private ModifiableInteger groupGeneratorLength;
     private ModifiableBigInteger groupGenerator;
+
+    public DhGexKeyExchangeGroupMessage() {
+        super();
+    }
+
+    public DhGexKeyExchangeGroupMessage(DhGexKeyExchangeGroupMessage other) {
+        super(other);
+        groupModulusLength =
+                other.groupModulusLength != null ? other.groupModulusLength.createCopy() : null;
+        groupModulus = other.groupModulus != null ? other.groupModulus.createCopy() : null;
+        groupGeneratorLength =
+                other.groupGeneratorLength != null ? other.groupGeneratorLength.createCopy() : null;
+        groupGenerator = other.groupGenerator != null ? other.groupGenerator.createCopy() : null;
+    }
+
+    @Override
+    public DhGexKeyExchangeGroupMessage createCopy() {
+        return new DhGexKeyExchangeGroupMessage(this);
+    }
 
     public ModifiableInteger getGroupModulusLength() {
         return groupModulusLength;
@@ -104,8 +124,26 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
         }
     }
 
+    public static final DhGexKeyExchangeGroupMessageHandler HANDLER =
+            new DhGexKeyExchangeGroupMessageHandler();
+
     @Override
-    public DhGexKeyExchangeGroupMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeGroupMessageHandler(context, this);
+    public DhGexKeyExchangeGroupMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhGexKeyExchangeGroupMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DhGexKeyExchangeGroupMessageHandler.SERIALIZER.serialize(this);
     }
 }

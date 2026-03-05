@@ -11,13 +11,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.protocol.common.HasSentHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11ReqMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelRequestX11ReqMessage
-        extends ChannelRequestMessage<ChannelRequestX11ReqMessage> {
+public class ChannelRequestX11ReqMessage extends ChannelRequestMessage<ChannelRequestX11ReqMessage>
+        implements HasSentHandler {
 
     private ModifiableByte singleConnection;
     private ModifiableInteger x11AuthenticationProtocolLength;
@@ -25,6 +27,38 @@ public class ChannelRequestX11ReqMessage
     private ModifiableInteger x11AuthenticationCookieLength;
     private ModifiableString x11AuthenticationCookie;
     private ModifiableInteger x11ScreenNumber;
+
+    public ChannelRequestX11ReqMessage() {
+        super();
+    }
+
+    public ChannelRequestX11ReqMessage(ChannelRequestX11ReqMessage other) {
+        super(other);
+        singleConnection =
+                other.singleConnection != null ? other.singleConnection.createCopy() : null;
+        x11AuthenticationProtocolLength =
+                other.x11AuthenticationProtocolLength != null
+                        ? other.x11AuthenticationProtocolLength.createCopy()
+                        : null;
+        x11AuthenticationProtocol =
+                other.x11AuthenticationProtocol != null
+                        ? other.x11AuthenticationProtocol.createCopy()
+                        : null;
+        x11AuthenticationCookieLength =
+                other.x11AuthenticationCookieLength != null
+                        ? other.x11AuthenticationCookieLength.createCopy()
+                        : null;
+        x11AuthenticationCookie =
+                other.x11AuthenticationCookie != null
+                        ? other.x11AuthenticationCookie.createCopy()
+                        : null;
+        x11ScreenNumber = other.x11ScreenNumber != null ? other.x11ScreenNumber.createCopy() : null;
+    }
+
+    @Override
+    public ChannelRequestX11ReqMessage createCopy() {
+        return new ChannelRequestX11ReqMessage(this);
+    }
 
     public ModifiableByte getSingleConnection() {
         return singleConnection;
@@ -165,8 +199,31 @@ public class ChannelRequestX11ReqMessage
                 ModifiableVariableFactory.safelySetValue(this.x11ScreenNumber, x11ScreenNumber);
     }
 
+    public static final ChannelRequestX11ReqMessageHandler HANDLER =
+            new ChannelRequestX11ReqMessageHandler();
+
     @Override
-    public ChannelRequestX11ReqMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestX11ReqMessageHandler(context, this);
+    public ChannelRequestX11ReqMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void adjustContextAfterSent(SshContext context) {
+        HANDLER.adjustContextAfterMessageSent(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelRequestX11ReqMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelRequestX11ReqMessageHandler.SERIALIZER.serialize(this);
     }
 }

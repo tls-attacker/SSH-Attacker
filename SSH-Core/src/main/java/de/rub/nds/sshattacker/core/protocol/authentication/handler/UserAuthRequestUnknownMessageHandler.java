@@ -12,44 +12,30 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthReques
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthRequestUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthRequestUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthRequestUnknownMessageHandler
         extends SshMessageHandler<UserAuthRequestUnknownMessage> {
 
-    public UserAuthRequestUnknownMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestUnknownMessageHandler(
-            SshContext context, UserAuthRequestUnknownMessage message) {
-        super(context, message);
+    @Override
+    public void adjustContext(SshContext context, UserAuthRequestUnknownMessage object) {
+        // TODO: Handle UserAuthRequestUnknownMessage
     }
 
     @Override
-    public void adjustContext() {
-        // TODO: Handle UserAuthUnknownMessage
-    }
-
-    @Override
-    public SshMessageParser<UserAuthRequestUnknownMessage> getParser(byte[] array) {
+    public UserAuthRequestUnknownMessageParser getParser(byte[] array, SshContext context) {
         return new UserAuthRequestUnknownMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<UserAuthRequestUnknownMessage> getParser(
-            byte[] array, int startPosition) {
+    public UserAuthRequestUnknownMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestUnknownMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestUnknownMessagePreparator getPreparator() {
-        return new UserAuthRequestUnknownMessagePreparator(context.getChooser(), message);
-    }
+    public static final UserAuthRequestUnknownMessagePreparator PREPARATOR =
+            new UserAuthRequestUnknownMessagePreparator();
 
-    @Override
-    public UserAuthRequestUnknownMessageSerializer getSerializer() {
-        return new UserAuthRequestUnknownMessageSerializer(message);
-    }
+    public static final UserAuthRequestUnknownMessageSerializer SERIALIZER =
+            new UserAuthRequestUnknownMessageSerializer();
 }

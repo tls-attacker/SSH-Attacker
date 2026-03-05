@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
@@ -27,6 +28,30 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public EcdhKeyExchangeReplyMessage() {
+        super();
+    }
+
+    public EcdhKeyExchangeReplyMessage(EcdhKeyExchangeReplyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessage createCopy() {
+        return new EcdhKeyExchangeReplyMessage(this);
+    }
 
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
@@ -172,8 +197,26 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         }
     }
 
+    public static final EcdhKeyExchangeReplyMessageHandler HANDLER =
+            new EcdhKeyExchangeReplyMessageHandler();
+
     @Override
-    public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeReplyMessageHandler(context, this);
+    public EcdhKeyExchangeReplyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        EcdhKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return EcdhKeyExchangeReplyMessageHandler.SERIALIZER.serialize(this);
     }
 }

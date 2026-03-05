@@ -10,9 +10,4 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestNoneMessage;
 
 public class UserAuthRequestNoneMessageSerializer
-        extends UserAuthRequestMessageSerializer<UserAuthRequestNoneMessage> {
-
-    public UserAuthRequestNoneMessageSerializer(UserAuthRequestNoneMessage message) {
-        super(message);
-    }
-}
+        extends UserAuthRequestMessageSerializer<UserAuthRequestNoneMessage> {}

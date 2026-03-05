@@ -7,7 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
@@ -20,42 +21,33 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenFailureMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenFailureMessageHandler(SshContext context, ChannelOpenFailureMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
-        if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
+    public void adjustContext(SshContext context, ChannelOpenFailureMessage object) {
+        ChannelManager channelManager = context.getChannelManager();
+        if (!channelManager.containsPendingChannelWithLocalId(
+                object.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    getClass().getSimpleName(),
-                    message.getRecipientChannelId().getValue());
+                    object.getClass().getSimpleName(),
+                    object.getRecipientChannelId().getValue());
         }
-        context.getChannels().remove(message.getRecipientChannelId().getValue());
+        channelManager.removePendingChannelByLocalId(object.getRecipientChannelId().getValue());
     }
 
     @Override
-    public ChannelOpenFailureMessageParser getParser(byte[] array) {
+    public ChannelOpenFailureMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenFailureMessageParser(array);
     }
 
     @Override
-    public ChannelOpenFailureMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenFailureMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenFailureMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenFailureMessagePreparator getPreparator() {
-        return new ChannelOpenFailureMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenFailureMessagePreparator PREPARATOR =
+            new ChannelOpenFailureMessagePreparator();
 
-    @Override
-    public ChannelOpenFailureMessageSerializer getSerializer() {
-        return new ChannelOpenFailureMessageSerializer(message);
-    }
+    public static final ChannelOpenFailureMessageSerializer SERIALIZER =
+            new ChannelOpenFailureMessageSerializer();
 }

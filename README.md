@@ -160,7 +160,7 @@ SSH-Attacker uses the concept of Modifiable Variables to allow runtime modificat
 ```java
 ModifiableInteger i = new ModifiableInteger();
 i.setOriginalValue(30);
-i.setModification(new AddModification(20));
+i.addModification(new AddModification(20));
 System.out.println(i.getValue());  // 50
 ```
 
@@ -172,7 +172,7 @@ We can of course use this concept by constructing our SSH workflows. Imagine you
 ChannelOpenSessionMessage channelOpenSessionMessage = new ChannelOpenSessionMessage();
         ModifiableInteger i = new ModifiableInteger();
         channelOpenSessionMessage.setConfigSenderChannelId(1337);
-        i.setModification(new IntegerAddModification(100));
+        i.setModifications(new IntegerAddModification(100));
         channelOpenSessionMessage.setSenderChannelId(i);//1437
 ```
 

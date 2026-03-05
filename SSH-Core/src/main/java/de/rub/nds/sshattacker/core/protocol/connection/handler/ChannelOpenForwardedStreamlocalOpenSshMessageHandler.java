@@ -17,39 +17,27 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelOpenForwardedStreamlocalOpenSshMessageHandler
         extends SshMessageHandler<ChannelOpenForwardedStreamlocalOpenSshMessage> {
 
-    public ChannelOpenForwardedStreamlocalOpenSshMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenForwardedStreamlocalOpenSshMessageHandler(
-            SshContext context, ChannelOpenForwardedStreamlocalOpenSshMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(
+            SshContext context, ChannelOpenForwardedStreamlocalOpenSshMessage object) {
         // TODO: Handle ChannelOpenForwardedStreamlocalOpenSshMessage
     }
 
     @Override
-    public ChannelOpenForwardedStreamlocalOpenSshMessageParser getParser(byte[] array) {
+    public ChannelOpenForwardedStreamlocalOpenSshMessageParser getParser(
+            byte[] array, SshContext context) {
         return new ChannelOpenForwardedStreamlocalOpenSshMessageParser(array);
     }
 
     @Override
     public ChannelOpenForwardedStreamlocalOpenSshMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenForwardedStreamlocalOpenSshMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenForwardedStreamlocalOpenSshMessagePreparator getPreparator() {
-        return new ChannelOpenForwardedStreamlocalOpenSshMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final ChannelOpenForwardedStreamlocalOpenSshMessagePreparator PREPARATOR =
+            new ChannelOpenForwardedStreamlocalOpenSshMessagePreparator();
 
-    @Override
-    public ChannelOpenForwardedStreamlocalOpenSshMessageSerializer getSerializer() {
-        return new ChannelOpenForwardedStreamlocalOpenSshMessageSerializer(message);
-    }
+    public static final ChannelOpenForwardedStreamlocalOpenSshMessageSerializer SERIALIZER =
+            new ChannelOpenForwardedStreamlocalOpenSshMessageSerializer();
 }

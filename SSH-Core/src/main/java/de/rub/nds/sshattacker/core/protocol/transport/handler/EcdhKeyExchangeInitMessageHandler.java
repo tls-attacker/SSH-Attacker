@@ -17,41 +17,29 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class EcdhKeyExchangeInitMessageHandler
         extends SshMessageHandler<EcdhKeyExchangeInitMessage> {
 
-    public EcdhKeyExchangeInitMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public EcdhKeyExchangeInitMessageHandler(
-            SshContext context, EcdhKeyExchangeInitMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, EcdhKeyExchangeInitMessage object) {
         context.getChooser()
                 .getEcdhKeyExchange()
-                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                .setRemotePublicKey(object.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
+                .setEcdhClientPublicKey(object.getEphemeralPublicKey().getValue());
     }
 
     @Override
-    public EcdhKeyExchangeInitMessageParser getParser(byte[] array) {
+    public EcdhKeyExchangeInitMessageParser getParser(byte[] array, SshContext context) {
         return new EcdhKeyExchangeInitMessageParser(array);
     }
 
     @Override
-    public EcdhKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
+    public EcdhKeyExchangeInitMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new EcdhKeyExchangeInitMessageParser(array, startPosition);
     }
 
-    @Override
-    public EcdhKeyExchangeInitMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeInitMessagePreparator(context.getChooser(), message);
-    }
+    public static final EcdhKeyExchangeInitMessagePreparator PREPARATOR =
+            new EcdhKeyExchangeInitMessagePreparator();
 
-    @Override
-    public EcdhKeyExchangeInitMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeInitMessageSerializer(message);
-    }
+    public static final EcdhKeyExchangeInitMessageSerializer SERIALIZER =
+            new EcdhKeyExchangeInitMessageSerializer();
 }

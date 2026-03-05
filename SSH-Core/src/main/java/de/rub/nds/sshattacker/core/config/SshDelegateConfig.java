@@ -25,7 +25,7 @@ public class SshDelegateConfig {
 
     @SuppressWarnings("unused")
     @Parameter(
-            names = "-config",
+            names = {"-c", "--config"},
             description = "This parameter allows you to specify a default SshConfig")
     private String defaultConfig;
 

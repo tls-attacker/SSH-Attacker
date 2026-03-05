@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
@@ -17,7 +15,6 @@ import java.security.spec.DSAParameterSpec;
 
 /** A serializable DSA private key used in the DSA signature algorithm. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateKey {
 
     // Group parameters
@@ -38,6 +35,19 @@ public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateK
         this.q = q;
         this.g = g;
         this.x = x;
+    }
+
+    public CustomDsaPrivateKey(CustomDsaPrivateKey other) {
+        super(other);
+        p = other.p;
+        q = other.q;
+        g = other.g;
+        x = other.x;
+    }
+
+    @Override
+    public CustomDsaPrivateKey createCopy() {
+        return new CustomDsaPrivateKey(this);
     }
 
     public BigInteger getP() {

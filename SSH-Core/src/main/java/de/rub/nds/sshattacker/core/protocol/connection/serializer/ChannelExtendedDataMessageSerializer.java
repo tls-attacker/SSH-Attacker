@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
+import de.rub.nds.sshattacker.core.protocol.common.SerializerStream;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,29 +19,28 @@ public class ChannelExtendedDataMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelExtendedDataMessageSerializer(ChannelExtendedDataMessage message) {
-        super(message);
+    private static void serializeDataTypeCode(
+            ChannelExtendedDataMessage object, SerializerStream output) {
+        int dataTypeCode = object.getDataTypeCode().getValue();
+        LOGGER.debug("Data type code: {}", dataTypeCode);
+        LOGGER.debug("Data type: {}", ExtendedChannelDataType.fromDataTypeCode(dataTypeCode));
+        output.appendInt(dataTypeCode);
     }
 
-    private void serializeDataTypeCode() {
-        LOGGER.debug("Data type code: {}", message.getDataTypeCode().getValue());
-        LOGGER.debug(
-                "Data type: {}",
-                ExtendedChannelDataType.fromDataTypeCode(message.getDataTypeCode().getValue()));
-        appendInt(message.getDataTypeCode().getValue(), DataFormatConstants.UINT32_SIZE);
-    }
-
-    private void serializeData() {
-        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
-        appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
-        appendBytes(message.getData().getValue());
+    private static void serializeData(ChannelExtendedDataMessage object, SerializerStream output) {
+        Integer dataLength = object.getDataLength().getValue();
+        LOGGER.debug("Data length: {}", dataLength);
+        output.appendInt(dataLength);
+        byte[] data = object.getData().getValue();
+        LOGGER.debug("Data: {}", () -> ArrayConverter.bytesToRawHexString(data));
+        output.appendBytes(data);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeDataTypeCode();
-        serializeData();
+    protected void serializeMessageSpecificContents(
+            ChannelExtendedDataMessage object, SerializerStream output) {
+        super.serializeMessageSpecificContents(object, output);
+        serializeDataTypeCode(object, output);
+        serializeData(object, output);
     }
 }

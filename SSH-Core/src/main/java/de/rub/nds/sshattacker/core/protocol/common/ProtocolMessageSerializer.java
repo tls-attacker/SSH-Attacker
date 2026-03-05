@@ -10,17 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.common;
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage<T>>
         extends Serializer<T> {
 
-    protected final T message;
-
-    protected ProtocolMessageSerializer(T message) {
-        super();
-        this.message = message;
-    }
-
     @Override
-    protected final void serializeBytes() {
-        serializeProtocolMessageContents();
+    protected final void serializeBytes(T object, SerializerStream output) {
+        serializeProtocolMessageContents(object, output);
     }
 
-    protected abstract void serializeProtocolMessageContents();
+    protected abstract void serializeProtocolMessageContents(T object, SerializerStream output);
 }

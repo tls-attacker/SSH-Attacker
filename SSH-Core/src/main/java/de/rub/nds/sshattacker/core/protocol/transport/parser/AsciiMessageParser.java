@@ -44,7 +44,7 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
     }
 
     @Override
-    public void parseProtocolMessageContents() {
+    protected void parseProtocolMessageContents() {
         parseText();
     }
 }

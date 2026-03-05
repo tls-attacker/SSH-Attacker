@@ -13,9 +13,10 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage>
@@ -29,6 +30,30 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public DhKeyExchangeReplyMessage() {
+        super();
+    }
+
+    public DhKeyExchangeReplyMessage(DhKeyExchangeReplyMessage other) {
+        super(other);
+        hostKeyBytesLength =
+                other.hostKeyBytesLength != null ? other.hostKeyBytesLength.createCopy() : null;
+        hostKeyBytes = other.hostKeyBytes != null ? other.hostKeyBytes.createCopy() : null;
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+        signatureLength = other.signatureLength != null ? other.signatureLength.createCopy() : null;
+        signature = other.signature != null ? other.signature.createCopy() : null;
+    }
+
+    @Override
+    public DhKeyExchangeReplyMessage createCopy() {
+        return new DhKeyExchangeReplyMessage(this);
+    }
 
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
@@ -174,8 +199,26 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
         }
     }
 
+    public static final DhKeyExchangeReplyMessageHandler HANDLER =
+            new DhKeyExchangeReplyMessageHandler();
+
     @Override
-    public DhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeReplyMessageHandler(context, this);
+    public DhKeyExchangeReplyMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhKeyExchangeReplyMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DhKeyExchangeReplyMessageHandler.SERIALIZER.serialize(this);
     }
 }

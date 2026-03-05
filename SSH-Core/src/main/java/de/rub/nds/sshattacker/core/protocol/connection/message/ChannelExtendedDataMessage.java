@@ -13,12 +13,29 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
 
     private ModifiableInteger dataTypeCode;
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public ChannelExtendedDataMessage() {
+        super();
+    }
+
+    public ChannelExtendedDataMessage(ChannelExtendedDataMessage other) {
+        super(other);
+        dataTypeCode = other.dataTypeCode != null ? other.dataTypeCode.createCopy() : null;
+        dataLength = other.dataLength != null ? other.dataLength.createCopy() : null;
+        data = other.data != null ? other.data.createCopy() : null;
+    }
+
+    @Override
+    public ChannelExtendedDataMessage createCopy() {
+        return new ChannelExtendedDataMessage(this);
+    }
 
     public ModifiableInteger getDataTypeCode() {
         return dataTypeCode;
@@ -75,8 +92,26 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
         }
     }
 
+    public static final ChannelExtendedDataMessageHandler HANDLER =
+            new ChannelExtendedDataMessageHandler();
+
     @Override
-    public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
-        return new ChannelExtendedDataMessageHandler(context, this);
+    public ChannelExtendedDataMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        ChannelExtendedDataMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return ChannelExtendedDataMessageHandler.SERIALIZER.serialize(this);
     }
 }

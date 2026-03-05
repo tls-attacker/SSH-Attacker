@@ -96,7 +96,7 @@ public class ExtensionInfoMessageSerializerTest {
                 providedCompressionMethodsServerToClient);
         msg.addExtension(delayCompressionExtension);
 
-        ExtensionInfoMessageSerializer serializer = new ExtensionInfoMessageSerializer(msg);
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        ExtensionInfoMessageSerializer serializer = new ExtensionInfoMessageSerializer();
+        assertArrayEquals(expectedBytes, serializer.serialize(msg));
     }
 }

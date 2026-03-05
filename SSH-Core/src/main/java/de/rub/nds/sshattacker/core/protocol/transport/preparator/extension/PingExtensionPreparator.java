@@ -17,18 +17,17 @@ public class PingExtensionPreparator extends AbstractExtensionPreparator<PingExt
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingExtensionPreparator(Chooser chooser, PingExtension extension) {
-        super(chooser, extension);
+    public PingExtensionPreparator() {
+        super(Extension.PING_OPENSSH_COM);
     }
 
     @Override
-    protected void prepareExtensionSpecificContents() {
+    protected void prepareExtensionSpecificContents(PingExtension object, Chooser chooser) {
         // Sending ping@openssh.com is not allowed by the client according to OpenSSH specs
         if (chooser.getContext().isClient()) {
             LOGGER.warn(
                     "Client prepared PingExtension which is supposed to be sent by the server only!");
         }
-        getObject().setName(Extension.PING_OPENSSH_COM.getName(), true);
-        getObject().setVersion("0", true);
+        object.setVersion("0", true);
     }
 }

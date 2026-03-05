@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,19 +29,17 @@ public class PingExtensionParser extends AbstractExtensionParser<PingExtension> 
         return new PingExtension();
     }
 
+    private void parseVersion() {
+        int versionLength = parseIntField();
+        extension.setVersionLength(versionLength);
+        LOGGER.debug("Version length: {}", versionLength);
+        String version = parseByteString(versionLength, StandardCharsets.US_ASCII);
+        extension.setVersion(version);
+        LOGGER.debug("Version: {}", version);
+    }
+
     @Override
     protected void parseExtensionValue() {
-        parseVersionLength();
         parseVersion();
-    }
-
-    private void parseVersionLength() {
-        extension.setVersionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Version length: {}", extension.getVersionLength().getValue());
-    }
-
-    private void parseVersion() {
-        extension.setVersion(parseByteString(extension.getVersionLength().getValue()));
-        LOGGER.debug("Version: {}", extension.getVersion().getValue());
     }
 }

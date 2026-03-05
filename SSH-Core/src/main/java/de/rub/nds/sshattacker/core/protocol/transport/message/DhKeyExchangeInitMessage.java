@@ -10,15 +10,35 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessage> {
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;
+
+    public DhKeyExchangeInitMessage() {
+        super();
+    }
+
+    public DhKeyExchangeInitMessage(DhKeyExchangeInitMessage other) {
+        super(other);
+        ephemeralPublicKeyLength =
+                other.ephemeralPublicKeyLength != null
+                        ? other.ephemeralPublicKeyLength.createCopy()
+                        : null;
+        ephemeralPublicKey =
+                other.ephemeralPublicKey != null ? other.ephemeralPublicKey.createCopy() : null;
+    }
+
+    @Override
+    public DhKeyExchangeInitMessage createCopy() {
+        return new DhKeyExchangeInitMessage(this);
+    }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;
@@ -62,8 +82,26 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
         }
     }
 
+    public static final DhKeyExchangeInitMessageHandler HANDLER =
+            new DhKeyExchangeInitMessageHandler();
+
     @Override
-    public DhKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeInitMessageHandler(context, this);
+    public DhKeyExchangeInitMessageHandler getHandler() {
+        return HANDLER;
+    }
+
+    @Override
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        DhKeyExchangeInitMessageHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return DhKeyExchangeInitMessageHandler.SERIALIZER.serialize(this);
     }
 }

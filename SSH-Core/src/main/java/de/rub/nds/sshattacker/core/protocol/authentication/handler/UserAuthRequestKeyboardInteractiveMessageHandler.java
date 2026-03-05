@@ -17,38 +17,26 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthRequestKeyboardInteractiveMessageHandler
         extends SshMessageHandler<UserAuthRequestKeyboardInteractiveMessage> {
 
-    public UserAuthRequestKeyboardInteractiveMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public UserAuthRequestKeyboardInteractiveMessageHandler(
-            SshContext context, UserAuthRequestKeyboardInteractiveMessage message) {
-        super(context, message);
-    }
-
-    // ToDo Handle UserAuthKeyboardInteractive
+    // ToDo Handle UserAuthRequestKeyboardInteractive
     @Override
-    public void adjustContext() {}
+    public void adjustContext(
+            SshContext context, UserAuthRequestKeyboardInteractiveMessage object) {}
 
     @Override
-    public UserAuthRequestKeyboardInteractiveMessageParser getParser(byte[] array) {
+    public UserAuthRequestKeyboardInteractiveMessageParser getParser(
+            byte[] array, SshContext context) {
         return new UserAuthRequestKeyboardInteractiveMessageParser(array);
     }
 
     @Override
     public UserAuthRequestKeyboardInteractiveMessageParser getParser(
-            byte[] array, int startPosition) {
+            byte[] array, int startPosition, SshContext context) {
         return new UserAuthRequestKeyboardInteractiveMessageParser(array, startPosition);
     }
 
-    @Override
-    public UserAuthRequestKeyboardInteractiveMessagePreparator getPreparator() {
-        return new UserAuthRequestKeyboardInteractiveMessagePreparator(
-                context.getChooser(), message);
-    }
+    public static final UserAuthRequestKeyboardInteractiveMessagePreparator PREPARATOR =
+            new UserAuthRequestKeyboardInteractiveMessagePreparator();
 
-    @Override
-    public UserAuthRequestKeyboardInteractiveMessageSerializer getSerializer() {
-        return new UserAuthRequestKeyboardInteractiveMessageSerializer(message);
-    }
+    public static final UserAuthRequestKeyboardInteractiveMessageSerializer SERIALIZER =
+            new UserAuthRequestKeyboardInteractiveMessageSerializer();
 }

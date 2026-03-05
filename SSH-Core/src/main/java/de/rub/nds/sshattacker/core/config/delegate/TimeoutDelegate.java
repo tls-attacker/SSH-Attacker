@@ -14,7 +14,9 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 
 public class TimeoutDelegate extends Delegate {
 
-    @Parameter(names = "-timeout", description = "Timeout for socket connection")
+    @Parameter(
+            names = {"-t", "--timeout"},
+            description = "Timeout for socket connection")
     private Integer timeout;
 
     public Integer getTimeout() {

@@ -8,8 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPublicKey;
@@ -17,7 +16,6 @@ import javax.crypto.spec.DHParameterSpec;
 
 /** A serializable diffie-hellman public key used in the DH key exchange. */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     // Group parameters
@@ -40,6 +38,18 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         this.modulus = modulus;
         this.generator = generator;
         this.publicKey = publicKey;
+    }
+
+    public CustomDhPublicKey(CustomDhPublicKey other) {
+        super(other);
+        modulus = other.modulus;
+        generator = other.generator;
+        publicKey = other.publicKey;
+    }
+
+    @Override
+    public CustomDhPublicKey createCopy() {
+        return new CustomDhPublicKey(this);
     }
 
     public BigInteger getModulus() {
@@ -91,5 +101,10 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     @Override
     public byte[] getEncoded() {
         return publicKey.toByteArray();
+    }
+
+    @Override
+    public byte[] serialize() {
+        throw new NotImplementedException("Missing Serializer");
     }
 }

@@ -17,37 +17,25 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelOpenForwardedTcpIpMessageHandler
         extends SshMessageHandler<ChannelOpenForwardedTcpIpMessage> {
 
-    public ChannelOpenForwardedTcpIpMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ChannelOpenForwardedTcpIpMessageHandler(
-            SshContext context, ChannelOpenForwardedTcpIpMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ChannelOpenForwardedTcpIpMessage object) {
         // TODO: Handle ChannelOpenForwardedTcpIpMessage
     }
 
     @Override
-    public ChannelOpenForwardedTcpIpMessageParser getParser(byte[] array) {
+    public ChannelOpenForwardedTcpIpMessageParser getParser(byte[] array, SshContext context) {
         return new ChannelOpenForwardedTcpIpMessageParser(array);
     }
 
     @Override
-    public ChannelOpenForwardedTcpIpMessageParser getParser(byte[] array, int startPosition) {
+    public ChannelOpenForwardedTcpIpMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ChannelOpenForwardedTcpIpMessageParser(array, startPosition);
     }
 
-    @Override
-    public ChannelOpenForwardedTcpIpMessagePreparator getPreparator() {
-        return new ChannelOpenForwardedTcpIpMessagePreparator(context.getChooser(), message);
-    }
+    public static final ChannelOpenForwardedTcpIpMessagePreparator PREPARATOR =
+            new ChannelOpenForwardedTcpIpMessagePreparator();
 
-    @Override
-    public ChannelOpenForwardedTcpIpMessageSerializer getSerializer() {
-        return new ChannelOpenForwardedTcpIpMessageSerializer(message);
-    }
+    public static final ChannelOpenForwardedTcpIpMessageSerializer SERIALIZER =
+            new ChannelOpenForwardedTcpIpMessageSerializer();
 }

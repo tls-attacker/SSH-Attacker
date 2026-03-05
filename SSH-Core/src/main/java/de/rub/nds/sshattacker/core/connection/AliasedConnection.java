@@ -79,6 +79,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         alias = other.alias;
     }
 
+    public abstract AliasedConnection createCopy();
+
     public String getAlias() {
         return alias;
     }

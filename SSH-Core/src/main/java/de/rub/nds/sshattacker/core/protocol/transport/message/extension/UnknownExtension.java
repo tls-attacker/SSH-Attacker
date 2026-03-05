@@ -12,12 +12,28 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
     private ModifiableInteger valueLength;
 
     private ModifiableByteArray value;
+
+    public UnknownExtension() {
+        super();
+    }
+
+    public UnknownExtension(UnknownExtension other) {
+        super(other);
+        valueLength = other.valueLength != null ? other.valueLength.createCopy() : null;
+        value = other.value != null ? other.value.createCopy() : null;
+    }
+
+    @Override
+    public UnknownExtension createCopy() {
+        return new UnknownExtension(this);
+    }
 
     public ModifiableInteger getValueLength() {
         return valueLength;
@@ -51,14 +67,31 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
     }
 
     public void setValue(byte[] value, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setValueLength(value.length);
-        }
         this.value = ModifiableVariableFactory.safelySetValue(this.value, value);
+        if (adjustLengthField) {
+            setValueLength(this.value.getValue().length);
+        }
+    }
+
+    public static final UnknownExtensionHandler HANDLER = new UnknownExtensionHandler();
+
+    @Override
+    public UnknownExtensionHandler getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public UnknownExtensionHandler getHandler(SshContext context) {
-        return new UnknownExtensionHandler(context, this);
+    public void adjustContext(SshContext context) {
+        HANDLER.adjustContext(context, this);
+    }
+
+    @Override
+    public void prepare(Chooser chooser) {
+        UnknownExtensionHandler.PREPARATOR.prepare(this, chooser);
+    }
+
+    @Override
+    public byte[] serialize() {
+        return UnknownExtensionHandler.SERIALIZER.serialize(this);
     }
 }

@@ -16,41 +16,30 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfoMessage> {
 
-    public ExtensionInfoMessageHandler(SshContext context) {
-        super(context);
-    }
-
-    public ExtensionInfoMessageHandler(SshContext context, ExtensionInfoMessage message) {
-        super(context, message);
-    }
-
     @Override
-    public void adjustContext() {
+    public void adjustContext(SshContext context, ExtensionInfoMessage object) {
         if (context.isHandleAsClient()) {
-            context.setServerSupportedExtensions(message.getExtensions());
+            context.setServerSupportedExtensions(object.getExtensions());
         } else {
-            context.setClientSupportedExtensions(message.getExtensions());
+            context.setClientSupportedExtensions(object.getExtensions());
         }
-        message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
+        object.getExtensions().forEach(extension -> extension.adjustContext(context));
     }
 
     @Override
-    public ExtensionInfoMessageParser getParser(byte[] array) {
+    public ExtensionInfoMessageParser getParser(byte[] array, SshContext context) {
         return new ExtensionInfoMessageParser(array);
     }
 
     @Override
-    public ExtensionInfoMessageParser getParser(byte[] array, int startPosition) {
+    public ExtensionInfoMessageParser getParser(
+            byte[] array, int startPosition, SshContext context) {
         return new ExtensionInfoMessageParser(array, startPosition);
     }
 
-    @Override
-    public ExtensionInfoMessagePreparator getPreparator() {
-        return new ExtensionInfoMessagePreparator(context.getChooser(), message);
-    }
+    public static final ExtensionInfoMessagePreparator PREPARATOR =
+            new ExtensionInfoMessagePreparator();
 
-    @Override
-    public ExtensionInfoMessageSerializer getSerializer() {
-        return new ExtensionInfoMessageSerializer(message);
-    }
+    public static final ExtensionInfoMessageSerializer SERIALIZER =
+            new ExtensionInfoMessageSerializer();
 }
