@@ -22,6 +22,9 @@ nbactions.xml
 .factorypath
 .vscode
 
+# Claude Code
+.claude/
+
 ### IntelliJ IDEA ###
 .idea/*
 !.idea/inspectionProfiles
