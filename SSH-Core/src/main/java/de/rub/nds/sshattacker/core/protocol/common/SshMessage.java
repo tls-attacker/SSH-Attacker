@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -246,8 +248,10 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         byte msgId = messageId.getValue();
         output.appendByte(msgId);
         LOGGER.debug("Message ID: {} ({})", () -> messageIdConstant, () -> msgId);
+        Set<String> explicitFieldNames =
+                fieldDefinitions.stream().map(SshField::name).collect(Collectors.toSet());
         for (SshField<?> field : fieldDefinitions) {
-            serializeField(field, output);
+            serializeField(field, output, explicitFieldNames);
         }
         byte[] result = output.toByteArray();
         LOGGER.trace(
@@ -258,7 +262,8 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         return result;
     }
 
-    private void serializeField(SshField<?> field, SerializerStream output) {
+    private void serializeField(
+            SshField<?> field, SerializerStream output, Set<String> explicitFieldNames) {
         LOGGER.trace("Serializing field '{}' (type: {})", () -> field.name(), () -> field.type());
         switch (field.type()) {
             case BYTE -> {
@@ -295,6 +300,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                         () -> ArrayConverter.bytesToHexString(value));
             }
             case STRING -> {
+                serializeImplicitLength(field, output, explicitFieldNames);
                 if (field.charset() != null) {
                     String value = ((ModifiableString) fields.get(field.name())).getValue();
                     output.appendString(value, field.charset());
@@ -310,6 +316,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                 }
             }
             case MPINT -> {
+                serializeImplicitLength(field, output, explicitFieldNames);
                 byte[] value = ((ModifiableByteArray) fields.get(field.name())).getValue();
                 output.appendBytes(value);
                 LOGGER.debug(
@@ -319,10 +326,25 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                         () -> ArrayConverter.bytesToHexString(value));
             }
             case NAME_LIST -> {
+                serializeImplicitLength(field, output, explicitFieldNames);
                 String value = ((ModifiableString) fields.get(field.name())).getValue();
                 output.appendString(value, field.charset());
                 LOGGER.debug("{}: {}", () -> field.name(), () -> backslashEscapeString(value));
             }
+        }
+    }
+
+    /**
+     * Serializes the length field inline if it is not explicitly declared in the field definitions
+     * list (i.e., it is an implicit/auto-created length field).
+     */
+    private void serializeImplicitLength(
+            SshField<?> field, SerializerStream output, Set<String> explicitFieldNames) {
+        if (field.lengthField() != null
+                && !explicitFieldNames.contains(field.lengthField().name())) {
+            int length = ((ModifiableInteger) fields.get(field.lengthField().name())).getValue();
+            output.appendInt(length);
+            LOGGER.debug("{} (implicit): {}", () -> field.lengthField().name(), () -> length);
         }
     }
 

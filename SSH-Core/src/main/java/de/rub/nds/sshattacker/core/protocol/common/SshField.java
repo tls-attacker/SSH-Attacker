@@ -129,6 +129,18 @@ public final class SshField<V> {
     }
 
     /**
+     * A variable-length text string ({@code string}) with an implicit length field. The length
+     * field is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
+     * accessible via {@link #lengthField()} for independent manipulation.
+     *
+     * @param charset the charset for encoding/decoding
+     */
+    public static SshField<ModifiableString> string(String name, Charset charset) {
+        SshField<ModifiableInteger> length = uint32(name + "_length");
+        return new SshField<>(name, SshDataType.STRING, charset, length, -1);
+    }
+
+    /**
      * A variable-length text string ({@code string}). Stored as {@link ModifiableString}. The
      * length is read from / written to the referenced UINT32 field.
      *
@@ -138,6 +150,17 @@ public final class SshField<V> {
     public static SshField<ModifiableString> string(
             String name, Charset charset, SshField<ModifiableInteger> lengthField) {
         return new SshField<>(name, SshDataType.STRING, charset, lengthField, -1);
+    }
+
+    /**
+     * A variable-length binary string ({@code string} with no text encoding) with an implicit
+     * length field. The length field is auto-created as {@code name + "_length"} and
+     * serialized/parsed inline. It is still accessible via {@link #lengthField()} for independent
+     * manipulation.
+     */
+    public static SshField<ModifiableByteArray> string(String name) {
+        SshField<ModifiableInteger> length = uint32(name + "_length");
+        return new SshField<>(name, SshDataType.STRING, null, length, -1);
     }
 
     /**
@@ -152,6 +175,16 @@ public final class SshField<V> {
     }
 
     /**
+     * A multiple precision integer ({@code mpint}) with an implicit length field. The length field
+     * is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
+     * accessible via {@link #lengthField()} for independent manipulation.
+     */
+    public static SshField<ModifiableByteArray> mpint(String name) {
+        SshField<ModifiableInteger> length = uint32(name + "_length");
+        return new SshField<>(name, SshDataType.MPINT, null, length, -1);
+    }
+
+    /**
      * A multiple precision integer ({@code mpint}). Stored as {@link ModifiableByteArray}
      * containing the raw two's complement bytes. The length is read from / written to the
      * referenced UINT32 field.
@@ -161,6 +194,18 @@ public final class SshField<V> {
     public static SshField<ModifiableByteArray> mpint(
             String name, SshField<ModifiableInteger> lengthField) {
         return new SshField<>(name, SshDataType.MPINT, null, lengthField, -1);
+    }
+
+    /**
+     * A comma-separated list of names ({@code name-list}) with an implicit length field. The length
+     * field is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
+     * accessible via {@link #lengthField()} for independent manipulation.
+     *
+     * @param charset the charset for encoding/decoding (typically US-ASCII)
+     */
+    public static SshField<ModifiableString> nameList(String name, Charset charset) {
+        SshField<ModifiableInteger> length = uint32(name + "_length");
+        return new SshField<>(name, SshDataType.NAME_LIST, charset, length, -1);
     }
 
     /**

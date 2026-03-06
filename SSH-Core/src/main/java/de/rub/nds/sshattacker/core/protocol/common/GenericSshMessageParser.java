@@ -16,7 +16,9 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,8 +62,10 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
                 this::getPointer);
 
         List<SshField<?>> fieldDefinitions = message.getFieldDefinitions();
+        Set<String> explicitFieldNames =
+                fieldDefinitions.stream().map(SshField::name).collect(Collectors.toSet());
         for (SshField<?> field : fieldDefinitions) {
-            parseField(field);
+            parseField(field, explicitFieldNames);
         }
 
         LOGGER.trace(
@@ -71,7 +75,7 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
     }
 
     @SuppressWarnings("unchecked")
-    private void parseField(SshField<?> field) {
+    private void parseField(SshField<?> field, Set<String> explicitFieldNames) {
         LOGGER.trace(
                 "Parsing field '{}' (type: {}) at offset {}",
                 () -> field.name(),
@@ -112,7 +116,7 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
                         "{}: {}", () -> field.name(), () -> ArrayConverter.bytesToHexString(value));
             }
             case STRING -> {
-                int length = message.getField(field.lengthField()).getValue();
+                int length = parseImplicitLength(field, explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length STRING '{}', length from '{}' = {}",
                         () -> field.name(),
@@ -133,7 +137,7 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
                 }
             }
             case MPINT -> {
-                int length = message.getField(field.lengthField()).getValue();
+                int length = parseImplicitLength(field, explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length MPINT '{}', length from '{}' = {}",
                         () -> field.name(),
@@ -148,7 +152,7 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
                         () -> ArrayConverter.bytesToHexString(value));
             }
             case NAME_LIST -> {
-                int length = message.getField(field.lengthField()).getValue();
+                int length = parseImplicitLength(field, explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length NAME_LIST '{}', length from '{}' = {}",
                         () -> field.name(),
@@ -159,5 +163,23 @@ public class GenericSshMessageParser<T extends SshMessage<T>> extends SshMessage
                 LOGGER.debug("{}: {}", () -> field.name(), () -> backslashEscapeString(value));
             }
         }
+    }
+
+    /**
+     * Reads the length for a variable-length field. If the length field is implicit (not in the
+     * explicit field definitions list), it is parsed inline from the stream. If explicit, its
+     * already-parsed value is read from the message.
+     *
+     * @return the length value
+     */
+    @SuppressWarnings("unchecked")
+    private int parseImplicitLength(SshField<?> field, Set<String> explicitFieldNames) {
+        if (!explicitFieldNames.contains(field.lengthField().name())) {
+            int length = parseIntField();
+            message.setField((SshField<ModifiableInteger>) field.lengthField(), length);
+            LOGGER.debug("{} (implicit): {}", () -> field.lengthField().name(), () -> length);
+            return length;
+        }
+        return message.getField(field.lengthField()).getValue();
     }
 }
