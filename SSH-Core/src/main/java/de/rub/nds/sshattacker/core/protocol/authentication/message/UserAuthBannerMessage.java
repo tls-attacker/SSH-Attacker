@@ -7,9 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.common.SshDataType;
-import de.rub.nds.sshattacker.core.protocol.common.SshFieldDefinition;
+import de.rub.nds.sshattacker.core.protocol.common.SshField;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -18,22 +19,17 @@ import java.util.List;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
-    public static final String MESSAGE_LENGTH = "message_length";
-    public static final String MESSAGE = "message";
-    public static final String LANGUAGE_TAG_LENGTH = "language_tag_length";
-    public static final String LANGUAGE_TAG = "language_tag";
+    public static final SshField<ModifiableInteger> MESSAGE_LENGTH =
+            SshField.uint32("message_length");
+    public static final SshField<ModifiableString> MESSAGE =
+            SshField.string("message", StandardCharsets.UTF_8, MESSAGE_LENGTH);
+    public static final SshField<ModifiableInteger> LANGUAGE_TAG_LENGTH =
+            SshField.uint32("language_tag_length");
+    public static final SshField<ModifiableString> LANGUAGE_TAG =
+            SshField.string("language_tag", StandardCharsets.US_ASCII, LANGUAGE_TAG_LENGTH);
 
-    private static final List<SshFieldDefinition> FIELDS =
-            List.of(
-                    new SshFieldDefinition(MESSAGE_LENGTH, SshDataType.UINT32),
-                    new SshFieldDefinition(
-                            MESSAGE, SshDataType.STRING, StandardCharsets.UTF_8, MESSAGE_LENGTH),
-                    new SshFieldDefinition(LANGUAGE_TAG_LENGTH, SshDataType.UINT32),
-                    new SshFieldDefinition(
-                            LANGUAGE_TAG,
-                            SshDataType.STRING,
-                            StandardCharsets.US_ASCII,
-                            LANGUAGE_TAG_LENGTH));
+    private static final List<SshField<?>> FIELDS =
+            List.of(MESSAGE_LENGTH, MESSAGE, LANGUAGE_TAG_LENGTH, LANGUAGE_TAG);
 
     public UserAuthBannerMessage() {
         super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER, FIELDS);
@@ -56,8 +52,8 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     @Override
     protected void prepareMessageContents(Chooser chooser) {
         // TODO dummy values for fuzzing
-        setStringField(MESSAGE, "", true);
-        setStringField(LANGUAGE_TAG, "", true);
+        setField(MESSAGE, "", true);
+        setField(LANGUAGE_TAG, "", true);
     }
 
     @Override

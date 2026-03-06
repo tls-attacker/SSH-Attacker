@@ -40,7 +40,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
 
     // ---- Declarative field definitions ----
 
-    private final List<SshFieldDefinition> fieldDefinitions;
+    private final List<SshField<?>> fieldDefinitions;
 
     /**
      * Stores all declared field values, keyed by field name. The value types per {@link
@@ -51,7 +51,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      *   <li>UINT32 → {@link ModifiableInteger}
      *   <li>UINT64 → {@link ModifiableLong}
      *   <li>BYTES → {@link ModifiableByteArray}
-     *   <li>STRING (charset != null) , NAME_LIST → {@link ModifiableString}
+     *   <li>STRING (charset != null), NAME_LIST → {@link ModifiableString}
      *   <li>STRING (charset == null), MPINT → {@link ModifiableByteArray}
      * </ul>
      */
@@ -66,8 +66,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      * @param messageIdConstant the SSH message ID constant
      * @param fieldDefinitions ordered list of field definitions for this message type
      */
-    protected SshMessage(
-            MessageIdConstant messageIdConstant, List<SshFieldDefinition> fieldDefinitions) {
+    protected SshMessage(MessageIdConstant messageIdConstant, List<SshField<?>> fieldDefinitions) {
         super();
         this.messageIdConstant = messageIdConstant;
         this.fieldDefinitions = fieldDefinitions;
@@ -82,10 +81,6 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         this.messageIdConstant = other.messageIdConstant;
         this.fieldDefinitions = other.fieldDefinitions;
         this.messageId = other.messageId != null ? other.messageId.createCopy() : null;
-        copyFields(other);
-    }
-
-    private void copyFields(SshMessage<T> other) {
         for (var entry : other.fields.entrySet()) {
             fields.put(entry.getKey(), copyModifiableVariable(entry.getValue()));
         }
@@ -107,7 +102,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     // ---- Field definitions access ----
 
     /** Returns the ordered list of field definitions for this message type. */
-    public List<SshFieldDefinition> getFieldDefinitions() {
+    public List<SshField<?>> getFieldDefinitions() {
         return Collections.unmodifiableList(fieldDefinitions);
     }
 
@@ -133,130 +128,113 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         setMessageId(messageId.getId());
     }
 
-    // ---- Generic field getters ----
+    // ---- Typed field getter ----
 
-    /** Returns a BYTE or BOOLEAN field value. */
-    public ModifiableByte getByteField(String name) {
-        return (ModifiableByte) fields.get(name);
+    /**
+     * Returns the value of a declared field. The return type is determined by the field's type
+     * parameter, ensuring compile-time safety.
+     *
+     * @param <V> the ModifiableVariable subtype
+     * @param field the typed field reference
+     * @return the field value, or {@code null} if not yet set
+     */
+    @SuppressWarnings("unchecked")
+    public <V> V getField(SshField<V> field) {
+        return (V) fields.get(field.name());
     }
 
-    /** Returns a UINT32 field value. */
-    public ModifiableInteger getUint32Field(String name) {
-        return (ModifiableInteger) fields.get(name);
+    // ---- Typed field setters ----
+
+    /** Sets a BYTE or BOOLEAN field to a raw byte value. */
+    public void setField(SshField<ModifiableByte> field, byte value) {
+        ModifiableByte current = (ModifiableByte) fields.get(field.name());
+        fields.put(field.name(), ModifiableVariableFactory.safelySetValue(current, value));
     }
 
-    /** Returns a UINT64 field value. */
-    public ModifiableLong getUint64Field(String name) {
-        return (ModifiableLong) fields.get(name);
-    }
-
-    /** Returns a text STRING or NAME_LIST field value (charset != null). */
-    public ModifiableString getStringField(String name) {
-        return (ModifiableString) fields.get(name);
-    }
-
-    /** Returns a BYTES, binary STRING (charset == null), or MPINT field value. */
-    public ModifiableByteArray getBytesField(String name) {
-        return (ModifiableByteArray) fields.get(name);
-    }
-
-    // ---- Generic field setters ----
-
-    public void setByteField(String name, byte value) {
-        ModifiableByte current = (ModifiableByte) fields.get(name);
-        fields.put(name, ModifiableVariableFactory.safelySetValue(current, value));
-    }
-
-    public void setByteField(String name, ModifiableByte value) {
-        fields.put(name, value);
+    /** Sets a BYTE or BOOLEAN field to a {@link ModifiableByte} instance. */
+    public void setField(SshField<ModifiableByte> field, ModifiableByte value) {
+        fields.put(field.name(), value);
     }
 
     /**
      * Convenience setter for BOOLEAN fields. Converts the boolean to a byte (1 for true, 0 for
-     * false) and stores it as a {@link ModifiableByte}.
+     * false).
      */
-    public void setBooleanField(String name, boolean value) {
-        setByteField(name, value ? (byte) 1 : (byte) 0);
+    public void setField(SshField<ModifiableByte> field, boolean value) {
+        setField(field, value ? (byte) 1 : (byte) 0);
     }
 
-    public void setUint32Field(String name, int value) {
-        ModifiableInteger current = (ModifiableInteger) fields.get(name);
-        fields.put(name, ModifiableVariableFactory.safelySetValue(current, value));
+    /** Sets a UINT32 field to an int value. */
+    public void setField(SshField<ModifiableInteger> field, int value) {
+        ModifiableInteger current = (ModifiableInteger) fields.get(field.name());
+        fields.put(field.name(), ModifiableVariableFactory.safelySetValue(current, value));
     }
 
-    public void setUint32Field(String name, ModifiableInteger value) {
-        fields.put(name, value);
+    /** Sets a UINT32 field to a {@link ModifiableInteger} instance. */
+    public void setField(SshField<ModifiableInteger> field, ModifiableInteger value) {
+        fields.put(field.name(), value);
     }
 
-    public void setUint64Field(String name, long value) {
-        ModifiableLong current = (ModifiableLong) fields.get(name);
-        fields.put(name, ModifiableVariableFactory.safelySetValue(current, value));
+    /** Sets a UINT64 field to a long value. */
+    public void setField(SshField<ModifiableLong> field, long value) {
+        ModifiableLong current = (ModifiableLong) fields.get(field.name());
+        fields.put(field.name(), ModifiableVariableFactory.safelySetValue(current, value));
     }
 
-    public void setUint64Field(String name, ModifiableLong value) {
-        fields.put(name, value);
+    /** Sets a UINT64 field to a {@link ModifiableLong} instance. */
+    public void setField(SshField<ModifiableLong> field, ModifiableLong value) {
+        fields.put(field.name(), value);
     }
 
-    public void setStringField(String name, String value) {
-        setStringField(name, value, false);
+    /** Sets a text STRING or NAME_LIST field to a String value. */
+    public void setField(SshField<ModifiableString> field, String value) {
+        setField(field, value, false);
     }
 
     /**
-     * Sets a text STRING field value. When {@code adjustLength} is true, the referenced length
-     * field (declared in the {@link SshFieldDefinition}) is updated to match the encoded byte
-     * length of the new value.
+     * Sets a text STRING or NAME_LIST field. When {@code adjustLength} is true, the referenced
+     * length field is updated to match the encoded byte length of the new value.
      */
-    public void setStringField(String name, String value, boolean adjustLength) {
-        ModifiableString current = (ModifiableString) fields.get(name);
+    public void setField(SshField<ModifiableString> field, String value, boolean adjustLength) {
+        ModifiableString current = (ModifiableString) fields.get(field.name());
         ModifiableString updated = ModifiableVariableFactory.safelySetValue(current, value);
-        fields.put(name, updated);
-        if (adjustLength) {
-            SshFieldDefinition def = getFieldDefinition(name);
-            int len = updated.getValue().getBytes(def.charset()).length;
-            setUint32Field(def.lengthField(), len);
+        fields.put(field.name(), updated);
+        if (adjustLength && field.lengthField() != null) {
+            int len = updated.getValue().getBytes(field.charset()).length;
+            setField(field.lengthField(), len);
         }
     }
 
-    public void setStringField(String name, ModifiableString value) {
-        fields.put(name, value);
+    /** Sets a text STRING or NAME_LIST field to a {@link ModifiableString} instance. */
+    public void setField(SshField<ModifiableString> field, ModifiableString value) {
+        fields.put(field.name(), value);
     }
 
-    public void setBytesField(String name, byte[] value) {
-        setBytesField(name, value, false);
+    /** Sets a BYTES, binary STRING, or MPINT field to a byte array value. */
+    public void setField(SshField<ModifiableByteArray> field, byte[] value) {
+        setField(field, value, false);
     }
 
     /**
-     * Sets a binary STRING, BYTES, or MPINT field value. When {@code adjustLength} is true, the
-     * referenced length field (declared in the {@link SshFieldDefinition}) is updated to match the
-     * byte array length.
+     * Sets a BYTES, binary STRING, or MPINT field. When {@code adjustLength} is true, the
+     * referenced length field is updated to match the byte array length.
      */
-    public void setBytesField(String name, byte[] value, boolean adjustLength) {
-        ModifiableByteArray current = (ModifiableByteArray) fields.get(name);
-        fields.put(name, ModifiableVariableFactory.safelySetValue(current, value));
-        if (adjustLength) {
-            SshFieldDefinition def = getFieldDefinition(name);
-            setUint32Field(def.lengthField(), value.length);
+    public void setField(SshField<ModifiableByteArray> field, byte[] value, boolean adjustLength) {
+        ModifiableByteArray current = (ModifiableByteArray) fields.get(field.name());
+        fields.put(field.name(), ModifiableVariableFactory.safelySetValue(current, value));
+        if (adjustLength && field.lengthField() != null) {
+            setField(field.lengthField(), value.length);
         }
     }
 
-    public void setBytesField(String name, ModifiableByteArray value) {
-        fields.put(name, value);
+    /** Sets a BYTES, binary STRING, or MPINT field to a {@link ModifiableByteArray} instance. */
+    public void setField(SshField<ModifiableByteArray> field, ModifiableByteArray value) {
+        fields.put(field.name(), value);
     }
 
     /** Convenience setter for MPINT fields that accepts a {@link BigInteger}. */
-    public void setMpintField(String name, BigInteger value) {
-        setBytesField(name, value.toByteArray());
-    }
-
-    // ---- Field definition lookup ----
-
-    private SshFieldDefinition getFieldDefinition(String name) {
-        for (SshFieldDefinition def : fieldDefinitions) {
-            if (def.name().equals(name)) {
-                return def;
-            }
-        }
-        throw new IllegalArgumentException("No field definition for: " + name);
+    public void setField(SshField<ModifiableByteArray> field, BigInteger value) {
+        setField(field, value.toByteArray());
     }
 
     // ---- Default serialize implementation ----
@@ -268,7 +246,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         byte msgId = messageId.getValue();
         output.appendByte(msgId);
         LOGGER.debug("Message ID: {} ({})", () -> messageIdConstant, () -> msgId);
-        for (SshFieldDefinition field : fieldDefinitions) {
+        for (SshField<?> field : fieldDefinitions) {
             serializeField(field, output);
         }
         byte[] result = output.toByteArray();
@@ -280,16 +258,16 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         return result;
     }
 
-    private void serializeField(SshFieldDefinition field, SerializerStream output) {
+    private void serializeField(SshField<?> field, SerializerStream output) {
         LOGGER.trace("Serializing field '{}' (type: {})", () -> field.name(), () -> field.type());
         switch (field.type()) {
             case BYTE -> {
-                byte value = getByteField(field.name()).getValue();
+                byte value = ((ModifiableByte) fields.get(field.name())).getValue();
                 output.appendByte(value);
                 LOGGER.debug("{}: {}", () -> field.name(), () -> String.format("0x%02X", value));
             }
             case BOOLEAN -> {
-                byte value = getByteField(field.name()).getValue();
+                byte value = ((ModifiableByte) fields.get(field.name())).getValue();
                 output.appendByte(value);
                 LOGGER.debug(
                         "{}: {} (raw: {})",
@@ -298,17 +276,17 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                         () -> String.format("0x%02X", value));
             }
             case UINT32 -> {
-                int value = getUint32Field(field.name()).getValue();
+                int value = ((ModifiableInteger) fields.get(field.name())).getValue();
                 output.appendInt(value);
                 LOGGER.debug("{}: {}", () -> field.name(), () -> value);
             }
             case UINT64 -> {
-                long value = getUint64Field(field.name()).getValue();
+                long value = ((ModifiableLong) fields.get(field.name())).getValue();
                 output.appendLong(value);
                 LOGGER.debug("{}: {}", () -> field.name(), () -> value);
             }
             case BYTES -> {
-                byte[] value = getBytesField(field.name()).getValue();
+                byte[] value = ((ModifiableByteArray) fields.get(field.name())).getValue();
                 output.appendBytes(value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
@@ -318,11 +296,11 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
             }
             case STRING -> {
                 if (field.charset() != null) {
-                    String value = getStringField(field.name()).getValue();
+                    String value = ((ModifiableString) fields.get(field.name())).getValue();
                     output.appendString(value, field.charset());
                     LOGGER.debug("{}: {}", () -> field.name(), () -> backslashEscapeString(value));
                 } else {
-                    byte[] value = getBytesField(field.name()).getValue();
+                    byte[] value = ((ModifiableByteArray) fields.get(field.name())).getValue();
                     output.appendBytes(value);
                     LOGGER.debug(
                             "{}: ({} bytes) {}",
@@ -332,7 +310,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                 }
             }
             case MPINT -> {
-                byte[] value = getBytesField(field.name()).getValue();
+                byte[] value = ((ModifiableByteArray) fields.get(field.name())).getValue();
                 output.appendBytes(value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
@@ -341,7 +319,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                         () -> ArrayConverter.bytesToHexString(value));
             }
             case NAME_LIST -> {
-                String value = getStringField(field.name()).getValue();
+                String value = ((ModifiableString) fields.get(field.name())).getValue();
                 output.appendString(value, field.charset());
                 LOGGER.debug("{}: {}", () -> field.name(), () -> backslashEscapeString(value));
             }
