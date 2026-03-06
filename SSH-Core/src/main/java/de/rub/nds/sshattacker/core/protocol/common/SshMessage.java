@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -57,7 +58,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      *   <li>STRING (charset == null), MPINT → {@link ModifiableByteArray}
      * </ul>
      */
-    private final Map<String, Object> fields = new LinkedHashMap<>();
+    private final Map<String, ModifiableVariable<?>> fields = new LinkedHashMap<>();
 
     // ---- Constructors ----
 
@@ -80,22 +81,13 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      */
     protected SshMessage(SshMessage<T> other) {
         super(other);
-        this.messageIdConstant = other.messageIdConstant;
-        this.fieldDefinitions = other.fieldDefinitions;
-        this.messageId = other.messageId != null ? other.messageId.createCopy() : null;
+        messageIdConstant = other.messageIdConstant;
+        fieldDefinitions = other.fieldDefinitions;
+        messageId = other.messageId != null ? other.messageId.createCopy() : null;
         for (var entry : other.fields.entrySet()) {
-            fields.put(entry.getKey(), copyModifiableVariable(entry.getValue()));
+            ModifiableVariable<?> value = entry.getValue();
+            fields.put(entry.getKey(), value != null ? value.createCopy() : null);
         }
-    }
-
-    private static Object copyModifiableVariable(Object value) {
-        if (value == null) return null;
-        if (value instanceof ModifiableByte v) return v.createCopy();
-        if (value instanceof ModifiableInteger v) return v.createCopy();
-        if (value instanceof ModifiableLong v) return v.createCopy();
-        if (value instanceof ModifiableString v) return v.createCopy();
-        if (value instanceof ModifiableByteArray v) return v.createCopy();
-        return value;
     }
 
     @Override
@@ -167,13 +159,14 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         return (ModifiableString) fields.get(field.getName());
     }
 
-    /**
-     * Returns the value of a STRING field. The actual type depends on the field's charset: {@link
-     * ModifiableString} for text strings ({@code charset != null}), or {@link ModifiableByteArray}
-     * for binary strings ({@code charset == null}).
-     */
-    public Object getField(SshField.SshString field) {
-        return fields.get(field.getName());
+    /** Returns the value of a text STRING field. */
+    public ModifiableString getField(SshField.SshString field) {
+        return (ModifiableString) fields.get(field.getName());
+    }
+
+    /** Returns the value of a binary STRING field. */
+    public ModifiableByteArray getField(SshField.SshBinaryString field) {
+        return (ModifiableByteArray) fields.get(field.getName());
     }
 
     // ---- Typed field setters ----
@@ -263,7 +256,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     }
 
     /** Sets a binary STRING field to a byte array value. */
-    public void setField(SshField.SshString field, byte[] value) {
+    public void setField(SshField.SshBinaryString field, byte[] value) {
         setField(field, value, false);
     }
 
@@ -271,7 +264,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      * Sets a binary STRING field. When {@code adjustLength} is true, the implicit length field is
      * updated to match the byte array length.
      */
-    public void setField(SshField.SshString field, byte[] value, boolean adjustLength) {
+    public void setField(SshField.SshBinaryString field, byte[] value, boolean adjustLength) {
         ModifiableByteArray current = (ModifiableByteArray) fields.get(field.getName());
         fields.put(field.getName(), ModifiableVariableFactory.safelySetValue(current, value));
         if (adjustLength) {
@@ -280,7 +273,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     }
 
     /** Sets a binary STRING field to a {@link ModifiableByteArray} instance. */
-    public void setField(SshField.SshString field, ModifiableByteArray value) {
+    public void setField(SshField.SshBinaryString field, ModifiableByteArray value) {
         fields.put(field.getName(), value);
     }
 
@@ -381,6 +374,16 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                         () -> value.length,
                         () -> ArrayConverter.bytesToHexString(value));
             }
+            case SshField.SshBinaryString f -> {
+                serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
+                byte[] value = ((ModifiableByteArray) fields.get(f.getName())).getValue();
+                output.appendBytes(value);
+                LOGGER.debug(
+                        "{}: ({} bytes) {}",
+                        f::getName,
+                        () -> value.length,
+                        () -> ArrayConverter.bytesToHexString(value));
+            }
             case SshField.SshNameList f -> {
                 serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
                 String value = ((ModifiableString) fields.get(f.getName())).getValue();
@@ -389,19 +392,9 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
             }
             case SshField.SshString f -> {
                 serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
-                if (f.getCharset() != null) {
-                    String value = ((ModifiableString) fields.get(f.getName())).getValue();
-                    output.appendString(value, f.getCharset());
-                    LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
-                } else {
-                    byte[] value = ((ModifiableByteArray) fields.get(f.getName())).getValue();
-                    output.appendBytes(value);
-                    LOGGER.debug(
-                            "{}: ({} bytes) {}",
-                            f::getName,
-                            () -> value.length,
-                            () -> ArrayConverter.bytesToHexString(value));
-                }
+                String value = ((ModifiableString) fields.get(f.getName())).getValue();
+                output.appendString(value, f.getCharset());
+                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
             }
         }
     }
@@ -446,9 +439,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
     // ---- Default adjustContext implementation ----
 
     @Override
-    public void adjustContext(SshContext context) {
-        // Override in subclasses
-    }
+    public abstract void adjustContext(SshContext context);
 
     // ---- Handler ----
 

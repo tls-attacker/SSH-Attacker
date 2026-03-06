@@ -43,6 +43,7 @@ public sealed class SshField
                 SshField.SshUint64,
                 SshField.SshBytes,
                 SshField.SshString,
+                SshField.SshBinaryString,
                 SshField.SshMpInt {
 
     private final String name;
@@ -119,15 +120,16 @@ public sealed class SshField
     }
 
     /**
-     * A variable-length string field. Depending on the charset, the value is stored as either
-     * {@link ModifiableString} (when {@code charset != null}, for text data) or {@link
-     * ModifiableByteArray} (when {@code charset == null}, for raw binary data).
+     * A variable-length text string field. Stored as {@link ModifiableString}. The charset
+     * determines how the text is encoded/decoded on the wire.
      *
      * <p>Every string field has an associated {@link SshUint32} length field that holds the byte
      * length of the payload. The length field is auto-created and serialized/parsed inline, but
      * remains independently accessible via {@link #getLengthField()} for manipulation.
      *
      * <p>This class is sealed and extended by {@link SshNameList}.
+     *
+     * @see SshBinaryString for raw binary data without text encoding
      */
     public static sealed class SshString extends SshField permits SshNameList {
 
@@ -146,11 +148,35 @@ public sealed class SshField
             this.lengthField = lengthField;
         }
 
-        /**
-         * Returns the charset for text encoding/decoding, or {@code null} for binary string fields.
-         */
+        /** Returns the charset for text encoding/decoding. */
         public Charset getCharset() {
             return charset;
+        }
+
+        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
+        public SshUint32 getLengthField() {
+            return lengthField;
+        }
+    }
+
+    /**
+     * A variable-length binary string field (SSH {@code string} with no text encoding). Stored as
+     * {@link ModifiableByteArray}. The wire format is identical to {@link SshString} (uint32 length
+     * + payload bytes), but the payload is treated as raw binary data.
+     *
+     * <p>Every binary string field has an associated {@link SshUint32} length field that holds the
+     * byte length of the payload. The length field is auto-created and serialized/parsed inline,
+     * but remains independently accessible via {@link #getLengthField()} for manipulation.
+     *
+     * @see SshString for text data with charset encoding
+     */
+    public static final class SshBinaryString extends SshField {
+
+        private final SshUint32 lengthField;
+
+        private SshBinaryString(String name, SshUint32 lengthField) {
+            super(name, SshDataType.STRING);
+            this.lengthField = lengthField;
         }
 
         /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
@@ -239,16 +265,30 @@ public sealed class SshField
     }
 
     /**
-     * Creates a variable-length string field with an implicit length field. The length field is
-     * auto-created as {@code name + "_length"} and serialized/parsed inline. It remains accessible
-     * via {@link SshString#getLengthField()} for independent manipulation.
+     * Creates a variable-length text string field with an implicit length field. The length field
+     * is auto-created as {@code name + "_length"} and serialized/parsed inline. It remains
+     * accessible via {@link SshString#getLengthField()} for independent manipulation.
      *
      * @param name the field name
-     * @param charset the charset for text encoding/decoding, or {@code null} for raw binary data
+     * @param charset the charset for text encoding/decoding (must not be {@code null})
+     * @see #binaryString(String) for raw binary data without text encoding
      */
     public static SshString string(String name, Charset charset) {
         SshUint32 length = uint32(name + "_length");
         return new SshString(name, charset, length);
+    }
+
+    /**
+     * Creates a variable-length binary string field with an implicit length field. The length field
+     * is auto-created as {@code name + "_length"} and serialized/parsed inline. It remains
+     * accessible via {@link SshBinaryString#getLengthField()} for independent manipulation.
+     *
+     * @param name the field name
+     * @see #string(String, Charset) for text data with charset encoding
+     */
+    public static SshBinaryString binaryString(String name) {
+        SshUint32 length = uint32(name + "_length");
+        return new SshBinaryString(name, length);
     }
 
     /**

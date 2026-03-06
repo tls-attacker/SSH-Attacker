@@ -172,6 +172,21 @@ public class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessagePa
                         () -> value.length,
                         () -> ArrayConverter.bytesToHexString(value));
             }
+            case SshField.SshBinaryString f -> {
+                int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
+                LOGGER.trace(
+                        "Variable-length binary STRING '{}', length from '{}' = {}",
+                        f::getName,
+                        () -> f.getLengthField().getName(),
+                        () -> length);
+                byte[] value = parseByteArrayField(length);
+                message.setField(f, value);
+                LOGGER.debug(
+                        "{}: ({} bytes) {}",
+                        f::getName,
+                        () -> value.length,
+                        () -> ArrayConverter.bytesToHexString(value));
+            }
             case SshField.SshNameList f -> {
                 int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
                 LOGGER.trace(
@@ -190,19 +205,9 @@ public class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessagePa
                         f::getName,
                         () -> f.getLengthField().getName(),
                         () -> length);
-                if (f.getCharset() != null) {
-                    String value = parseByteString(length, f.getCharset());
-                    message.setField(f, value);
-                    LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
-                } else {
-                    byte[] value = parseByteArrayField(length);
-                    message.setField(f, value);
-                    LOGGER.debug(
-                            "{}: ({} bytes) {}",
-                            f::getName,
-                            () -> value.length,
-                            () -> ArrayConverter.bytesToHexString(value));
-                }
+                String value = parseByteString(length, f.getCharset());
+                message.setField(f, value);
+                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
             }
         }
     }
