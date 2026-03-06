@@ -29,7 +29,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final T message = createMessage();
+    protected T message;
 
     protected ProtocolMessageParser(byte[] array) {
         super(array);
@@ -41,6 +41,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     @Override
     public final T parse() {
+        message = createMessage();
         parseProtocolMessageContents();
         setCompleteResultingMessage();
         return message;

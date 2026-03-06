@@ -463,13 +463,13 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
 
             @Override
             public SshMessageParser<T> getParser(byte[] array, SshContext context) {
-                return new GenericSshMessageParser<>(array, self::createNewInstance);
+                return new SshMessageParser<>(array, self::createNewInstance);
             }
 
             @Override
             public SshMessageParser<T> getParser(
                     byte[] array, int startPosition, SshContext context) {
-                return new GenericSshMessageParser<>(array, startPosition, self::createNewInstance);
+                return new SshMessageParser<>(array, startPosition, self::createNewInstance);
             }
         };
     }

@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.common.GenericSshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBannerMessage> {
@@ -20,14 +20,13 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
     }
 
     @Override
-    public GenericSshMessageParser<UserAuthBannerMessage> getParser(
-            byte[] array, SshContext context) {
-        return new GenericSshMessageParser<>(array, UserAuthBannerMessage::new);
+    public SshMessageParser<UserAuthBannerMessage> getParser(byte[] array, SshContext context) {
+        return new SshMessageParser<>(array, UserAuthBannerMessage::new);
     }
 
     @Override
-    public GenericSshMessageParser<UserAuthBannerMessage> getParser(
+    public SshMessageParser<UserAuthBannerMessage> getParser(
             byte[] array, int startPosition, SshContext context) {
-        return new GenericSshMessageParser<>(array, startPosition, UserAuthBannerMessage::new);
+        return new SshMessageParser<>(array, startPosition, UserAuthBannerMessage::new);
     }
 }
