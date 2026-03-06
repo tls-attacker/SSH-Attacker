@@ -13,211 +13,266 @@ import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
- * A typed, compile-time-safe field reference for declarative SSH message definitions.
+ * A compile-time-safe field descriptor for declarative SSH message definitions.
  *
- * <p>Each {@code SshField<V>} carries its name, RFC 4251 data type, and the expected {@link
- * de.rub.nds.modifiablevariable.ModifiableVariable ModifiableVariable} type {@code V}. This
- * prevents common errors like accessing a STRING field with a UINT32 getter — the compiler enforces
- * the correct type.
+ * <p>The sealed class hierarchy mirrors the RFC 4251 data types. Each subclass carries only the
+ * attributes relevant to its type (e.g., {@link SshString} holds a charset and length field, while
+ * {@link SshByte} needs neither). The concrete subclass determines which {@link
+ * de.rub.nds.modifiablevariable.ModifiableVariable ModifiableVariable} type is stored and which
+ * {@link SshMessage#setField setField}/{@link SshMessage#getField getField} overloads apply,
+ * preventing type mismatches at compile time.
  *
- * <p>Field instances are created via static factory methods that match RFC 4251 types:
+ * <p>Field instances are created via static factory methods:
  *
  * <pre>{@code
- * public static final SshField<ModifiableInteger> MSG_LEN = SshField.uint32("msg_length");
- * public static final SshField<ModifiableString> MSG = SshField.string("msg", UTF_8, MSG_LEN);
+ * public static final SshField.SshString MESSAGE =
+ *         SshField.string("message", StandardCharsets.UTF_8);
  *
  * // Usage — compile-time checked:
- * msg.getField(MSG)          // returns ModifiableString
- * msg.setField(MSG, "hello") // works
- * msg.setField(MSG_LEN, "x") // compile error
+ * msg.setField(MESSAGE, "hello") // works — SshString accepts String
+ * msg.setField(MESSAGE, 42)      // compile error — no setField(SshString, int)
  * }</pre>
- *
- * @param <V> the {@link de.rub.nds.modifiablevariable.ModifiableVariable ModifiableVariable}
- *     subtype stored for this field
  */
-public final class SshField<V> {
+public sealed class SshField
+        permits SshField.SshByte,
+                SshField.SshBoolean,
+                SshField.SshUint32,
+                SshField.SshUint64,
+                SshField.SshBytes,
+                SshField.SshString,
+                SshField.SshMpInt {
 
     private final String name;
     private final SshDataType type;
-    private final Charset charset;
-    private final SshField<ModifiableInteger> lengthField;
-    private final int fixedLength;
 
-    private SshField(
-            String name,
-            SshDataType type,
-            Charset charset,
-            SshField<ModifiableInteger> lengthField,
-            int fixedLength) {
+    private SshField(String name, SshDataType type) {
         this.name = name;
         this.type = type;
-        this.charset = charset;
-        this.lengthField = lengthField;
-        this.fixedLength = fixedLength;
     }
 
     // ---- Accessors ----
 
     /** Returns the field name used as the storage key. */
-    public String name() {
+    public String getName() {
         return name;
     }
 
     /** Returns the RFC 4251 data type. */
-    public SshDataType type() {
+    public SshDataType getType() {
         return type;
     }
 
-    /**
-     * Returns the charset for text encoding/decoding, or {@code null} for binary data and
-     * non-string types.
-     */
-    public Charset charset() {
-        return charset;
+    // ---- Data Type Classes ----
+
+    /** A single byte field. Stored as {@link ModifiableByte}. */
+    public static final class SshByte extends SshField {
+        private SshByte(String name) {
+            super(name, SshDataType.BYTE);
+        }
     }
 
     /**
-     * Returns the UINT32 field that holds the length for variable-length types, or {@code null} for
-     * fixed-size types.
+     * A boolean field. Stored as {@link ModifiableByte} (rather than a dedicated boolean type) to
+     * allow fine-grained control over the raw byte value sent on the wire.
      */
-    public SshField<ModifiableInteger> lengthField() {
-        return lengthField;
+    public static final class SshBoolean extends SshField {
+        private SshBoolean(String name) {
+            super(name, SshDataType.BOOLEAN);
+        }
+    }
+
+    /** A 32-bit unsigned integer field. Stored as {@link ModifiableInteger}. */
+    public static final class SshUint32 extends SshField {
+        private SshUint32(String name) {
+            super(name, SshDataType.UINT32);
+        }
+    }
+
+    /** A 64-bit unsigned integer field. Stored as {@link ModifiableLong}. */
+    public static final class SshUint64 extends SshField {
+        private SshUint64(String name) {
+            super(name, SshDataType.UINT64);
+        }
     }
 
     /**
-     * Returns the fixed byte count for {@link SshDataType#BYTES} fields, or {@code -1} for all
-     * other types.
+     * A fixed-length byte array field ({@code byte[n]}). Stored as {@link ModifiableByteArray}. The
+     * exact number of bytes is known at declaration time and does not appear on the wire as a
+     * separate length prefix.
      */
-    public int fixedLength() {
-        return fixedLength;
+    public static final class SshBytes extends SshField {
+
+        private final int length;
+
+        private SshBytes(String name, int length) {
+            super(name, SshDataType.BYTES);
+            this.length = length;
+        }
+
+        /** Returns the fixed byte count for this field. */
+        public int getLength() {
+            return length;
+        }
+    }
+
+    /**
+     * A variable-length string field. Depending on the charset, the value is stored as either
+     * {@link ModifiableString} (when {@code charset != null}, for text data) or {@link
+     * ModifiableByteArray} (when {@code charset == null}, for raw binary data).
+     *
+     * <p>Every string field has an associated {@link SshUint32} length field that holds the byte
+     * length of the payload. The length field is auto-created and serialized/parsed inline, but
+     * remains independently accessible via {@link #getLengthField()} for manipulation.
+     *
+     * <p>This class is sealed and extended by {@link SshNameList}.
+     */
+    public static sealed class SshString extends SshField permits SshNameList {
+
+        private final Charset charset;
+        private final SshUint32 lengthField;
+
+        private SshString(String name, Charset charset, SshUint32 lengthField) {
+            super(name, SshDataType.STRING);
+            this.charset = charset;
+            this.lengthField = lengthField;
+        }
+
+        private SshString(String name, SshDataType type, Charset charset, SshUint32 lengthField) {
+            super(name, type);
+            this.charset = charset;
+            this.lengthField = lengthField;
+        }
+
+        /**
+         * Returns the charset for text encoding/decoding, or {@code null} for binary string fields.
+         */
+        public Charset getCharset() {
+            return charset;
+        }
+
+        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
+        public SshUint32 getLengthField() {
+            return lengthField;
+        }
+    }
+
+    /**
+     * A multiple precision integer field ({@code mpint}). Stored as {@link ModifiableByteArray}
+     * containing the raw two's complement bytes. Like {@link SshString}, every mpint has an
+     * associated implicit {@link SshUint32} length field.
+     */
+    public static final class SshMpInt extends SshField {
+
+        private final SshUint32 lengthField;
+
+        private SshMpInt(String name, SshUint32 lengthField) {
+            super(name, SshDataType.MPINT);
+            this.lengthField = lengthField;
+        }
+
+        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
+        public SshUint32 getLengthField() {
+            return lengthField;
+        }
+    }
+
+    /**
+     * A comma-separated name-list field ({@code name-list} per RFC 4251). Always encoded as
+     * US-ASCII. Stored as {@link ModifiableString}. Extends {@link SshString} since the wire format
+     * is identical (uint32 length + payload bytes).
+     */
+    public static final class SshNameList extends SshString {
+        private SshNameList(String name, SshUint32 lengthField) {
+            super(name, SshDataType.NAME_LIST, StandardCharsets.US_ASCII, lengthField);
+        }
     }
 
     // ---- Factory methods ----
 
-    /** A single byte ({@code byte}). Stored as {@link ModifiableByte}. */
-    public static SshField<ModifiableByte> byte_(String name) {
-        return new SshField<>(name, SshDataType.BYTE, null, null, -1);
-    }
-
     /**
-     * A boolean value ({@code boolean}). Stored as {@link ModifiableByte} for fine-grained control
-     * over the raw byte value.
-     */
-    public static SshField<ModifiableByte> boolean_(String name) {
-        return new SshField<>(name, SshDataType.BOOLEAN, null, null, -1);
-    }
-
-    /** A 32-bit unsigned integer ({@code uint32}). Stored as {@link ModifiableInteger}. */
-    public static SshField<ModifiableInteger> uint32(String name) {
-        return new SshField<>(name, SshDataType.UINT32, null, null, -1);
-    }
-
-    /** A 64-bit unsigned integer ({@code uint64}). Stored as {@link ModifiableLong}. */
-    public static SshField<ModifiableLong> uint64(String name) {
-        return new SshField<>(name, SshDataType.UINT64, null, null, -1);
-    }
-
-    /**
-     * A fixed-length byte array ({@code byte[n]}). Stored as {@link ModifiableByteArray}.
+     * Creates a single byte field.
      *
-     * @param fixedLength the exact number of bytes
+     * @param name the field name
      */
-    public static SshField<ModifiableByteArray> bytes(String name, int fixedLength) {
-        return new SshField<>(name, SshDataType.BYTES, null, null, fixedLength);
+    public static SshByte byte_(String name) {
+        return new SshByte(name);
     }
 
     /**
-     * A variable-length text string ({@code string}) with an implicit length field. The length
-     * field is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
-     * accessible via {@link #lengthField()} for independent manipulation.
+     * Creates a boolean field.
      *
-     * @param charset the charset for encoding/decoding
+     * @param name the field name
      */
-    public static SshField<ModifiableString> string(String name, Charset charset) {
-        SshField<ModifiableInteger> length = uint32(name + "_length");
-        return new SshField<>(name, SshDataType.STRING, charset, length, -1);
+    public static SshBoolean boolean_(String name) {
+        return new SshBoolean(name);
     }
 
     /**
-     * A variable-length text string ({@code string}). Stored as {@link ModifiableString}. The
-     * length is read from / written to the referenced UINT32 field.
+     * Creates a 32-bit unsigned integer field.
      *
-     * @param charset the charset for encoding/decoding
-     * @param lengthField the UINT32 field holding the byte length
+     * @param name the field name
      */
-    public static SshField<ModifiableString> string(
-            String name, Charset charset, SshField<ModifiableInteger> lengthField) {
-        return new SshField<>(name, SshDataType.STRING, charset, lengthField, -1);
+    public static SshUint32 uint32(String name) {
+        return new SshUint32(name);
     }
 
     /**
-     * A variable-length binary string ({@code string} with no text encoding) with an implicit
-     * length field. The length field is auto-created as {@code name + "_length"} and
-     * serialized/parsed inline. It is still accessible via {@link #lengthField()} for independent
-     * manipulation.
-     */
-    public static SshField<ModifiableByteArray> string(String name) {
-        SshField<ModifiableInteger> length = uint32(name + "_length");
-        return new SshField<>(name, SshDataType.STRING, null, length, -1);
-    }
-
-    /**
-     * A variable-length binary string ({@code string} with no text encoding). Stored as {@link
-     * ModifiableByteArray}. The length is read from / written to the referenced UINT32 field.
+     * Creates a 64-bit unsigned integer field.
      *
-     * @param lengthField the UINT32 field holding the byte length
+     * @param name the field name
      */
-    public static SshField<ModifiableByteArray> string(
-            String name, SshField<ModifiableInteger> lengthField) {
-        return new SshField<>(name, SshDataType.STRING, null, lengthField, -1);
+    public static SshUint64 uint64(String name) {
+        return new SshUint64(name);
     }
 
     /**
-     * A multiple precision integer ({@code mpint}) with an implicit length field. The length field
-     * is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
-     * accessible via {@link #lengthField()} for independent manipulation.
-     */
-    public static SshField<ModifiableByteArray> mpint(String name) {
-        SshField<ModifiableInteger> length = uint32(name + "_length");
-        return new SshField<>(name, SshDataType.MPINT, null, length, -1);
-    }
-
-    /**
-     * A multiple precision integer ({@code mpint}). Stored as {@link ModifiableByteArray}
-     * containing the raw two's complement bytes. The length is read from / written to the
-     * referenced UINT32 field.
+     * Creates a fixed-length byte array field ({@code byte[n]}).
      *
-     * @param lengthField the UINT32 field holding the byte length
+     * @param name the field name
+     * @param length the exact number of bytes
      */
-    public static SshField<ModifiableByteArray> mpint(
-            String name, SshField<ModifiableInteger> lengthField) {
-        return new SshField<>(name, SshDataType.MPINT, null, lengthField, -1);
+    public static SshBytes bytes(String name, int length) {
+        return new SshBytes(name, length);
     }
 
     /**
-     * A comma-separated list of names ({@code name-list}) with an implicit length field. The length
-     * field is auto-created as {@code name + "_length"} and serialized/parsed inline. It is still
-     * accessible via {@link #lengthField()} for independent manipulation.
+     * Creates a variable-length string field with an implicit length field. The length field is
+     * auto-created as {@code name + "_length"} and serialized/parsed inline. It remains accessible
+     * via {@link SshString#getLengthField()} for independent manipulation.
      *
-     * @param charset the charset for encoding/decoding (typically US-ASCII)
+     * @param name the field name
+     * @param charset the charset for text encoding/decoding, or {@code null} for raw binary data
      */
-    public static SshField<ModifiableString> nameList(String name, Charset charset) {
-        SshField<ModifiableInteger> length = uint32(name + "_length");
-        return new SshField<>(name, SshDataType.NAME_LIST, charset, length, -1);
+    public static SshString string(String name, Charset charset) {
+        SshUint32 length = uint32(name + "_length");
+        return new SshString(name, charset, length);
     }
 
     /**
-     * A comma-separated list of names ({@code name-list}). Stored as {@link ModifiableString}. The
-     * length is read from / written to the referenced UINT32 field.
+     * Creates a multiple precision integer field with an implicit length field. The length field is
+     * auto-created as {@code name + "_length"} and serialized/parsed inline. It remains accessible
+     * via {@link SshMpInt#getLengthField()} for independent manipulation.
      *
-     * @param charset the charset for encoding/decoding (typically US-ASCII)
-     * @param lengthField the UINT32 field holding the byte length
+     * @param name the field name
      */
-    public static SshField<ModifiableString> nameList(
-            String name, Charset charset, SshField<ModifiableInteger> lengthField) {
-        return new SshField<>(name, SshDataType.NAME_LIST, charset, lengthField, -1);
+    public static SshMpInt mpint(String name) {
+        SshUint32 length = uint32(name + "_length");
+        return new SshMpInt(name, length);
+    }
+
+    /**
+     * Creates a comma-separated name-list field (always US-ASCII) with an implicit length field.
+     * The length field is auto-created as {@code name + "_length"} and serialized/parsed inline. It
+     * remains accessible via {@link SshString#getLengthField()} for independent manipulation.
+     *
+     * @param name the field name
+     */
+    public static SshNameList nameList(String name) {
+        SshUint32 length = uint32(name + "_length");
+        return new SshNameList(name, length);
     }
 
     @Override

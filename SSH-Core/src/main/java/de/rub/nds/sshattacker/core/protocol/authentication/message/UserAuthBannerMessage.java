@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
-import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshField;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -18,12 +17,12 @@ import java.util.List;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
-    public static final SshField<ModifiableString> MESSAGE =
+    public static final SshField.SshString MESSAGE =
             SshField.string("message", StandardCharsets.UTF_8);
-    public static final SshField<ModifiableString> LANGUAGE_TAG =
+    public static final SshField.SshString LANGUAGE_TAG =
             SshField.string("language_tag", StandardCharsets.US_ASCII);
 
-    private static final List<SshField<?>> FIELDS = List.of(MESSAGE, LANGUAGE_TAG);
+    private static final List<SshField> FIELDS = List.of(MESSAGE, LANGUAGE_TAG);
 
     public UserAuthBannerMessage() {
         super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER, FIELDS);
