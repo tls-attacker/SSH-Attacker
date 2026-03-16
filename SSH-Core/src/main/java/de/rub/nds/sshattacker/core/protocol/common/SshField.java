@@ -37,14 +37,7 @@ import java.nio.charset.StandardCharsets;
  * }</pre>
  */
 public sealed class SshField
-        permits SshField.SshByte,
-                SshField.SshBoolean,
-                SshField.SshUint32,
-                SshField.SshUint64,
-                SshField.SshBytes,
-                SshField.SshString,
-                SshField.SshBinaryString,
-                SshField.SshMpInt {
+        permits SshField.SshBoolean, SshField.SshByte, SshField.SshBytes, SshField.SshVarLength, SshField.SshUint32, SshField.SshUint64 {
 
     private final String name;
     private final SshDataType type;
@@ -76,6 +69,26 @@ public sealed class SshField
     }
 
     /**
+     * A fixed-length byte array field ({@code byte[n]}). Stored as {@link ModifiableByteArray}. The
+     * exact number of bytes is known at declaration time and does not appear on the wire as a
+     * separate length prefix.
+     */
+    public static final class SshBytes extends SshField {
+
+        private final int length;
+
+        private SshBytes(String name, int length) {
+            super(name, SshDataType.BYTES);
+            this.length = length;
+        }
+
+        /** Returns the fixed byte count for this field. */
+        public int getLength() {
+            return length;
+        }
+    }
+
+    /**
      * A boolean field. Stored as {@link ModifiableByte} (rather than a dedicated boolean type) to
      * allow fine-grained control over the raw byte value sent on the wire.
      */
@@ -99,23 +112,18 @@ public sealed class SshField
         }
     }
 
-    /**
-     * A fixed-length byte array field ({@code byte[n]}). Stored as {@link ModifiableByteArray}. The
-     * exact number of bytes is known at declaration time and does not appear on the wire as a
-     * separate length prefix.
-     */
-    public static final class SshBytes extends SshField {
+    public static sealed class SshVarLength extends SshField permits SshString, SshBinaryString, SshMpInt {
 
-        private final int length;
+        private final SshUint32 lengthField;
 
-        private SshBytes(String name, int length) {
-            super(name, SshDataType.BYTES);
-            this.length = length;
+        private SshVarLength(String name, SshDataType type, SshUint32 lengthField) {
+            super(name, type);
+            this.lengthField = lengthField;
         }
 
-        /** Returns the fixed byte count for this field. */
-        public int getLength() {
-            return length;
+        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
+        public SshUint32 getLengthField() {
+            return lengthField;
         }
     }
 
@@ -131,21 +139,19 @@ public sealed class SshField
      *
      * @see SshBinaryString for raw binary data without text encoding
      */
-    public static sealed class SshString extends SshField permits SshNameList {
+    public static sealed class SshString extends SshVarLength permits SshNameList {
 
         private final Charset charset;
-        private final SshUint32 lengthField;
 
-        private SshString(String name, Charset charset, SshUint32 lengthField) {
-            super(name, SshDataType.STRING);
+
+        private SshString(String name, SshUint32 lengthField, Charset charset) {
+            super(name, SshDataType.STRING, lengthField);
             this.charset = charset;
-            this.lengthField = lengthField;
         }
 
-        private SshString(String name, SshDataType type, Charset charset, SshUint32 lengthField) {
-            super(name, type);
+        private SshString(String name, SshDataType type, SshUint32 lengthField, Charset charset) {
+            super(name, type, lengthField);
             this.charset = charset;
-            this.lengthField = lengthField;
         }
 
         /** Returns the charset for text encoding/decoding. */
@@ -153,10 +159,7 @@ public sealed class SshField
             return charset;
         }
 
-        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
-        public SshUint32 getLengthField() {
-            return lengthField;
-        }
+
     }
 
     /**
@@ -170,18 +173,9 @@ public sealed class SshField
      *
      * @see SshString for text data with charset encoding
      */
-    public static final class SshBinaryString extends SshField {
-
-        private final SshUint32 lengthField;
-
+    public static final class SshBinaryString extends SshVarLength {
         private SshBinaryString(String name, SshUint32 lengthField) {
-            super(name, SshDataType.STRING);
-            this.lengthField = lengthField;
-        }
-
-        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
-        public SshUint32 getLengthField() {
-            return lengthField;
+            super(name, SshDataType.STRING_BINARY, lengthField);
         }
     }
 
@@ -190,18 +184,9 @@ public sealed class SshField
      * containing the raw two's complement bytes. Like {@link SshString}, every mpint has an
      * associated implicit {@link SshUint32} length field.
      */
-    public static final class SshMpInt extends SshField {
-
-        private final SshUint32 lengthField;
-
+    public static final class SshMpInt extends SshVarLength {
         private SshMpInt(String name, SshUint32 lengthField) {
-            super(name, SshDataType.MPINT);
-            this.lengthField = lengthField;
-        }
-
-        /** Returns the implicit {@link SshUint32} field that holds the byte length on the wire. */
-        public SshUint32 getLengthField() {
-            return lengthField;
+            super(name, SshDataType.MPINT, lengthField);
         }
     }
 
@@ -212,7 +197,7 @@ public sealed class SshField
      */
     public static final class SshNameList extends SshString {
         private SshNameList(String name, SshUint32 lengthField) {
-            super(name, SshDataType.NAME_LIST, StandardCharsets.US_ASCII, lengthField);
+            super(name, SshDataType.NAME_LIST, lengthField, StandardCharsets.US_ASCII);
         }
     }
 
@@ -275,7 +260,7 @@ public sealed class SshField
      */
     public static SshString string(String name, Charset charset) {
         SshUint32 length = uint32(name + "_length");
-        return new SshString(name, charset, length);
+        return new SshString(name, length, charset);
     }
 
     /**

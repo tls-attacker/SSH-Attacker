@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,7 +70,7 @@ public class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessagePa
      */
     protected SshMessageParser(byte[] array) {
         super(array);
-        this.messageFactory = null;
+        messageFactory = null;
     }
 
     /**
@@ -79,11 +81,12 @@ public class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessagePa
      */
     protected SshMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-        this.messageFactory = null;
+        messageFactory = null;
     }
 
     @Override
     protected T createMessage() {
+        assert messageFactory != null;
         return messageFactory.get();
     }
 
@@ -126,89 +129,90 @@ public class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessagePa
                 this::getPointer);
 
         switch (field) {
-            case SshField.SshByte f -> {
+            case SshField.SshByte fld -> {
                 byte value = parseByteField();
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> String.format("0x%02X", value));
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> String.format("0x%02X", value));
             }
-            case SshField.SshBoolean f -> {
+            case SshField.SshBytes fld -> {
+                int length = fld.getLength();
+                LOGGER.trace("Fixed byte[{}] field '{}'", () -> length, fld::getName);
+                byte[] value = parseByteArrayField(length);
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> DataConverter.bytesToHexString(value));
+            }
+            case SshField.SshBoolean fld -> {
                 byte value = parseByteField();
-                message.setField(f, value);
+                message.setField(fld, value);
                 LOGGER.debug(
                         "{}: {} (raw: {})",
-                        f::getName,
+                        fld::getName,
                         () -> value != 0,
                         () -> String.format("0x%02X", value));
             }
-            case SshField.SshUint32 f -> {
+            case SshField.SshUint32 fld -> {
                 int value = parseIntField();
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> value);
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> value);
             }
-            case SshField.SshUint64 f -> {
+            case SshField.SshUint64 fld -> {
                 long value = parseLongField();
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> value);
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> value);
             }
-            case SshField.SshBytes f -> {
-                int length = f.getLength();
-                LOGGER.trace("Fixed byte[{}] field '{}'", () -> length, f::getName);
-                byte[] value = parseByteArrayField(length);
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> ArrayConverter.bytesToHexString(value));
-            }
-            case SshField.SshMpInt f -> {
-                int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
+            case SshField.SshMpInt fld -> {
+                int length = parseImplicitLength(fld.getLengthField(), explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length MPINT '{}', length from '{}' = {}",
-                        f::getName,
-                        () -> f.getLengthField().getName(),
+                        fld::getName,
+                        () -> fld.getLengthField().getName(),
                         () -> length);
                 byte[] value = parseByteArrayField(length);
-                message.setField(f, value);
+                message.setField(fld, value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
-                        f::getName,
+                        fld::getName,
                         () -> value.length,
-                        () -> ArrayConverter.bytesToHexString(value));
+                        () -> DataConverter.bytesToHexString(value));
             }
-            case SshField.SshBinaryString f -> {
-                int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
+            case SshField.SshBinaryString fld -> {
+                int length = parseImplicitLength(fld.getLengthField(), explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length binary STRING '{}', length from '{}' = {}",
-                        f::getName,
-                        () -> f.getLengthField().getName(),
+                        fld::getName,
+                        () -> fld.getLengthField().getName(),
                         () -> length);
                 byte[] value = parseByteArrayField(length);
-                message.setField(f, value);
+                message.setField(fld, value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
-                        f::getName,
+                        fld::getName,
                         () -> value.length,
-                        () -> ArrayConverter.bytesToHexString(value));
+                        () -> DataConverter.bytesToHexString(value));
             }
-            case SshField.SshNameList f -> {
-                int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
+            case SshField.SshNameList fld -> {
+                int length = parseImplicitLength(fld.getLengthField(), explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length NAME_LIST '{}', length from '{}' = {}",
-                        f::getName,
-                        () -> f.getLengthField().getName(),
+                        fld::getName,
+                        () -> fld.getLengthField().getName(),
                         () -> length);
-                String value = parseByteString(length, f.getCharset());
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
+                String value = parseByteString(length, fld.getCharset());
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> backslashEscapeString(value));
             }
-            case SshField.SshString f -> {
-                int length = parseImplicitLength(f.getLengthField(), explicitFieldNames);
+            case SshField.SshString fld -> {
+                int length = parseImplicitLength(fld.getLengthField(), explicitFieldNames);
                 LOGGER.trace(
                         "Variable-length STRING '{}', length from '{}' = {}",
-                        f::getName,
-                        () -> f.getLengthField().getName(),
+                        fld::getName,
+                        () -> fld.getLengthField().getName(),
                         () -> length);
-                String value = parseByteString(length, f.getCharset());
-                message.setField(f, value);
-                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
+                String value = parseByteString(length, fld.getCharset());
+                message.setField(fld, value);
+                LOGGER.debug("{}: {}", fld::getName, () -> backslashEscapeString(value));
             }
+            default -> throw new IllegalStateException("Unexpected value: " + field);
         }
     }
 

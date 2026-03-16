@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SerializerStream extends ByteArrayOutputStream {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
@@ -50,9 +51,9 @@ public class SerializerStream extends ByteArrayOutputStream {
     public final void appendBigInteger(BigInteger bigInteger, int length) {
         byte[] bytes;
         if (bigInteger.equals(BigInteger.ZERO)) {
-            bytes = ArrayConverter.intToBytes(0, length);
+            bytes = DataConverter.intToBytes(0, length);
         } else {
-            bytes = ArrayConverter.bigIntegerToByteArray(bigInteger, length, true);
+            bytes = DataConverter.bigIntegerToByteArray(bigInteger, length, true);
         }
         appendBytes(bytes);
     }

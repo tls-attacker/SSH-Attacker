@@ -16,9 +16,8 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.DataConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlType;
 import java.math.BigInteger;
@@ -323,7 +322,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
                 "Serialized {} ({} bytes): {}",
                 this::toCompactString,
                 () -> result.length,
-                () -> ArrayConverter.bytesToHexString(result));
+                () -> DataConverter.bytesToHexString(result));
         return result;
     }
 
@@ -331,71 +330,72 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
             SshField field, SerializerStream output, Set<String> explicitFieldNames) {
         LOGGER.trace("Serializing field '{}' (type: {})", field::getName, field::getType);
         switch (field) {
-            case SshField.SshByte f -> {
-                byte value = ((ModifiableByte) fields.get(f.getName())).getValue();
+            case SshField.SshByte fld -> {
+                byte value = ((ModifiableByte) fields.get(fld.getName())).getValue();
                 output.appendByte(value);
-                LOGGER.debug("{}: {}", f::getName, () -> String.format("0x%02X", value));
+                LOGGER.debug("{}: {}", fld::getName, () -> String.format("0x%02X", value));
             }
-            case SshField.SshBoolean f -> {
-                byte value = ((ModifiableByte) fields.get(f.getName())).getValue();
+            case SshField.SshBytes fld -> {
+                byte[] value = ((ModifiableByteArray) fields.get(fld.getName())).getValue();
+                output.appendBytes(value);
+                LOGGER.debug(
+                        "{}: ({} bytes) {}",
+                        fld::getName,
+                        () -> value.length,
+                        () -> DataConverter.bytesToRawHexString(value));
+            }
+            case SshField.SshBoolean fld -> {
+                byte value = ((ModifiableByte) fields.get(fld.getName())).getValue();
                 output.appendByte(value);
                 LOGGER.debug(
                         "{}: {} (raw: {})",
-                        f::getName,
+                        fld::getName,
                         () -> value != 0,
                         () -> String.format("0x%02X", value));
             }
-            case SshField.SshUint32 f -> {
-                int value = ((ModifiableInteger) fields.get(f.getName())).getValue();
+            case SshField.SshUint32 fld -> {
+                int value = ((ModifiableInteger) fields.get(fld.getName())).getValue();
                 output.appendInt(value);
-                LOGGER.debug("{}: {}", f::getName, () -> value);
+                LOGGER.debug("{}: {}", fld::getName, () -> value);
             }
-            case SshField.SshUint64 f -> {
-                long value = ((ModifiableLong) fields.get(f.getName())).getValue();
+            case SshField.SshUint64 fld -> {
+                long value = ((ModifiableLong) fields.get(fld.getName())).getValue();
                 output.appendLong(value);
-                LOGGER.debug("{}: {}", f::getName, () -> value);
+                LOGGER.debug("{}: {}", fld::getName, () -> value);
             }
-            case SshField.SshBytes f -> {
-                byte[] value = ((ModifiableByteArray) fields.get(f.getName())).getValue();
+            case SshField.SshMpInt fld -> {
+                serializeImplicitLength(fld.getLengthField(), output, explicitFieldNames);
+                byte[] value = ((ModifiableByteArray) fields.get(fld.getName())).getValue();
                 output.appendBytes(value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
-                        f::getName,
+                        fld::getName,
                         () -> value.length,
-                        () -> ArrayConverter.bytesToHexString(value));
+                        () -> DataConverter.bytesToRawHexString(value));
             }
-            case SshField.SshMpInt f -> {
-                serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
-                byte[] value = ((ModifiableByteArray) fields.get(f.getName())).getValue();
+            case SshField.SshBinaryString fld -> {
+                serializeImplicitLength(fld.getLengthField(), output, explicitFieldNames);
+                byte[] value = ((ModifiableByteArray) fields.get(fld.getName())).getValue();
                 output.appendBytes(value);
                 LOGGER.debug(
                         "{}: ({} bytes) {}",
-                        f::getName,
+                        fld::getName,
                         () -> value.length,
-                        () -> ArrayConverter.bytesToHexString(value));
+                        () -> DataConverter.bytesToRawHexString(value));
             }
-            case SshField.SshBinaryString f -> {
-                serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
-                byte[] value = ((ModifiableByteArray) fields.get(f.getName())).getValue();
-                output.appendBytes(value);
-                LOGGER.debug(
-                        "{}: ({} bytes) {}",
-                        f::getName,
-                        () -> value.length,
-                        () -> ArrayConverter.bytesToHexString(value));
+            case SshField.SshNameList fld -> {
+                serializeImplicitLength(fld.getLengthField(), output, explicitFieldNames);
+                String value = ((ModifiableString) fields.get(fld.getName())).getValue();
+                output.appendString(value, fld.getCharset());
+                LOGGER.debug("{}: {}", fld::getName, () -> backslashEscapeString(value));
             }
-            case SshField.SshNameList f -> {
-                serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
-                String value = ((ModifiableString) fields.get(f.getName())).getValue();
-                output.appendString(value, f.getCharset());
-                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
+            case SshField.SshString fld -> {
+                serializeImplicitLength(fld.getLengthField(), output, explicitFieldNames);
+                String value = ((ModifiableString) fields.get(fld.getName())).getValue();
+                output.appendString(value, fld.getCharset());
+                LOGGER.debug("{}: {}", fld::getName, () -> backslashEscapeString(value));
             }
-            case SshField.SshString f -> {
-                serializeImplicitLength(f.getLengthField(), output, explicitFieldNames);
-                String value = ((ModifiableString) fields.get(f.getName())).getValue();
-                output.appendString(value, f.getCharset());
-                LOGGER.debug("{}: {}", f::getName, () -> backslashEscapeString(value));
-            }
+            default -> throw new IllegalStateException("Unexpected value: " + field);
         }
     }
 
@@ -422,7 +422,7 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
         LOGGER.trace(
                 "Setting message ID to {} ({})",
                 () -> messageIdConstant,
-                () -> messageIdConstant.getId());
+                messageIdConstant::getId);
         setMessageId(messageIdConstant);
         prepareMessageContents(chooser);
         LOGGER.trace("Finished preparing {}", this::toCompactString);
@@ -432,45 +432,14 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
      * Hook for subclasses to set field values during preparation. The message ID is already set
      * before this method is called.
      */
-    protected void prepareMessageContents(Chooser chooser) {
-        // Override in subclasses
-    }
-
-    // ---- Default adjustContext implementation ----
-
-    @Override
-    public abstract void adjustContext(SshContext context);
-
-    // ---- Handler ----
-
-    @Override
-    public ProtocolMessageHandler<T> getHandler() {
-        SshMessage<T> self = this;
-        return new SshMessageHandler<T>() {
-            @Override
-            public void adjustContext(SshContext context, T object) {
-                object.adjustContext(context);
-            }
-
-            @Override
-            public SshMessageParser<T> getParser(byte[] array, SshContext context) {
-                return new SshMessageParser<>(array, self::createNewInstance);
-            }
-
-            @Override
-            public SshMessageParser<T> getParser(
-                    byte[] array, int startPosition, SshContext context) {
-                return new SshMessageParser<>(array, startPosition, self::createNewInstance);
-            }
-        };
-    }
+    protected abstract void prepareMessageContents(Chooser chooser);
 
     /**
      * Creates a new empty instance of this message type. Used by the generic parser to instantiate
      * the message before parsing fields into it. Subclasses must implement this by returning {@code
      * new ConcreteMessage()}.
      */
-    protected abstract T createNewInstance();
+    protected abstract T newInstance();
 
     // ---- toString ----
 

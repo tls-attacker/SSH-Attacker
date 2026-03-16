@@ -12,33 +12,21 @@ import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
         extends ModifiableVariableHolder {
 
-    /** content type */
-    protected static final boolean GOING_TO_BE_SENT_DEFAULT = true;
-
-    protected static final boolean REQUIRED_DEFAULT = true;
-
-    protected static final boolean ADJUST_CONTEXT_DEFAULT = true;
-
-    /** Defines whether this message is necessarily required in the workflow. */
-    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
-    private ModifiableBoolean required;
-
-    /**
-     * Defines if the message should be sent during the workflow. Using this flag it is possible to
-     * omit a message is sent during the handshake while it is executed to initialize specific
-     * variables.
-     */
-    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
-    private ModifiableBoolean goingToBeSent;
-
-    @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.UNSPECIFIED)
-    private ModifiableBoolean adjustContext;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /** resulting message */
     @ModifiableVariableProperty(purpose = ModifiableVariableProperty.Purpose.PLAINTEXT)
@@ -50,42 +38,10 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
 
     protected ProtocolMessage(ProtocolMessage<T> other) {
         super();
-        required = other.required != null ? other.required.createCopy() : null;
-        goingToBeSent = other.goingToBeSent != null ? other.goingToBeSent.createCopy() : null;
-        adjustContext = other.adjustContext != null ? other.adjustContext.createCopy() : null;
         completeResultingMessage =
                 other.completeResultingMessage != null
                         ? other.completeResultingMessage.createCopy()
                         : null;
-    }
-
-    public abstract ProtocolMessage<T> createCopy();
-
-    public boolean isRequired() {
-        if (required == null || required.getValue() == null) {
-            return REQUIRED_DEFAULT;
-        }
-        return required.getValue();
-    }
-
-    public void setRequired(boolean required) {
-        this.required = ModifiableVariableFactory.safelySetValue(this.required, required);
-    }
-
-    public boolean isGoingToBeSent() {
-        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
-            return GOING_TO_BE_SENT_DEFAULT;
-        }
-        return goingToBeSent.getValue();
-    }
-
-    public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent =
-                ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
-    }
-
-    public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
-        this.goingToBeSent = goingToBeSent;
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {
@@ -102,29 +58,25 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                         this.completeResultingMessage, completeResultingMessage);
     }
 
-    public boolean getAdjustContext() {
-        if (adjustContext == null || adjustContext.getValue() == null) {
-            return ADJUST_CONTEXT_DEFAULT;
-        }
-        return adjustContext.getValue();
-    }
-
-    public void setAdjustContext(ModifiableBoolean adjustContext) {
-        this.adjustContext = adjustContext;
-    }
-
-    public void setAdjustContext(Boolean adjustContext) {
-        this.adjustContext =
-                ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
-    }
-
-    public abstract ProtocolMessageHandler<T> getHandler();
-
-    public abstract void adjustContext(SshContext context);
-
-    public abstract void prepare(Chooser chooser);
+    public abstract T createCopy();
 
     public abstract byte[] serialize();
+
+    public static ProtocolMessage<?> parse(SshContext context, AbstractPacket packet) {
+        ProtocolMessage<?> message = null;
+        byte[] raw = packet.getPayload().getValue();
+        try {
+            if (packet instanceof BlobPacket) {
+                String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+                if (rawText.startsWith("SSH-2.0")) {
+                    message = VersionExchangeMessage.parse(context, packet);
+                } else {
+                    message = AsciiMessage.parse(context, packet);
+                }
+            }
+        }
+        return message;
+    }
 
     public abstract String toCompactString();
 }

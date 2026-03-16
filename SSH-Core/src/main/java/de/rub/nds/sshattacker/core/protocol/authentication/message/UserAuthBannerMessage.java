@@ -38,7 +38,7 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     }
 
     @Override
-    protected UserAuthBannerMessage createNewInstance() {
+    protected UserAuthBannerMessage newInstance() {
         return new UserAuthBannerMessage();
     }
 

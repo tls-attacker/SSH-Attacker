@@ -21,6 +21,13 @@ public enum SshDataType {
     BYTE,
 
     /**
+     * A fixed-length byte array ({@code byte[n]}). Wire size: exactly {@code n} bytes, where {@code
+     * n} is specified via {@link SshFieldDefinition#fixedLength()}. Stored as {@code
+     * ModifiableByteArray}.
+     */
+    BYTES,
+
+    /**
      * A boolean value ({@code boolean}). Wire size: 1 byte. Stored as {@code ModifiableByte} (not
      * {@code ModifiableBoolean}) to allow fine-grained control over the raw byte value — the SSH
      * wire format uses a full byte, not just 0/1.
@@ -40,13 +47,6 @@ public enum SshDataType {
     UINT64,
 
     /**
-     * A fixed-length byte array ({@code byte[n]}). Wire size: exactly {@code n} bytes, where {@code
-     * n} is specified via {@link SshFieldDefinition#fixedLength()}. Stored as {@code
-     * ModifiableByteArray}.
-     */
-    BYTES,
-
-    /**
      * Variable-length data ({@code string} in RFC 4251). The length is read from / written to a
      * separate {@link #UINT32} field referenced by {@link SshFieldDefinition#lengthField()}.
      *
@@ -55,6 +55,8 @@ public enum SshDataType {
      * binary and stored as {@code ModifiableByteArray}.
      */
     STRING,
+
+    STRING_BINARY,
 
     /**
      * A multiple precision integer ({@code mpint}). The length is read from / written to a separate
