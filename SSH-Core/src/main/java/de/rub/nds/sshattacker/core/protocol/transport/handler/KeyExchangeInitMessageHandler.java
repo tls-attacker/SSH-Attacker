@@ -79,6 +79,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             message.getLanguagesServerToClient()
                                     .getValue()
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+
+            // Client is handling -> Servers first key exchange packet follows
+            context.setServerFirstKeyExchangePacketFollows(
+                    Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
+
             context.setServerReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
@@ -137,6 +142,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             message.getLanguagesServerToClient()
                                     .getValue()
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+
+            // Server is handling -> clients first key exchange packet follows
+            context.setClientFirstKeyExchangePacketFollows(
+                    Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
+
             context.setClientReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
@@ -153,6 +163,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     context.getConfig().getServerSupportedKeyExchangeAlgorithms()));
         }
         pickAlgorithms();
+        handleGuessing();
     }
 
     private boolean checkClientSupportForExtensionNegotiation() {
@@ -177,6 +188,63 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         return false;
     }
 
+    /** If a guess is announced, make sure it will be rejected if wrong. */
+    private void handleGuessing() {
+        boolean keyExchangeBeingGuessed =
+                context.isHandleAsClient()
+                        ? context.getServerFirstKeyExchangePacketFollows().orElse(false)
+                        : context.getClientFirstKeyExchangePacketFollows().orElse(false);
+        if (!keyExchangeBeingGuessed) {
+            return;
+        }
+        LOGGER.info("Peer will be guessing the key exchange");
+        /*
+          The guess is considered wrong if:
+          o  the kex algorithm and/or the host key algorithm is guessed wrong
+             (server and client have different preferred algorithm), or
+          o  if any of the other algorithms cannot be agreed upon (the
+             procedure is defined below in Section 7.1).
+        */
+
+        KeyExchangeAlgorithm guessedKex;
+        PublicKeyAlgorithm guessedHostKeyAlgorithm;
+
+        KeyExchangeAlgorithm preferredKex;
+        PublicKeyAlgorithm preferredHostKeyAlgorithm;
+        // note: chooser lists will be from context, because we just set them above
+        if (context.isHandleAsClient()) {
+            guessedKex = context.getChooser().getServerSupportedKeyExchangeAlgorithms().getFirst();
+            guessedHostKeyAlgorithm =
+                    context.getChooser().getServerSupportedHostKeyAlgorithms().getFirst();
+
+            preferredKex =
+                    context.getChooser().getClientSupportedKeyExchangeAlgorithms().getFirst();
+            preferredHostKeyAlgorithm =
+                    context.getChooser().getClientSupportedHostKeyAlgorithms().getFirst();
+        } else {
+            guessedKex = context.getChooser().getClientSupportedKeyExchangeAlgorithms().getFirst();
+            guessedHostKeyAlgorithm =
+                    context.getChooser().getClientSupportedHostKeyAlgorithms().getFirst();
+
+            preferredKex =
+                    context.getChooser().getServerSupportedKeyExchangeAlgorithms().getFirst();
+            preferredHostKeyAlgorithm =
+                    context.getChooser().getServerSupportedHostKeyAlgorithms().getFirst();
+        }
+        if (guessedKex.equals(preferredKex)
+                && guessedHostKeyAlgorithm.equals(preferredHostKeyAlgorithm)) {
+            // TODO: correctly model whether "the other algorithms cannot be agreed upon", but that requires AlgorithmPicker
+            // to implement the additional constraints
+            LOGGER.info("Key exchange guess was correct: {}", guessedKex);
+        } else {
+            LOGGER.info(
+                    "Key exchange guess {} was NOT correct (preferred {}), ignoring next key exchange",
+                    guessedKex,
+                    preferredKex);
+            context.setIgnoreNextKeyExchange(true);
+        }
+    }
+
     private void pickAlgorithms() {
         // if enforceSettings is true, the algorithms are expected to be
         // already set in the context
@@ -186,62 +254,63 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     context.getChooser().getClientSupportedKeyExchangeAlgorithms(),
                                     context.getChooser().getServerSupportedKeyExchangeAlgorithms())
                             .orElse(null));
+        }
 
-            context.setEncryptionAlgorithmClientToServer(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedEncryptionAlgorithmsClientToServer(),
-                                    context.getChooser()
-                                            .getServerSupportedEncryptionAlgorithmsClientToServer())
-                            .orElse(null));
+        context.setEncryptionAlgorithmClientToServer(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedEncryptionAlgorithmsClientToServer(),
+                                context.getChooser()
+                                        .getServerSupportedEncryptionAlgorithmsClientToServer())
+                        .orElse(null));
 
-            context.setEncryptionAlgorithmServerToClient(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedEncryptionAlgorithmsServerToClient(),
-                                    context.getChooser()
-                                            .getServerSupportedEncryptionAlgorithmsServerToClient())
-                            .orElse(null));
+        context.setEncryptionAlgorithmServerToClient(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedEncryptionAlgorithmsServerToClient(),
+                                context.getChooser()
+                                        .getServerSupportedEncryptionAlgorithmsServerToClient())
+                        .orElse(null));
 
-            context.setHostKeyAlgorithm(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser().getClientSupportedHostKeyAlgorithms(),
-                                    context.getChooser().getServerSupportedHostKeyAlgorithms())
-                            .orElse(null));
+        context.setHostKeyAlgorithm(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser().getClientSupportedHostKeyAlgorithms(),
+                                context.getChooser().getServerSupportedHostKeyAlgorithms())
+                        .orElse(null));
 
-            context.setMacAlgorithmClientToServer(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedMacAlgorithmsClientToServer(),
-                                    context.getChooser()
-                                            .getServerSupportedMacAlgorithmsClientToServer())
-                            .orElse(null));
+        context.setMacAlgorithmClientToServer(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedMacAlgorithmsClientToServer(),
+                                context.getChooser()
+                                        .getServerSupportedMacAlgorithmsClientToServer())
+                        .orElse(null));
 
-            context.setMacAlgorithmServerToClient(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedMacAlgorithmsServerToClient(),
-                                    context.getChooser()
-                                            .getServerSupportedMacAlgorithmsServerToClient())
-                            .orElse(null));
+        context.setMacAlgorithmServerToClient(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedMacAlgorithmsServerToClient(),
+                                context.getChooser()
+                                        .getServerSupportedMacAlgorithmsServerToClient())
+                        .orElse(null));
 
-            context.setCompressionMethodClientToServer(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedCompressionMethodsClientToServer(),
-                                    context.getChooser()
-                                            .getServerSupportedCompressionMethodsClientToServer())
-                            .orElse(null));
+        context.setCompressionMethodClientToServer(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedCompressionMethodsClientToServer(),
+                                context.getChooser()
+                                        .getServerSupportedCompressionMethodsClientToServer())
+                        .orElse(null));
 
-            context.setCompressionMethodServerToClient(
-                    AlgorithmPicker.pickAlgorithm(
-                                    context.getChooser()
-                                            .getClientSupportedCompressionMethodsServerToClient(),
-                                    context.getChooser()
-                                            .getServerSupportedCompressionMethodsServerToClient())
-                            .orElse(null));
-            LOGGER.info(
-                    """
+        context.setCompressionMethodServerToClient(
+                AlgorithmPicker.pickAlgorithm(
+                                context.getChooser()
+                                        .getClientSupportedCompressionMethodsServerToClient(),
+                                context.getChooser()
+                                        .getServerSupportedCompressionMethodsServerToClient())
+                        .orElse(null));
+        LOGGER.info(
+                """
                     Selected algorithms for key exchange and secure channel:
 
                         Key exchange algorithm: {}
@@ -252,26 +321,25 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                         MAC algorithm (server to client): {}
                         Compression algorithm (client to server): {}
                         Compression algorithm (server to client): {}
-                    """,
-                    context.getKeyExchangeAlgorithm().orElse(null),
-                    context.getHostKeyAlgorithm().orElse(null),
-                    context.getEncryptionAlgorithmClientToServer().orElse(null),
-                    context.getEncryptionAlgorithmServerToClient().orElse(null),
-                    context.getEncryptionAlgorithmClientToServer()
-                                            .orElse(EncryptionAlgorithm.NONE)
-                                            .getType()
-                                    != EncryptionAlgorithmType.AEAD
-                            ? context.getMacAlgorithmClientToServer().orElse(null)
-                            : "<implicit>",
-                    context.getEncryptionAlgorithmServerToClient()
-                                            .orElse(EncryptionAlgorithm.NONE)
-                                            .getType()
-                                    != EncryptionAlgorithmType.AEAD
-                            ? context.getEncryptionAlgorithmServerToClient().orElse(null)
-                            : "<implicit>",
-                    context.getCompressionMethodClientToServer().orElse(null),
-                    context.getCompressionMethodServerToClient().orElse(null));
-        }
+                   """,
+                context.getKeyExchangeAlgorithm().orElse(null),
+                context.getHostKeyAlgorithm().orElse(null),
+                context.getEncryptionAlgorithmClientToServer().orElse(null),
+                context.getEncryptionAlgorithmServerToClient().orElse(null),
+                context.getEncryptionAlgorithmClientToServer()
+                                        .orElse(EncryptionAlgorithm.NONE)
+                                        .getType()
+                                != EncryptionAlgorithmType.AEAD
+                        ? context.getMacAlgorithmClientToServer().orElse(null)
+                        : "<implicit>",
+                context.getEncryptionAlgorithmServerToClient()
+                                        .orElse(EncryptionAlgorithm.NONE)
+                                        .getType()
+                                != EncryptionAlgorithmType.AEAD
+                        ? context.getEncryptionAlgorithmServerToClient().orElse(null)
+                        : "<implicit>",
+                context.getCompressionMethodClientToServer().orElse(null),
+                context.getCompressionMethodServerToClient().orElse(null));
     }
 
     @Override

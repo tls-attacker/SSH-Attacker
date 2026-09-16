@@ -29,6 +29,11 @@ public class DhGexKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
+        if (context.getIgnoreNextKeyExchange()) {
+            LOGGER.info("Ignoring received DhGex Key Exchange Init as it is a wrong guess.");
+            context.setIgnoreNextKeyExchange(false);
+            return;
+        }
         context.getChooser()
                 .getDhGexKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());

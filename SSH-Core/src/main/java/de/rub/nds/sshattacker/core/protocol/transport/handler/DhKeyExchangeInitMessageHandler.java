@@ -27,6 +27,11 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
 
     @Override
     public void adjustContext() {
+        if (context.getIgnoreNextKeyExchange()) {
+            LOGGER.info("Ignoring received Dh Key Exchange Init as it is a wrong guess.");
+            context.setIgnoreNextKeyExchange(false);
+            return;
+        }
         context.getChooser()
                 .getDhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
