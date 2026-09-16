@@ -32,6 +32,11 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public void adjustContext() {
+        if (context.getIgnoreNextKeyExchange()) {
+            LOGGER.info("Ignoring received Rsa Key Exchange Pubkey as it is a wrong guess.");
+            context.setIgnoreNextKeyExchange(false);
+            return;
+        }
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         updateContextWithTransientPublicKey(message);
     }

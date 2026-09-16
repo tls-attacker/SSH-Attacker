@@ -28,6 +28,11 @@ public class EcdhKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
+        if (context.getIgnoreNextKeyExchange()) {
+            LOGGER.info("Ignoring received Ecdh Key Exchange Init as it is a wrong guess.");
+            context.setIgnoreNextKeyExchange(false);
+            return;
+        }
         context.getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
