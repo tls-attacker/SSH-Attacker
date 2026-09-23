@@ -34,6 +34,11 @@ public class HybridKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
+        if (context.getIgnoreNextKeyExchange()) {
+            LOGGER.info("Ignoring received Hybrid Key Exchange Init as it is a wrong guess.");
+            context.setIgnoreNextKeyExchange(false);
+            return;
+        }
         splitRemotePublicValues();
         updateContextWithRemotePublicValues();
     }
