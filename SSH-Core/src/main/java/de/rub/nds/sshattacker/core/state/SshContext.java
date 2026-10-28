@@ -173,14 +173,20 @@ public class SshContext {
     private List<String> serverSupportedLanguagesServerToClient;
 
     /**
-     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
+     * A boolean flag used to indicate that a guessed key exchange packet will be sent by the client
      */
     private Boolean clientFirstKeyExchangePacketFollows;
 
     /**
-     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
+     * A boolean flag used to indicate that a guessed key exchange packet will be sent by the server
      */
     private Boolean serverFirstKeyExchangePacketFollows;
+
+    /**
+     * A boolean flag instructing handlers to ignore the next key exchange message, as it will be
+     * part of a wrong guess.
+     */
+    private boolean ignoreNextKeyExchange;
 
     /** Value of the clients' reserved field which may be used for extensions in the future */
     private Integer clientReserved;
@@ -1214,5 +1220,13 @@ public class SshContext {
 
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
+    }
+
+    public Boolean getIgnoreNextKeyExchange() {
+        return ignoreNextKeyExchange;
+    }
+
+    public void setIgnoreNextKeyExchange(boolean ignoreNextKeyExchange) {
+        this.ignoreNextKeyExchange = ignoreNextKeyExchange;
     }
 }
